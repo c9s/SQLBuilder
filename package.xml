@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.4.10" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0        http://pear.php.net/dtd/tasks-1.0.xsd        http://pear.php.net/dtd/package-2.0        http://pear.php.net/dtd/package-2.0.xsd">
+  <name>SQLBuilder</name>
+  <channel/>
+  <summary>SQL Builder</summary>
+  <description>SQL Builder</description>
+  <lead>
+    <name>Yo-An Lin</name>
+    <user/>
+    <email>cornelius.howl@gmail.com</email>
+    <active>yes</active>
+  </lead>
+  <date>2012-01-20</date>
+  <time>21:51:54</time>
+  <version>
+    <release>0.0.1</release>
+    <api>0.0.1</api>
+  </version>
+  <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+  </stability>
+  <license>PHP</license>
+  <notes>-</notes>
+  <contents>
+    <dir name="/">
+      <file name="tests/SQLBuilder/SQLBuilderTest.php" role="test" md5sum="7871ecabeaeebdf264e757c4749cfb4e"/>
+      <file name="src/SQLBuilder/SQLBuilder.php" role="php" md5sum="edbbc49362392ede1c1ed673c23c3956"/>
+    </dir>
+  </contents>
+  <dependencies>
+    <required>
+      <package>
+        <name>Universal</name>
+        <channel>pear.corneltek.com</channel>
+        <min>0.0.0</min>
+      </package>
+    </required>
+  </dependencies>
+  <phprelease>
+    <filelist>
+      <install name="tests/SQLBuilder/SQLBuilderTest.php" as="SQLBuilder/SQLBuilderTest.php"/>
+      <install name="src/SQLBuilder/SQLBuilder.php" as="SQLBuilder/SQLBuilder.php"/>
+    </filelist>
+  </phprelease>
+</package>
