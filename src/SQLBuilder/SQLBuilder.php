@@ -4,23 +4,28 @@ use Exception;
 
 
 /**
- 
-    $sqlbuilder = new SQLBuilder('Member');
-    $sqlbuilder->configure('driver','postgres');
-    $sqlbuilder->configure('trim',true);
-    $sqlbuilder->configure('placeholder','named');
-    $sqlbuilder->insert(array(
-        'foo' => 'foo',
-        'bar' => 'bar',
-    ));
-    $sql = $sqlbuilder->build();
- 
- 
+ *
+ * SQL Builder for generating CRUD SQL
+ *
+ * @code
+ *
+ *  $sqlbuilder = new SQLBuilder('Member');
+ *  $sqlbuilder->configure('driver','postgres');
+ *  $sqlbuilder->configure('trim',true);
+ *  $sqlbuilder->configure('placeholder','named');
+ *  $sqlbuilder->insert(array(
+ *      'foo' => 'foo',
+ *      'bar' => 'bar',
+ *  ));
+ *  $sql = $sqlbuilder->build();
+ *
+ * @code
  */
 class SQLBuilder 
 {
     /**
      * table name 
+     *
      * @var string
      * */
 	public $table;
@@ -40,7 +45,7 @@ class SQLBuilder
 	public $offset;
 
     /**
-     * should return result when updating or inserting?
+     * Should return result when updating or inserting?
      *
      * when this flag is set, the primary key will be returned.
      *
@@ -57,22 +62,61 @@ class SQLBuilder
      * @var string[] an array contains column names
      */
 	public $selected;
+
 	public $insert;
+
 	public $update;
+
 	public $behavior;
+
 
 	const INSERT = 1;
 	const UPDATE = 2;
 	const DELETE = 3;
 	const SELECT = 4;
 
+
 	protected $driver = 'PDO';
+
+    /**
+     * should we quote table name in SQL ?
+     */
 	protected $quoteTable = true;
+
+
+    /**
+     * should we quote column name in SQL ?
+     */
 	protected $quoteColumn = true;
+
+
+    /**
+     * should we trim space ?
+     */
 	protected $trim = false;
+
+
+    /**
+     * get place holder
+     */
 	protected $placeholder = false;
+
+
+    /**
+     * string escaper handler
+     *  
+     *  Array:
+     *
+     *    array($obj,'method')
+     */
 	protected $escaper;
 
+
+
+    /**
+     *
+     * @param string $table table name
+     */
 	public function __construct($table)
 	{
 		$this->table = $table;
@@ -330,7 +374,7 @@ class SQLBuilder
 			foreach( $this->insert as $k => $v ) {
 				if( is_integer($k) )
 					$k = $v;
-				$columns[] = $this->quoteColumn($k);
+				$columns[] = $this->getQuoteColumn($k);
 				$values[] = $this->getPlaceHolder($k);
 			}
 
@@ -338,7 +382,7 @@ class SQLBuilder
 			foreach( $this->insert as $k => $v ) {
 				if( is_integer($k) )
 					$k = $v;
-				$columns[] = $this->quoteColumn( $k );
+				$columns[] = $this->getQuoteColumn( $k );
 				$values[]  = '\'' . call_user_func( $this->escaper , $v ) . '\'';
 			}
 		}
@@ -347,7 +391,7 @@ class SQLBuilder
         $sql .= join(',',$columns) . ") VALUES (".  join(',', $values ) .")";
 
 		if( $this->returning )
-			$sql .= ' RETURNING ' . $this->quoteColumn($this->returning);
+			$sql .= ' RETURNING ' . $this->getQuoteColumn($this->returning);
 
 		if( $this->trim )
 			return trim($sql);
@@ -384,10 +428,12 @@ class SQLBuilder
 
 
 
-	protected function quoteColumn($name)
+	protected function getQuoteColumn($name)
 	{
-		if( $this->quoteColumn ) {
-			return '"' . $name . '"';
+		if( $c = $this->quoteColumn ) {
+            if( is_string($c) )
+                return $c . $name . $c;
+            return '"' . $name . '"';
 		}
 		return $name;
 	}
@@ -401,7 +447,7 @@ class SQLBuilder
 			$parts = array();
 			foreach( $this->orders as $order ) {
 				list( $column , $ordering ) = $order;
-				$parts[] = $this->quoteColumn($column) . ' ' . $ordering;
+				$parts[] = $this->getQuoteColumn($column) . ' ' . $ordering;
 			}
 			$sql .= join(',',$parts);
 		}
