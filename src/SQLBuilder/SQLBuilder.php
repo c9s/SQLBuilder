@@ -273,7 +273,7 @@ class SQLBuilder
 	 *************************/
 	public function buildDelete()
 	{
-		$sql = 'DELETE FROM ' . $this->getTableName() . ' '
+		$sql = 'DELETE FROM ' . $this->getTableName() . ' ';
 		$sql .= $this->buildConditionSql();
 		$sql .= $this->buildLimitSql();
 		if( $this->trim )
