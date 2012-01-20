@@ -123,6 +123,21 @@ class SQLBuilder
 	}
 
 
+    /**
+     * get table name (with quote or not)
+     *
+     * quotes can be used in postgresql:
+     *     select * from "table_name";
+     */
+    public function getTableName()
+    {
+        if( $this->quoteTable ) {
+            return '"' . $this->table . '"';
+        }
+        return $this->table;
+    }
+
+
 	public function getPlaceHolder($key)
 	{
 		if( $this->placeholder && $this->placeholder === 'named' ) {
@@ -256,10 +271,9 @@ class SQLBuilder
 	/*************************
 	 * public interface 
 	 *************************/
-
 	public function buildDelete()
 	{
-		$sql = "DELETE FROM \"{$this->table}\" ";
+		$sql = 'DELETE FROM ' . $this->getTableName() . ' '
 		$sql .= $this->buildConditionSql();
 		$sql .= $this->buildLimitSql();
 		if( $this->trim )
@@ -270,7 +284,7 @@ class SQLBuilder
 
 	public function buildUpdate()
 	{
-		$sql = "UPDATE \"{$this->table}\" SET ";
+		$sql = 'UPDATE ' . $this->getTableName() . ' SET ';
 		$sql .= $this->buildSetterSql();
 		$sql .= $this->buildConditionSql();
 		$sql .= $this->buildLimitSql();
@@ -286,9 +300,9 @@ class SQLBuilder
 	public function buildSelect()
 	{
         /* check required arguments */
-		$sql = "SELECT " 
+		$sql = 'SELECT ' 
 			. $this->buildSelectColumns()
-			. " FROM \"{$this->table}\" ";
+			. ' FROM ' . $this->getTableName() . ' ';
 
 		$sql .= $this->buildConditionSql();
 
@@ -329,7 +343,7 @@ class SQLBuilder
 			}
 		}
 
-        $sql = " INSERT INTO \"{$this->table}\" ( ";
+        $sql = ' INSERT INTO ' . $this->getTableName() . ' ( ';
         $sql .= join(',',$columns) . ") VALUES (".  join(',', $values ) .")";
 
 		if( $this->returning )
