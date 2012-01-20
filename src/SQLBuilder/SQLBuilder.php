@@ -2,24 +2,69 @@
 namespace SQLBuilder;
 use Exception;
 
+
+/**
+ 
+    $sqlbuilder = new SQLBuilder('Member');
+    $sqlbuilder->configure('driver','postgres');
+    $sqlbuilder->configure('trim',true);
+    $sqlbuilder->configure('placeholder','named');
+    $sqlbuilder->insert(array(
+        'foo' => 'foo',
+        'bar' => 'bar',
+    ));
+    $sql = $sqlbuilder->build();
+ 
+ 
+ */
 class SQLBuilder 
 {
+    /**
+     * table name 
+     * @var string
+     * */
 	public $table;
+
+    /** 
+     * limit 
+     * 
+     * @var integer
+     * */
 	public $limit;
+
+    /**
+     * offset attribute
+     *
+     * @var integer
+     * */
 	public $offset;
+
+    /**
+     * should return result when updating or inserting?
+     *
+     * when this flag is set, the primary key will be returned.
+     *
+     * @var boolean
+     */
 	public $returning;
+
 	public $where = array();
 	public $orders = array();
 
+    /**
+     * selected columns
+     *
+     * @var string[] an array contains column names
+     */
 	public $selected;
 	public $insert;
 	public $update;
 	public $behavior;
 
-	const insert = 1;
-	const update = 2;
-	const delete = 3;
-	const select = 4;
+	const INSERT = 1;
+	const UPDATE = 2;
+	const DELETE = 3;
+	const SELECT = 4;
 
 	protected $driver = 'PDO';
 	protected $quoteTable = true;
@@ -32,7 +77,7 @@ class SQLBuilder
 	{
 		$this->table = $table;
 		$this->selected = array('*');
-		$this->behavior = self::select;
+		$this->behavior = static::SELECT;
 
 
 		/**
@@ -88,17 +133,31 @@ class SQLBuilder
 		}
 	}
 
+
+    /*** behavior methods ***/
+
+    /**
+     * update behavior 
+     * 
+     * @param array $args
+     */
 	public function update($args)
 	{
 		$this->update = $args;
-		$this->behavior = self::update;
+		$this->behavior = static::UPDATE;
 	}
 
 
+
+    /**
+     * select behavior
+     *
+     * @param array
+     */
 	public function select($columns)
 	{
 		$this->selected = (array) $columns;
-		$this->behavior = self::select;
+		$this->behavior = static::SELECT;
 	}
 
 	/**
@@ -107,14 +166,23 @@ class SQLBuilder
 	public function insert(array $args)
 	{
 		$this->insert = $args;
-		$this->behavior = self::insert;
+		$this->behavior = static::INSERT;
 	}
 
+
+    /**
+     * delete behavior
+     *
+     */
 	public function delete()
 	{
-		$this->behavior = self::delete;
+		$this->behavior = static::DELETE;
 	}
 
+
+
+
+    /*** limit , offset methods ***/
 
 	public function limit($limit)
 	{
@@ -128,6 +196,21 @@ class SQLBuilder
 
 
 
+
+    /*** condition methods ***/
+
+
+    /**
+     *
+     * style1:
+     *
+     * @param string column name
+     * @param string condition (string or array)
+     *
+     * style2:
+     *
+     * @param array
+     */
 	public function where($arg1,$arg2 = null)
 	{
 		if( is_array($arg1) ) {
@@ -154,8 +237,9 @@ class SQLBuilder
 
 
 
-
-	/* builder, protected methods */
+    /**
+     * builder, protected methods
+     */
 	protected function buildSelectColumns()
 	{
 		$cols = array_map(function($item) { 
@@ -167,7 +251,6 @@ class SQLBuilder
 		},$this->selected);
 		return join(',',$cols);
 	}
-
 
 
 	/*************************
@@ -265,16 +348,16 @@ class SQLBuilder
 
 		switch( $this->behavior )
 		{
-			case self::update:
+			case static::UPDATE:
 				return $this->buildUpdate();
 				break;
-			case self::insert:
+			case static::INSERT:
 				return $this->buildInsert();
 				break;
-			case self::delete:
+			case static::DELETE:
 				return $this->buildDelete();
 				break;
-			case self::select:
+			case static::SELECT:
 				return $this->buildSelect();
 				break;
 			default:
