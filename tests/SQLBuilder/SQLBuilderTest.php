@@ -16,7 +16,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 			'foo' => 'foo',
 			'bar' => 'bar',
 		));
-		$sql = $sqlbuilder->buildInsert();
+		$sql = $sqlbuilder->build();
 		is( 'INSERT INTO "Member" ( "foo","bar") VALUES (:foo,:bar)' , $sql );
 
 		$sqlbuilder->configure('placeholder',false);
@@ -24,11 +24,11 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 			'foo' => 'foo',
 			'bar' => 'bar',
 		));
-		$sql = $sqlbuilder->buildInsert();
+		$sql = $sqlbuilder->build();
 		is( 'INSERT INTO "Member" ( "foo","bar") VALUES (\'foo\',\'bar\')' , $sql );
 
 		$sqlbuilder->configure('placeholder',true);
-		$sql = $sqlbuilder->buildInsert();
+		$sql = $sqlbuilder->build();
 		is( 'INSERT INTO "Member" ( "foo","bar") VALUES (?,?)' , $sql );
 	}
 
