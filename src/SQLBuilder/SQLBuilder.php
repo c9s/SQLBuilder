@@ -130,7 +130,9 @@ class SQLBuilder
 		 *    string mysqli_real_escape_string ( mysqli $link , string $escapestr )
 	     *    string pg_escape_string ([ resource $connection ], string $data )
 		 *    string PDO::quote ( string $string [, int $parameter_type = PDO::PARAM_STR ] )
-		 *    
+         *
+         *  $b->configure('escaper',array($pgconn,'escape_string'));
+         *
 		 */
 		$this->escaper = 'addslashes';
 	}
