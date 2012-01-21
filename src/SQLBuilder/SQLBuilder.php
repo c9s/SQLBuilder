@@ -540,6 +540,5 @@ class SQLBuilder
 	}
 
 
-
 }
 
