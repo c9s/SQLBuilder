@@ -81,13 +81,13 @@ class SQLBuilder
     /**
      * should we quote table name in SQL ?
      */
-	protected $quoteTable = true;
+	protected $quoteTable = false;
 
 
     /**
      * should we quote column name in SQL ?
      */
-	protected $quoteColumn = true;
+	protected $quoteColumn = false;
 
 
     /**
@@ -160,6 +160,10 @@ class SQLBuilder
 			
 			case 'driver':
 				$this->driver = $value;
+                if( $this->driver == 'mysql' ) {
+                    $this->quoteColumn = false;
+                    $this->quoteTable = false;
+                }
 				break;
 
 			case 'style':
@@ -459,7 +463,7 @@ class SQLBuilder
 	protected function buildLimitSql()
 	{
 		$sql = '';
-		if( $this->driver == 'postgres' ) {
+		if( $this->driver == 'postgresql' ) {
 			if( $this->limit && $this->offset ) {
 				$sql .= ' LIMIT ' . $this->limit . ' OFFSET ' . $this->offset;
 			} else if ( $this->limit ) {
@@ -483,20 +487,20 @@ class SQLBuilder
 		if( $this->placeholder ) {
 			foreach( $this->update as $k => $v ) {
 				if( is_array($v) ) {
-					$conds[] = "\"$k\" = $v" ;
+					$conds[] =  $this->getQuoteColumn( $k ) . ' = '. $v;
 				} else {
 					if( is_integer($k) )
 						$k = $v;
-					$conds[] = "\"$k\" = " . $this->getPlaceHolder($k);
+					$conds[] =  $this->getQuoteColumn($k) . ' = ' . $this->getPlaceHolder($k);
 				}
 			}
 		}
 		else {
 			foreach( $this->update as $k => $v ) {
 				if( is_array($v) ) {
-					$conds[] = "\"$k\" = $v" ;
+					$conds[] = $this->getQuoteColumn($k) . ' = ' . $v ;
 				} else {
-					$conds[] = "\"$k\" = " 
+					$conds[] = $this->getQuoteColumn($k) . ' = ' 
 						. '\'' . call_user_func( $this->escaper , $v ) . '\'';
 				}
 			}
@@ -510,20 +514,20 @@ class SQLBuilder
 		if( $this->placeholder ) {
 			foreach( $this->where as $k => $v ) {
 				if( is_array($v) ) {
-					$conds[] = "\"$k\" = $v" ;
+					$conds[] = $this->getQuoteColumn($k) . " = " . $v;
 				} else {
 					if( is_integer($k) )
 						$k = $v;
-					$conds[] = "\"$k\" = " . $this->getPlaceHolder($k);
+					$conds[] = $this->getQuoteColumn( $k ) . " = " . $this->getPlaceHolder($k);
 				}
 			}
 		}
 		else {
 			foreach( $this->where as $k => $v ) {
 				if( is_array($v) ) {
-					$conds[] = "\"$k\" = $v" ;
+					$conds[] = $this->getQuoteColumn($k) . ' = ' . $v;
 				} else {
-					$conds[] = "\"$k\" = " 
+					$conds[] = $this->getQuoteColumn($k) . " = " 
 						. '\'' . call_user_func( $this->escaper , $v ) . '\'';
 				}
 			}

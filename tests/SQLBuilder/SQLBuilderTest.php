@@ -1,4 +1,5 @@
 <?php
+
 namespace SQLBuilder;
 use PHPUnit_Framework_TestCase;
 use Exception;
@@ -8,50 +9,56 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 
 	function testInsert()
 	{
-		$sqlbuilder = new SQLBuilder('Member');
-		$sqlbuilder->configure('driver','postgres');
-		$sqlbuilder->configure('trim',true);
-		$sqlbuilder->configure('placeholder','named');
-		$sqlbuilder->insert(array(
+		$sb = new SQLBuilder('Member');
+		$sb->configure('driver','postgresql');
+		$sb->configure('quote_table',true);
+		$sb->configure('quote_column',true);
+		$sb->configure('trim',true);
+		$sb->configure('placeholder','named');
+		$sb->insert(array(
 			'foo' => 'foo',
 			'bar' => 'bar',
 		));
-		$sql = $sqlbuilder->build();
+		$sql = $sb->build();
 		is( 'INSERT INTO "Member" ( "foo","bar") VALUES (:foo,:bar)' , $sql );
 
-		$sqlbuilder->configure('placeholder',false);
-		$sqlbuilder->insert(array(
+		$sb->configure('placeholder',false);
+		$sb->insert(array(
 			'foo' => 'foo',
 			'bar' => 'bar',
 		));
-		$sql = $sqlbuilder->build();
+		$sql = $sb->build();
 		is( 'INSERT INTO "Member" ( "foo","bar") VALUES (\'foo\',\'bar\')' , $sql );
 
-		$sqlbuilder->configure('placeholder',true);
-		$sql = $sqlbuilder->build();
+		$sb->configure('placeholder',true);
+		$sql = $sb->build();
 		is( 'INSERT INTO "Member" ( "foo","bar") VALUES (?,?)' , $sql );
 	}
 
 	function testDelete()
 	{
-		$sqlbuilder = new SQLBuilder('Member');
-		$sqlbuilder->configure('driver','postgres');
-		$sqlbuilder->configure('trim',true);
-		$sqlbuilder->delete();
-		$sqlbuilder->where(array( 'foo' => '123' ));
+		$sb = new SQLBuilder('Member');
+		$sb->configure('driver','postgresql');
+		$sb->configure('trim',true);
+		$sb->configure('quote_table',true);
+		$sb->configure('quote_column',true);
+		$sb->delete();
+		$sb->where(array( 'foo' => '123' ));
 
-		$sql = $sqlbuilder->build();
+		$sql = $sb->build();
 		is( 'DELETE FROM "Member"  WHERE "foo" = \'123\'' , $sql );
 
-		$sqlbuilder->configure('placeholder','named');
-		$sql = $sqlbuilder->buildDelete();
+		$sb->configure('placeholder','named');
+		$sql = $sb->buildDelete();
 		is( 'DELETE FROM "Member"  WHERE "foo" = :foo' , $sql );
 	}
 
 	function testUpdate()
 	{
 		$sb = new SQLBuilder('Member');
-		$sb->configure('driver','postgres');
+		$sb->configure('driver','postgresql');
+		$sb->configure('quote_table',true);
+		$sb->configure('quote_column',true);
 		$sb->configure('trim',true);
 		$sb->configure('placeholder','named');
 		$sb->where(array( 
@@ -68,40 +75,42 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 
 	function testSelect()
 	{
-		$sqlbuilder = new SQLBuilder('Member');
-		$sqlbuilder->configure('driver','postgres');
-		$sqlbuilder->configure('trim',true);
-		$sqlbuilder->select( '*' );
+		$sb = new SQLBuilder('Member');
+		$sb->configure('driver','postgresql');
+		$sb->configure('quote_table',true);
+		$sb->configure('quote_column',true);
+		$sb->configure('trim',true);
+		$sb->select( '*' );
 
-		ok( $sqlbuilder );
+		ok( $sb );
 
-		$sql = $sqlbuilder->buildSelect();
+		$sql = $sb->buildSelect();
 		ok( $sql );
 
 		is( 'SELECT * FROM "Member"' , trim($sql));
 
-		$sqlbuilder->configure('placeholder','named');
-		$sqlbuilder->where(array(
+		$sb->configure('placeholder','named');
+		$sb->where(array(
 			'foo' => ':foo',
 	   	));
 
 
-		$sql = $sqlbuilder->buildSelect();
+		$sql = $sb->buildSelect();
 		is( 'SELECT * FROM "Member"  WHERE "foo" = :foo' , $sql );
 
-		$sqlbuilder->select(array('COUNT(*)'));
+		$sb->select(array('COUNT(*)'));
 
-		$sql = $sqlbuilder->buildSelect();
+		$sql = $sb->buildSelect();
 		is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo' , $sql );
 
-		$sqlbuilder->limit(10);
+		$sb->limit(10);
 
-		$sql = $sqlbuilder->buildSelect();
+		$sql = $sb->buildSelect();
 		is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10' ,$sql );
 
-		$sqlbuilder->offset(20);
+		$sb->offset(20);
 
-		$sql = $sqlbuilder->buildSelect();
+		$sql = $sb->buildSelect();
 		is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10 OFFSET 20' ,$sql );
 	}
 }
