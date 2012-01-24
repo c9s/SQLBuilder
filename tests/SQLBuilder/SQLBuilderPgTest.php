@@ -9,7 +9,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 
 	function testInsert()
 	{
-		$sb = new SQLBuilder('Member');
+		$sb = new CRUDBuilder('Member');
 		$sb->configure('driver','postgresql');
 		$sb->configure('quote_table',true);
 		$sb->configure('quote_column',true);
@@ -37,7 +37,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 
 	function testDelete()
 	{
-		$sb = new SQLBuilder('Member');
+		$sb = new CRUDBuilder('Member');
 		$sb->configure('driver','postgresql');
 		$sb->configure('trim',true);
 		$sb->configure('quote_table',true);
@@ -55,7 +55,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 
 	function testUpdate()
 	{
-		$sb = new SQLBuilder('Member');
+		$sb = new CRUDBuilder('Member');
 		$sb->configure('driver','postgresql');
 		$sb->configure('quote_table',true);
 		$sb->configure('quote_column',true);
@@ -75,7 +75,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 
 	function testSelect()
 	{
-		$sb = new SQLBuilder('Member');
+		$sb = new CRUDBuilder('Member');
 		$sb->configure('driver','postgresql');
 		$sb->configure('quote_table',true);
 		$sb->configure('quote_column',true);
