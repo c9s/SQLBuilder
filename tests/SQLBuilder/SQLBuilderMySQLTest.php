@@ -3,12 +3,12 @@ namespace SQLBuilder;
 use PHPUnit_Framework_TestCase;
 use Exception;
 
-class SQLBuilderMySQLTest extends PHPUnit_Framework_TestCase
+class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 {
 
 	function testInsert()
 	{
-		$sb = new SQLBuilder('member');
+		$sb = new CRUDBuilder('member');
 		$sb->configure('driver','mysql');
 		$sb->configure('trim',true);
 		$sb->configure('placeholder','named');
@@ -34,7 +34,7 @@ class SQLBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
 	function testDelete()
 	{
-		$sb = new SQLBuilder('member');
+		$sb = new CRUDBuilder('member');
 		$sb->configure('driver','mysql');
 		$sb->configure('trim',true);
 		$sb->delete();
@@ -50,7 +50,7 @@ class SQLBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
 	function testUpdate()
 	{
-		$sb = new SQLBuilder('member');
+		$sb = new CRUDBuilder('member');
 		$sb->configure('driver','mysql');
 		$sb->configure('trim',true);
 		$sb->configure('placeholder','named');
@@ -68,7 +68,7 @@ class SQLBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
 	function testSelect()
 	{
-		$sb = new SQLBuilder('member');
+		$sb = new CRUDBuilder('member');
 		$sb->configure('driver','mysql');
 		$sb->configure('trim',true);
 		$sb->select( '*' );

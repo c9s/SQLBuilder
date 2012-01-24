@@ -8,7 +8,7 @@ use Exception;
  *
  * @code
  *
- *  $sqlbuilder = new SQLBuilder('Member');
+ *  $sqlbuilder = new SQLBuilder\CRUDBuilder('Member');
  *
  *  $sqlbuilder->configure('driver','postgresql');
  *
@@ -34,7 +34,7 @@ use Exception;
  *
  * @code
  */
-class SQLBuilder 
+class CRUDBuilder 
 {
     /**
      * table name 
