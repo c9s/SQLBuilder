@@ -2,7 +2,6 @@
 namespace SQLBuilder;
 use Exception;
 
-
 /**
  *
  * SQL Builder for generating CRUD SQL
@@ -10,12 +9,26 @@ use Exception;
  * @code
  *
  *  $sqlbuilder = new SQLBuilder('Member');
- *  $sqlbuilder->configure('driver','postgres');
+ *
+ *  $sqlbuilder->configure('driver','postgresql');
+ *
+ *  trim spaces
  *  $sqlbuilder->configure('trim',true);
+ *
  *  $sqlbuilder->configure('placeholder','named');
+ *
+ *  $sqlbuilder->configure('escaper',array($pg,'escape'));
+ *
+ *  $sqlbuilder->configure('escaper',array($pdo,'quote'));
+ *
  *  $sqlbuilder->insert(array(
+ *       // placeholder => 'value'
  *      'foo' => 'foo',
  *      'bar' => 'bar',
+ *  ));
+ *  $sqlbuilder->insert(array(
+ *      'foo',
+ *      'bar',
  *  ));
  *  $sql = $sqlbuilder->build();
  *
@@ -538,7 +551,6 @@ class SQLBuilder
         }
 		return $sql;
 	}
-
 
 }
 
