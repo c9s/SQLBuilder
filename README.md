@@ -80,9 +80,9 @@ Do Select
             ->isNot( 'a' , 'null' )    // a is not equal
             ->greater( 'a' , '2011-01-01' );
             ->greater( 'a' , array('date(2011-01-01)') );  // do not escape
-            ->or()->less( 'a' , 123 )
+                ->or()->less( 'a' , 123 )
                 ->and()->like( 'content' , '%content%' );
-            ->group()             and ( a = 123 or b != 123 )
+            ->group()                  // and ( a = 123 or b != 123 )
                 ->is( 'a' , 123 )
                 ->isNot( 'b', 123 )             
             ->ungroup()
