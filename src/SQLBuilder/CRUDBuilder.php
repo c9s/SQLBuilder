@@ -223,6 +223,7 @@ class CRUDBuilder
 	{
 		$this->update = $args;
 		$this->behavior = static::UPDATE;
+        return $this;
 	}
 
 
@@ -236,6 +237,7 @@ class CRUDBuilder
 	{
 		$this->selected = (array) $columns;
 		$this->behavior = static::SELECT;
+        return $this;
 	}
 
 	/**
@@ -245,6 +247,7 @@ class CRUDBuilder
 	{
 		$this->insert = $args;
 		$this->behavior = static::INSERT;
+        return $this;
 	}
 
 
@@ -265,11 +268,13 @@ class CRUDBuilder
 	public function limit($limit)
 	{
 		$this->limit = $limit;
+        return $this;
 	}
 
 	public function offset($offset)
 	{
 		$this->offset = $offset;
+        return $this;
 	}
 
 

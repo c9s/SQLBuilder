@@ -15,6 +15,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 		$sb->configure('quote_column',true);
 		$sb->configure('trim',true);
 		$sb->configure('placeholder','named');
+
 		$sb->insert(array(
 			'foo' => 'foo',
 			'bar' => 'bar',
@@ -84,7 +85,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 
 		ok( $sb );
 
-		$sql = $sb->buildSelect();
+		$sql = $sb->build();
 		ok( $sql );
 
 		is( 'SELECT * FROM "Member"' , trim($sql));
@@ -94,23 +95,25 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 			'foo' => ':foo',
 	   	));
 
-
-		$sql = $sb->buildSelect();
+		$sql = $sb->build();
 		is( 'SELECT * FROM "Member"  WHERE "foo" = :foo' , $sql );
 
 		$sb->select(array('COUNT(*)'));
 
-		$sql = $sb->buildSelect();
+		$sql = $sb->build();
 		is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo' , $sql );
 
 		$sb->limit(10);
 
-		$sql = $sb->buildSelect();
+		$sql = $sb->build();
 		is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10' ,$sql );
 
 		$sb->offset(20);
 
-		$sql = $sb->buildSelect();
+		$sql = $sb->build();
 		is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10 OFFSET 20' ,$sql );
+
+
+
 	}
 }
