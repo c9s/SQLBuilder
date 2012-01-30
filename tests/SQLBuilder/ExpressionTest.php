@@ -5,10 +5,8 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
 
     public function createExpr()
     {
-        $builder = new SQLBuilder\CRUDBuilder('Foo');
-        $builder->driver = new SQLBuilder\Driver;
         $expr = new SQLBuilder\Expression;
-        $expr->builder = $builder;
+        $expr->driver = new SQLBuilder\Driver;
         return $expr;
     }
 
@@ -51,7 +49,6 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
             ->or()->isEqual( 'b', 'bar' );
         is( "a = format('2011-12-11') OR b = 'bar'", $expr->inflate() );
     }
-
 
 
 }

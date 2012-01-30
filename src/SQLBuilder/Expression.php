@@ -4,8 +4,7 @@ namespace SQLBuilder;
 
 class Expression
 {
-    public $builder;
-
+    public $driver;
 
     /* child */
     public $child;
@@ -70,7 +69,7 @@ class Expression
         $subexpr = new self;
         $subexpr->parent = $this;
         $subexpr->parentOp = $op;
-        $subexpr->builder = $this->builder;
+        $subexpr->driver = $this->driver;
         $this->child = $subexpr;
         return $subexpr;
     }
@@ -110,21 +109,21 @@ class Expression
             $sql .= $this->parentOp . ' ';
 
         list($k,$op,$v) = $this->cond;
-		if( $this->builder->driver->placeholder ) {
+		if( $this->driver->placeholder ) {
             if( is_array($v) ) {
-                $sql .= $this->builder->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
+                $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
             } else {
                 if( is_integer($k) )
                     $k = $v;
-                $sql .= $this->builder->driver->getQuoteColumn( $k ) . ' ' . $op . ' '  . $this->builder->getPlaceHolder($k);
+                $sql .= $this->driver->getQuoteColumn( $k ) . ' ' . $op . ' '  . $this->getPlaceHolder($k);
             }
 		}
 		else {
             if( is_array($v) ) {
-                $sql .= $this->builder->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
+                $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
             } else {
-                $sql .= $this->builder->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
-                    . '\'' . call_user_func( $this->builder->driver->escaper , $v ) . '\'';
+                $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
+                    . '\'' . call_user_func( $this->driver->escaper , $v ) . '\'';
             }
 		}
 
