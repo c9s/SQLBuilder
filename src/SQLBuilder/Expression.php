@@ -124,7 +124,7 @@ class Expression
                 $sql .= $this->builder->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
             } else {
                 $sql .= $this->builder->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
-                    . '\'' . call_user_func( $this->builder->escaper , $v ) . '\'';
+                    . '\'' . call_user_func( $this->builder->driver->escaper , $v ) . '\'';
             }
 		}
 
