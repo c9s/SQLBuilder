@@ -418,7 +418,9 @@ class CRUDBuilder
 					$conds[] = $this->driver->getQuoteColumn($k) . ' = ' . $v ;
 				} else {
 					$conds[] = $this->driver->getQuoteColumn($k) . ' = ' 
-						. '\'' . call_user_func( $this->driver->escaper , $v ) . '\'';
+                        . '\'' 
+                        . $this->driver->escape($v)
+                        . '\'';
 				}
 			}
 		}
