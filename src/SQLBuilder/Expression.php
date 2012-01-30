@@ -98,6 +98,8 @@ class Expression
 
     public function back()
     {
+        if( $this->driver )
+            return $this->driver;
         return $this->parent;
     }
 
@@ -110,13 +112,15 @@ class Expression
 
         list($k,$op,$v) = $this->cond;
 		if( $this->driver->placeholder ) {
+            $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($k);
+
+            /*
             if( is_array($v) ) {
                 $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
             } else {
-                if( is_integer($k) )
-                    $k = $v;
                 $sql .= $this->driver->getQuoteColumn( $k ) . ' ' . $op . ' '  . $this->getPlaceHolder($k);
             }
+            */
 		}
 		else {
             if( is_array($v) ) {

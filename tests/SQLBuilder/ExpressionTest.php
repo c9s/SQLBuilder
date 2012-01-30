@@ -25,7 +25,6 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         is( 'a is null AND b is null', $expr->inflate() );
     }
 
-
     public function testOp3()
     {
         $expr = $this->createExpr();
