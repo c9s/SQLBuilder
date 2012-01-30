@@ -1,4 +1,6 @@
-SQL Builder in PHP5.3
+# SQLBuilder for PHP5.3 
+
+SQLBuilder Simply focuses on providing a simple syntax for building SQL statement.
 
 ## Driver
 
