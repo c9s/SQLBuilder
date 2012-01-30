@@ -2,16 +2,30 @@
 
 class ExpressionTest extends PHPUnit_Framework_TestCase
 {
-    function test()
+
+    function createExpr()
     {
         $builder = new SQLBuilder\CRUDBuilder('Foo');
         $builder->driver = new SQLBuilder\Driver;
-
         $expr = new SQLBuilder\Expression;
         $expr->builder = $builder;
-        $expr->is( 'a' , 'b' )->is( 'b' , 'c' );
-        var_dump( $expr->inflate() );
-        
+        return $expr;
+    }
+
+    function test()
+    {
+        $expr = $this->createExpr();
+        $expr->is( 'a' , 'null' )->is( 'b' , 'null' );
+        is( 'a is null AND b is null', $expr->inflate() );
+
+    }
+
+    function test2()
+    {
+        $expr = $this->createExpr();
+        $expr->is( 'a' , 'null' )
+            ->and()->is( 'b', 'null' );
+        is( 'a is null AND b is null', $expr->inflate() );
     }
 }
 
