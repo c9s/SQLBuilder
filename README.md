@@ -1,22 +1,27 @@
 SQL Builder for generating CRUD SQL
 
+## Driver
 
+    $driver = new SQLBuilder\Driver;
 
-CRUD SQL Builder for table 'Member':
+Configure escaper:
 
-    $sqlbuilder = new SQLBuilder('Member');
+    $driver->configure('escaper',array($pg,'escape'));
+
+    $driver->configure('escaper',array($pdo,'quote'));
+
 
 Configure database driver for `postgresql`:
 
-    $sqlbuilder->configure('driver','postgresql');
+    $driver->configure('driver','postgresql');
 
 Trim spaces for SQL ? 
 
-    $sqlbuilder->configure('trim',true);
+    $driver->configure('trim',true);
 
 Place holder style ? named-parameter is supported by POD:
 
-    $sqlbuilder->configure('placeholder','named');
+    $driver->configure('placeholder','named');
 
 This generates SQL with named-parameter for PDO:
 
@@ -26,13 +31,13 @@ Or question-mark style for mysqli:
 
     insert into table (foo ,bar ) values (?,?);
 
-Configure escaper:
-
-    $sqlbuilder->configure('escaper',array($pg,'escape'));
-
-    $sqlbuilder->configure('escaper',array($pdo,'quote'));
-
 ## Select
+
+CRUD SQL Builder for table 'Member':
+
+    $sqlbuilder = new SQLBuilder('Member');
+
+Do Select
 
     $sqlbuilder->select('*')
         ->where()

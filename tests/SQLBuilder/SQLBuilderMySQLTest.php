@@ -6,12 +6,20 @@ use Exception;
 class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 {
 
+    function getDriver()
+    {
+        $d = new Driver;
+		$d->configure('driver','mysql');
+		$d->configure('trim',true);
+		$d->configure('placeholder','named');
+        return $d;
+    }
+
 	function testInsert()
 	{
 		$sb = new CRUDBuilder('member');
-		$sb->configure('driver','mysql');
-		$sb->configure('trim',true);
-		$sb->configure('placeholder','named');
+        $sb->driver = $this->getDriver();
+
 		$sb->insert(array(
 			'foo' => 'foo',
 			'bar' => 'bar',
@@ -19,7 +27,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 		$sql = $sb->build();
 		is( 'INSERT INTO member ( foo,bar) VALUES (:foo,:bar)' , $sql );
 
-		$sb->configure('placeholder',false);
+		$sb->driver->configure('placeholder',false);
 		$sb->insert(array(
 			'foo' => 'foo',
 			'bar' => 'bar',
@@ -27,7 +35,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 		$sql = $sb->build();
 		is( 'INSERT INTO member ( foo,bar) VALUES (\'foo\',\'bar\')' , $sql );
 
-		$sb->configure('placeholder',true);
+		$sb->driver->configure('placeholder',true);
 		$sql = $sb->build();
 		is( 'INSERT INTO member ( foo,bar) VALUES (?,?)' , $sql );
 	}
@@ -35,15 +43,16 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 	function testDelete()
 	{
 		$sb = new CRUDBuilder('member');
-		$sb->configure('driver','mysql');
-		$sb->configure('trim',true);
+        $sb->driver = new Driver;
+		$sb->driver->configure('driver','mysql');
+		$sb->driver->configure('trim',true);
 		$sb->delete();
 		$sb->where(array( 'foo' => '123' ));
 
 		$sql = $sb->build();
 		is( 'DELETE FROM member  WHERE foo = \'123\'' , $sql );
 
-		$sb->configure('placeholder','named');
+		$sb->driver->configure('placeholder','named');
 		$sql = $sb->buildDelete();
 		is( 'DELETE FROM member  WHERE foo = :foo' , $sql );
 	}
@@ -51,9 +60,10 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 	function testUpdate()
 	{
 		$sb = new CRUDBuilder('member');
-		$sb->configure('driver','mysql');
-		$sb->configure('trim',true);
-		$sb->configure('placeholder','named');
+        $sb->driver = new Driver;
+		$sb->driver->configure('driver','mysql');
+		$sb->driver->configure('trim',true);
+		$sb->driver->configure('placeholder','named');
 		$sb->where(array( 
 			'cond1' => ':blah',
 		));
@@ -61,7 +71,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 		$sql = $sb->buildUpdate();
 		is( 'UPDATE member SET set1 = :set1 WHERE cond1 = :cond1' , $sql );
 
-		$sb->configure('placeholder',false);
+		$sb->driver->configure('placeholder',false);
 		$sql = $sb->buildUpdate();
         is( 'UPDATE member SET set1 = \'value1\' WHERE cond1 = \':blah\'' , $sql );
 	}
@@ -69,8 +79,9 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 	function testSelect()
 	{
 		$sb = new CRUDBuilder('member');
-		$sb->configure('driver','mysql');
-		$sb->configure('trim',true);
+        $sb->driver = new Driver;
+		$sb->driver->configure('driver','mysql');
+		$sb->driver->configure('trim',true);
 		$sb->select( '*' );
 
 		ok( $sb );
@@ -80,7 +91,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
 		is( 'SELECT * FROM member' , trim($sql));
 
-		$sb->configure('placeholder','named');
+		$sb->driver->configure('placeholder','named');
 		$sb->where(array(
 			'foo' => ':foo',
 	   	));
