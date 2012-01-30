@@ -19,7 +19,7 @@ $driver->configure('escaper',array($pg,'escape'));
 $driver->configure('escaper',array($pdo,'quote'));
 ```
 
-## Configure database driver for `postgresql`:
+### Configure database driver for postgresql
 
 ```php
 <?php
