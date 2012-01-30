@@ -47,7 +47,10 @@ Or question-mark style for mysqli:
 
     insert into table (foo ,bar ) values (?,?);
 
-## Select
+
+## CRUD SQL Generation
+
+### Select
 
 CRUD SQL Builder for table 'Member':
 
@@ -84,7 +87,7 @@ Do Select
 `Condition->back()` returns CRUD SQL builder object
 
 
-## Insert
+### Insert
 
 Do insertion:
 
@@ -105,7 +108,7 @@ The last, build SQL:
 
     $sql = $sqlbuilder->build();
 
-## Update
+### Update
 
     $sb = new CRUDBuilder('member');
     $sb->driver = new Driver;
@@ -119,7 +122,7 @@ The last, build SQL:
 
     $sql = $sb->build();
 
-## Join
+### Join
 
     $sb = new CRUDBuilder('Member');
     $sb->alias('m')
@@ -131,7 +134,7 @@ The last, build SQL:
             ->toSql();
 
 
-## Delete
+### Delete
 
     $sb = new CRUDBuilder('member');
     $sb->driver = new Driver;
@@ -143,3 +146,12 @@ The last, build SQL:
     $sb->where()->equal('foo',123);
 
     $sql = $sb->build();  // DELETE FROM member  WHERE foo = 123
+
+## Development
+
+`PHPUnit_TestMore` is needed.
+
+    curl -s http://install.onionphp.org/ | sh
+    onion -d bundle
+    phpunit tests
+
