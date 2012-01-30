@@ -51,8 +51,11 @@ Or question-mark style for mysqli:
 
 CRUD SQL Builder for table 'Member':
 
-    $sqlbuilder = new SQLBuilder('Member');
-    $sqlbuilder->driver = $driver;
+```php
+<?php
+$sqlbuilder = new SQLBuilder('Member');
+$sqlbuilder->driver = $driver;
+```
 
 Do Select
 
