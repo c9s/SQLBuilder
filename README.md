@@ -100,4 +100,15 @@ The last, build SQL:
 
     $sql = $sqlbuilder->build();
 
+## Delete
 
+    $sb = new CRUDBuilder('member');
+    $sb->driver = new Driver;
+    $sb->driver->configure('driver','mysql');
+    $sb->driver->configure('trim',true);
+    $sb->delete();
+    $sb->whereFromArgs(array( 'foo' => '123' ));
+
+    $sb->where()->equal('foo',123);
+
+    $sql = $sb->build();  // DELETE FROM member  WHERE foo = '123'
