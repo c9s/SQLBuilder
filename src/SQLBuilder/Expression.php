@@ -108,8 +108,8 @@ class Expression
     public function back()
     {
         $p = $this;
-        while( $p = $p->parent ) {
-            if( ! $p->parent )
+        while( property_exists($p,'parent') && $p = $p->parent ) {
+            if( ! property_exists($p,'parent') || ! $p->parent )
                 return $p;
         }
     }

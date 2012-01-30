@@ -100,6 +100,14 @@ The last, build SQL:
 
     $sql = $sqlbuilder->build();
 
+## Do Join
+
+    $sb = new CRUDBuilder('Member');
+    $sb->alias('m')
+        ->join('table_name')
+            ->alias('t')
+            ->on()->equal( 't.zzz', array('m.ccc') );
+
 ## Delete
 
     $sb = new CRUDBuilder('member');
