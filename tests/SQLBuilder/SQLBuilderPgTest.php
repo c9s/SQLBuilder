@@ -8,124 +8,124 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 {
 
 
-	function testInsert()
-	{
+    function testInsert()
+    {
         $driver = new Driver;
-		$driver->configure('driver','postgresql');
-		$driver->configure('quote_table',true);
-		$driver->configure('quote_column',true);
-		$driver->configure('trim',true);
-		$driver->configure('placeholder','named');
+        $driver->configure('driver','postgresql');
+        $driver->configure('quote_table',true);
+        $driver->configure('quote_column',true);
+        $driver->configure('trim',true);
+        $driver->configure('placeholder','named');
 
 
-		$sb = new CRUDBuilder('Member');
+        $sb = new CRUDBuilder('Member');
         $sb->driver = $driver;
 
-		$sb->insert(array(
-			'foo' => 'foo',
-			'bar' => 'bar',
-		));
-		$sql = $sb->build();
-		is( 'INSERT INTO "Member" ( "foo","bar") VALUES (:foo,:bar)' , $sql );
+        $sb->insert(array(
+            'foo' => 'foo',
+            'bar' => 'bar',
+        ));
+        $sql = $sb->build();
+        is( 'INSERT INTO "Member" ( "foo","bar") VALUES (:foo,:bar)' , $sql );
 
-		$driver->configure('placeholder',false);
-		$sb->insert(array(
-			'foo' => 'foo',
-			'bar' => 'bar',
-		));
-		$sql = $sb->build();
-		is( 'INSERT INTO "Member" ( "foo","bar") VALUES (\'foo\',\'bar\')' , $sql );
+        $driver->configure('placeholder',false);
+        $sb->insert(array(
+            'foo' => 'foo',
+            'bar' => 'bar',
+        ));
+        $sql = $sb->build();
+        is( 'INSERT INTO "Member" ( "foo","bar") VALUES (\'foo\',\'bar\')' , $sql );
 
-		$driver->configure('placeholder',true);
-		$sql = $sb->build();
-		is( 'INSERT INTO "Member" ( "foo","bar") VALUES (?,?)' , $sql );
-	}
+        $driver->configure('placeholder',true);
+        $sql = $sb->build();
+        is( 'INSERT INTO "Member" ( "foo","bar") VALUES (?,?)' , $sql );
+    }
 
-	function testDelete()
-	{
+    function testDelete()
+    {
         $driver = new Driver;
-		$driver->configure('driver','postgresql');
-		$driver->configure('trim',true);
-		$driver->configure('quote_table',true);
-		$driver->configure('quote_column',true);
+        $driver->configure('driver','postgresql');
+        $driver->configure('trim',true);
+        $driver->configure('quote_table',true);
+        $driver->configure('quote_column',true);
 
-		$sb = new CRUDBuilder('Member');
+        $sb = new CRUDBuilder('Member');
         $sb->driver = $driver;
-		$sb->delete();
-		$sb->whereFromArgs(array( 'foo' => '123' ));
+        $sb->delete();
+        $sb->whereFromArgs(array( 'foo' => '123' ));
 
-		$sql = $sb->build();
-		is( 'DELETE FROM "Member"  WHERE "foo" = \'123\'' , $sql );
+        $sql = $sb->build();
+        is( 'DELETE FROM "Member"  WHERE "foo" = \'123\'' , $sql );
 
-		$driver->configure('placeholder','named');
-		$sql = $sb->buildDelete();
-		is( 'DELETE FROM "Member"  WHERE "foo" = :foo' , $sql );
-	}
+        $driver->configure('placeholder','named');
+        $sql = $sb->buildDelete();
+        is( 'DELETE FROM "Member"  WHERE "foo" = :foo' , $sql );
+    }
 
-	function testUpdate()
-	{
+    function testUpdate()
+    {
         $d = new Driver;
-		$d->configure('driver','postgresql');
-		$d->configure('quote_table',true);
-		$d->configure('quote_column',true);
-		$d->configure('trim',true);
-		$d->configure('placeholder','named');
+        $d->configure('driver','postgresql');
+        $d->configure('quote_table',true);
+        $d->configure('quote_column',true);
+        $d->configure('trim',true);
+        $d->configure('placeholder','named');
 
-		$sb = new CRUDBuilder('Member');
+        $sb = new CRUDBuilder('Member');
         $sb->driver = $d;
-		$sb->whereFromArgs(array( 
-			'cond1' => ':blah',
-		));
-		$sb->update( array( 'set1' => 'value1') );
-		$sql = $sb->buildUpdate();
-		is( 'UPDATE "Member" SET "set1" = :set1 WHERE "cond1" = :cond1' , $sql );
+        $sb->whereFromArgs(array( 
+            'cond1' => ':blah',
+        ));
+        $sb->update( array( 'set1' => 'value1') );
+        $sql = $sb->buildUpdate();
+        is( 'UPDATE "Member" SET "set1" = :set1 WHERE "cond1" = :cond1' , $sql );
 
-		$d->configure('placeholder',false);
-		$sql = $sb->buildUpdate();
+        $d->configure('placeholder',false);
+        $sql = $sb->buildUpdate();
         is( 'UPDATE "Member" SET "set1" = \'value1\' WHERE "cond1" = \':blah\'' , $sql );
-	}
+    }
 
-	function testSelect()
-	{
+    function testSelect()
+    {
         $d = new Driver;
-		$d->configure('driver','postgresql');
-		$d->configure('quote_table',true);
-		$d->configure('quote_column',true);
-		$d->configure('trim',true);
+        $d->configure('driver','postgresql');
+        $d->configure('quote_table',true);
+        $d->configure('quote_column',true);
+        $d->configure('trim',true);
 
-		$sb = new CRUDBuilder('Member');
+        $sb = new CRUDBuilder('Member');
         $sb->driver = $d;
-		$sb->select( '*' );
+        $sb->select( '*' );
 
-		ok( $sb );
+        ok( $sb );
 
-		$sql = $sb->build();
-		ok( $sql );
+        $sql = $sb->build();
+        ok( $sql );
 
-		is( 'SELECT * FROM "Member"' , trim($sql));
+        is( 'SELECT * FROM "Member"' , trim($sql));
 
-		$d->configure('placeholder','named');
-		$sb->whereFromArgs(array(
-			'foo' => ':foo',
-	   	));
+        $d->configure('placeholder','named');
+        $sb->whereFromArgs(array(
+            'foo' => ':foo',
+        ));
 
-		$sql = $sb->build();
-		is( 'SELECT * FROM "Member"  WHERE "foo" = :foo' , $sql );
+        $sql = $sb->build();
+        is( 'SELECT * FROM "Member"  WHERE "foo" = :foo' , $sql );
 
-		$sb->select(array('COUNT(*)'));
+        $sb->select(array('COUNT(*)'));
 
-		$sql = $sb->build();
-		is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo' , $sql );
+        $sql = $sb->build();
+        is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo' , $sql );
 
-		$sb->limit(10);
+        $sb->limit(10);
 
-		$sql = $sb->build();
-		is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10' ,$sql );
+        $sql = $sb->build();
+        is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10' ,$sql );
 
-		$sb->offset(20);
+        $sb->offset(20);
 
-		$sql = $sb->build();
-		is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10 OFFSET 20' ,$sql );
+        $sql = $sb->build();
+        is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10 OFFSET 20' ,$sql );
 
-	}
+    }
 }
