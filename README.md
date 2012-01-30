@@ -61,7 +61,7 @@ Do Select
 
 ```php
 <?php
-    $sqlbuilder->select('*')
+    $sql = $sqlbuilder->select('*')
         ->where()
             ->equal( 'a' , 'bar' )   // a = 'bar'
             ->notEqual( 'a' , 'bar' )   // a != 'bar'
@@ -111,8 +111,10 @@ The last, build SQL:
     $sb->alias('m')
         ->join('table_name')
             ->alias('t')
-            ->on()->equal( 't.zzz', array('m.ccc') )
-            ->back()->toSql();
+            ->on()->equal( 't.zzz', array('m.ccc') )        // not to escape string (with array())
+            ->on()->equal( 'a.foo', 'string' )              // treat as string, escape string
+            ->back()          // go back to SqlBuilder object.
+            ->toSql();
 
 ## Delete
 
