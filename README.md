@@ -50,6 +50,8 @@ Or question-mark style:
 $driver->configure('placeholder',true);
 ```
 
+This generates:
+
     INSERT INTO table (foo ,bar ) values (?,?);
 
 
