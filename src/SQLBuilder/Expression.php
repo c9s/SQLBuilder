@@ -134,7 +134,6 @@ class Expression
         return $sql;
     }
 
-
     public function __toString()
     {
 

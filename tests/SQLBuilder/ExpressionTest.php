@@ -44,6 +44,14 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         is( "a = 'foo' OR b = 'bar'", $expr->inflate() );
     }
 
+    public function testOp5()
+    {
+        $expr = $this->createExpr();
+        $expr->isEqual( 'a' , array("format('2011-12-11')") )
+            ->or()->isEqual( 'b', 'bar' );
+        is( "a = format('2011-12-11') OR b = 'bar'", $expr->inflate() );
+    }
+
 
 
 }
