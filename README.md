@@ -4,27 +4,40 @@ SQL Builder for generating CRUD SQL
 
 get your SQL driver
 
-    $driver = new SQLBuilder\Driver('postgresql');
-    $driver = SQLBuilder\Driver::getInstance();
-    $driver = SQLBuilder\Driver::create('postgresql');
+```php
+<?php
+$driver = new SQLBuilder\Driver('postgresql');
+$driver = SQLBuilder\Driver::getInstance();
+$driver = SQLBuilder\Driver::create('postgresql');
+```
 
 ### Configure Driver escaper
 
-    $driver->configure('escaper',array($pg,'escape'));
-
-    $driver->configure('escaper',array($pdo,'quote'));
+```php
+<?php
+$driver->configure('escaper',array($pg,'escape'));
+$driver->configure('escaper',array($pdo,'quote'));
 
 ## Configure database driver for `postgresql`:
 
-    $driver->configure('driver','postgresql');
+```php
+<?php
+$driver->configure('driver','postgresql');
+```
 
 Trim spaces for SQL ? 
 
-    $driver->configure('trim',true);
+```php
+<?php
+$driver->configure('trim',true);
+```
 
 Place holder style ? named-parameter is supported by POD:
 
-    $driver->configure('placeholder','named');
+```php
+<?php
+$driver->configure('placeholder','named');
+```
 
 This generates SQL with named-parameter for PDO:
 
@@ -42,6 +55,8 @@ CRUD SQL Builder for table 'Member':
 
 Do Select
 
+```php
+<?php
     $sqlbuilder->select('*')
         ->where()
             ->equal( 'a' , 'bar' )   // a = 'bar'
@@ -58,6 +73,7 @@ Do Select
             ->ungroup()
             ->back()                  // back to sql builder
             ->build();
+```
 
 `where()` returns Condition builder object.
 
