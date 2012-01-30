@@ -101,11 +101,18 @@ class Expression
         }
     }
 
+
+    /**
+     * back to top parent 
+     */
     public function back()
     {
-        return $this->parent;
+        $p = $this;
+        while( $p = $p->parent ) {
+            if( ! $p->parent )
+                return $p;
+        }
     }
-
 
     public function __call($method,$args)
     {

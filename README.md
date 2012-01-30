@@ -59,7 +59,6 @@ Do Select
 
 `Condition->back()` returns SQL builder object
 
-
 ## Insert
 
 Do insertion:

@@ -70,6 +70,35 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         is( "content like '%aaa%'", $expr->inflate() );
     }
 
+    public function testToString()
+    {
+        $expr = $this->createExpr();
+        $expr->like( 'content' , '%aaa%' );
+        $backExpr = $expr->group()
+            ->equal( 'a' , 'b' )
+            ->equal( 'c' , 'd' )
+            ->ungroup()
+            ->or()->equal( 'name' , 'foo' )
+            ->or()->equal( 'name' , 'bar' )
+            ->back();
+        is( $backExpr , $expr );
+        is( "content like '%aaa%' AND (a = 'b' AND c = 'd') OR name = 'foo' OR name = 'bar'", $expr . '' );
+
+    }
+
+    public function testBack()
+    {
+        $expr = $this->createExpr();
+        $expr->like( 'content' , '%aaa%' );
+        $sql = $expr->group()
+            ->equal( 'a' , 'b' )
+            ->equal( 'c' , 'd' )
+            ->ungroup()
+            ->or()->equal( 'name' , 'foo' )
+            ->or()->equal( 'name' , 'bar' )
+            ->back()->inflate();
+        is( "content like '%aaa%' AND (a = 'b' AND c = 'd') OR name = 'foo' OR name = 'bar'", $sql );
+    }
 
     public function testGroup()
     {
