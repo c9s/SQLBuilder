@@ -76,6 +76,26 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
         is( 'UPDATE member SET set1 = \'value1\' WHERE cond1 = \':blah\'' , $sql );
     }
 
+    function testSelectWithJoin()
+    {
+        $sb = new CRUDBuilder('member');
+        $sb->driver = new Driver;
+        $sb->driver->configure('driver','mysql');
+        $sb->driver->configure('trim',true);
+        $sb->select( '*' );
+
+        $sb->alias('m');
+        $back = $sb->join('tweets')
+            ->alias('t')
+            ->on()->equal('t.member_id',array('m.id'))->back();
+
+        ok($back);
+        is($back,$sb);
+
+        $sql = $sb->build();
+        is("SELECT * FROM member m  LEFT JOIN tweets t ON t.member_id = m.id", $sql );
+    }
+
     function testSelect()
     {
         $sb = new CRUDBuilder('member');

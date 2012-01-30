@@ -32,6 +32,12 @@ class CRUDBuilder
      * */
     public $table;
 
+
+    /**
+     * table alias
+     */
+    public $alias;
+
     /** 
      * limit 
      * 
@@ -45,6 +51,9 @@ class CRUDBuilder
      * @var integer
      * */
     public $offset;
+
+
+    public $joinExpr = array();
 
     /**
      * Should return result when updating or inserting?
@@ -101,12 +110,18 @@ class CRUDBuilder
      * quotes can be used in postgresql:
      *     select * from "table_name";
      */
-    public function getTableName()
+    public function getTableSql()
     {
+        $sql = '';
         if( $this->driver->quoteTable ) {
-            return '"' . $this->table . '"';
+            $sql = '"' . $this->table . '"';
+        } else {
+            $sql = $this->table;
         }
-        return $this->table;
+
+        if( $this->alias )
+            $sql .= ' ' . $this->alias;
+        return $sql;
     }
 
 
@@ -177,7 +192,20 @@ class CRUDBuilder
     }
 
 
+    public function alias($alias)
+    {
+        $this->alias = $alias;
+        return $this;
+    }
 
+
+    public function join($table,$type = 'LEFT')
+    {
+        $this->joinExpr[] = $expr = new JoinExpression($table,$type);
+        $expr->driver = $this->driver;
+        $expr->parent = $this;
+        return $expr;
+    }
 
     /*** condition methods ***/
 
@@ -240,7 +268,7 @@ class CRUDBuilder
      *************************/
     public function buildDelete()
     {
-        $sql = 'DELETE FROM ' . $this->getTableName() . ' ';
+        $sql = 'DELETE FROM ' . $this->getTableSql() . ' ';
         $sql .= $this->buildConditionSql();
         $sql .= $this->buildLimitSql();
         if( $this->driver->trim )
@@ -251,9 +279,14 @@ class CRUDBuilder
 
     public function buildUpdate()
     {
-        $sql = 'UPDATE ' . $this->getTableName() . ' SET ';
+        $sql = 'UPDATE ' . $this->getTableSql() . ' SET ';
+
         $sql .= $this->buildSetterSql();
+
+        $sql .= $this->buildJoinSql();
+
         $sql .= $this->buildConditionSql();
+
         $sql .= $this->buildLimitSql();
         if( $this->driver->trim )
             return trim($sql);
@@ -269,7 +302,9 @@ class CRUDBuilder
         /* check required arguments */
         $sql = 'SELECT ' 
             . $this->buildSelectColumns()
-            . ' FROM ' . $this->getTableName() . ' ';
+            . ' FROM ' . $this->getTableSql() . ' ';
+
+        $sql .= $this->buildJoinSql();
 
         $sql .= $this->buildConditionSql();
 
@@ -310,7 +345,7 @@ class CRUDBuilder
             }
         }
 
-        $sql = ' INSERT INTO ' . $this->getTableName() . ' ( ';
+        $sql = ' INSERT INTO ' . $this->getTableSql() . ' ( ';
         $sql .= join(',',$columns) . ") VALUES (".  join(',', $values ) .")";
 
         if( $this->returning )
@@ -348,9 +383,14 @@ class CRUDBuilder
     }
 
 
-
-
-
+    protected function buildJoinSql()
+    {
+        $sql = '';
+        foreach( $this->joinExpr as $expr ) {
+            $sql .= $expr->inflate();
+        }
+        return $sql;
+    }
 
     protected function buildOrderSql()
     {
