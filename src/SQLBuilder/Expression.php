@@ -54,6 +54,33 @@ class Expression
         return $this->setCond(array( $c, 'like', $n ));
     }
 
+    public function greater($c,$n)
+    {
+        return $this->setCond(array( $c, '>', $n ));
+    }
+
+    public function less($c,$n)
+    {
+        return $this->setCond(array( $c, '<', $n ));
+    }
+
+    public function group($op = 'AND')
+    {
+        $subexpr = $this->createExpr($op);
+        $subexpr->isGroup = true;
+        return $subexpr;
+    }
+
+    public function ungroup()
+    {
+        return $this->parent;
+    }
+
+    public function back()
+    {
+        return $this->parent;
+    }
+
 
     public function __call($method,$args)
     {
@@ -88,30 +115,12 @@ class Expression
         return $this->createExpr('OR');
     }
 
-    public function group($op = 'AND')
-    {
-        $subexpr = $this->createExpr($op);
-        $subexpr->isGroup = true;
-        return $subexpr;
-    }
-
-    public function ungroup()
-    {
-        return $this->parent;
-    }
-
-    public function back()
-    {
-        if( $this->driver )
-            return $this->driver;
-        return $this->parent;
-    }
 
     public function inflate()
     {
         $sql = '';
 
-        if( $this->parent )
+        if( $this->parentOp )
             $sql .= $this->parentOp . ' ';
 
         if( $this->isGroup )
@@ -132,6 +141,8 @@ class Expression
 		else {
             if( is_array($v) ) {
                 $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
+            } elseif( is_integer($v) ) {
+                $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v;
             } else {
                 $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
                     . '\'' 
@@ -151,7 +162,7 @@ class Expression
 
     public function __toString()
     {
-
+        return $this->inflate();
     }
 
 }
