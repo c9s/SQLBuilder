@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-01-30</date>
-  <time>18:40:50</time>
+  <time>18:42:38</time>
   <version>
     <release>0.0.1</release>
     <api>0.0.1</api>
@@ -31,6 +31,8 @@
       <file name="src/SQLBuilder/CRUDBuilder.php" role="php" md5sum="285a6363adfc8e53d568b9100c992dea"/>
       <file name="src/SQLBuilder/Driver.php" role="php" md5sum="c720a431523a3952c4563a3da17d27b6"/>
       <file name="src/SQLBuilder/Expression.php" role="php" md5sum="06a997c234f151484844d2157c41497f"/>
+      <file name="package.ini" role="data" md5sum="f4b3094a544f8778f52e9af19e880479"/>
+      <file name="phpunit.xml" role="data" md5sum="2ee1e3da4f5996998677644263e528f4"/>
     </dir>
   </contents>
   <dependencies>
@@ -57,6 +59,8 @@
       <install name="src/SQLBuilder/CRUDBuilder.php" as="SQLBuilder/CRUDBuilder.php"/>
       <install name="src/SQLBuilder/Driver.php" as="SQLBuilder/Driver.php"/>
       <install name="src/SQLBuilder/Expression.php" as="SQLBuilder/Expression.php"/>
+      <install name="package.ini" as="package.ini"/>
+      <install name="phpunit.xml" as="phpunit.xml"/>
     </filelist>
   </phprelease>
 </package>
