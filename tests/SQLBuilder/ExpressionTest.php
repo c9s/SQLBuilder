@@ -14,21 +14,21 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
     {
         $expr = $this->createExpr();
         $expr->is( 'a' , 'null' )->is( 'b' , 'null' );
-        is( 'a is null AND b is null', $expr->inflate() );
+        is( 'a is null AND b is null', $expr->toSql() );
     }
 
     public function testOpIsNot()
     {
         $expr = $this->createExpr();
         $expr->isNot( 'a' , 'null' )->isNot( 'b' , 'null' );
-        is( 'a is not null AND b is not null', $expr->inflate() );
+        is( 'a is not null AND b is not null', $expr->toSql() );
     }
 
     public function testOpIsNot2()
     {
         $expr = $this->createExpr();
         $expr->isNot( 'a' , 'true' )->isNot( 'b' , 'true' );
-        is( 'a is not true AND b is not true', $expr->inflate() );
+        is( 'a is not true AND b is not true', $expr->toSql() );
     }
 
     public function testOpAnd()
@@ -36,7 +36,7 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         $expr = $this->createExpr();
         $expr->is( 'a' , 'null' )
             ->and()->is( 'b', 'null' );
-        is( 'a is null AND b is null', $expr->inflate() );
+        is( 'a is null AND b is null', $expr->toSql() );
     }
 
     public function testOpOr()
@@ -44,7 +44,7 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         $expr = $this->createExpr();
         $expr->is( 'a' , 'null' )
             ->or()->is( 'b', 'null' );
-        is( 'a is null OR b is null', $expr->inflate() );
+        is( 'a is null OR b is null', $expr->toSql() );
     }
 
     public function testOpEqual()
@@ -52,7 +52,7 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         $expr = $this->createExpr();
         $expr->equal( 'a' , 'foo' )
             ->or()->equal( 'b', 'bar' );
-        is( "a = 'foo' OR b = 'bar'", $expr->inflate() );
+        is( "a = 'foo' OR b = 'bar'", $expr->toSql() );
     }
 
     public function testOpWithSqlFunction()
@@ -60,14 +60,14 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         $expr = $this->createExpr();
         $expr->equal( 'a' , array("format('2011-12-11')") )
             ->or()->equal( 'b', 'bar' );
-        is( "a = format('2011-12-11') OR b = 'bar'", $expr->inflate() );
+        is( "a = format('2011-12-11') OR b = 'bar'", $expr->toSql() );
     }
 
     public function testLike()
     {
         $expr = $this->createExpr();
         $expr->like( 'content' , '%aaa%' );
-        is( "content like '%aaa%'", $expr->inflate() );
+        is( "content like '%aaa%'", $expr->toSql() );
     }
 
     public function testToString()
@@ -96,7 +96,7 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
             ->ungroup()
             ->or()->equal( 'name' , 'foo' )
             ->or()->equal( 'name' , 'bar' )
-            ->back()->inflate();
+            ->back()->toSql();
         is( "content like '%aaa%' AND (a = 'b' AND c = 'd') OR name = 'foo' OR name = 'bar'", $sql );
     }
 
@@ -109,7 +109,7 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
             ->equal( 'c' , 'd' )
             ->ungroup()
                 ->and()->is( 'name' , 'null' );
-        is( "content like '%aaa%' AND (a = 'b' AND c = 'd') AND name is null", $expr->inflate() );
+        is( "content like '%aaa%' AND (a = 'b' AND c = 'd') AND name is null", $expr->toSql() );
     }
 
     public function testSimpleGroup()
@@ -119,7 +119,7 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
             ->equal( 'a' , 'b' )
             ->equal( 'c' , 'd' )
             ->ungroup();
-        is( " (a = 'b' AND c = 'd')", $expr->inflate() );
+        is( " (a = 'b' AND c = 'd')", $expr->toSql() );
     }
 
     public function testDoubleGroup()
@@ -133,7 +133,7 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
                 ->equal( 'c' , 'c' )
                 ->equal( 'd' , 'd' )
             ->ungroup();
-        is( " (a = 'a' AND b = 'b') AND (c = 'c' AND d = 'd')", $expr->inflate() );
+        is( " (a = 'a' AND b = 'b') AND (c = 'c' AND d = 'd')", $expr->toSql() );
     }
 
     public function testGroup2()
@@ -148,28 +148,28 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
                 ->equal( 'name' , 'Mary' )
                 ->equal( 'address' , 'Taipei' )
             ->ungroup();
-        is( "content like '%aaa%' AND (a = 'b' AND c = 'd') OR (name = 'Mary' AND address = 'Taipei')", $expr->inflate() );
+        is( "content like '%aaa%' AND (a = 'b' AND c = 'd') OR (name = 'Mary' AND address = 'Taipei')", $expr->toSql() );
     }
 
     public function testGreater()
     {
         $expr = $this->createExpr();
         $expr->greater( 'a', 123 );
-        is( "a > 123", $expr->inflate() );
+        is( "a > 123", $expr->toSql() );
     }
 
     public function testGreaterWithString()
     {
         $expr = $this->createExpr();
         $expr->greater( 'date', '2011-01-01' );
-        is( "date > '2011-01-01'", $expr->inflate() );
+        is( "date > '2011-01-01'", $expr->toSql() );
     }
 
     public function testGreaterWithSqlFunction()
     {
         $expr = $this->createExpr();
         $expr->greater( 'date', array("format('2011-01-01')") );
-        is( "date > format('2011-01-01')", $expr->inflate() );
+        is( "date > format('2011-01-01')", $expr->toSql() );
     }
 
 

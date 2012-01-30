@@ -387,7 +387,7 @@ class CRUDBuilder
     {
         $sql = '';
         foreach( $this->joinExpr as $expr ) {
-            $sql .= $expr->inflate();
+            $sql .= $expr->toSql();
         }
         return $sql;
     }
@@ -460,7 +460,7 @@ class CRUDBuilder
     protected function buildConditionSql()
     {
         if( $this->where )
-            return ' WHERE ' . $this->where->inflate();
+            return ' WHERE ' . $this->where->toSql();
         return '';
     }
 

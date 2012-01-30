@@ -135,7 +135,7 @@ class Expression
     }
 
 
-    public function inflate()
+    public function toSql()
     {
         $sql = '';
 
@@ -171,7 +171,7 @@ class Expression
 
         if( $this->childs ) {
             foreach( $this->childs as $child ) {
-                $sql .= ' '. $child->inflate();
+                $sql .= ' '. $child->toSql();
             }
         }
 
@@ -180,7 +180,7 @@ class Expression
 
     public function __toString()
     {
-        return $this->inflate();
+        return $this->toSql();
     }
 
 }

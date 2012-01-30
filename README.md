@@ -106,7 +106,8 @@ The last, build SQL:
     $sb->alias('m')
         ->join('table_name')
             ->alias('t')
-            ->on()->equal( 't.zzz', array('m.ccc') );
+            ->on()->equal( 't.zzz', array('m.ccc') )
+            ->back()->toSql();
 
 ## Delete
 
