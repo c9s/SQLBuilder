@@ -47,10 +47,9 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
         $sb->driver->configure('driver','mysql');
         $sb->driver->configure('trim',true);
         $sb->delete();
-        $sb->whereFromArgs(array( 'foo' => '123' ));
-
+        $sb->whereFromArgs(array( 'foo' => 'string' ));
         $sql = $sb->build();
-        is( 'DELETE FROM member  WHERE foo = \'123\'' , $sql );
+        is( 'DELETE FROM member  WHERE foo = \'string\'' , $sql );
 
         $sb->driver->configure('placeholder','named');
         $sql = $sb->buildDelete();

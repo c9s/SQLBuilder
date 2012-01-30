@@ -142,4 +142,4 @@ The last, build SQL:
 
     $sb->where()->equal('foo',123);
 
-    $sql = $sb->build();  // DELETE FROM member  WHERE foo = '123'
+    $sql = $sb->build();  // DELETE FROM member  WHERE foo = 123
