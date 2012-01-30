@@ -49,8 +49,8 @@ Do Select
             ->or()->less( 'a' , 123 )
                 ->and()->like( 'content' , '%content%' );
             ->group()             and ( a = 123 or b != 123 )
-                ->is( ... )
-                ->not( ... )             
+                ->is( 'a' , 123 )
+                ->isNot( 'b', 123 )             
             ->ungroup()
             ->back()                  // back to sql builder
             ->build();

@@ -17,6 +17,20 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         is( 'a is null AND b is null', $expr->inflate() );
     }
 
+    public function testOpIsNot()
+    {
+        $expr = $this->createExpr();
+        $expr->isNot( 'a' , 'null' )->isNot( 'b' , 'null' );
+        is( 'a is not null AND b is not null', $expr->inflate() );
+    }
+
+    public function testOpIsNot2()
+    {
+        $expr = $this->createExpr();
+        $expr->isNot( 'a' , 'true' )->isNot( 'b' , 'true' );
+        is( 'a is not true AND b is not true', $expr->inflate() );
+    }
+
     public function testOpAnd()
     {
         $expr = $this->createExpr();
@@ -56,6 +70,7 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         is( "content like '%aaa%'", $expr->inflate() );
     }
 
+
     public function testGroup()
     {
         $expr = $this->createExpr();
@@ -65,7 +80,46 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
             ->equal( 'c' , 'd' )
             ->ungroup()
                 ->and()->is( 'name' , 'null' );
-        is( "content like '%aaa%' AND (a = 'b' AND name is null)", $expr->inflate() );
+        is( "content like '%aaa%' AND (a = 'b' AND c = 'd') AND name is null", $expr->inflate() );
+    }
+
+    public function testSimpleGroup()
+    {
+        $expr = $this->createExpr();
+        $expr->group()
+            ->equal( 'a' , 'b' )
+            ->equal( 'c' , 'd' )
+            ->ungroup();
+        is( " (a = 'b' AND c = 'd')", $expr->inflate() );
+    }
+
+    public function testDoubleGroup()
+    {
+        $expr = $this->createExpr();
+        $expr->group()
+                ->equal( 'a' , 'a' )
+                ->equal( 'b' , 'b' )
+            ->ungroup()
+            ->group()
+                ->equal( 'c' , 'c' )
+                ->equal( 'd' , 'd' )
+            ->ungroup();
+        is( " (a = 'a' AND b = 'b') AND (c = 'c' AND d = 'd')", $expr->inflate() );
+    }
+
+    public function testGroup2()
+    {
+        $expr = $this->createExpr();
+        $expr->like( 'content' , '%aaa%' );
+        $expr->group()
+                ->equal( 'a' , 'b' )
+                ->equal( 'c' , 'd' )
+            ->ungroup()
+            ->group('OR')
+                ->equal( 'name' , 'Mary' )
+                ->equal( 'address' , 'Taipei' )
+            ->ungroup();
+        is( "content like '%aaa%' AND (a = 'b' AND c = 'd') OR (name = 'Mary' AND address = 'Taipei')", $expr->inflate() );
     }
 
     public function testGreater()
