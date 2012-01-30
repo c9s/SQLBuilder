@@ -15,10 +15,25 @@ class JoinExpressionTest extends PHPUnit_Framework_TestCase
         ok( $expr );
 
         $expr->alias('u')
-            ->on()->equal( 'a' , array('b') );
+            ->on()
+            ->equal( 'a' , array('b') );
 
         $sql = $expr->inflate();
-        is(" LEFT JOIN users u ON a = b" , $sql );
+        is(" LEFT JOIN users u ON (a = b)" , $sql );
+    }
+
+    public function test2()
+    {
+        $expr = $this->createExpr();
+        ok( $expr );
+
+        $expr->alias('u')
+            ->on()
+            ->equal( 'a' , array('a') )
+            ->equal( 'c' , array('c') );
+
+        $sql = $expr->inflate();
+        is(" LEFT JOIN users u ON (a = a AND c = c)" , $sql );
     }
 }
 

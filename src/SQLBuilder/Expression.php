@@ -1,26 +1,6 @@
 <?php
 namespace SQLBuilder;
 
-class ExpressionGroup extends Expression
-{
-    public function inflate()
-    {
-        $sql = '';
-        if( $this->parentOp )
-            $sql .= $this->parentOp . ' ';
-
-        $sql .= '(';
-        if( $this->childs ) {
-            foreach( $this->childs as $child ) {
-                $sql .= $child->inflate();
-            }
-        }
-        $sql .= ')';
-        return $sql;
-    }
-
-}
-
 class Expression
 {
     public $driver;
@@ -33,9 +13,6 @@ class Expression
 
     /* op code connects to parent expression */
     public $parentOp;
-
-    /* is group ? ( ) */
-    public $isGroup;
 
     public $cond;
 
@@ -132,7 +109,6 @@ class Expression
         $subexpr = new ExpressionGroup;
         $subexpr->parent = $this;
         $subexpr->parentOp = $op;
-
         $subexpr->driver = $this->driver;
         $this->childs[] = $subexpr;
         return $subexpr;
