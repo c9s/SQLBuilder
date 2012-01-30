@@ -52,6 +52,7 @@ Or question-mark style for mysqli:
 CRUD SQL Builder for table 'Member':
 
     $sqlbuilder = new SQLBuilder('Member');
+    $sqlbuilder->driver = $driver;
 
 Do Select
 
@@ -78,6 +79,7 @@ Do Select
 `where()` returns Condition builder object.
 
 `Condition->back()` returns SQL builder object
+
 
 ## Insert
 
