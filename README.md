@@ -41,11 +41,16 @@ $driver->configure('placeholder','named');
 
 This generates SQL with named-parameter for PDO:
 
-    insert into table (foo ,bar ) values (:foo, :bar);
+    INSERT INTO table (foo ,bar ) values (:foo, :bar);
 
-Or question-mark style for mysqli:
+Or question-mark style:
 
-    insert into table (foo ,bar ) values (?,?);
+```php
+<?php
+$driver->configure('placeholder',true);
+```
+
+    INSERT INTO table (foo ,bar ) values (?,?);
 
 
 ## CRUD SQL Generation
