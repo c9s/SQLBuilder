@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.4.10" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0        http://pear.php.net/dtd/tasks-1.0.xsd        http://pear.php.net/dtd/package-2.0        http://pear.php.net/dtd/package-2.0.xsd">
   <name>SQLBuilder</name>
-  <channel/>
+  <channel>pear.corneltek.com</channel>
   <summary>SQL Builder</summary>
   <description>SQL Builder</description>
   <lead>
@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-01-20</date>
-  <time>21:51:54</time>
+  <date>2012-01-30</date>
+  <time>18:40:25</time>
   <version>
     <release>0.0.1</release>
     <api>0.0.1</api>
@@ -24,12 +24,23 @@
   <notes>-</notes>
   <contents>
     <dir name="/">
-      <file name="tests/SQLBuilder/SQLBuilderTest.php" role="test" md5sum="7871ecabeaeebdf264e757c4749cfb4e"/>
-      <file name="src/SQLBuilder/SQLBuilder.php" role="php" md5sum="edbbc49362392ede1c1ed673c23c3956"/>
+      <file name="tests/bootstrap.php" role="test" md5sum="87205cc5359c177e037b3e3476283da1"/>
+      <file name="tests/SQLBuilder/ExpressionTest.php" role="test" md5sum="daf1ee45c4ecc28dadd549854940b66a"/>
+      <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="8c8c98992f434c0b0409c072395f718d"/>
+      <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="f219f645b65ffcaf181d3d27965b559c"/>
+      <file name="src/SQLBuilder/CRUDBuilder.php" role="php" md5sum="285a6363adfc8e53d568b9100c992dea"/>
+      <file name="src/SQLBuilder/Driver.php" role="php" md5sum="c720a431523a3952c4563a3da17d27b6"/>
+      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="06a997c234f151484844d2157c41497f"/>
     </dir>
   </contents>
   <dependencies>
     <required>
+      <php>
+        <min>5.3</min>
+      </php>
+      <pearinstaller>
+        <min>1.4</min>
+      </pearinstaller>
       <package>
         <name>Universal</name>
         <channel>pear.corneltek.com</channel>
@@ -39,8 +50,13 @@
   </dependencies>
   <phprelease>
     <filelist>
-      <install name="tests/SQLBuilder/SQLBuilderTest.php" as="SQLBuilder/SQLBuilderTest.php"/>
-      <install name="src/SQLBuilder/SQLBuilder.php" as="SQLBuilder/SQLBuilder.php"/>
+      <install name="tests/bootstrap.php" as="bootstrap.php"/>
+      <install name="tests/SQLBuilder/ExpressionTest.php" as="SQLBuilder/ExpressionTest.php"/>
+      <install name="tests/SQLBuilder/SQLBuilderMySQLTest.php" as="SQLBuilder/SQLBuilderMySQLTest.php"/>
+      <install name="tests/SQLBuilder/SQLBuilderPgTest.php" as="SQLBuilder/SQLBuilderPgTest.php"/>
+      <install name="src/SQLBuilder/CRUDBuilder.php" as="SQLBuilder/CRUDBuilder.php"/>
+      <install name="src/SQLBuilder/Driver.php" as="SQLBuilder/Driver.php"/>
+      <install name="src/SQLBuilder/Expression.php" as="SQLBuilder/Expression.php"/>
     </filelist>
   </phprelease>
 </package>
