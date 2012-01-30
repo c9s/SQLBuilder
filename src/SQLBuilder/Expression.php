@@ -39,15 +39,19 @@ class Expression
         return $this->setCond( array( $c , 'is not' , array($n) ));
     }
 
-    public function isEqual($c,$n)
+    public function equal($c,$n)
     {
-        $this->setCond(array( $c , '=' , $n ));
-        return $this;
+        return $this->setCond(array( $c , '=' , $n ));
     }
 
-    public function isNotEqual($c,$n)
+    public function notEqual($c,$n)
     {
-        $this->setCond(array( $c, '!=' , $n ));
+        return $this->setCond(array( $c, '!=' , $n ));
+    }
+
+    public function like($c,$n)
+    {
+        return $this->setCond(array( $c, 'like', $n ));
     }
 
 
@@ -110,6 +114,9 @@ class Expression
         if( $this->parent )
             $sql .= $this->parentOp . ' ';
 
+        if( $this->isGroup )
+            $sql .= '(';
+
         list($k,$op,$v) = $this->cond;
 		if( $this->driver->placeholder ) {
             $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($k);
@@ -135,6 +142,9 @@ class Expression
 
         if( $this->child )
             $sql .= ' ' . $this->child->inflate();
+
+        if( $this->isGroup )
+            $sql .= ')';
 
         return $sql;
     }

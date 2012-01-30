@@ -4,12 +4,11 @@ SQL Builder for generating CRUD SQL
 
     $driver = new SQLBuilder\Driver;
 
-Configure escaper:
+### Configure escaper
 
     $driver->configure('escaper',array($pg,'escape'));
 
     $driver->configure('escaper',array($pdo,'quote'));
-
 
 Configure database driver for `postgresql`:
 

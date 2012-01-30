@@ -208,7 +208,7 @@ class CRUDBuilder
     {
         $expr = $this->where();
         foreach( $args as $k => $v ) {
-            $expr = $expr->isEqual( $k , $v );
+            $expr = $expr->equal( $k , $v );
         }
         return $this;
     }

@@ -36,17 +36,36 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
     public function testOp4()
     {
         $expr = $this->createExpr();
-        $expr->isEqual( 'a' , 'foo' )
-            ->or()->isEqual( 'b', 'bar' );
+        $expr->equal( 'a' , 'foo' )
+            ->or()->equal( 'b', 'bar' );
         is( "a = 'foo' OR b = 'bar'", $expr->inflate() );
     }
 
     public function testOp5()
     {
         $expr = $this->createExpr();
-        $expr->isEqual( 'a' , array("format('2011-12-11')") )
-            ->or()->isEqual( 'b', 'bar' );
+        $expr->equal( 'a' , array("format('2011-12-11')") )
+            ->or()->equal( 'b', 'bar' );
         is( "a = format('2011-12-11') OR b = 'bar'", $expr->inflate() );
+    }
+
+    public function testLike()
+    {
+        $expr = $this->createExpr();
+        $expr->like( 'content' , '%aaa%' );
+        is( "content like '%aaa%'", $expr->inflate() );
+    }
+
+    public function testGroup()
+    {
+        $expr = $this->createExpr();
+        $expr->like( 'content' , '%aaa%' );
+        $expr->group()
+            ->equal( 'a' , 'b' )
+            ->equal( 'c' , 'd' )
+            ->ungroup()
+                ->and()->is( 'name' , 'null' );
+        is( "content like '%aaa%' AND (a = 'b' AND name is null)", $expr->inflate() );
     }
 
 
