@@ -68,6 +68,27 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         is( "content like '%aaa%' AND (a = 'b' AND name is null)", $expr->inflate() );
     }
 
+    public function testGreater()
+    {
+        $expr = $this->createExpr();
+        $expr->greater( 'a', 123 );
+        is( "a > 123", $expr->inflate() );
+    }
+
+    public function testGreaterWithString()
+    {
+        $expr = $this->createExpr();
+        $expr->greater( 'date', '2011-01-01' );
+        is( "date > '2011-01-01'", $expr->inflate() );
+    }
+
+    public function testGreaterWithSqlFunction()
+    {
+        $expr = $this->createExpr();
+        $expr->greater( 'date', array("format('2011-01-01')") );
+        is( "date > format('2011-01-01')", $expr->inflate() );
+    }
+
 
 }
 

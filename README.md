@@ -40,19 +40,20 @@ Do Select
 
     $sqlbuilder->select('*')
         ->where()
-            ->isEqual( 'a' , 'bar' )   // a = 'bar'
-            ->isNotEqual( 'a' , 'bar' )   // a != 'bar'
+            ->equal( 'a' , 'bar' )   // a = 'bar'
+            ->notEqual( 'a' , 'bar' )   // a != 'bar'
             ->is( 'a' , 'null' )       // a is null
             ->isNot( 'a' , 'null' )    // a is not equal
-            ->greaterThan( 'a' , '2011-01-01' );
-            ->greaterThan( 'a' , array('date(2011-01-01)') );  // do not escape
-            ->or()->lessThan( 'a' , 123 )
-            ->and()->like( 'content' , '%content%' );
+            ->greater( 'a' , '2011-01-01' );
+            ->greater( 'a' , array('date(2011-01-01)') );  // do not escape
+            ->or()->less( 'a' , 123 )
+                ->and()->like( 'content' , '%content%' );
             ->group()             and ( a = 123 or b != 123 )
                 ->is( ... )
                 ->not( ... )             
             ->ungroup()
-            ->back()->build();
+            ->back()                  // back to sql builder
+            ->build();
 
 `where()` returns Condition builder object.
 
