@@ -18,7 +18,7 @@ class JoinExpressionTest extends PHPUnit_Framework_TestCase
             ->on()->equal( 'a' , array('b') );
 
         $sql = $expr->inflate();
-        var_dump( $sql ); 
+        is(" LEFT JOIN users u ON a = b" , $sql );
     }
 }
 
