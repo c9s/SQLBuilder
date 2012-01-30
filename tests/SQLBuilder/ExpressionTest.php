@@ -10,14 +10,14 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         return $expr;
     }
 
-    public function testOp()
+    public function testOpIs()
     {
         $expr = $this->createExpr();
         $expr->is( 'a' , 'null' )->is( 'b' , 'null' );
         is( 'a is null AND b is null', $expr->inflate() );
     }
 
-    public function testOp2()
+    public function testOpAnd()
     {
         $expr = $this->createExpr();
         $expr->is( 'a' , 'null' )
@@ -25,7 +25,7 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         is( 'a is null AND b is null', $expr->inflate() );
     }
 
-    public function testOp3()
+    public function testOpOr()
     {
         $expr = $this->createExpr();
         $expr->is( 'a' , 'null' )
@@ -33,7 +33,7 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         is( 'a is null OR b is null', $expr->inflate() );
     }
 
-    public function testOp4()
+    public function testOpEqual()
     {
         $expr = $this->createExpr();
         $expr->equal( 'a' , 'foo' )
@@ -41,7 +41,7 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         is( "a = 'foo' OR b = 'bar'", $expr->inflate() );
     }
 
-    public function testOp5()
+    public function testOpWithSqlFunction()
     {
         $expr = $this->createExpr();
         $expr->equal( 'a' , array("format('2011-12-11')") )
