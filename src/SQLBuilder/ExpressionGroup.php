@@ -3,7 +3,7 @@ namespace SQLBuilder;
 
 class ExpressionGroup extends Expression
 {
-    public function inflate()
+    public function toSql()
     {
         $sql = '';
         if( $this->parentOp )
@@ -12,7 +12,7 @@ class ExpressionGroup extends Expression
         $sql .= '(';
         if( $this->childs ) {
             foreach( $this->childs as $child ) {
-                $sql .= $child->inflate();
+                $sql .= $child->toSql();
             }
         }
         $sql .= ')';

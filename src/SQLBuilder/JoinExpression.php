@@ -39,7 +39,7 @@ class JoinExpression
         return $subexpr->createExpr(null);
     }
 
-    public function inflate()
+    public function toSql()
     {
         $sql = ' ' . $this->type 
             . ' JOIN '
@@ -49,7 +49,7 @@ class JoinExpression
             $sql .= ' ' . $this->alias;
 
         foreach( $this->onExpr as $expr ) {
-            $sql .= ' ON ' . $expr->inflate();
+            $sql .= ' ON ' . $expr->toSql();
         }
         return $sql;
     }
