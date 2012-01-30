@@ -21,7 +21,7 @@ namespace SQLBuilder;
 class Driver
 {
 
-	public $driver = 'PDO';
+	public $type = 'PDO';
 
     /**
      * should we quote table name in SQL ?
@@ -68,8 +68,6 @@ class Driver
         return $self ? $self : $self = new static;
     }
 
-
-
     public function __construct()
     {
 		$this->escaper = 'addslashes';
@@ -98,8 +96,8 @@ class Driver
 				break;
 			
 			case 'driver':
-				$this->driver = $value;
-                if( $this->driver == 'mysql' ) {
+				$this->type = $value;
+                if( $this->type == 'mysql' ) {
                     $this->quoteColumn = false;
                     $this->quoteTable = false;
                 }

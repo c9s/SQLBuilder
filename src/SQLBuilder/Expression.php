@@ -65,7 +65,7 @@ class Expression
         }
     }
 
-    public function createExpr($op = 'and')
+    public function createExpr($op = 'AND')
     {
         $subexpr = new self;
         $subexpr->parent = $this;
@@ -77,15 +77,15 @@ class Expression
 
     public function newAnd()
     {
-        return $this->createExpr('and');
+        return $this->createExpr('AND');
     }
 
     public function newOr()
     {
-        return $this->createExpr('or');
+        return $this->createExpr('OR');
     }
 
-    public function group($op = 'and')
+    public function group($op = 'AND')
     {
         $subexpr = $this->createExpr($op);
         $subexpr->isGroup = true;
@@ -121,9 +121,9 @@ class Expression
 		}
 		else {
             if( is_array($v) ) {
-                $sql .= $this->builder->driver->getQuoteColumn($k) . ' = ' . $v[0];
+                $sql .= $this->builder->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
             } else {
-                $sql .= $this->builder->driver->getQuoteColumn($k) . " = " 
+                $sql .= $this->builder->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
                     . '\'' . call_user_func( $this->builder->escaper , $v ) . '\'';
             }
 		}

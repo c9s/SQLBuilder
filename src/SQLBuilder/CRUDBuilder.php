@@ -380,14 +380,14 @@ class CRUDBuilder
 	protected function buildLimitSql()
 	{
 		$sql = '';
-		if( $this->driver->driver == 'postgresql' ) {
+		if( $this->driver->type == 'postgresql' ) {
 			if( $this->limit && $this->offset ) {
 				$sql .= ' LIMIT ' . $this->limit . ' OFFSET ' . $this->offset;
 			} else if ( $this->limit ) {
 				$sql .= ' LIMIT ' . $this->limit;
 			}
 		} 
-		else if( $this->driver->driver == 'mysql' ) {
+		else if( $this->driver->type == 'mysql' ) {
 			if( $this->limit && $this->offset ) {
 				$sql .= ' LIMIT ' . $this->offset . ' , ' . $this->limit;
 			} else if ( $this->limit ) {
