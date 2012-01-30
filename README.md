@@ -79,9 +79,9 @@ Do Select
             ->build();
 ```
 
-`where()` returns Condition builder object.
+`where()` returns Expression object.
 
-`Condition->back()` returns SQL builder object
+`Condition->back()` returns CRUD SQL builder object
 
 
 ## Insert
