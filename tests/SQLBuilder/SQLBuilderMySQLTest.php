@@ -93,7 +93,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
         is($back,$sb);
 
         $sql = $sb->build();
-        is("SELECT * FROM member m  LEFT JOIN tweets t ON t.member_id = m.id", $sql );
+        is("SELECT * FROM member m  LEFT JOIN tweets t ON (t.member_id = m.id)", $sql );
     }
 
     function testSelect()
