@@ -58,7 +58,7 @@ class CRUDBuilder
     /* sql driver */
     public $driver;
 
-	public $where = array();
+	public $where;
 	public $orders = array();
 
     /**
@@ -191,27 +191,27 @@ class CRUDBuilder
 
     /*** condition methods ***/
 
+	public function where()
+	{
+        $this->where = $expr = new Expression;
+        $expr->driver = $this->driver;
+        return $expr;
+	}
+
 
     /**
-     *
-     * style1:
-     *
-     * @param string column name
-     * @param string condition (string or array)
-     *
-     * style2:
+     * build expressions from arguments for simple usage.
      *
      * @param array
      */
-	public function where($arg1,$arg2 = null)
-	{
-		if( is_array($arg1) ) {
-			$this->where = array_merge($this->where, $arg1 );
-		}
-		else {
-			$this->where[ $arg1 ] = $arg2;
-		}
-	}
+    public function whereFromArgs($args)
+    {
+        $expr = $this->where();
+        foreach( $args as $k => $v ) {
+            $expr = $expr->isEqual( $k , $v );
+        }
+        return $this;
+    }
 
 
 	/* for postgresql-only */
@@ -429,33 +429,9 @@ class CRUDBuilder
 
 	protected function buildConditionSql()
 	{
-        $conds = array();
-		if( $this->driver->placeholder ) {
-			foreach( $this->where as $k => $v ) {
-				if( is_array($v) ) {
-					$conds[] = $this->driver->getQuoteColumn($k) . " = " . $v;
-				} else {
-					if( is_integer($k) )
-						$k = $v;
-					$conds[] = $this->driver->getQuoteColumn( $k ) . " = " . $this->driver->getPlaceHolder($k);
-				}
-			}
-		}
-		else {
-			foreach( $this->where as $k => $v ) {
-				if( is_array($v) ) {
-					$conds[] = $this->driver->getQuoteColumn($k) . ' = ' . $v;
-				} else {
-					$conds[] = $this->driver->getQuoteColumn($k) . " = " 
-						. '\'' . call_user_func( $this->driver->escaper , $v ) . '\'';
-				}
-			}
-		}
-		$sql = '';
-        if( count($conds) ) {
-            $sql .= ' WHERE ' . join( ' AND ' , $conds );
-        }
-		return $sql;
+        if( $this->where )
+            return ' WHERE ' . $this->where->inflate();
+        return '';
 	}
 
 }

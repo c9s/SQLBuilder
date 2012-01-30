@@ -52,7 +52,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 		$sb = new CRUDBuilder('Member');
         $sb->driver = $driver;
 		$sb->delete();
-		$sb->where(array( 'foo' => '123' ));
+		$sb->whereFromArgs(array( 'foo' => '123' ));
 
 		$sql = $sb->build();
 		is( 'DELETE FROM "Member"  WHERE "foo" = \'123\'' , $sql );
@@ -73,7 +73,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 
 		$sb = new CRUDBuilder('Member');
         $sb->driver = $d;
-		$sb->where(array( 
+		$sb->whereFromArgs(array( 
 			'cond1' => ':blah',
 		));
 		$sb->update( array( 'set1' => 'value1') );
@@ -105,7 +105,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 		is( 'SELECT * FROM "Member"' , trim($sql));
 
 		$d->configure('placeholder','named');
-		$sb->where(array(
+		$sb->whereFromArgs(array(
 			'foo' => ':foo',
 	   	));
 

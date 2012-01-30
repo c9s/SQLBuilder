@@ -47,7 +47,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 		$sb->driver->configure('driver','mysql');
 		$sb->driver->configure('trim',true);
 		$sb->delete();
-		$sb->where(array( 'foo' => '123' ));
+		$sb->whereFromArgs(array( 'foo' => '123' ));
 
 		$sql = $sb->build();
 		is( 'DELETE FROM member  WHERE foo = \'123\'' , $sql );
@@ -64,7 +64,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 		$sb->driver->configure('driver','mysql');
 		$sb->driver->configure('trim',true);
 		$sb->driver->configure('placeholder','named');
-		$sb->where(array( 
+		$sb->whereFromArgs(array( 
 			'cond1' => ':blah',
 		));
 		$sb->update( array( 'set1' => 'value1') );
@@ -86,33 +86,33 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
 		ok( $sb );
 
-		$sql = $sb->buildSelect();
+		$sql = $sb->build();
 		ok( $sql );
 
 		is( 'SELECT * FROM member' , trim($sql));
 
 		$sb->driver->configure('placeholder','named');
-		$sb->where(array(
+		$sb->whereFromArgs(array(
 			'foo' => ':foo',
 	   	));
 
 
-		$sql = $sb->buildSelect();
+		$sql = $sb->build();
 		is( 'SELECT * FROM member  WHERE foo = :foo' , $sql );
 
 		$sb->select(array('COUNT(*)'));
 
-		$sql = $sb->buildSelect();
+		$sql = $sb->build();
 		is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo' , $sql );
 
 		$sb->limit(10);
 
-		$sql = $sb->buildSelect();
+		$sql = $sb->build();
 		is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo LIMIT 10' ,$sql );
 
 		$sb->offset(20);
 
-		$sql = $sb->buildSelect();
+		$sql = $sb->build();
 		is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo LIMIT 20 , 10' ,$sql );
 	}
 
