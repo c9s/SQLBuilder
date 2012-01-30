@@ -236,12 +236,14 @@ class CRUDBuilder
     public function returning($column)
     {
         $this->returning = $column;
+        return $this;
     }
 
 
     public function order($column,$order = 'desc')
     {
         $this->orders[] = array( $column , $order );
+        return $this;
     }
 
 

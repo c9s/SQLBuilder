@@ -105,7 +105,21 @@ The last, build SQL:
 
     $sql = $sqlbuilder->build();
 
-## Do Join
+## Update
+
+    $sb = new CRUDBuilder('member');
+    $sb->driver = new Driver;
+    $sb->driver->configure('driver','mysql');
+    $sb->driver->configure('placeholder','named');
+
+    $sb->update( array( 'set1' => 'value1') );
+    $sb->whereFromArgs(array( 
+        'cond1' => ':blah',       // is equal to    where()->equal('cond1',':blah')
+    ));
+
+    $sql = $sb->build();
+
+## Join
 
     $sb = new CRUDBuilder('Member');
     $sb->alias('m')
@@ -115,6 +129,7 @@ The last, build SQL:
             ->on()->equal( 'a.foo', 'string' )              // treat as string, escape string
             ->back()          // go back to SqlBuilder object.
             ->toSql();
+
 
 ## Delete
 
