@@ -32,6 +32,31 @@ Configure escaper:
 
     $sqlbuilder->configure('escaper',array($pdo,'quote'));
 
+## Select
+
+    $sqlbuilder->select('*')
+        ->where()
+            ->isEqual( 'a' , 'bar' )   // a = 'bar'
+            ->isNotEqual( 'a' , 'bar' )   // a != 'bar'
+            ->is( 'a' , 'null' )       // a is null
+            ->isNot( 'a' , 'null' )    // a is not equal
+            ->greaterThan( 'a' , '2011-01-01' );
+            ->greaterThan( 'a' , array('date(2011-01-01)') );  // do not escape
+            ->or()->lessThan( 'a' , 123 )
+            ->and()->like( 'content' , '%content%' );
+            ->group()             and ( a = 123 or b != 123 )
+                ->is( ... )
+                ->not( ... )             
+            ->ungroup()
+            ->back()->build();
+
+`where()` returns Condition builder object.
+
+`Condition->back()` returns SQL builder object
+
+
+## Insert
+
 Do insertion:
 
     $sqlbuilder->insert(array(
@@ -50,4 +75,5 @@ For question-mark style SQL, you might need this:
 The last, build SQL:
 
     $sql = $sqlbuilder->build();
+
 
