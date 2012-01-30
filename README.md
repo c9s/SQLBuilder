@@ -1,4 +1,4 @@
-SQL Builder for generating CRUD SQL
+SQL Builder in PHP5.3
 
 ## Driver
 
@@ -91,18 +91,24 @@ Do Select
 
 Do insertion:
 
+```php
+<?php
     $sqlbuilder->insert(array(
         // placeholder => 'value'
         'foo' => 'foo',
         'bar' => 'bar',
     ));
+```
 
 For question-mark style SQL, you might need this:
 
+```php
+<?php
     $sqlbuilder->insert(array(
         'foo',
         'bar',
     ));
+```
 
 The last, build SQL:
 
@@ -110,32 +116,41 @@ The last, build SQL:
 
 ### Update
 
-    $sb = new CRUDBuilder('member');
-    $sb->driver = new Driver;
-    $sb->driver->configure('driver','mysql');
-    $sb->driver->configure('placeholder','named');
 
-    $sb->update( array( 'set1' => 'value1') );
-    $sb->whereFromArgs(array( 
-        'cond1' => ':blah',       // is equal to    where()->equal('cond1',':blah')
-    ));
+```php
+<?php
+$sb = new CRUDBuilder('member');
+$sb->driver = new Driver;
+$sb->driver->configure('driver','mysql');
+$sb->driver->configure('placeholder','named');
 
-    $sql = $sb->build();
+$sb->update( array( 'set1' => 'value1') );
+$sb->whereFromArgs(array( 
+    'cond1' => ':blah',       // is equal to    where()->equal('cond1',':blah')
+));
+
+$sql = $sb->build();
+```
 
 ### Join
 
-    $sb = new CRUDBuilder('Member');
-    $sb->alias('m')
-        ->join('table_name')
-            ->alias('t')
-            ->on()->equal( 't.zzz', array('m.ccc') )        // not to escape string (with array())
-            ->on()->equal( 'a.foo', 'string' )              // treat as string, escape string
-            ->back()          // go back to SqlBuilder object.
-            ->toSql();
-
+```php
+<?php
+$sb = new CRUDBuilder('Member');
+$sb->alias('m')
+    ->join('table_name')
+        ->alias('t')
+        ->on()->equal( 't.zzz', array('m.ccc') )        // not to escape string (with array())
+        ->on()->equal( 'a.foo', 'string' )              // treat as string, escape string
+        ->back()          // go back to SqlBuilder object.
+        ->toSql();
+```
 
 ### Delete
 
+
+```php
+<?php
     $sb = new CRUDBuilder('member');
     $sb->driver = new Driver;
     $sb->driver->configure('driver','mysql');
@@ -146,6 +161,7 @@ The last, build SQL:
     $sb->where()->equal('foo',123);
 
     $sql = $sb->build();  // DELETE FROM member  WHERE foo = 123
+```
 
 ## Development
 
