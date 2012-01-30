@@ -1,6 +1,4 @@
 <?php
-
-
 namespace SQLBuilder;
 
 
@@ -21,30 +19,30 @@ namespace SQLBuilder;
 class Driver
 {
 
-	public $type = 'PDO';
+    public $type;
 
     /**
      * should we quote table name in SQL ?
      */
-	public $quoteTable = false;
+    public $quoteTable = false;
 
 
     /**
      * should we quote column name in SQL ?
      */
-	public $quoteColumn = false;
+    public $quoteColumn = false;
 
 
     /**
      * should we trim space ?
      */
-	public $trim = false;
+    public $trim = false;
 
 
     /**
      * get place holder
      */
-	public $placeholder = false;
+    public $placeholder = false;
 
 
     /**
@@ -54,7 +52,7 @@ class Driver
      *
      *    array($obj,'method')
      */
-	public $escaper;
+    public $escaper;
 
 
     static function create()
@@ -68,74 +66,95 @@ class Driver
         return $self ? $self : $self = new static;
     }
 
-    public function __construct()
+    public function __construct($driverType = null)
     {
-		$this->escaper = 'addslashes';
+        $this->type = $driverType;
+        $this->escaper = 'addslashes';
     }
 
 
-	public function configure($key,$value)
-	{
-		switch( $key ) {
-			case 'trim':
-				$this->trim = $value;
-				break;
+    public function configure($key,$value)
+    {
+        switch( $key ) {
+        case 'trim':
+            $this->trim = $value;
+            break;
+
+            /* named or true */
+        case 'placeholder':
+            $this->placeholder = $value;
+            break;
+
+        case 'quote_table':
+            $this->quoteTable = $value;
+            break;
+
+        case 'quote_column':
+            $this->quoteColumn = $value;
+            break;
 
 
-			/* named or true */
-			case 'placeholder':
-				$this->placeholder = $value;
-				break;
+            /** 
+             * valid driver:
+             *
+             *   postgresql, mysql
+             */
+        case 'driver':
+            $this->type = $value;
+            if( $this->type == 'mysql' ) {
+                $this->quoteColumn = false;
+                $this->quoteTable = false;
+            }
+            break;
 
-			case 'quote_table':
-				$this->quoteTable = $value;
-				break;
+            /**
+             * sql style:
+             *    PDO or mysqli ... etc
+             */
+        case 'style':
+            $this->style = $value;
+            break;
 
-			case 'quote_column':
-				$this->quoteColumn = $value;
-				break;
-			
-			case 'driver':
-				$this->type = $value;
-                if( $this->type == 'mysql' ) {
-                    $this->quoteColumn = false;
-                    $this->quoteTable = false;
-                }
-				break;
-
-			case 'style':
-				$this->style = $value;
-				break;
-		}
-	}
+        }
+    }
 
 
-	public function getPlaceHolder($key)
-	{
-		if( $this->placeholder && $this->placeholder === 'named' ) {
-			return ':' . $key;
-		}
-		else {
-			return '?';
-		}
-	}
+    public function getPlaceHolder($key)
+    {
+        if( $this->placeholder && $this->placeholder === 'named' ) {
+            return ':' . $key;
+        }
+        else {
+            return '?';
+        }
+    }
 
-	public function getQuoteColumn($name)
-	{
-		if( $c = $this->quoteColumn ) {
+    public function getQuoteColumn($name)
+    {
+        if( $c = $this->quoteColumn ) {
             if( is_string($c) )
                 return $c . $name . $c;
             return '"' . $name . '"';
-		}
-		return $name;
-	}
+        }
+        return $name;
+    }
 
 
     /**
      * escape single quote 
+     *
      */
     public function escape($string)
     {
+        /**
+         * escaper:
+         *
+         *    string mysqli_real_escape_string ( mysqli $link , string $escapestr )
+         *    string pg_escape_string ([ resource $connection ], string $data )
+         *    string PDO::quote ( string $string [, int $parameter_type = PDO::PARAM_STR ] )
+         *
+         *  $driver->configure('escaper',array($pgconn,'escape_string'));
+         */
         return call_user_func( $this->escaper , $string );
     }
 

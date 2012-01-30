@@ -118,12 +118,12 @@ class Expression
     {
         switch( $method )
         {
-            case 'and':
-                return $this->newAnd();
-                break;
-            case 'or':
-                return $this->newOr();
-                break;
+        case 'and':
+            return $this->newAnd();
+            break;
+        case 'or':
+            return $this->newOr();
+            break;
         }
     }
 
@@ -177,7 +177,7 @@ class Expression
                 } else {
                     $sql .= $this->driver->getQuoteColumn( $k ) . ' ' . $op . ' '  . $this->getPlaceHolder($k);
                 }
-                */
+                 */
             }
             else {
                 if( is_array($v) ) {

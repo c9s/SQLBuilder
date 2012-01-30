@@ -9,112 +9,112 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
     function getDriver()
     {
         $d = new Driver;
-		$d->configure('driver','mysql');
-		$d->configure('trim',true);
-		$d->configure('placeholder','named');
+        $d->configure('driver','mysql');
+        $d->configure('trim',true);
+        $d->configure('placeholder','named');
         return $d;
     }
 
-	function testInsert()
-	{
-		$sb = new CRUDBuilder('member');
+    function testInsert()
+    {
+        $sb = new CRUDBuilder('member');
         $sb->driver = $this->getDriver();
 
-		$sb->insert(array(
-			'foo' => 'foo',
-			'bar' => 'bar',
-		));
-		$sql = $sb->build();
-		is( 'INSERT INTO member ( foo,bar) VALUES (:foo,:bar)' , $sql );
+        $sb->insert(array(
+            'foo' => 'foo',
+            'bar' => 'bar',
+        ));
+        $sql = $sb->build();
+        is( 'INSERT INTO member ( foo,bar) VALUES (:foo,:bar)' , $sql );
 
-		$sb->driver->configure('placeholder',false);
-		$sb->insert(array(
-			'foo' => 'foo',
-			'bar' => 'bar',
-		));
-		$sql = $sb->build();
-		is( 'INSERT INTO member ( foo,bar) VALUES (\'foo\',\'bar\')' , $sql );
+        $sb->driver->configure('placeholder',false);
+        $sb->insert(array(
+            'foo' => 'foo',
+            'bar' => 'bar',
+        ));
+        $sql = $sb->build();
+        is( 'INSERT INTO member ( foo,bar) VALUES (\'foo\',\'bar\')' , $sql );
 
-		$sb->driver->configure('placeholder',true);
-		$sql = $sb->build();
-		is( 'INSERT INTO member ( foo,bar) VALUES (?,?)' , $sql );
-	}
+        $sb->driver->configure('placeholder',true);
+        $sql = $sb->build();
+        is( 'INSERT INTO member ( foo,bar) VALUES (?,?)' , $sql );
+    }
 
-	function testDelete()
-	{
-		$sb = new CRUDBuilder('member');
+    function testDelete()
+    {
+        $sb = new CRUDBuilder('member');
         $sb->driver = new Driver;
-		$sb->driver->configure('driver','mysql');
-		$sb->driver->configure('trim',true);
-		$sb->delete();
-		$sb->whereFromArgs(array( 'foo' => '123' ));
+        $sb->driver->configure('driver','mysql');
+        $sb->driver->configure('trim',true);
+        $sb->delete();
+        $sb->whereFromArgs(array( 'foo' => '123' ));
 
-		$sql = $sb->build();
-		is( 'DELETE FROM member  WHERE foo = \'123\'' , $sql );
+        $sql = $sb->build();
+        is( 'DELETE FROM member  WHERE foo = \'123\'' , $sql );
 
-		$sb->driver->configure('placeholder','named');
-		$sql = $sb->buildDelete();
-		is( 'DELETE FROM member  WHERE foo = :foo' , $sql );
-	}
+        $sb->driver->configure('placeholder','named');
+        $sql = $sb->buildDelete();
+        is( 'DELETE FROM member  WHERE foo = :foo' , $sql );
+    }
 
-	function testUpdate()
-	{
-		$sb = new CRUDBuilder('member');
+    function testUpdate()
+    {
+        $sb = new CRUDBuilder('member');
         $sb->driver = new Driver;
-		$sb->driver->configure('driver','mysql');
-		$sb->driver->configure('trim',true);
-		$sb->driver->configure('placeholder','named');
-		$sb->whereFromArgs(array( 
-			'cond1' => ':blah',
-		));
-		$sb->update( array( 'set1' => 'value1') );
-		$sql = $sb->buildUpdate();
-		is( 'UPDATE member SET set1 = :set1 WHERE cond1 = :cond1' , $sql );
+        $sb->driver->configure('driver','mysql');
+        $sb->driver->configure('trim',true);
+        $sb->driver->configure('placeholder','named');
+        $sb->whereFromArgs(array( 
+            'cond1' => ':blah',
+        ));
+        $sb->update( array( 'set1' => 'value1') );
+        $sql = $sb->buildUpdate();
+        is( 'UPDATE member SET set1 = :set1 WHERE cond1 = :cond1' , $sql );
 
-		$sb->driver->configure('placeholder',false);
-		$sql = $sb->buildUpdate();
+        $sb->driver->configure('placeholder',false);
+        $sql = $sb->buildUpdate();
         is( 'UPDATE member SET set1 = \'value1\' WHERE cond1 = \':blah\'' , $sql );
-	}
+    }
 
-	function testSelect()
-	{
-		$sb = new CRUDBuilder('member');
+    function testSelect()
+    {
+        $sb = new CRUDBuilder('member');
         $sb->driver = new Driver;
-		$sb->driver->configure('driver','mysql');
-		$sb->driver->configure('trim',true);
-		$sb->select( '*' );
+        $sb->driver->configure('driver','mysql');
+        $sb->driver->configure('trim',true);
+        $sb->select( '*' );
 
-		ok( $sb );
+        ok( $sb );
 
-		$sql = $sb->build();
-		ok( $sql );
+        $sql = $sb->build();
+        ok( $sql );
 
-		is( 'SELECT * FROM member' , trim($sql));
+        is( 'SELECT * FROM member' , trim($sql));
 
-		$sb->driver->configure('placeholder','named');
-		$sb->whereFromArgs(array(
-			'foo' => ':foo',
-	   	));
+        $sb->driver->configure('placeholder','named');
+        $sb->whereFromArgs(array(
+            'foo' => ':foo',
+        ));
 
 
-		$sql = $sb->build();
-		is( 'SELECT * FROM member  WHERE foo = :foo' , $sql );
+        $sql = $sb->build();
+        is( 'SELECT * FROM member  WHERE foo = :foo' , $sql );
 
-		$sb->select(array('COUNT(*)'));
+        $sb->select(array('COUNT(*)'));
 
-		$sql = $sb->build();
-		is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo' , $sql );
+        $sql = $sb->build();
+        is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo' , $sql );
 
-		$sb->limit(10);
+        $sb->limit(10);
 
-		$sql = $sb->build();
-		is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo LIMIT 10' ,$sql );
+        $sql = $sb->build();
+        is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo LIMIT 10' ,$sql );
 
-		$sb->offset(20);
+        $sb->offset(20);
 
-		$sql = $sb->build();
-		is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo LIMIT 20 , 10' ,$sql );
-	}
+        $sql = $sb->build();
+        is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo LIMIT 20 , 10' ,$sql );
+    }
 
 
 }

@@ -2,15 +2,19 @@ SQL Builder for generating CRUD SQL
 
 ## Driver
 
-    $driver = new SQLBuilder\Driver;
+get your SQL driver
 
-### Configure escaper
+    $driver = new SQLBuilder\Driver('postgresql');
+    $driver = SQLBuilder\Driver::getInstance();
+    $driver = SQLBuilder\Driver::create('postgresql');
+
+### Configure Driver escaper
 
     $driver->configure('escaper',array($pg,'escape'));
 
     $driver->configure('escaper',array($pdo,'quote'));
 
-Configure database driver for `postgresql`:
+## Configure database driver for `postgresql`:
 
     $driver->configure('driver','postgresql');
 
