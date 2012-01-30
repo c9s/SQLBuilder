@@ -131,7 +131,13 @@ class Driver
 	}
 
 
-
+    /**
+     * escape single quote 
+     */
+    public function escape($string)
+    {
+        return call_user_func( $this->escaper , $string );
+    }
 
 }
 

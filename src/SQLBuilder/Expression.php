@@ -123,7 +123,9 @@ class Expression
                 $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
             } else {
                 $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
-                    . '\'' . call_user_func( $this->driver->escaper , $v ) . '\'';
+                    . '\'' 
+                    . $this->driver->escape($v)
+                    . '\'';
             }
 		}
 
