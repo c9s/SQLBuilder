@@ -10,17 +10,6 @@ use Exception;
  *
  *  $sqlbuilder = new SQLBuilder\CRUDBuilder('Member');
  *
- *  $sqlbuilder->configure('driver','postgresql');
- *
- *  trim spaces
- *  $sqlbuilder->configure('trim',true);
- *
- *  $sqlbuilder->configure('placeholder','named');
- *
- *  $sqlbuilder->configure('escaper',array($pg,'escape'));
- *
- *  $sqlbuilder->configure('escaper',array($pdo,'quote'));
- *
  *  $sqlbuilder->insert(array(
  *       // placeholder => 'value'
  *      'foo' => 'foo',
@@ -66,6 +55,9 @@ class CRUDBuilder
      */
 	public $returning;
 
+    /* sql driver */
+    public $driver;
+
 	public $where = array();
 	public $orders = array();
 
@@ -89,45 +81,9 @@ class CRUDBuilder
 	const SELECT = 4;
 
 
-	protected $driver = 'PDO';
-
-    /**
-     * should we quote table name in SQL ?
-     */
-	protected $quoteTable = false;
 
 
     /**
-     * should we quote column name in SQL ?
-     */
-	protected $quoteColumn = false;
-
-
-    /**
-     * should we trim space ?
-     */
-	protected $trim = false;
-
-
-    /**
-     * get place holder
-     */
-	protected $placeholder = false;
-
-
-    /**
-     * string escaper handler
-     *  
-     *  Array:
-     *
-     *    array($obj,'method')
-     */
-	protected $escaper;
-
-
-
-    /**
-     *
      * @param string $table table name
      */
 	public function __construct($table)
@@ -147,44 +103,7 @@ class CRUDBuilder
          *  $b->configure('escaper',array($pgconn,'escape_string'));
          *
 		 */
-		$this->escaper = 'addslashes';
 	}
-
-	public function configure($key,$value)
-	{
-		switch( $key ) {
-			case 'trim':
-				$this->trim = $value;
-				break;
-
-
-			/* named or true */
-			case 'placeholder':
-				$this->placeholder = $value;
-				break;
-
-			case 'quote_table':
-				$this->quoteTable = $value;
-				break;
-
-			case 'quote_column':
-				$this->quoteColumn = $value;
-				break;
-			
-			case 'driver':
-				$this->driver = $value;
-                if( $this->driver == 'mysql' ) {
-                    $this->quoteColumn = false;
-                    $this->quoteTable = false;
-                }
-				break;
-
-			case 'style':
-				$this->style = $value;
-				break;
-		}
-	}
-
 
     /**
      * get table name (with quote or not)
@@ -194,22 +113,12 @@ class CRUDBuilder
      */
     public function getTableName()
     {
-        if( $this->quoteTable ) {
+        if( $this->driver->quoteTable ) {
             return '"' . $this->table . '"';
         }
         return $this->table;
     }
 
-
-	public function getPlaceHolder($key)
-	{
-		if( $this->placeholder && $this->placeholder === 'named' ) {
-			return ':' . $key;
-		}
-		else {
-			return '?';
-		}
-	}
 
 
     /*** behavior methods ***/
@@ -344,7 +253,7 @@ class CRUDBuilder
 		$sql = 'DELETE FROM ' . $this->getTableName() . ' ';
 		$sql .= $this->buildConditionSql();
 		$sql .= $this->buildLimitSql();
-		if( $this->trim )
+		if( $this->driver->trim )
 			return trim($sql);
         return $sql;
     }
@@ -356,7 +265,7 @@ class CRUDBuilder
 		$sql .= $this->buildSetterSql();
 		$sql .= $this->buildConditionSql();
 		$sql .= $this->buildLimitSql();
-		if( $this->trim )
+		if( $this->driver->trim )
 			return trim($sql);
 		return $sql;
 	}
@@ -378,7 +287,7 @@ class CRUDBuilder
 
 		$sql .= $this->buildLimitSql();
 
-		if( $this->trim )
+		if( $this->driver->trim )
 			return trim($sql);
         return $sql;
     }
@@ -394,20 +303,20 @@ class CRUDBuilder
 
         /* build sql arguments */
 
-		if( $this->placeholder ) {
+		if( $this->driver->placeholder ) {
 			foreach( $this->insert as $k => $v ) {
 				if( is_integer($k) )
 					$k = $v;
-				$columns[] = $this->getQuoteColumn($k);
-				$values[] = $this->getPlaceHolder($k);
+				$columns[] = $this->driver->getQuoteColumn($k);
+				$values[] = $this->driver->getPlaceHolder($k);
 			}
 
 		} else {
 			foreach( $this->insert as $k => $v ) {
 				if( is_integer($k) )
 					$k = $v;
-				$columns[] = $this->getQuoteColumn( $k );
-				$values[]  = '\'' . call_user_func( $this->escaper , $v ) . '\'';
+				$columns[] = $this->driver->getQuoteColumn( $k );
+				$values[]  = '\'' . call_user_func( $this->driver->escaper , $v ) . '\'';
 			}
 		}
 
@@ -415,9 +324,9 @@ class CRUDBuilder
         $sql .= join(',',$columns) . ") VALUES (".  join(',', $values ) .")";
 
 		if( $this->returning )
-			$sql .= ' RETURNING ' . $this->getQuoteColumn($this->returning);
+			$sql .= ' RETURNING ' . $this->driver->getQuoteColumn($this->returning);
 
-		if( $this->trim )
+		if( $this->driver->trim )
 			return trim($sql);
         return $sql;
 	}
@@ -452,16 +361,6 @@ class CRUDBuilder
 
 
 
-	protected function getQuoteColumn($name)
-	{
-		if( $c = $this->quoteColumn ) {
-            if( is_string($c) )
-                return $c . $name . $c;
-            return '"' . $name . '"';
-		}
-		return $name;
-	}
-
 
 	protected function buildOrderSql()
 	{
@@ -471,7 +370,7 @@ class CRUDBuilder
 			$parts = array();
 			foreach( $this->orders as $order ) {
 				list( $column , $ordering ) = $order;
-				$parts[] = $this->getQuoteColumn($column) . ' ' . $ordering;
+				$parts[] = $this->driver->getQuoteColumn($column) . ' ' . $ordering;
 			}
 			$sql .= join(',',$parts);
 		}
@@ -481,14 +380,14 @@ class CRUDBuilder
 	protected function buildLimitSql()
 	{
 		$sql = '';
-		if( $this->driver == 'postgresql' ) {
+		if( $this->driver->driver == 'postgresql' ) {
 			if( $this->limit && $this->offset ) {
 				$sql .= ' LIMIT ' . $this->limit . ' OFFSET ' . $this->offset;
 			} else if ( $this->limit ) {
 				$sql .= ' LIMIT ' . $this->limit;
 			}
 		} 
-		else if( $this->driver == 'mysql' ) {
+		else if( $this->driver->driver == 'mysql' ) {
 			if( $this->limit && $this->offset ) {
 				$sql .= ' LIMIT ' . $this->offset . ' , ' . $this->limit;
 			} else if ( $this->limit ) {
@@ -502,24 +401,24 @@ class CRUDBuilder
 	protected function buildSetterSql()
 	{
         $conds = array();
-		if( $this->placeholder ) {
+		if( $this->driver->placeholder ) {
 			foreach( $this->update as $k => $v ) {
 				if( is_array($v) ) {
-					$conds[] =  $this->getQuoteColumn( $k ) . ' = '. $v;
+					$conds[] =  $this->driver->getQuoteColumn( $k ) . ' = '. $v;
 				} else {
 					if( is_integer($k) )
 						$k = $v;
-					$conds[] =  $this->getQuoteColumn($k) . ' = ' . $this->getPlaceHolder($k);
+					$conds[] =  $this->driver->getQuoteColumn($k) . ' = ' . $this->driver->getPlaceHolder($k);
 				}
 			}
 		}
 		else {
 			foreach( $this->update as $k => $v ) {
 				if( is_array($v) ) {
-					$conds[] = $this->getQuoteColumn($k) . ' = ' . $v ;
+					$conds[] = $this->driver->getQuoteColumn($k) . ' = ' . $v ;
 				} else {
-					$conds[] = $this->getQuoteColumn($k) . ' = ' 
-						. '\'' . call_user_func( $this->escaper , $v ) . '\'';
+					$conds[] = $this->driver->getQuoteColumn($k) . ' = ' 
+						. '\'' . call_user_func( $this->driver->escaper , $v ) . '\'';
 				}
 			}
 		}
@@ -529,24 +428,24 @@ class CRUDBuilder
 	protected function buildConditionSql()
 	{
         $conds = array();
-		if( $this->placeholder ) {
+		if( $this->driver->placeholder ) {
 			foreach( $this->where as $k => $v ) {
 				if( is_array($v) ) {
-					$conds[] = $this->getQuoteColumn($k) . " = " . $v;
+					$conds[] = $this->driver->getQuoteColumn($k) . " = " . $v;
 				} else {
 					if( is_integer($k) )
 						$k = $v;
-					$conds[] = $this->getQuoteColumn( $k ) . " = " . $this->getPlaceHolder($k);
+					$conds[] = $this->driver->getQuoteColumn( $k ) . " = " . $this->driver->getPlaceHolder($k);
 				}
 			}
 		}
 		else {
 			foreach( $this->where as $k => $v ) {
 				if( is_array($v) ) {
-					$conds[] = $this->getQuoteColumn($k) . ' = ' . $v;
+					$conds[] = $this->driver->getQuoteColumn($k) . ' = ' . $v;
 				} else {
-					$conds[] = $this->getQuoteColumn($k) . " = " 
-						. '\'' . call_user_func( $this->escaper , $v ) . '\'';
+					$conds[] = $this->driver->getQuoteColumn($k) . " = " 
+						. '\'' . call_user_func( $this->driver->escaper , $v ) . '\'';
 				}
 			}
 		}
