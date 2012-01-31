@@ -34,7 +34,6 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 
         $sb = new CRUDBuilder;
         $sb->driver = $driver;
-
         $sb->table('Member')->insert(array(
             'foo' => 'foo',
             'bar' => 'bar',
