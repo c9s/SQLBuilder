@@ -18,10 +18,10 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
         $driver->configure('placeholder','named');
 
 
-        $sb = new CRUDBuilder('Member');
+        $sb = new CRUDBuilder;
         $sb->driver = $driver;
 
-        $sb->insert(array(
+        $sb->table('Member')->insert(array(
             'foo' => 'foo',
             'bar' => 'bar',
         ));
@@ -49,9 +49,9 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
         $driver->configure('quote_table',true);
         $driver->configure('quote_column',true);
 
-        $sb = new CRUDBuilder('Member');
+        $sb = new CRUDBuilder;
         $sb->driver = $driver;
-        $sb->delete();
+        $sb->table('Member')->delete();
         $sb->whereFromArgs(array( 'foo' => '123' ));
 
         $sql = $sb->build();
@@ -71,7 +71,8 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
         $d->configure('trim',true);
         $d->configure('placeholder','named');
 
-        $sb = new CRUDBuilder('Member');
+        $sb = new CRUDBuilder;
+        $sb->table('Member');
         $sb->driver = $d;
         $sb->whereFromArgs(array( 
             'cond1' => ':blah',
@@ -93,8 +94,9 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
         $d->configure('quote_column',true);
         $d->configure('trim',true);
 
-        $sb = new CRUDBuilder('Member');
+        $sb = new CRUDBuilder();
         $sb->driver = $d;
+        $sb->table('Member');
         $sb->select( '*' );
 
         ok( $sb );

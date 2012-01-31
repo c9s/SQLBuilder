@@ -95,14 +95,22 @@ class CRUDBuilder
     /**
      * @param string $table table name
      */
-    public function __construct($table)
+    public function __construct($table = null)
     {
         $this->table = $table;
         $this->selected = array('*');
         $this->behavior = static::SELECT;
-
-
     }
+
+
+
+    public function table($table)
+    {
+        $this->table = $table;
+        return $this;
+    }
+
+
 
     /**
      * get table name (with quote or not)
@@ -149,7 +157,11 @@ class CRUDBuilder
      */
     public function select($columns)
     {
-        $this->selected = (array) $columns;
+        $columns = func_get_args();
+        if( is_array($columns[0]) )
+            $this->selected = $columns[0];
+        else
+            $this->selected = $columns;
         $this->behavior = static::SELECT;
         return $this;
     }
@@ -254,14 +266,18 @@ class CRUDBuilder
      */
     protected function buildSelectColumns()
     {
-        $cols = array_map(function($item) { 
-            if( preg_match('/^[a-zA-Z]$/',$item)) {
-                return '"' . $item . '"';
-            } else {
-                return $item;
+        $cols = array();
+        foreach( $this->selected as $k => $v ) {
+
+            /* column => alias */
+            if( is_string($k) ) {
+                $cols[] = $this->driver->getQuoteColumn($k) . '  AS ' . $v;
             }
-        },$this->selected);
-        return join(',',$cols);
+            elseif( is_integer($k) ) {
+                $cols[] = $this->driver->getQuoteColumn($v);
+            }
+        }
+        return join(', ',$cols);
     }
 
 
