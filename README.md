@@ -102,6 +102,15 @@ Build Select SQL
 
 `Condition->back()` returns CRUD SQL builder object
 
+Limit, Offset:
+
+```php
+<?php
+$sqlbuilder->where().....
+    ->back()
+    ->limit(30)->offset(100);
+?>
+```
 
 ### Insert
 
@@ -147,6 +156,7 @@ $sb->whereFromArgs(array(
 
 $sql = $sb->build();
 ```
+
 
 ### Join
 
