@@ -32,7 +32,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
     {
         $driver = $this->getPgDriver();
 
-        $sb = new CRUDBuilder;
+        $sb = new QueryBuilder;
         $sb->driver = $driver;
         $sb->table('Member')->insert(array(
             'foo' => 'foo',
@@ -64,7 +64,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
         $driver->configure('quote_table',true);
         $driver->configure('quote_column',true);
 
-        $sb = new CRUDBuilder;
+        $sb = new QueryBuilder;
         $sb->driver = $driver;
         $sb->table('Member')->delete();
         $sb->whereFromArgs(array( 'foo' => '123' ));
@@ -86,7 +86,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
         $d->configure('trim',true);
         $d->configure('placeholder','named');
 
-        $sb = new CRUDBuilder;
+        $sb = new QueryBuilder;
         $sb->table('Member');
         $sb->driver = $d;
         $sb->whereFromArgs(array( 
@@ -109,7 +109,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
         $d->configure('quote_column',true);
         $d->configure('trim',true);
 
-        $sb = new CRUDBuilder();
+        $sb = new QueryBuilder();
         $sb->driver = $d;
         $sb->table('Member');
         $sb->select( '*' );

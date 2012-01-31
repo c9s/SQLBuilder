@@ -8,7 +8,7 @@ use Exception;
  *
  * @code
  *
- *  $sqlbuilder = new SQLBuilder\CRUDBuilder('Member');
+ *  $sqlbuilder = new SQLBuilder\QueryBuilder();
  *
  *  $sqlbuilder->insert(array(
  *       // placeholder => 'value'
@@ -23,7 +23,7 @@ use Exception;
  *
  * @code
  */
-class CRUDBuilder 
+class QueryBuilder 
 {
     /**
      * table name 
