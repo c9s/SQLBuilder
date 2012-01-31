@@ -66,7 +66,7 @@ CRUD SQL Builder for table 'Member':
 
 ```php
 <?php
-$sqlbuilder = new SQLBuilder\CRUDBuilder;
+$sqlbuilder = new SQLBuilder\QueryBuilder;
 $sqlbuilder->driver = $driver;
 $sqlbuilder->table('Member');
 $sqlbuilder->select('*','column1','column2');
@@ -160,7 +160,7 @@ The last, build SQL:
 
 ```php
 <?php
-$sb = new CRUDBuilder('member');
+$sb = new QueryBuilder('member');
 $sb->driver = new Driver;
 $sb->driver->configure('driver','mysql');
 $sb->driver->configure('placeholder','named');
@@ -178,7 +178,7 @@ $sql = $sb->build();
 
 ```php
 <?php
-$sb = new CRUDBuilder('Member');
+$sb = new QueryBuilder('Member');
 $sb->alias('m')
     ->join('table_name')
         ->alias('t')
@@ -194,7 +194,7 @@ $sb->alias('m')
 
 ```php
 <?php
-    $sb = new CRUDBuilder('member');
+    $sb = new QueryBuilder('member');
     $sb->driver = new Driver;
     $sb->driver->configure('driver','mysql');
     $sb->driver->configure('trim',true);

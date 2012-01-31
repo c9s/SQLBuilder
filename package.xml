@@ -29,7 +29,7 @@
       <file name="tests/SQLBuilder/JoinExpressionTest.php" role="test" md5sum="4d8416a220900be7487c5503d6e0faa9"/>
       <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="40b8eb6dd114044d5d5c5cd1d6a9a807"/>
       <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="f219f645b65ffcaf181d3d27965b559c"/>
-      <file name="src/SQLBuilder/CRUDBuilder.php" role="php" md5sum="5bdbdaf012c317a287748158d80b5d1e"/>
+      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="5bdbdaf012c317a287748158d80b5d1e"/>
       <file name="src/SQLBuilder/Driver.php" role="php" md5sum="c720a431523a3952c4563a3da17d27b6"/>
       <file name="src/SQLBuilder/Expression.php" role="php" md5sum="5e555715438186c8715f29163431cfa4"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="46f8f90b3c845bb7e154229b6e11ba2d"/>
@@ -60,7 +60,7 @@
       <install name="tests/SQLBuilder/JoinExpressionTest.php" as="SQLBuilder/JoinExpressionTest.php"/>
       <install name="tests/SQLBuilder/SQLBuilderMySQLTest.php" as="SQLBuilder/SQLBuilderMySQLTest.php"/>
       <install name="tests/SQLBuilder/SQLBuilderPgTest.php" as="SQLBuilder/SQLBuilderPgTest.php"/>
-      <install name="src/SQLBuilder/CRUDBuilder.php" as="SQLBuilder/CRUDBuilder.php"/>
+      <install name="src/SQLBuilder/QueryBuilder.php" as="SQLBuilder/QueryBuilder.php"/>
       <install name="src/SQLBuilder/Driver.php" as="SQLBuilder/Driver.php"/>
       <install name="src/SQLBuilder/Expression.php" as="SQLBuilder/Expression.php"/>
       <install name="src/SQLBuilder/ExpressionGroup.php" as="SQLBuilder/ExpressionGroup.php"/>

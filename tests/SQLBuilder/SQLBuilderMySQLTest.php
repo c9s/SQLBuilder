@@ -3,7 +3,7 @@ namespace SQLBuilder;
 use PHPUnit_Framework_TestCase;
 use Exception;
 
-class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
+class QueryBuilderMySQLTest extends PHPUnit_Framework_TestCase
 {
 
     function getDriver()
@@ -17,7 +17,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
     function testInsert()
     {
-        $sb = new CRUDBuilder;
+        $sb = new QueryBuilder;
         $sb->table('member');
         $sb->driver = $this->getDriver();
 
@@ -43,7 +43,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
     function testDelete()
     {
-        $sb = new CRUDBuilder;
+        $sb = new QueryBuilder;
         $sb->table('member');
         $sb->driver = new Driver;
         $sb->driver->configure('driver','mysql');
@@ -60,7 +60,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
     function testUpdate()
     {
-        $sb = new CRUDBuilder;
+        $sb = new QueryBuilder;
         $sb->table('member');
         $sb->driver = new Driver;
         $sb->driver->configure('driver','mysql');
@@ -80,7 +80,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
     function testSelectWithJoin()
     {
-        $sb = new CRUDBuilder;
+        $sb = new QueryBuilder;
         $sb->table('member');
         $sb->driver = new Driver;
         $sb->driver->configure('driver','mysql');
@@ -101,7 +101,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
     function testSelect()
     {
-        $sb = new CRUDBuilder;
+        $sb = new QueryBuilder;
         $sb->table('member');
         $sb->driver = new Driver;
         $sb->driver->configure('driver','mysql');

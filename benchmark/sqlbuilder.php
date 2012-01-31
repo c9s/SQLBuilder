@@ -12,7 +12,7 @@ $driver->configure('quote_column',true);
 $driver->configure('trim',true);
 $driver->configure('placeholder','named');
 
-$sb = new SQLBuilder\CRUDBuilder;
+$sb = new SQLBuilder\QueryBuilder;
 $sb->driver = $driver;
 
 
