@@ -117,10 +117,19 @@ $sqlbuilder->where().....
 
     $query->select('*')->table('items')->where()
         ->between('created_on', '2011-01-01' , '2011-02-01' )
-        ->limit(10);
+        ->limit(10)->offset(100);
+
+For postgresql, generates:
 
     SELECT * FROM items 
         WHERE created_on BETWEEN '2011-01-01' and '2012-01-01'
+        OFFSET 100 LIMIT 10;
+
+For mysql, generates:
+
+    SELECT * FROM items 
+        WHERE created_on BETWEEN '2011-01-01' and '2012-01-01'
+        LIMIT 100,10;
 
 ### Insert
 
