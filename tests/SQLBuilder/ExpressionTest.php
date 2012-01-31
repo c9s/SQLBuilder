@@ -126,14 +126,14 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
     {
         $expr = $this->createExpr();
         $expr->group()
-                ->equal( 'a' , 'a' )
-                ->equal( 'b' , 'b' )
+                ->equal( 'a' , 1 )
+                ->equal( 'b' , 2 )
             ->ungroup()
             ->group()
                 ->equal( 'c' , 'c' )
                 ->equal( 'd' , 'd' )
             ->ungroup();
-        is( " (a = 'a' AND b = 'b') AND (c = 'c' AND d = 'd')", $expr->toSql() );
+        is( " (a = 1 AND b = 2) AND (c = 'c' AND d = 'd')", $expr->toSql() );
     }
 
     public function testGroup2()
