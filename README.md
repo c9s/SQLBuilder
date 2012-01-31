@@ -66,15 +66,21 @@ CRUD SQL Builder for table 'Member':
 
 ```php
 <?php
-$sqlbuilder = new SQLBuilder('Member');
+$sqlbuilder = new SQLBuilder\CRUDBuilder;
 $sqlbuilder->driver = $driver;
+$sqlbuilder->table('Member');
+$sqlbuilder->select('*','column1','column2');
+$sqlbuilder->select(array( 
+    'column1' => 'as1',
+    'column2' => 'as2',
+));
 ```
 
-Do Select
+Build Select SQL
 
 ```php
 <?php
-    $sql = $sqlbuilder->select('*')
+    $sql = $sqlbuilder->table('Member')->select('*')
         ->where()
             ->equal( 'a' , 'bar' )   // a = 'bar'
             ->notEqual( 'a' , 'bar' )   // a != 'bar'

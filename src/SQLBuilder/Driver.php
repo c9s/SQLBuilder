@@ -131,7 +131,11 @@ class Driver
 
     public function getQuoteColumn($name)
     {
+
         if( $c = $this->quoteColumn ) {
+            if( preg_match('/\W/',$name) )
+                return $name;
+
             if( is_string($c) )
                 return $c . $name . $c;
             return '"' . $name . '"';
