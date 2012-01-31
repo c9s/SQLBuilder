@@ -172,6 +172,20 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         is( "date > format('2011-01-01')", $expr->toSql() );
     }
 
+    public function testBetweenDate()
+    {
+        $expr = $this->createExpr();
+        $expr->between('created_on','2011-01-01','2012-01-01');
+        is( "created_on BETWEEN '2011-01-01' AND '2012-01-01'" , $expr->toSql() );
+    }
+
+
+    public function testBetweenNumber()
+    {
+        $expr = $this->createExpr();
+        $expr->between('created_on', 10, 20);
+        is( "created_on BETWEEN 10 AND 20" , $expr->toSql() );
+    }
 
 }
 

@@ -389,7 +389,7 @@ class CRUDBuilder
                 if( is_integer($k) )
                     $k = $v;
                 $columns[] = $this->driver->getQuoteColumn( $k );
-                $values[]  = '\'' . $this->driver->escape($v) . '\'';
+                $values[]  = $this->driver->escape($v);
 
             }
         }
@@ -472,7 +472,7 @@ class CRUDBuilder
                     $conds[] = $this->driver->getQuoteColumn($k) . ' = ' . $v ;
                 } else {
                     $conds[] = $this->driver->getQuoteColumn($k) . ' = ' 
-                        . '\'' . $this->driver->escape($v) . '\'';
+                        . $this->driver->escape($v);
                 }
             }
         }

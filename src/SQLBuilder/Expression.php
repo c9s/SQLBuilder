@@ -83,6 +83,8 @@ class Expression extends BaseExpression
     public function between($column,$from,$to)
     {
         $expr = new BetweenExpression( $column, $from, $to );
+        $expr->driver = $this->driver;
+        $this->op = $expr;
         return $this;
     }
 
@@ -139,9 +141,7 @@ class Expression extends BaseExpression
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v;
                     } else {
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
-                            . '\'' 
-                            . $this->driver->escape($v)
-                            . '\'';
+                            . $this->driver->escape($v);
                     }
                 }
             }

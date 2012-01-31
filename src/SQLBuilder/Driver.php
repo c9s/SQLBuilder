@@ -147,7 +147,7 @@ class Driver
      * escape single quote 
      *
      */
-    public function escape($string)
+    public function escape($value)
     {
         /**
          * escaper:
@@ -158,7 +158,10 @@ class Driver
          *
          *  $driver->configure('escaper',array($pgconn,'escape_string'));
          */
-        return call_user_func( $this->escaper , $string );
+        if( is_string( $value ) ) {
+            return '\'' . call_user_func( $this->escaper , $value ) . '\'';
+        }
+        return $value;
     }
 
 }
