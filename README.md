@@ -170,13 +170,11 @@ $sb = new QueryBuilder('member');
 $sb->driver = new Driver;
 $sb->driver->configure('driver','mysql');
 $sb->driver->configure('placeholder','named');
-
 $sb->update( array( 'set1' => 'value1') );
 $sb->whereFromArgs(array( 
     'cond1' => ':blah',       // is equal to    where()->equal('cond1',':blah')
 ));
-
-$sql = $sb->build();
+$sql = $sb->build();   // UPDATE member SET set1 = 'value1' WHERE cond1 = :cond1
 ```
 
 
@@ -219,6 +217,13 @@ $sb->alias('m')
     curl -s http://install.onionphp.org/ | sh
     onion -d bundle
     phpunit tests
+
+
+## Reference
+
+- http://dev.mysql.com/doc/refman/5.0/en/sql-syntax.html
+- http://www.postgresql.org/docs/8.2/static/sql-syntax.html
+- http://www.sqlite.org/optoverview.html
 
 ## Author
 
