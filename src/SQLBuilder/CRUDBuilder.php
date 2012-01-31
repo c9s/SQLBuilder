@@ -112,26 +112,6 @@ class CRUDBuilder
 
 
 
-    /**
-     * get table name (with quote or not)
-     *
-     * quotes can be used in postgresql:
-     *     select * from "table_name";
-     */
-    public function getTableSql()
-    {
-        $sql = '';
-        if( $this->driver->quoteTable ) {
-            $sql = '"' . $this->table . '"';
-        } else {
-            $sql = $this->table;
-        }
-
-        if( $this->alias )
-            $sql .= ' ' . $this->alias;
-        return $sql;
-    }
-
 
 
     /*** behavior methods ***/
@@ -260,6 +240,60 @@ class CRUDBuilder
 
 
 
+    /*************************
+     * public interface 
+     *************************/
+
+
+    public function build()
+    {
+        if( ! $this->behavior )
+            throw new Exception('behavior is not defined.');
+
+        switch( $this->behavior )
+        {
+        case static::UPDATE:
+            return $this->buildUpdate();
+            break;
+        case static::INSERT:
+            return $this->buildInsert();
+            break;
+        case static::DELETE:
+            return $this->buildDelete();
+            break;
+        case static::SELECT:
+            return $this->buildSelect();
+            break;
+        default:
+            throw new Exception('behavior is not defined.');
+            break;
+        }
+    }
+
+
+
+
+    /**
+     * get table name (with quote or not)
+     *
+     * quotes can be used in postgresql:
+     *     select * from "table_name";
+     */
+    protected function getTableSql()
+    {
+        $sql = '';
+        if( $this->driver->quoteTable ) {
+            $sql = '"' . $this->table . '"';
+        } else {
+            $sql = $this->table;
+        }
+
+        if( $this->alias )
+            $sql .= ' ' . $this->alias;
+        return $sql;
+    }
+
+
 
     /**
      * builder, protected methods
@@ -280,11 +314,7 @@ class CRUDBuilder
         return join(', ',$cols);
     }
 
-
-    /*************************
-     * public interface 
-     *************************/
-    public function buildDelete()
+    protected function buildDelete()
     {
         $sql = 'DELETE FROM ' . $this->getTableSql() . ' ';
         $sql .= $this->buildConditionSql();
@@ -295,7 +325,7 @@ class CRUDBuilder
     }
 
 
-    public function buildUpdate()
+    protected function buildUpdate()
     {
         $sql = 'UPDATE ' . $this->getTableSql() . ' SET ';
 
@@ -315,7 +345,7 @@ class CRUDBuilder
     /** 
      * build select sql
      */
-    public function buildSelect()
+    protected function buildSelect()
     {
         /* check required arguments */
         $sql = 'SELECT ' 
@@ -338,7 +368,7 @@ class CRUDBuilder
 
 
 
-    public function buildInsert()
+    protected function buildInsert()
     {
         /* check required arguments */
         $columns = array();
@@ -374,31 +404,6 @@ class CRUDBuilder
         return $sql;
     }
 
-
-    public function build()
-    {
-        if( ! $this->behavior )
-            throw new Exception('behavior is not defined.');
-
-        switch( $this->behavior )
-        {
-        case static::UPDATE:
-            return $this->buildUpdate();
-            break;
-        case static::INSERT:
-            return $this->buildInsert();
-            break;
-        case static::DELETE:
-            return $this->buildDelete();
-            break;
-        case static::SELECT:
-            return $this->buildSelect();
-            break;
-        default:
-            throw new Exception('behavior is not defined.');
-            break;
-        }
-    }
 
 
     protected function buildJoinSql()
