@@ -121,10 +121,12 @@ For mysql, generates:
 
 ### Between
 
-    $query->select('*')->table('items')->where()
+    $query->select('*')->table('items')
+        ->where()
         ->between('created_on', '2011-01-01' , '2011-02-01' )
         ->limit(10)->offset(100);
 
+    SELECT * FROM items WHERE created_on BETWEEN '2011-01-01' AND '2011-02-01'
 
 ### Insert
 
