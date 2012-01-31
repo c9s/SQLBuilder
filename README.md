@@ -102,16 +102,22 @@ Build Select SQL
 
 `Condition->back()` returns CRUD SQL builder object
 
-Limit, Offset:
+### Limit, Offset
 
 ```php
 <?php
-$sqlbuilder->where().....
-    ->back()
-    ->limit(30)->offset(100);
+$sqlbuilder->select('*')->table('items')
+    ->limit(10)->offset(100);
 ?>
 ```
 
+For postgresql, generates:
+
+    SELECT * FROM items OFFSET 100 LIMIT 10;
+
+For mysql, generates:
+
+    SELECT * FROM items LIMIT 100,10;
 
 ### Between
 
@@ -119,17 +125,6 @@ $sqlbuilder->where().....
         ->between('created_on', '2011-01-01' , '2011-02-01' )
         ->limit(10)->offset(100);
 
-For postgresql, generates:
-
-    SELECT * FROM items 
-        WHERE created_on BETWEEN '2011-01-01' and '2012-01-01'
-        OFFSET 100 LIMIT 10;
-
-For mysql, generates:
-
-    SELECT * FROM items 
-        WHERE created_on BETWEEN '2011-01-01' and '2012-01-01'
-        LIMIT 100,10;
 
 ### Insert
 
