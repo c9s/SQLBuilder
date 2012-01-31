@@ -7,8 +7,7 @@ use Exception;
 class SQLBuilderTest extends PHPUnit_Framework_TestCase
 {
 
-
-    function testInsert()
+    public function getPgDriver()
     {
         $driver = new Driver;
         $driver->configure('driver','postgresql');
@@ -16,7 +15,12 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
         $driver->configure('quote_column',true);
         $driver->configure('trim',true);
         $driver->configure('placeholder','named');
+        return $driver;
+    }
 
+    function testInsert()
+    {
+        $driver = $this->getPgDriver();
 
         $sb = new CRUDBuilder;
         $sb->driver = $driver;
