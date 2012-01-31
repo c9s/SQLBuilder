@@ -6,8 +6,16 @@ use Exception;
 
 class SQLBuilderTest extends PHPUnit_Framework_TestCase
 {
+    static $pdo;
 
-    public function getPgDriver()
+    function getDb()
+    {
+        if( self::$pdo )
+            return self::$pdo;
+        return self::$pdo = new PDO;
+    }
+
+    function getPgDriver()
     {
         $driver = new Driver;
         $driver->configure('driver','postgresql');
@@ -17,6 +25,8 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
         $driver->configure('placeholder','named');
         return $driver;
     }
+
+
 
     function testInsert()
     {
@@ -44,6 +54,8 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
         $sql = $sb->build();
         is( 'INSERT INTO "Member" ( "foo","bar") VALUES (?,?)' , $sql );
     }
+
+
 
     function testDelete()
     {

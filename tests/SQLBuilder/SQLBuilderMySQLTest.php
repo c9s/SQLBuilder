@@ -17,7 +17,8 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
     function testInsert()
     {
-        $sb = new CRUDBuilder('member');
+        $sb = new CRUDBuilder;
+        $sb->table('member');
         $sb->driver = $this->getDriver();
 
         $sb->insert(array(
@@ -42,7 +43,8 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
     function testDelete()
     {
-        $sb = new CRUDBuilder('member');
+        $sb = new CRUDBuilder;
+        $sb->table('member');
         $sb->driver = new Driver;
         $sb->driver->configure('driver','mysql');
         $sb->driver->configure('trim',true);
@@ -58,7 +60,8 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
     function testUpdate()
     {
-        $sb = new CRUDBuilder('member');
+        $sb = new CRUDBuilder;
+        $sb->table('member');
         $sb->driver = new Driver;
         $sb->driver->configure('driver','mysql');
         $sb->driver->configure('trim',true);
@@ -77,7 +80,8 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
     function testSelectWithJoin()
     {
-        $sb = new CRUDBuilder('member');
+        $sb = new CRUDBuilder;
+        $sb->table('member');
         $sb->driver = new Driver;
         $sb->driver->configure('driver','mysql');
         $sb->driver->configure('trim',true);
@@ -97,7 +101,8 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
 
     function testSelect()
     {
-        $sb = new CRUDBuilder('member');
+        $sb = new CRUDBuilder;
+        $sb->table('member');
         $sb->driver = new Driver;
         $sb->driver->configure('driver','mysql');
         $sb->driver->configure('trim',true);
