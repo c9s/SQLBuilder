@@ -1,5 +1,6 @@
 <?php
 namespace SQLBuilder;
+use Exception;
 
 class Expression extends BaseExpression
 {
@@ -14,55 +15,56 @@ class Expression extends BaseExpression
     /* op code connects to parent expression */
     public $parentOp;
 
-    public $cond;
+    public $op;
 
-    public function setCond($cond)
+    public function setOp($op)
     {
-        if( $this->cond ) {
-            return $this->and()->setCond($cond);
+        if( $this->op ) {
+            return $this->and()->setOp($op);
+        } else {
+            $this->op = $op;
+            return $this;
         }
-        $this->cond = $cond;
-        return $this;
     }
 
     public function is($c,$n)
     {
-        return $this->setCond( array( $c , 'is' , array($n) ));
+        return $this->setOp( array( $c , 'is' , array($n) ));
     }
 
     public function isNot($c,$n)
     {
-        return $this->setCond( array( $c , 'is not' , array($n) ));
+        return $this->setOp( array( $c , 'is not' , array($n) ));
     }
 
     public function equal($c,$n)
     {
-        return $this->setCond(array( $c , '=' , $n ));
+        return $this->setOp(array( $c , '=' , $n ));
     }
 
     public function notEqual($c,$n)
     {
-        return $this->setCond(array( $c, '!=' , $n ));
+        return $this->setOp(array( $c, '!=' , $n ));
     }
 
     public function like($c,$n)
     {
-        return $this->setCond(array( $c, 'like', $n ));
+        return $this->setOp(array( $c, 'like', $n ));
     }
 
     public function greater($c,$n)
     {
-        return $this->setCond(array( $c, '>', $n ));
+        return $this->setOp(array( $c, '>', $n ));
     }
 
     public function less($c,$n)
     {
-        return $this->setCond(array( $c, '<', $n ));
+        return $this->setOp(array( $c, '<', $n ));
     }
 
     public function group($op = 'AND')
     {
-        if( ! $this->cond && count($this->childs) == 0 )
+        if( ! $this->op && count($this->childs) == 0 )
             $op = null;
         $groupExpr = $this->createGroupExpr($op);
         return $groupExpr->createExpr(null);
@@ -78,10 +80,10 @@ class Expression extends BaseExpression
         }
     }
 
-    public function between($column)
+    public function between($column,$from,$to)
     {
-        $expr = new BetweenExpression;
-        return $expr;
+        $expr = new BetweenExpression( $column, $from, $to );
+        return $this;
     }
 
     public function __call($method,$args)
@@ -115,30 +117,39 @@ class Expression extends BaseExpression
         if( $this->parentOp )
             $sql .= $this->parentOp . ' ';
 
-        if( $this->cond ) {
-            list($k,$op,$v) = $this->cond;
-            if( $this->driver->placeholder ) {
-                $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($k);
+        if( $this->op ) {
+            if( is_array( $this->op ) ) {
 
-                /*
-                if( is_array($v) ) {
-                    $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
-                } else {
-                    $sql .= $this->driver->getQuoteColumn( $k ) . ' ' . $op . ' '  . $this->getPlaceHolder($k);
+                list($k,$op,$v) = $this->op;
+                if( $this->driver->placeholder ) {
+                    $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($k);
+
+                    /*
+                    if( is_array($v) ) {
+                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
+                    } else {
+                        $sql .= $this->driver->getQuoteColumn( $k ) . ' ' . $op . ' '  . $this->getPlaceHolder($k);
+                    }
+                    */
                 }
-                 */
+                else {
+                    if( is_array($v) ) {
+                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
+                    } elseif( is_integer($v) ) {
+                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v;
+                    } else {
+                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
+                            . '\'' 
+                            . $this->driver->escape($v)
+                            . '\'';
+                    }
+                }
+            }
+            elseif( is_object( $this->op ) ) {
+                $sql .= $this->op->toSql();
             }
             else {
-                if( is_array($v) ) {
-                    $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
-                } elseif( is_integer($v) ) {
-                    $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v;
-                } else {
-                    $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
-                        . '\'' 
-                        . $this->driver->escape($v)
-                        . '\'';
-                }
+                throw new Exception( 'Unsupported Op type.' );
             }
         }
 
