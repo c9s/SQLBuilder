@@ -2,8 +2,10 @@
 namespace SQLBuilder;
 use Exception;
 
-class Expression extends BaseExpression
+class Expression 
+    extends BaseExpression
 {
+
     public $driver;
 
     /* child */
