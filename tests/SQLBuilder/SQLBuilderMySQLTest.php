@@ -54,7 +54,7 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
         is( 'DELETE FROM member  WHERE foo = \'string\'' , $sql );
 
         $sb->driver->configure('placeholder','named');
-        $sql = $sb->buildDelete();
+        $sql = $sb->build();
         is( 'DELETE FROM member  WHERE foo = :foo' , $sql );
     }
 
@@ -70,11 +70,11 @@ class CRUDBuilderMySQLTest extends PHPUnit_Framework_TestCase
             'cond1' => ':blah',
         ));
         $sb->update( array( 'set1' => 'value1') );
-        $sql = $sb->buildUpdate();
+        $sql = $sb->build();
         is( 'UPDATE member SET set1 = :set1 WHERE cond1 = :cond1' , $sql );
 
         $sb->driver->configure('placeholder',false);
-        $sql = $sb->buildUpdate();
+        $sql = $sb->build();
         is( 'UPDATE member SET set1 = \'value1\' WHERE cond1 = \':blah\'' , $sql );
     }
 
