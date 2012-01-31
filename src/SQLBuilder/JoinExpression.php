@@ -53,11 +53,6 @@ class JoinExpression
         }
         return $sql;
     }
-
-
 }
-
-
-
 
 

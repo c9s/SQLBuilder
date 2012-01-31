@@ -17,7 +17,7 @@ $sb->driver = $driver;
 
 
 $bench = new SimpleBench( array( 'gc' => 1 ));
-$bench->n = 100;
+$bench->n = 1000;
 $bench->title = 'sql builder';
 
 $bench->iterate( 'select' , 'select' , function() use($sb) {
