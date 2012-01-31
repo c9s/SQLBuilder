@@ -157,6 +157,7 @@ $sb->alias('m')
     ->join('table_name')
         ->alias('t')
         ->on()->equal( 't.zzz', array('m.ccc') )        // not to escape string (with array())
+        ->back()                                        // return to join expression object
         ->on()->equal( 'a.foo', 'string' )              // treat as string, escape string
         ->back()          // go back to SqlBuilder object.
         ->toSql();

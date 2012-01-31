@@ -29,11 +29,12 @@ class JoinExpressionTest extends PHPUnit_Framework_TestCase
 
         $expr->alias('u')
             ->on()
-            ->equal( 'a' , array('a') )
-            ->equal( 'c' , array('c') );
+                ->equal( 'a' , array('a') )->back()
+            ->on()
+                ->equal( 'b' , array('b') );
 
         $sql = $expr->toSql();
-        is(" LEFT JOIN users u ON (a = a AND c = c)" , $sql );
+        is(" LEFT JOIN users u ON (a = a) ON (b = b)" , $sql );
     }
 }
 
