@@ -35,7 +35,13 @@ Trim spaces for SQL ?
 $driver->configure('trim',true);
 ```
 
-Place holder style ? named-parameter is supported by POD:
+### Place Holder style
+
+SQLBuilder supports two styles: 
+- named parameter by PDO
+- question-mark paramter by mysql, PDO.
+
+configure for named-parameter:
 
 ```php
 <?php
@@ -46,7 +52,7 @@ This generates SQL with named-parameter for PDO:
 
     INSERT INTO table (foo ,bar ) values (:foo, :bar);
 
-Or question-mark style:
+Configure for question-mark style:
 
 ```php
 <?php
@@ -58,11 +64,11 @@ This generates:
     INSERT INTO table (foo ,bar ) values (?,?);
 
 
-## CRUD SQL Generation
+## Query SQL Generation
 
 ### Select
 
-CRUD SQL Builder for table 'Member':
+Build SQL query for table 'Member':
 
 ```php
 <?php
@@ -100,7 +106,7 @@ Build Select SQL
 
 `where()` returns Expression object.
 
-`Condition->back()` returns CRUD SQL builder object
+`Condition->back()` returns QueryBuilder object
 
 ### Limit, Offset
 
@@ -213,4 +219,9 @@ $sb->alias('m')
     curl -s http://install.onionphp.org/ | sh
     onion -d bundle
     phpunit tests
+
+## Author
+
+Yo-An Lin (c9s) <cornelius.howl@gmail.com>
+
 
