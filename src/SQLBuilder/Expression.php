@@ -1,7 +1,7 @@
 <?php
 namespace SQLBuilder;
 
-class Expression
+class Expression extends BaseExpression
 {
     public $driver;
 
@@ -78,17 +78,10 @@ class Expression
         }
     }
 
-
-    /**
-     * back to top parent 
-     */
-    public function back()
+    public function between($column)
     {
-        $p = $this;
-        while( property_exists($p,'parent') && $p = $p->parent ) {
-            if( ! property_exists($p,'parent') || ! $p->parent )
-                return $p;
-        }
+        $expr = new BetweenExpression;
+        return $expr;
     }
 
     public function __call($method,$args)
@@ -102,26 +95,6 @@ class Expression
             return $this->newOr();
             break;
         }
-    }
-
-    public function createGroupExpr($op = 'AND')
-    {
-        $subexpr = new ExpressionGroup;
-        $subexpr->parent = $this;
-        $subexpr->parentOp = $op;
-        $subexpr->driver = $this->driver;
-        $this->childs[] = $subexpr;
-        return $subexpr;
-    }
-
-    public function createExpr($op = 'AND')
-    {
-        $subexpr = new self;
-        $subexpr->parent = $this;
-        $subexpr->parentOp = $op;
-        $subexpr->driver = $this->driver;
-        $this->childs[] = $subexpr;
-        return $subexpr;
     }
 
     public function newAnd()

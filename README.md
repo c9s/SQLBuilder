@@ -112,6 +112,19 @@ $sqlbuilder->where().....
 ?>
 ```
 
+
+### Between
+
+    $query->select('*')->table('items')->where()
+        ->between('created_on')
+            ->greater('2011-01-01');
+            ->less('2012-01-01')
+            ->back()
+        ->limit(10);
+
+    // select * from items where created_on 
+    //    between '2011-01-01' and '2012-01-01'
+
 ### Insert
 
 Do insertion:
