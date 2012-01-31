@@ -73,7 +73,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
         is( 'DELETE FROM "Member"  WHERE "foo" = \'123\'' , $sql );
 
         $driver->configure('placeholder','named');
-        $sql = $sb->buildDelete();
+        $sql = $sb->build();
         is( 'DELETE FROM "Member"  WHERE "foo" = :foo' , $sql );
     }
 
@@ -93,11 +93,11 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
             'cond1' => ':blah',
         ));
         $sb->update( array( 'set1' => 'value1') );
-        $sql = $sb->buildUpdate();
+        $sql = $sb->build();
         is( 'UPDATE "Member" SET "set1" = :set1 WHERE "cond1" = :cond1' , $sql );
 
         $d->configure('placeholder',false);
-        $sql = $sb->buildUpdate();
+        $sql = $sb->build();
         is( 'UPDATE "Member" SET "set1" = \'value1\' WHERE "cond1" = \':blah\'' , $sql );
     }
 
