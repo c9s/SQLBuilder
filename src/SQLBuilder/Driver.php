@@ -161,6 +161,8 @@ class Driver
         if( is_string( $value ) ) {
             return '\'' . call_user_func( $this->escaper , $value ) . '\'';
         }
+        if( $value === null ) 
+            return 'NULL';
         return $value;
     }
 

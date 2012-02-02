@@ -390,7 +390,6 @@ class QueryBuilder
                     $k = $v;
                 $columns[] = $this->driver->getQuoteColumn( $k );
                 $values[]  = $this->driver->escape($v);
-
             }
         }
 
