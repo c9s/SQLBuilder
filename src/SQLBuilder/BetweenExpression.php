@@ -18,9 +18,9 @@ class BetweenExpression
     public function toSql()
     {
         return $this->driver->getQuoteColumn($this->column) . ' BETWEEN ' 
-            . $this->driver->escape( $this->from )
+            . $this->driver->inflate( $this->from )
             .  ' AND ' 
-            . $this->driver->escape( $this->to );
+            . $this->driver->inflate( $this->to );
     }
 
 }

@@ -137,11 +137,9 @@ class Expression extends BaseExpression
                 else {
                     if( is_array($v) ) {
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
-                    } elseif( is_integer($v) ) {
-                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v;
                     } else {
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
-                            . $this->driver->escape($v);
+                            . $this->driver->inflate($v);
                     }
                 }
             }
