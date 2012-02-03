@@ -164,6 +164,7 @@ class QueryBuilder
     public function delete()
     {
         $this->behavior = static::DELETE;
+        return $this;
     }
 
 
@@ -403,8 +404,6 @@ class QueryBuilder
             return trim($sql);
         return $sql;
     }
-
-
 
     protected function buildJoinSql()
     {
