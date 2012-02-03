@@ -55,6 +55,7 @@ class Driver
     public $escaper;
 
 
+
     static function create()
     {
         return new static;
@@ -70,6 +71,8 @@ class Driver
     {
         $this->type = $driverType;
         $this->escaper = 'addslashes';
+        $this->inflator = new Inflator;
+        $this->inflator->driver = $this;
     }
 
 
@@ -158,13 +161,14 @@ class Driver
          *
          *  $driver->configure('escaper',array($pgconn,'escape_string'));
          */
-        if( is_string( $value ) ) {
-            return '\'' . call_user_func( $this->escaper , $value ) . '\'';
-        }
-        if( $value === null ) 
-            return 'NULL';
-        return $value;
+        return '\'' . call_user_func( $this->escaper , $value ) . '\'';
     }
+
+    public function inflate($value)
+    {
+        return $this->inflator->inflate($value);
+    }
+
 
 }
 
