@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-02-03</date>
-  <time>03:58:39</time>
+  <time>23:43:28</time>
   <version>
-    <release>0.0.3</release>
-    <api>0.0.3</api>
+    <release>0.0.4</release>
+    <api>0.0.4</api>
   </version>
   <stability>
     <release>alpha</release>
@@ -35,8 +35,8 @@
       <file name="src/SQLBuilder/Expression.php" role="php" md5sum="7447141eee1c86381316908a83755cd3"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="46f8f90b3c845bb7e154229b6e11ba2d"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="1b88a43b9e1045d1a7c4ec575291cb88"/>
-      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="51e719c029317f0a5da7e626b39a6063"/>
-      <file name="package.ini" role="data" md5sum="b7280e4bcdf54188751f57fd218aed23"/>
+      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="717a95b99007270fcbd71a042319ac60"/>
+      <file name="package.ini" role="data" md5sum="f943e90074d81c812601b8e01ef231d8"/>
       <file name="phpunit.xml" role="data" md5sum="2ee1e3da4f5996998677644263e528f4"/>
     </dir>
   </contents>
