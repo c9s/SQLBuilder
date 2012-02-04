@@ -17,6 +17,7 @@ class BaseExpression
             if( ! property_exists($p,'parent') || ! $p->parent )
                 return $p;
         }
+        return $this;
     }
 
     public function createGroupExpr($op = 'AND')
