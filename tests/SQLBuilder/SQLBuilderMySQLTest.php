@@ -21,19 +21,17 @@ class QueryBuilderMySQLTest extends PHPUnit_Framework_TestCase
         $sb->table('member');
         $sb->driver = $this->getDriver();
 
-        $sb->insert(array(
+        $sql = $sb->insert(array(
             'foo' => 'foo',
             'bar' => 'bar',
-        ));
-        $sql = $sb->build();
+        ))->build();
         is( 'INSERT INTO member ( foo,bar) VALUES (:foo,:bar)' , $sql );
 
         $sb->driver->configure('placeholder',false);
-        $sb->insert(array(
+        $sql = $sb->insert(array(
             'foo' => 'foo',
             'bar' => 'bar',
-        ));
-        $sql = $sb->build();
+            ))->build();
         is( 'INSERT INTO member ( foo,bar) VALUES (\'foo\',\'bar\')' , $sql );
 
         $sb->driver->configure('placeholder',true);
@@ -85,9 +83,8 @@ class QueryBuilderMySQLTest extends PHPUnit_Framework_TestCase
         $sb->driver = new Driver;
         $sb->driver->configure('driver','mysql');
         $sb->driver->configure('trim',true);
-        $sb->select( '*' );
-
-        $sb->alias('m');
+        $sb->select( '*' )
+            ->alias('m');
         $back = $sb->join('tweets')
             ->alias('t')
             ->on()->equal('t.member_id',array('m.id'))->back();
@@ -95,8 +92,24 @@ class QueryBuilderMySQLTest extends PHPUnit_Framework_TestCase
         ok($back);
         is($back,$sb);
 
-        $sql = $sb->build();
+        $sql = $back->build();
         is("SELECT * FROM member m  LEFT JOIN tweets t ON (t.member_id = m.id)", $sql );
+    }
+
+    function testCascading()
+    {
+        $sb = new QueryBuilder;
+        $sb->driver = new Driver;
+        $sql = $sb->table('member')
+            ->select( '*' )
+            ->where()
+                ->equal('id',1)
+                ->equal('name','foo')
+                ->back()
+            ->join('tweets')->alias('t')->on()->equal('t',array('m.id'))
+                ->back()
+            ->build();
+        ok($sql);
     }
 
     function testSelect()

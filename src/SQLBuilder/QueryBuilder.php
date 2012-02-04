@@ -83,7 +83,6 @@ class QueryBuilder
 
     public $behavior;
 
-
     const INSERT = 1;
     const UPDATE = 2;
     const DELETE = 3;
@@ -104,6 +103,11 @@ class QueryBuilder
 
 
 
+    /**
+     * set table name
+     *
+     * @param string $table table name
+     */
     public function table($table)
     {
         $this->table = $table;
@@ -185,6 +189,7 @@ class QueryBuilder
     }
 
 
+
     public function alias($alias)
     {
         $this->alias = $alias;
@@ -206,6 +211,7 @@ class QueryBuilder
     {
         $this->where = $expr = new Expression;
         $expr->driver = $this->driver;
+        $expr->parent = $this;
         return $expr;
     }
 
@@ -483,6 +489,8 @@ class QueryBuilder
             return ' WHERE ' . $this->where->toSql();
         return '';
     }
+
+
 
 }
 
