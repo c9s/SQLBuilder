@@ -2,6 +2,12 @@
 
 SQLBuilder Simply focuses on providing a simple syntax for building SQL statement.
 
+
+## Install through PEAR
+
+    $ sudo pear channe-discover pear.corneltek.com
+    $ sudo pear install corneltek/SQLBuilder
+
 ## Driver
 
 get your SQL driver
