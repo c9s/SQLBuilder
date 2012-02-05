@@ -11,9 +11,13 @@ class Inflator
             return 'NULL';
         }
         elseif( $value === true ) {
+            if( $this->driver->type == 'sqlite' )
+                return 1;
             return 'TRUE';
         }
         elseif( $value === false ) {
+            if( $this->driver->type == 'sqlite' )
+                return 0;
             return 'FALSE';
         }
         elseif( is_integer($value) ) {
