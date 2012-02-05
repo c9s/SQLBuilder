@@ -53,6 +53,10 @@ class QueryBuilder
     public $offset;
 
 
+
+
+    public $groupBys = array();
+
     public $joinExpr = array();
 
     /**
@@ -248,6 +252,16 @@ class QueryBuilder
         return $this;
     }
 
+    public function groupBy($column)
+    {
+        $args = func_get_args();
+        if( count($args) > 1 ) {
+            $this->groupBys = $args;
+        } else {
+            $this->groupBys[] = $column;
+        }
+        return $this;
+    }
 
 
     /*************************
@@ -366,6 +380,8 @@ class QueryBuilder
 
         $sql .= $this->buildConditionSql();
 
+        $sql .= $this->buildGroupBySql();
+
         $sql .= $this->buildOrderSql();
 
         $sql .= $this->buildLimitSql();
@@ -455,9 +471,21 @@ class QueryBuilder
                 $sql .= ' LIMIT ' . $this->limit;
             }
         }
+        else if( $this->driver->type == 'sqlite' ) {
+            if( $this->limit ) 
+                throw new Exception('sqlite does not support limit syntax');
+            if( $this->offset ) 
+                throw new Exception('sqlite does not support limit/offset syntax');
+        }
         return $sql;
     }
 
+    protected function buildGroupBySql()
+    {
+        if( ! empty($this->groupBys) ) {
+            return ' GROUP BY ' . join( $this->groupBys );
+        }
+    }
 
     protected function buildSetterSql()
     {
