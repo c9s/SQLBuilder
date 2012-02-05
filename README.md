@@ -14,9 +14,9 @@ get your SQL driver
 
 ```php
 <?php
-$driver = new SQLBuilder\Driver('postgresql');
+$driver = new SQLBuilder\Driver('pgsql');
 $driver = SQLBuilder\Driver::getInstance();
-$driver = SQLBuilder\Driver::create('postgresql');
+$driver = SQLBuilder\Driver::create('pgsql');
 ```
 
 ### Configure Driver escaper
@@ -27,11 +27,11 @@ $driver->configure('escaper',array($pg,'escape'));
 $driver->configure('escaper',array($pdo,'quote'));
 ```
 
-### Configure database driver for postgresql
+### Configure database driver for pgsql
 
 ```php
 <?php
-$driver->configure('driver','postgresql');
+$driver->configure('driver','pgsql');
 ```
 
 Trim spaces for SQL ? 
@@ -118,7 +118,7 @@ $sqlbuilder->select('*')->table('items')
 ?>
 ```
 
-For postgresql, generates:
+For pgsql, generates:
 
     SELECT * FROM items OFFSET 100 LIMIT 10;
 
