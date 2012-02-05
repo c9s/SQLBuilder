@@ -1,6 +1,6 @@
 <?php
 
-class TestQueryWrapper
+class TestQueryWrapper extends SQLBuilder\QueryBuilder
 {
 
     /**
@@ -12,13 +12,6 @@ class TestQueryWrapper
      *              ->back()
      *          ->execute();
      */
-    public function delete()
-    {
-        $query = new SQLBuilder\QueryBuilder;
-        $query->driver = new SQLBuilder\Driver;
-        return $query;
-    }
-
 
     public function execute()
     {
@@ -39,13 +32,11 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
     function testWrapper()
     {
         $test = new TestQueryWrapper;
-
         $ret = $test->delete()
                 ->where()
                     ->equal('id',1)
-                ->back();
-
-        var_dump( $ret );
+                ->back()->execute();
+        is( true, $ret );
     }
 
     function testInsert()
