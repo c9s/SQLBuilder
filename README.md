@@ -113,6 +113,7 @@ Build Select SQL
 ```php
 <?php
 $sqlbuilder->select('*')->table('items')
+    ->groupBy('name')
     ->limit(10)->offset(100);
 ?>
 ```
