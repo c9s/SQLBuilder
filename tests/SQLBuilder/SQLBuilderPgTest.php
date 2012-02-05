@@ -18,7 +18,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
     function getPgDriver()
     {
         $driver = new Driver;
-        $driver->configure('driver','postgresql');
+        $driver->configure('driver','pgsql');
         $driver->configure('quote_table',true);
         $driver->configure('quote_column',true);
         $driver->configure('trim',true);
@@ -59,7 +59,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
     function testDelete()
     {
         $driver = new Driver;
-        $driver->configure('driver','postgresql');
+        $driver->configure('driver','pgsql');
         $driver->configure('trim',true);
         $driver->configure('quote_table',true);
         $driver->configure('quote_column',true);
@@ -80,7 +80,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
     function testUpdate()
     {
         $d = new Driver;
-        $d->configure('driver','postgresql');
+        $d->configure('driver','pgsql');
         $d->configure('quote_table',true);
         $d->configure('quote_column',true);
         $d->configure('trim',true);
@@ -104,7 +104,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
     function testSelect()
     {
         $d = new Driver;
-        $d->configure('driver','postgresql');
+        $d->configure('driver','pgsql');
         $d->configure('quote_table',true);
         $d->configure('quote_column',true);
         $d->configure('trim',true);

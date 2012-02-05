@@ -441,7 +441,7 @@ class QueryBuilder
     protected function buildLimitSql()
     {
         $sql = '';
-        if( $this->driver->type == 'postgresql' ) {
+        if( $this->driver->type == 'pgsql' ) {
             if( $this->limit && $this->offset ) {
                 $sql .= ' LIMIT ' . $this->limit . ' OFFSET ' . $this->offset;
             } else if ( $this->limit ) {

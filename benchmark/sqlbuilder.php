@@ -6,7 +6,7 @@ require( 'tests/bootstrap.php');
 
 
 $driver = new SQLBuilder\Driver;
-$driver->configure('driver','postgresql');
+$driver->configure('driver','pgsql');
 $driver->configure('quote_table',true);
 $driver->configure('quote_column',true);
 $driver->configure('trim',true);
