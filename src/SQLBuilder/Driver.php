@@ -3,7 +3,7 @@ namespace SQLBuilder;
 
 
 /*
- *  $driver->configure('driver','postgresql');
+ *  $driver->configure('driver','pgsql');
  *
  *  trim spaces
  *
@@ -100,7 +100,7 @@ class Driver
             /** 
              * valid driver:
              *
-             *   postgresql, mysql
+             *   pgsql, mysql, sqlite
              */
         case 'driver':
             $this->type = $value;
