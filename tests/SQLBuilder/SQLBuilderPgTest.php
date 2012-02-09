@@ -126,20 +126,14 @@ EOS
 
         $this->executeOk( $sql , array( 'insert3' , 1 ) );
 
-
         $record = $this->recordOk( 'select * from "Member" where "MemberName" = \'insert3\' ' );
         ok( $record['MemberConfirm'] );
     }
 
-
-
     function testDelete()
     {
-        $driver = new Driver;
-        $driver->configure('driver','pgsql');
-        $driver->configure('trim',true);
-        $driver->configure('quote_table',true);
-        $driver->configure('quote_column',true);
+        $driver = $this->getPgDriver();
+        $driver->configure('placeholder',null); // inflate values
 
         $sb = new QueryBuilder;
         $sb->driver = $driver;
