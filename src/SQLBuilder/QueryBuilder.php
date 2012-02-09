@@ -182,12 +182,18 @@ class QueryBuilder
 
     public function limit($limit)
     {
+        if( $this->driver->type == 'sqlite' ) {
+            // throw new Exception('sqlite does not support limit syntax');
+        }
         $this->limit = $limit;
         return $this;
     }
 
     public function offset($offset)
     {
+        if( $this->driver->type == 'sqlite' ) {
+            // throw new Exception('sqlite does not support offset syntax');
+        }
         $this->offset = $offset;
         return $this;
     }
@@ -472,10 +478,7 @@ class QueryBuilder
             }
         }
         else if( $this->driver->type == 'sqlite' ) {
-            if( $this->limit ) 
-                throw new Exception('sqlite does not support limit syntax');
-            if( $this->offset ) 
-                throw new Exception('sqlite does not support limit/offset syntax');
+            // just ignore
         }
         return $sql;
     }
