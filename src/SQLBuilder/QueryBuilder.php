@@ -566,8 +566,5 @@ class QueryBuilder
         return '';
     }
 
-
-
 }
-
 

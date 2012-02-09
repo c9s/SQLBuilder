@@ -76,6 +76,12 @@ class Driver
     }
 
 
+    /**
+     * configure options
+     *
+     *
+     *
+     */
     public function configure($key,$value)
     {
         switch( $key ) {
@@ -122,6 +128,18 @@ class Driver
     }
 
 
+
+    /**
+     * get place holder string,
+     * the returned value is depends on driver.
+     *
+     * for named parameter, this returns a key with a ":" char.
+     * for question-mark parameter, this always returns a "?" char.
+     *
+     * @param string $key column name
+     *
+     * @return string
+     */
     public function getPlaceHolder($key)
     {
         if( $this->placeholder && $this->placeholder === 'named' ) {
@@ -147,8 +165,7 @@ class Driver
 
 
     /**
-     * escape single quote 
-     *
+     * escape string with single quote 
      */
     public function escape($value)
     {
@@ -164,11 +181,32 @@ class Driver
         return '\'' . call_user_func( $this->escaper , $value ) . '\'';
     }
 
+    /**
+     * inflate value to SQL statement
+     *
+     * for example, boolean types should be translate to string TRUE or FALSE.
+     */
     public function inflate($value)
     {
         return $this->inflator->inflate($value);
     }
 
+
+    /**
+     * Convert a normal associative array to 
+     * named parameter array.
+     *
+     * @param array $args
+     * @return array
+     */
+    public function convertToNamedParameters($args)
+    {
+        $new = array();
+        foreach( $args as $k => $v ) {
+            $new[ ':'. $k ] = $v;
+        }
+        return $new;
+    }
 
 }
 
