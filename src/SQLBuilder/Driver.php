@@ -103,11 +103,11 @@ class Driver
             break;
 
 
-            /** 
-             * valid driver:
-             *
-             *   pgsql, mysql, sqlite
-             */
+        /** 
+         * valid driver:
+         *
+         *   pgsql, mysql, sqlite
+         */
         case 'driver':
             $this->type = $value;
             if( $this->type == 'mysql' ) {
