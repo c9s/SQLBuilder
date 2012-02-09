@@ -176,8 +176,6 @@ class QueryBuilder
     }
 
 
-
-
     /*** limit , offset methods ***/
     public function limit($limit)
     {
@@ -188,6 +186,12 @@ class QueryBuilder
         return $this;
     }
 
+
+    /**
+     * setup offset syntax
+     *
+     * @param integer $offset
+     */
     public function offset($offset)
     {
         if( $this->driver->type == 'sqlite' ) {
@@ -199,6 +203,11 @@ class QueryBuilder
 
 
 
+    /**
+     * setup table alias
+     *
+     * @param string $alias table alias
+     */
     public function alias($alias)
     {
         $this->alias = $alias;
@@ -206,6 +215,14 @@ class QueryBuilder
     }
 
 
+    /**
+     * join table
+     *
+     * @param string $table table name
+     * @param string $type  join type, valid types are: 'left', 'right', 'inner' ..
+     *
+     * @return SQLBuilder\JoinExpression
+     */
     public function join($table,$type = 'LEFT')
     {
         $this->joinExpr[] = $expr = new JoinExpression($table,$type);
@@ -216,6 +233,12 @@ class QueryBuilder
 
     /*** condition methods ***/
 
+
+    /**
+     * setup where condition
+     *
+     * @return SQLBuilder\Expression
+     */
     public function where()
     {
         if( $this->where )
@@ -231,7 +254,9 @@ class QueryBuilder
     /**
      * build expressions from arguments for simple usage.
      *
-     * @param array
+     * @param array $args
+     *
+     * @return SQLBuilder\QueryBuilder
      */
     public function whereFromArgs($args)
     {
@@ -243,7 +268,13 @@ class QueryBuilder
     }
 
 
-    /* for postgresql-only */
+    /**
+     * set returning column data when inserting data
+     *
+     * postgresql-only 
+     *
+     * @param string $column column name
+     * */
     public function returning($column)
     {
         $this->returning = $column;
@@ -251,12 +282,24 @@ class QueryBuilder
     }
 
 
+    /**
+     * push order 
+     *
+     * @param string $column column name
+     * @param string $order  order type, desc or asc
+     */
     public function order($column,$order = 'desc')
     {
         $this->orders[] = array( $column , $order );
         return $this;
     }
 
+
+    /**
+     * group by column
+     *
+     * @param string $column column name
+     */
     public function groupBy($column)
     {
         $args = func_get_args();
