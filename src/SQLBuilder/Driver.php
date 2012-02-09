@@ -150,6 +150,14 @@ class Driver
         }
     }
 
+    /**
+     * check driver option to quote column name
+     *
+     * column quote can be configured by 'quote_column' option.
+     *
+     * @param string $name column name
+     * @return string column name with/without quotes.
+     */
     public function getQuoteColumn($name)
     {
 
@@ -163,6 +171,23 @@ class Driver
         return $name;
     }
 
+    /**
+     * check driver optino to quote table name
+     *
+     * column quote can be configured by 'quote_table' option.
+     *
+     * @param string $name table name
+     * @return string table name with/without quotes.
+     */
+    public function getQuoteTableName($name) 
+    {
+        if( $c = $this->quoteTable ) {
+            if( is_string($c) ) 
+                return $c . $name . $c;
+            return '"' . $name . '"';
+        }
+        return $name;
+    }
 
     /**
      * escape string with single quote 

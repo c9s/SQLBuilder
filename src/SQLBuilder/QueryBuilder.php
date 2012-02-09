@@ -354,12 +354,7 @@ class QueryBuilder
     protected function getTableSql()
     {
         $sql = '';
-        if( $this->driver->quoteTable ) {
-            $sql = '"' . $this->table . '"';
-        } else {
-            $sql = $this->table;
-        }
-
+        $sql .= $this->driver->getQuoteTableName($this->table);
         if( $this->alias )
             $sql .= ' ' . $this->alias;
         return $sql;
