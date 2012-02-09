@@ -42,22 +42,34 @@ EOS
 
     function queryOk($sql)
     {
-        $this->pdo->query($sql);
+        $ret = $this->pdo->query($sql);
         $err = $this->pdo->errorInfo();
         ok( ! $err[1] );
+        return $ret;
     }
 
     function executeOk($sql,$args)
     {
         $stm = $this->pdo->prepare($sql);
         $err = $this->pdo->errorInfo();
-        ok( ! $err[1] );
+
+        ok( ! $err[1] , $err[0] );
 
         ok( $stm );
         $stm->execute( $args );
 
         $err = $this->pdo->errorInfo();
         ok( ! $err[1] );
+        return $stm;
+    }
+
+    function recordOk($sql)
+    {
+        $stm = $this->queryOk($sql);
+        $row = $stm->fetch();
+        ok( $row );
+        ok( ! empty( $row ));
+        return $row;
     }
 
     function getPgDriver()
@@ -78,29 +90,45 @@ EOS
         $sb = new QueryBuilder;
         $sb->driver = $driver;
         $sb->table('Member')->insert(array(
-            'MemberName' => 'foo',
-            'MemberConfirm' => 'bar',
+            'MemberName' => 'insert',
+            'MemberConfirm' => true,
         ));
         $sql = $sb->build();
         is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (:MemberName,:MemberConfirm)' , $sql );
 
         $this->executeOk( $sql , array( 
-            ':MemberName' => 'foo',
+            ':MemberName' => 'insert',
             ':MemberConfirm' => true
         ));
+
+        $record = $this->recordOk( 'select * from "Member" where "MemberName" = \'insert\' ' );
+        ok( $record['MemberConfirm'] );
+
 
 
         $driver->configure('placeholder',false);
         $sb->insert(array(
-            'foo' => 'foo',
-            'bar' => 'bar',
+            'MemberName' => 'insert2',
+            'MemberConfirm' => true,
         ));
         $sql = $sb->build();
-        is( 'INSERT INTO "Member" ( "foo","bar") VALUES (\'foo\',\'bar\')' , $sql );
+        is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (\'insert2\',TRUE)' , $sql );
+        $this->queryOk( $sql );
+
+        $record = $this->recordOk( 'select * from "Member" where "MemberName" = \'insert2\' ' );
+        ok( $record['MemberConfirm'] );
+
+
 
         $driver->configure('placeholder',true);
         $sql = $sb->build();
-        is( 'INSERT INTO "Member" ( "foo","bar") VALUES (?,?)' , $sql );
+        is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (?,?)' , $sql );
+
+        $this->executeOk( $sql , array( 'insert3' , 1 ) );
+
+
+        $record = $this->recordOk( 'select * from "Member" where "MemberName" = \'insert3\' ' );
+        ok( $record['MemberConfirm'] );
     }
 
 
