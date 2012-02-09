@@ -221,3 +221,8 @@ $sb->alias('m')
     onion -d bundle
     phpunit tests
 
+
+PgSQL test:
+
+    createdb sqlbuilder_test
+    createuser test
