@@ -11,14 +11,14 @@
     <active>yes</active>
   </lead>
   <date>2012-02-10</date>
-  <time>00:28:14</time>
+  <time>00:31:14</time>
   <version>
     <release>0.0.11</release>
     <api>0.0.11</api>
   </version>
   <stability>
-    <release>stable</release>
-    <api>stable</api>
+    <release>alpha</release>
+    <api>alpha</api>
   </stability>
   <license>PHP</license>
   <notes>-</notes>
@@ -39,7 +39,7 @@
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="4810006ac4b4e043cf5c13b7d90f9d7a"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="1b88a43b9e1045d1a7c4ec575291cb88"/>
       <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="2f73b65488f80336b1f6afd008a2f9d7"/>
-      <file name="package.ini" role="data" md5sum="c7f6c0d142d106b365aa00dadeb81a57"/>
+      <file name="package.ini" role="data" md5sum="81d914374f45c84d73a8e9ffb353e9a3"/>
       <file name="phpunit.xml" role="data" md5sum="2ee1e3da4f5996998677644263e528f4"/>
     </dir>
   </contents>
