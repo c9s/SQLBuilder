@@ -179,7 +179,6 @@ class QueryBuilder
 
 
     /*** limit , offset methods ***/
-
     public function limit($limit)
     {
         if( $this->driver->type == 'sqlite' ) {
