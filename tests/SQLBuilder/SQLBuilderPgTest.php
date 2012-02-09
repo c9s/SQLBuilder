@@ -21,7 +21,9 @@ EOS
 
         $pdo->query(<<<EOS
 CREATE TABLE "Member" (
-    "MemberNo" integer primary key default nextval('MemberNo_seq')
+    "MemberNo" integer primary key default nextval('MemberNo_seq'),
+    "MemberName" varchar(128),
+    "MemberConfirm" boolean
 );
 EOS
         );
@@ -36,6 +38,26 @@ EOS
     function getDb()
     {
         return new PDO( 'pgsql:dbname=sqlbuilder_test', 'test', 'test' );
+    }
+
+    function queryOk($sql)
+    {
+        $this->pdo->query($sql);
+        $err = $this->pdo->errorInfo();
+        ok( ! $err[1] );
+    }
+
+    function executeOk($sql,$args)
+    {
+        $stm = $this->pdo->prepare($sql);
+        $err = $this->pdo->errorInfo();
+        ok( ! $err[1] );
+
+        ok( $stm );
+        $stm->execute( $args );
+
+        $err = $this->pdo->errorInfo();
+        ok( ! $err[1] );
     }
 
     function getPgDriver()
@@ -56,11 +78,17 @@ EOS
         $sb = new QueryBuilder;
         $sb->driver = $driver;
         $sb->table('Member')->insert(array(
-            'foo' => 'foo',
-            'bar' => 'bar',
+            'MemberName' => 'foo',
+            'MemberConfirm' => 'bar',
         ));
         $sql = $sb->build();
-        is( 'INSERT INTO "Member" ( "foo","bar") VALUES (:foo,:bar)' , $sql );
+        is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (:MemberName,:MemberConfirm)' , $sql );
+
+        $this->executeOk( $sql , array( 
+            ':MemberName' => 'foo',
+            ':MemberConfirm' => true
+        ));
+
 
         $driver->configure('placeholder',false);
         $sb->insert(array(
