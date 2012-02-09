@@ -171,6 +171,7 @@ class Driver
         return $name;
     }
 
+
     /**
      * check driver optino to quote table name
      *
