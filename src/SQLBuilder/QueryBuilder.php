@@ -260,6 +260,9 @@ class QueryBuilder
      */
     public function whereFromArgs($args)
     {
+        if( empty($args) )
+            return $this;
+
         $expr = $this->where();
         foreach( $args as $k => $v ) {
             $expr = $expr->equal( $k , $v );
