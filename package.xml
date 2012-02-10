@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-02-10</date>
-  <time>02:06:50</time>
+  <time>22:51:28</time>
   <version>
-    <release>0.0.11</release>
-    <api>0.0.11</api>
+    <release>0.0.12</release>
+    <api>0.0.12</api>
   </version>
   <stability>
     <release>alpha</release>
@@ -24,13 +24,13 @@
   <notes>-</notes>
   <contents>
     <dir name="/">
-      <file name="tests/bootstrap.php" role="test" md5sum="cf11f3f4e2d0ced3a7487e28d950635f"/>
       <file name="tests/SQLBuilder/ExpressionTest.php" role="test" md5sum="c895b1573fa7422c5491ca2164f3db0b"/>
       <file name="tests/SQLBuilder/InflatorTest.php" role="test" md5sum="74b7c858852ab4e9b98ca4aa8ea8cf5a"/>
       <file name="tests/SQLBuilder/JoinExpressionTest.php" role="test" md5sum="6df3281b347a6b0fb815738443a8d01c"/>
       <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="0d0f9c82c446ffeac3177b56d5fbe295"/>
       <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="1991c550f9f5c32b349d5668d1b83cfe"/>
       <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="e09f50d7fd57385fb886e60a2e98a7fb"/>
+      <file name="tests/bootstrap.php" role="test" md5sum="cf11f3f4e2d0ced3a7487e28d950635f"/>
       <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="78b0d77aeb9232953106eb29e3b228bf"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a5062319102239677855391ec9af3370"/>
       <file name="src/SQLBuilder/Driver.php" role="php" md5sum="aa1603af178a706353f7a9dc4367c547"/>
@@ -39,7 +39,7 @@
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="4810006ac4b4e043cf5c13b7d90f9d7a"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="1b88a43b9e1045d1a7c4ec575291cb88"/>
       <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="4ef33c7beaa161cee154630964d93870"/>
-      <file name="package.ini" role="data" md5sum="81d914374f45c84d73a8e9ffb353e9a3"/>
+      <file name="package.ini" role="data" md5sum="c726ab6513464f2d0c0922a2f22c0690"/>
       <file name="phpunit.xml" role="data" md5sum="2ee1e3da4f5996998677644263e528f4"/>
     </dir>
   </contents>
@@ -65,13 +65,13 @@
   </dependencies>
   <phprelease>
     <filelist>
-      <install name="tests/bootstrap.php" as="bootstrap.php"/>
       <install name="tests/SQLBuilder/ExpressionTest.php" as="SQLBuilder/ExpressionTest.php"/>
       <install name="tests/SQLBuilder/InflatorTest.php" as="SQLBuilder/InflatorTest.php"/>
       <install name="tests/SQLBuilder/JoinExpressionTest.php" as="SQLBuilder/JoinExpressionTest.php"/>
       <install name="tests/SQLBuilder/SQLBuilderMySQLTest.php" as="SQLBuilder/SQLBuilderMySQLTest.php"/>
       <install name="tests/SQLBuilder/SQLBuilderPgTest.php" as="SQLBuilder/SQLBuilderPgTest.php"/>
       <install name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" as="SQLBuilder/SQLBuilderSQLiteTest.php"/>
+      <install name="tests/bootstrap.php" as="bootstrap.php"/>
       <install name="src/SQLBuilder/BaseExpression.php" as="SQLBuilder/BaseExpression.php"/>
       <install name="src/SQLBuilder/BetweenExpression.php" as="SQLBuilder/BetweenExpression.php"/>
       <install name="src/SQLBuilder/Driver.php" as="SQLBuilder/Driver.php"/>
