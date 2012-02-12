@@ -388,7 +388,11 @@ class QueryBuilder
     {
         $sql = 'DELETE FROM ' . $this->getTableSql() . ' ';
         $sql .= $this->buildConditionSql();
-        $sql .= $this->buildLimitSql();
+
+        /* only supported in mysql, sqlite */
+        if( $this->driver->type == 'mysql' || $this->driver->type == 'sqlite' )
+            $sql .= $this->buildLimitSql();
+
         if( $this->driver->trim )
             return trim($sql);
         return $sql;
@@ -404,6 +408,10 @@ class QueryBuilder
         $sql .= $this->buildJoinSql();
 
         $sql .= $this->buildConditionSql();
+
+        /* only supported in mysql, sqlite */
+        if( $this->driver->type == 'mysql' || $this->driver->type == 'sqlite' )
+            $sql .= $this->buildLimitSql();
 
         if( $this->driver->trim )
             return trim($sql);
