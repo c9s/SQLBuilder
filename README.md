@@ -2,6 +2,13 @@
 
 SQLBuilder Simply focuses on providing a simple syntax for building SQL statement.
 
+When switching database backend, you can simple change the driver type of query
+builder, and it will generate the proper SQL for your backend, you don't have
+to modify code to support different platform.
+
+for example, pgsql support `returning` statement, this kind of syntax will only 
+be built when this feature is supported.
+
 
 ## Install through PEAR
 
