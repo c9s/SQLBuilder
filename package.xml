@@ -10,15 +10,15 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-02-11</date>
-  <time>02:40:39</time>
+  <date>2012-02-12</date>
+  <time>11:49:52</time>
   <version>
-    <release>1.0.13</release>
-    <api>1.0.13</api>
+    <release>1.0.14</release>
+    <api>1.0.14</api>
   </version>
   <stability>
-    <release>alpha</release>
-    <api>alpha</api>
+    <release>stable</release>
+    <api>stable</api>
   </stability>
   <license>PHP</license>
   <notes>-</notes>
@@ -33,13 +33,13 @@
       <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="e09f50d7fd57385fb886e60a2e98a7fb"/>
       <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="78b0d77aeb9232953106eb29e3b228bf"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a5062319102239677855391ec9af3370"/>
-      <file name="src/SQLBuilder/Driver.php" role="php" md5sum="d7da4163b747e14994de1352a27c5e78"/>
+      <file name="src/SQLBuilder/Driver.php" role="php" md5sum="46fc7f46e432412d4d668ac2f012124b"/>
       <file name="src/SQLBuilder/Expression.php" role="php" md5sum="43bf02bfbe8b7215d46fcb1e58f81bd1"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="46f8f90b3c845bb7e154229b6e11ba2d"/>
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="4810006ac4b4e043cf5c13b7d90f9d7a"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="1b88a43b9e1045d1a7c4ec575291cb88"/>
       <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="57361b71e60233990381ea966a18f328"/>
-      <file name="package.ini" role="data" md5sum="1328f37bcffa39fe8d728bddb9552b85"/>
+      <file name="package.ini" role="data" md5sum="7f5d52b9e008790231cc4e166d0fb61f"/>
       <file name="phpunit.xml" role="data" md5sum="2ee1e3da4f5996998677644263e528f4"/>
     </dir>
   </contents>
