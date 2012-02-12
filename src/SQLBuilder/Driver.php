@@ -19,6 +19,12 @@ namespace SQLBuilder;
 class Driver
 {
 
+
+    /**
+     * driver type
+     *
+     * @var string mysql, pgsql, sqlite
+     */
     public $type;
 
     /**
@@ -162,11 +168,15 @@ class Driver
     {
 
         if( $c = $this->quoteColumn ) {
+            // return raw value if column name contains (non-word chars), eg: min( ), max( )
             if( preg_match('/\W/',$name) )
                 return $name;
             if( is_string($c) )
                 return $c . $name . $c;
-            return '"' . $name . '"';
+            if( $this->type == 'pgsql' )
+                return '"' . $name . '"';
+            elseif ( $this->type == 'mysql' )
+                return '`' . $name . '`';
         }
         return $name;
     }
@@ -185,7 +195,11 @@ class Driver
         if( $c = $this->quoteTable ) {
             if( is_string($c) ) 
                 return $c . $name . $c;
-            return '"' . $name . '"';
+
+            if( $this->type == 'pgsql' )
+                return '"' . $name . '"';
+            elseif ($this->type == 'mysql') 
+                return '`' . $name . '`';
         }
         return $name;
     }
