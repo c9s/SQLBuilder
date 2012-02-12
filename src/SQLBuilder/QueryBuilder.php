@@ -475,8 +475,9 @@ class QueryBuilder
         $sql = ' INSERT INTO ' . $this->getTableSql() . ' ( ';
         $sql .= join(',',$columns) . ") VALUES (".  join(',', $values ) .")";
 
-        if( $this->returning )
+        if( $this->returning && 'pgsql ' == $this->driver->type )
             $sql .= ' RETURNING ' . $this->driver->getQuoteColumn($this->returning);
+        }
 
         if( $this->driver->trim )
             return trim($sql);
