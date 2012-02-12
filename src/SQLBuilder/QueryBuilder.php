@@ -405,7 +405,6 @@ class QueryBuilder
 
         $sql .= $this->buildConditionSql();
 
-        $sql .= $this->buildLimitSql();
         if( $this->driver->trim )
             return trim($sql);
         return $sql;
