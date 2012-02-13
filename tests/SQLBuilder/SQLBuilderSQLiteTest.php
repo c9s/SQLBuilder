@@ -21,6 +21,14 @@ class TestQueryWrapper extends SQLBuilder\QueryBuilder
 
 class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
 {
+    public $pdo;
+
+    function setup()
+    {
+        $this->pdo = new PDO('sqlite::memory:');
+        $this->pdo->query( 'create table member ( name varchar(128) , phone varchar(128) , country varchar(128) );' );
+        $this->pdo->setAttribute( PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION );
+    }
 
     function getDriver()
     {
@@ -41,17 +49,24 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
 
     function testInsert()
     {
-        $pdo = new PDO('sqlite::memory:');
 
         $sb = new SQLBuilder\QueryBuilder;
         $sb->table('member');
         $sb->driver = $this->getDriver();
         $sb->insert(array(
-            'foo' => 'foo',
-            'bar' => 'bar',
+            'name' => 'foo',
+            'phone' => 'bar',
         ));
         $sql = $sb->build();
+        ok( $sql );
+        is("INSERT INTO member ( name,phone) VALUES ('foo','bar')",$sql);
 
+        $sb->driver->configure('quote_column',true);
+        $sql = $sb->build();
+        ok( $sql );
+        is("INSERT INTO member ( `name`,`phone`) VALUES ('foo','bar')",$sql);
+        $stm = $this->pdo->query($sql);
+        ok( $stm );
     }
 
     function testGroupBy()
@@ -62,7 +77,6 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
 
         $stm = $pdo->prepare('insert into member ( name, phone, country ) values ( :name, :phone, :country ) ');
         $countries = array('Taiwan','Japan','China','Taipei');
-
         foreach( $countries as $country ) {
             foreach( range(1,20) as $i ) {
                 $stm->execute(array( $i , $i , $country ));
