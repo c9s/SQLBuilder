@@ -14,6 +14,10 @@ namespace SQLBuilder;
  *  $driver->configure('escaper',array($pg,'escape'));
  *
  *  $driver->configure('escaper',array($pdo,'quote'));
+ *  $driver->escaper = function($string) { 
+ *      return your_escape_function( $string );
+ *  };
+ *
  */
 
 class Driver
@@ -76,7 +80,9 @@ class Driver
     public function __construct($driverType = null)
     {
         $this->type = $driverType;
-        $this->escaper = 'addslashes';
+        $this->escaper = function($string) { 
+            return '\'' . addslashes($string) . '\'';
+        };
         $this->inflator = new Inflator;
         $this->inflator->driver = $this;
     }
@@ -207,18 +213,18 @@ class Driver
     /**
      * escape string with single quote 
      */
-    public function escape($value)
+    public function escape($string)
     {
         /**
-         * escaper:
+         * quote:
          *
          *    string mysqli_real_escape_string ( mysqli $link , string $escapestr )
          *    string pg_escape_string ([ resource $connection ], string $data )
          *    string PDO::quote ( string $string [, int $parameter_type = PDO::PARAM_STR ] )
          *
-         *  $driver->configure('escaper',array($pgconn,'escape_string'));
+         *  $driver->configure('quote',array($pgconn,'escape_string'));
          */
-        return '\'' . call_user_func( $this->escaper , $value ) . '\'';
+        return call_user_func( $this->escaper , $string );
     }
 
     /**
