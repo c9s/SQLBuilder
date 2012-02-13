@@ -301,6 +301,14 @@ class QueryBuilder
     }
 
 
+    // alias method
+    public function orderBy($column,$order = 'desc')
+    {
+        $this->orders[] = array( $column , $order );
+        return $this;
+    }
+
+
     /**
      * group by column
      *
