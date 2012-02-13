@@ -9,13 +9,12 @@ class TestQueryWrapper extends SQLBuilder\QueryBuilder
      *    $obj->delete()
      *          ->where()
      *              ->equal('id',1)
-     *              ->back()
      *          ->execute();
      */
 
     public function execute()
     {
-        return true;
+        return 99;
     }
 }
 
@@ -43,8 +42,8 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         $ret = $test->delete()
                 ->where()
                     ->equal('id',1)
-                ->back()->execute();
-        is( true, $ret );
+                ->execute();
+        is( 99, $ret );
     }
 
     function testInsert()
@@ -128,8 +127,15 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         $sql = $sb->build();
 
         is( "SELECT name FROM member  GROUP BY country,name HAVING name = 'Taiwan' ORDER BY name desc", $sql );
-
         $this->pdo->query( $sql );
+
+        $sb->table('member')->select('name')
+            ->where()
+                ->equal('name','ZZ')
+            ->groupBy('country','name')
+            ->order('name');
+        $sql = $sb->build();
+        ok( $sql );
     }
 }
 
