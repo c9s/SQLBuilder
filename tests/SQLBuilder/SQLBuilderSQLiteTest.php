@@ -52,7 +52,6 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         ));
         $sql = $sb->build();
 
-
     }
 
     function testGroupBy()
@@ -72,6 +71,9 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
 
         $sb = new SQLBuilder\QueryBuilder;
         $sb->driver = $this->getDriver();
+
+        $sb->driver->escaper = array($pdo,'quote');
+
         $sb->table('member')->select('name')
             ->groupBy('country')
             ->order('name');

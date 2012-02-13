@@ -26,12 +26,12 @@ $driver = SQLBuilder\Driver::getInstance();
 $driver = SQLBuilder\Driver::create('pgsql');
 ```
 
-### Configure Driver escaper
+### Configure Driver Quoter
 
 ```php
 <?php
-$driver->configure('escaper',array($pg,'escape'));
-$driver->configure('escaper',array($pdo,'quote'));
+$driver->configure('quoter',array($pg,'escape'));
+$driver->configure('quoter',array($pdo,'quote'));
 ```
 
 ### Configure database driver for pgsql

@@ -27,7 +27,7 @@ class Inflator
             return (float) $value;
         }
         elseif( is_string($value) ) {
-            return '\'' . call_user_func( $this->driver->escaper , $value ) . '\'';
+            return $this->driver->escape($value);
         }
         elseif( is_object($value) ) {
             // convert DateTime object into string
