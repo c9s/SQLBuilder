@@ -534,7 +534,7 @@ class QueryBuilder
     protected function buildGroupBySql()
     {
         if( ! empty($this->groupBys) ) {
-            return ' GROUP BY ' . join( $this->groupBys );
+            return ' GROUP BY ' . join( ',' , $this->groupBys );
         }
     }
 
