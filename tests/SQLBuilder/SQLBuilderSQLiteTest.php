@@ -119,13 +119,17 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         
         $stm = $this->pdo->query( $sql );
 
-        $err = $this->pdo->errorInfo();
-        ok( $err[1] == null );
-
         $row = $stm->fetch();
         $row2 = $stm->fetch();
         ok( $row );
         ok( $row2 );
+
+        $sb->having()->equal('name','Taiwan');
+        $sql = $sb->build();
+
+        is( "SELECT name FROM member  GROUP BY country,name HAVING name = 'Taiwan' ORDER BY name desc", $sql );
+
+        $this->pdo->query( $sql );
     }
 }
 

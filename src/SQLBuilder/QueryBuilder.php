@@ -72,6 +72,9 @@ class QueryBuilder
     public $driver;
 
     public $where;
+
+    public $having;
+
     public $orders = array();
 
     /**
@@ -315,6 +318,19 @@ class QueryBuilder
     }
 
 
+    /**
+     * to support syntax like:
+     *     GROUP BY product_id, p.name, p.price, p.cost
+     * HAVING sum(p.price * s.units) > 5000;
+     */
+    public function having()
+    {
+        $this->having = $expr = new Expression;
+        $expr->driver = $this->driver;
+        $expr->parent = $this;
+        return $expr;
+    }
+
     /*************************
      * public interface 
      *************************/
@@ -434,6 +450,8 @@ class QueryBuilder
         $sql .= $this->buildConditionSql();
 
         $sql .= $this->buildGroupBySql();
+
+        $sql .= $this->buildHavingSql();
 
         $sql .= $this->buildOrderSql();
 
@@ -569,6 +587,13 @@ class QueryBuilder
     {
         if( $this->where )
             return ' WHERE ' . $this->where->toSql();
+        return '';
+    }
+
+    protected function buildHavingSql()
+    {
+        if ($this->having )
+            return ' HAVING ' . $this->having->toSql();
         return '';
     }
 
