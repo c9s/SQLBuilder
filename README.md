@@ -28,10 +28,18 @@ $driver = SQLBuilder\Driver::create('pgsql');
 
 ### Configure Driver Quoter
 
+string quote/escape handler:
+
 ```php
 <?php
-$driver->configure('quoter',array($pg,'escape'));
+$driver->configure('escape',array($pg,'escape'));
 $driver->configure('quoter',array($pdo,'quote'));
+
+$driver->escaper = 'addslashes';
+
+$driver->quoter = function($string) {
+    return '\'' . $string . '\'';
+};
 ```
 
 ### Configure database driver for pgsql

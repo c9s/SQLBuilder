@@ -1,5 +1,6 @@
 <?php
 namespace SQLBuilder;
+use DateTime;
 
 class Inflator
 {
@@ -27,12 +28,12 @@ class Inflator
             return (float) $value;
         }
         elseif( is_string($value) ) {
-            return $this->driver->escape($value);
+            return $this->driver->quote($value);
         }
         elseif( is_object($value) ) {
             // convert DateTime object into string
             if( is_a($value,'DateTime') ) {
-                return $value->format(\DateTime::ISO8601);
+                return $value->format(DateTime::ISO8601);
             }
         }
         return $value;

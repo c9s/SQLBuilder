@@ -67,7 +67,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         $sb->table('member');
         $sb->driver = $this->getDriver();
         $sb->driver->configure('quote_column',true);
-        $sb->driver->escaper = array( $this->pdo, 'quote' );
+        $sb->driver->quoter = array( $this->pdo, 'quote' );
         $sb->insert(array(
             'name' => 'foo',
             'phone' => 'bar',
@@ -85,7 +85,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         $sb->table('member');
         $sb->driver = $this->getDriver();
         $sb->driver->configure('quote_column',true);
-        $sb->driver->escaper = array( $this->pdo, 'quote' );
+        $sb->driver->quoter = array( $this->pdo, 'quote' );
         $sb->insert(array(
             'name' => 'fo\'o',
             'phone' => 'bar',
@@ -114,7 +114,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         $sb = new SQLBuilder\QueryBuilder;
         $sb->driver = $this->getDriver();
 
-        $sb->driver->escaper = array($pdo,'quote');
+        $sb->driver->quoter = array($pdo,'quote');
 
         $sb->table('member')->select('name')
             ->groupBy('country')
