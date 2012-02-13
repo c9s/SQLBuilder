@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-02-14</date>
-  <time>02:49:09</time>
+  <time>03:11:58</time>
   <version>
-    <release>1.1.18</release>
-    <api>1.1.18</api>
+    <release>1.1.19</release>
+    <api>1.1.19</api>
   </version>
   <stability>
     <release>stable</release>
@@ -30,16 +30,16 @@
       <file name="tests/SQLBuilder/JoinExpressionTest.php" role="test" md5sum="6df3281b347a6b0fb815738443a8d01c"/>
       <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="0d0f9c82c446ffeac3177b56d5fbe295"/>
       <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="1991c550f9f5c32b349d5668d1b83cfe"/>
-      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="539a8c472a5cc541f43637c7c85d1fb8"/>
+      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="433243d6ffc9b8927823403fc1f2d064"/>
       <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="78b0d77aeb9232953106eb29e3b228bf"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a5062319102239677855391ec9af3370"/>
       <file name="src/SQLBuilder/Driver.php" role="php" md5sum="70f996f407fd78f3621ab23b6e437ac7"/>
-      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="43bf02bfbe8b7215d46fcb1e58f81bd1"/>
+      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="96f5b4e0d1c7f761365851235251c7af"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="46f8f90b3c845bb7e154229b6e11ba2d"/>
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="d12baf4fd930c48d65a4c50e0683abb9"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="1b88a43b9e1045d1a7c4ec575291cb88"/>
-      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="893ea135483f994e9aefec8f7dc9c552"/>
-      <file name="package.ini" role="data" md5sum="3c4d38e80c2a9155bb563ed2b22e675d"/>
+      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="4267577fb7b360e94e6d0e9d061985f8"/>
+      <file name="package.ini" role="data" md5sum="9c7762b2e9d819c376e2bf3789718c08"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
     </dir>
   </contents>
