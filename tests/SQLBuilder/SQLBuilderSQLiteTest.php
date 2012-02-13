@@ -49,7 +49,6 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
 
     function testInsert()
     {
-
         $sb = new SQLBuilder\QueryBuilder;
         $sb->table('member');
         $sb->driver = $this->getDriver();
@@ -60,11 +59,40 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         $sql = $sb->build();
         ok( $sql );
         is("INSERT INTO member ( name,phone) VALUES ('foo','bar')",$sql);
+    }
 
+    function testQuoteInsert() 
+    {
+        $sb = new SQLBuilder\QueryBuilder;
+        $sb->table('member');
+        $sb->driver = $this->getDriver();
         $sb->driver->configure('quote_column',true);
+        $sb->driver->escaper = array( $this->pdo, 'quote' );
+        $sb->insert(array(
+            'name' => 'foo',
+            'phone' => 'bar',
+        ));
         $sql = $sb->build();
         ok( $sql );
         is("INSERT INTO member ( `name`,`phone`) VALUES ('foo','bar')",$sql);
+        $stm = $this->pdo->query($sql);
+        ok( $stm );
+    }
+
+    function testQuoteInsert2()
+    {
+        $sb = new SQLBuilder\QueryBuilder;
+        $sb->table('member');
+        $sb->driver = $this->getDriver();
+        $sb->driver->configure('quote_column',true);
+        $sb->driver->escaper = array( $this->pdo, 'quote' );
+        $sb->insert(array(
+            'name' => 'fo\'o',
+            'phone' => 'bar',
+        ));
+        $sql = $sb->build();
+        ok( $sql );
+        is("INSERT INTO member ( `name`,`phone`) VALUES ('fo''o','bar')",$sql);
         $stm = $this->pdo->query($sql);
         ok( $stm );
     }
