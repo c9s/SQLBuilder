@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-02-12</date>
-  <time>22:00:46</time>
+  <date>2012-02-14</date>
+  <time>00:32:31</time>
   <version>
-    <release>1.0.17</release>
-    <api>1.0.17</api>
+    <release>1.1.17</release>
+    <api>1.1.17</api>
   </version>
   <stability>
     <release>stable</release>
@@ -30,17 +30,17 @@
       <file name="tests/SQLBuilder/JoinExpressionTest.php" role="test" md5sum="6df3281b347a6b0fb815738443a8d01c"/>
       <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="0d0f9c82c446ffeac3177b56d5fbe295"/>
       <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="1991c550f9f5c32b349d5668d1b83cfe"/>
-      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="e09f50d7fd57385fb886e60a2e98a7fb"/>
+      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="3da1c8af742d964db785c2735e39540d"/>
       <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="78b0d77aeb9232953106eb29e3b228bf"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a5062319102239677855391ec9af3370"/>
-      <file name="src/SQLBuilder/Driver.php" role="php" md5sum="46fc7f46e432412d4d668ac2f012124b"/>
+      <file name="src/SQLBuilder/Driver.php" role="php" md5sum="70f996f407fd78f3621ab23b6e437ac7"/>
       <file name="src/SQLBuilder/Expression.php" role="php" md5sum="43bf02bfbe8b7215d46fcb1e58f81bd1"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="46f8f90b3c845bb7e154229b6e11ba2d"/>
-      <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="4810006ac4b4e043cf5c13b7d90f9d7a"/>
+      <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="d12baf4fd930c48d65a4c50e0683abb9"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="1b88a43b9e1045d1a7c4ec575291cb88"/>
-      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="f08151994b006740a616efbec190f27e"/>
-      <file name="package.ini" role="data" md5sum="41801c09a79c591434e51d0eba6e17e6"/>
-      <file name="phpunit.xml" role="data" md5sum="2ee1e3da4f5996998677644263e528f4"/>
+      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="588875d2865604df00315c5bbbe4a6b8"/>
+      <file name="package.ini" role="data" md5sum="a782d61e0428af6186ec18f3081ac454"/>
+      <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
     </dir>
   </contents>
   <dependencies>
