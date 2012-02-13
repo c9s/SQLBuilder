@@ -11,10 +11,10 @@ namespace SQLBuilder;
  *
  *  $driver->configure('placeholder','named');
  *
- *  $driver->configure('escaper',array($pg,'escape'));
+ *  $driver->configure('quoter',array($pg,'escape'));
  *
- *  $driver->configure('escaper',array($pdo,'quote'));
- *  $driver->escaper = function($string) { 
+ *  $driver->configure('quoter',array($pdo,'quote'));
+ *  $driver->quoter = function($string) { 
  *      return your_escape_function( $string );
  *  };
  *
@@ -56,15 +56,15 @@ class Driver
 
 
     /**
-     * string escaper handler
+     * string quoter handler
      *  
      *  Array:
      *
      *    array($obj,'method')
      */
+    public $quoter;
+
     public $escaper;
-
-
 
     static function create()
     {
@@ -80,9 +80,7 @@ class Driver
     public function __construct($driverType = null)
     {
         $this->type = $driverType;
-        $this->escaper = function($string) { 
-            return '\'' . addslashes($string) . '\'';
-        };
+        $this->escaper = 'addslashes';
         $this->inflator = new Inflator;
         $this->inflator->driver = $this;
     }
@@ -213,9 +211,9 @@ class Driver
     }
 
     /**
-     * escape string with single quote 
+     * quote & escape string with single quote 
      */
-    public function escape($string)
+    public function quote($string)
     {
         /**
          * quote:
@@ -226,7 +224,11 @@ class Driver
          *
          *  $driver->configure('quote',array($pgconn,'escape_string'));
          */
-        return call_user_func( $this->escaper , $string );
+        if( $this->quoter )
+            return call_user_func( $this->quoter , $string );
+
+        if( $this->escaper )
+            return '\'' . call_user_func( $this->escaper , $string ) . '\'';
     }
 
     /**
