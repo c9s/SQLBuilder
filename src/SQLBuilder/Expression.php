@@ -99,6 +99,8 @@ class Expression extends BaseExpression
             return $this->newOr();
             break;
         }
+        if( $this->parent )
+            return call_user_func_array( array($this->parent,$method) , $args );
     }
 
     public function newAnd()
