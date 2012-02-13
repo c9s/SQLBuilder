@@ -559,8 +559,13 @@ class QueryBuilder
 
     protected function buildGroupBySql()
     {
+        $self = $this;
         if( ! empty($this->groupBys) ) {
-            return ' GROUP BY ' . join( ',' , $this->groupBys );
+            return ' GROUP BY ' . join( ',' , 
+                array_map( function($val) use ($self) { 
+                    return $self->driver->getQuoteColumn( $val );
+                } , $this->groupBys )
+            );
         }
     }
 
