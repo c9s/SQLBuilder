@@ -99,11 +99,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
 
     function testGroupBy()
     {
-        $pdo = new PDO('sqlite::memory:');
-        $pdo->query( 'create table member ( name varchar(128) , phone varchar(128) , country varchar(128) );' );
-        ok( $pdo );
-
-        $stm = $pdo->prepare('insert into member ( name, phone, country ) values ( :name, :phone, :country ) ');
+        $stm = $this->pdo->prepare('insert into member ( name, phone, country ) values ( :name, :phone, :country ) ');
         $countries = array('Taiwan','Japan','China','Taipei');
         foreach( $countries as $country ) {
             foreach( range(1,20) as $i ) {
@@ -113,16 +109,17 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
 
         $sb = new SQLBuilder\QueryBuilder;
         $sb->driver = $this->getDriver();
-
-        $sb->driver->quoter = array($pdo,'quote');
-
+        $sb->driver->quoter = array($this->pdo,'quote');
         $sb->table('member')->select('name')
-            ->groupBy('country')
+            ->groupBy('country','name')
             ->order('name');
         $sql = $sb->build();
-        $stm = $pdo->query( $sql );
 
-        $err = $pdo->errorInfo();
+        is('SELECT name FROM member  GROUP BY country,name ORDER BY name desc', $sql );
+        
+        $stm = $this->pdo->query( $sql );
+
+        $err = $this->pdo->errorInfo();
         ok( $err[1] == null );
 
         $row = $stm->fetch();
