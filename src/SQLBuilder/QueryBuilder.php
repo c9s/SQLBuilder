@@ -242,8 +242,12 @@ class QueryBuilder
      *
      * @return SQLBuilder\Expression
      */
-    public function where()
+    public function where( $args = null )
     {
+        if( $args && is_array($args) ) {
+            return $this->whereFromArgs( $args );
+        }
+
         if( $this->where )
             return $this->where;
 
@@ -263,7 +267,7 @@ class QueryBuilder
      */
     public function whereFromArgs($args)
     {
-        if( empty($args) )
+        if( null === $args || empty($args) )
             return $this;
 
         $expr = $this->where();
