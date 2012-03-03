@@ -46,7 +46,7 @@ class JoinExpression
             . $this->table;
 
         if( $this->alias )
-            $sql .= ' ' . $this->alias;
+            $sql = $sql . ' ' . $this->alias;
 
         foreach( $this->onExpr as $expr ) {
             $sql .= ' ON ' . $expr->toSql();
