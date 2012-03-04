@@ -16,16 +16,23 @@ class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
 
         $pdo = $this->pdo = $this->getDb();
 
-        if( ! $this->pdo )
-            return skip('database required.');
+        $pdo->query(<<<EOS
+DROP SEQUENCE IF EXISTS "memberno_seq";
+EOS
+        );
 
         $pdo->query(<<<EOS
-CREATE SEQUENCE "MemberNo_seq"
+CREATE SEQUENCE "memberno_seq"
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
+EOS
+        );
+
+        $pdo->query(<<<EOS
+DROP TABLE IF EXISTS "Member";
 EOS
         );
 
