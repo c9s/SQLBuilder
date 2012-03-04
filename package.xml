@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-03-04</date>
-  <time>23:04:58</time>
+  <time>23:54:47</time>
   <version>
     <release>1.2.0</release>
     <api>1.2.0</api>
@@ -24,12 +24,12 @@
   <notes>-</notes>
   <contents>
     <dir name="/">
-      <file name="tests/bootstrap.php" role="test" md5sum="cf11f3f4e2d0ced3a7487e28d950635f"/>
+      <file name="tests/bootstrap.php" role="test" md5sum="e8fe97dfa6d08ce4362e375a7752ca2f"/>
       <file name="tests/SQLBuilder/ExpressionTest.php" role="test" md5sum="c895b1573fa7422c5491ca2164f3db0b"/>
-      <file name="tests/SQLBuilder/InflatorTest.php" role="test" md5sum="74b7c858852ab4e9b98ca4aa8ea8cf5a"/>
+      <file name="tests/SQLBuilder/InflatorTest.php" role="test" md5sum="8c6649658d05bba7d04a9a6358855bd1"/>
       <file name="tests/SQLBuilder/JoinExpressionTest.php" role="test" md5sum="6df3281b347a6b0fb815738443a8d01c"/>
       <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="0d0f9c82c446ffeac3177b56d5fbe295"/>
-      <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="1991c550f9f5c32b349d5668d1b83cfe"/>
+      <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="efe34852077581b84c39069db0925f5f"/>
       <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="79b377e25e3f7a3b7b165ab6c22e3c56"/>
       <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="78b0d77aeb9232953106eb29e3b228bf"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a3cbdb36a5b06ea26bced558d22dda25"/>
@@ -42,7 +42,7 @@
       <file name="package.ini" role="data" md5sum="b002f1f3f794a584ed81665adc015fd8"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
       <file name="CHANGES.md" role="doc" md5sum="ee7d7adaae08fe866c414a3b548f589c"/>
-      <file name="README.md" role="doc" md5sum="84fc85430f51033248226f097705df81"/>
+      <file name="README.md" role="doc" md5sum="7b8437a95f9c3f05957a988150580071"/>
       <file name="SCHEMA_INTEGRATION.md" role="doc" md5sum="31b9938b97072847cf8a0b2471dc8147"/>
       <file name="todo.md" role="doc" md5sum="cfaafc5002920306d052fbcb5e940e91"/>
     </dir>
