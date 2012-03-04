@@ -25,7 +25,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
     function setup()
     {
         $this->pdo = new PDO('sqlite::memory:');
-        $this->pdo->query( 'create table member ( name varchar(128) , phone varchar(128) , country varchar(128) );' );
+        $this->pdo->query( 'create table member ( id integer primary key autoincrement, name varchar(128) , phone varchar(128) , country varchar(128) );' );
         $this->pdo->setAttribute( PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION );
     }
 
@@ -60,7 +60,35 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         is("INSERT INTO member ( name,phone) VALUES ('foo','bar')",$sql);
     }
 
-    function testVars() 
+    function testUpdateVars() 
+    {
+        $sb = new SQLBuilder\QueryBuilder;
+        $sb->table('member');
+        $sb->driver = $this->getDriver();
+        $sb->driver->configure('quote_column',true);
+        $sb->driver->configure('placeholder','named');
+        $sb->driver->quoter = array( $this->pdo, 'quote' );
+        $sb->update(array(
+            'name' => 'foo',
+            'phone' => 'bar',
+        ));
+        $sb->where()
+                ->equal('id',3);
+        $sql = $sb->build();
+        ok( $sql );
+        is("UPDATE member SET `name` = :name, `phone` = :phone WHERE `id` = :id",$sql);
+
+        $vars = $sb->getVars();
+        is( 'foo' , $vars[':name'] );
+        is( 'bar' , $vars[':phone'] );
+        is( 3 , $vars[':id'] );
+
+        $stm = $this->pdo->prepare($sql);
+        $stm->execute( $sb->vars );
+        ok( $stm );
+    }
+
+    function testInsertVars() 
     {
         $sb = new SQLBuilder\QueryBuilder;
         $sb->table('member');
