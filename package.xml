@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-03-04</date>
-  <time>23:54:47</time>
+  <date>2012-03-05</date>
+  <time>00:16:55</time>
   <version>
-    <release>1.2.0</release>
-    <api>1.2.0</api>
+    <release>1.2.1</release>
+    <api>1.2.1</api>
   </version>
   <stability>
     <release>stable</release>
@@ -30,16 +30,16 @@
       <file name="tests/SQLBuilder/JoinExpressionTest.php" role="test" md5sum="6df3281b347a6b0fb815738443a8d01c"/>
       <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="0d0f9c82c446ffeac3177b56d5fbe295"/>
       <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="efe34852077581b84c39069db0925f5f"/>
-      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="79b377e25e3f7a3b7b165ab6c22e3c56"/>
+      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="66e01db923a7fc351e6848a9134a92dc"/>
       <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="78b0d77aeb9232953106eb29e3b228bf"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a3cbdb36a5b06ea26bced558d22dda25"/>
       <file name="src/SQLBuilder/Driver.php" role="php" md5sum="17a1fa90da668790d946bf779c66036c"/>
-      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="baa7947c9eeee61b43edbaa787ce148c"/>
+      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="0a0c73fa904d781466f602c7eb9a1fd5"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="46f8f90b3c845bb7e154229b6e11ba2d"/>
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="d12baf4fd930c48d65a4c50e0683abb9"/>
-      <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="e743f72ba4c12d7360e4da09f9597e5e"/>
+      <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="213fcf663bbe0996ee10b615e8c3e3c1"/>
       <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="de130d1355da647c0a96c31e7962f76a"/>
-      <file name="package.ini" role="data" md5sum="b002f1f3f794a584ed81665adc015fd8"/>
+      <file name="package.ini" role="data" md5sum="703770e52bf0b0df5fa951df09ccee6b"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
       <file name="CHANGES.md" role="doc" md5sum="ee7d7adaae08fe866c414a3b548f589c"/>
       <file name="README.md" role="doc" md5sum="7b8437a95f9c3f05957a988150580071"/>
