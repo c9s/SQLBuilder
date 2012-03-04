@@ -9,10 +9,10 @@ class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
     public function setup()
     {
         if( ! extension_loaded('pdo') ) 
-            skip('pdo required');
+            return skip('pdo required');
 
         if( ! extension_loaded('pdo_pgsql') ) 
-            skip('pdo pgsql required');
+            return skip('pdo pgsql required');
 
 
 
