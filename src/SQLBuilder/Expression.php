@@ -128,6 +128,8 @@ class Expression extends BaseExpression
                 if( $this->driver->placeholder ) {
                     $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($k);
 
+                    $this->driver->setPlaceHolderVar( $k , $v );
+
                     /*
                     if( is_array($v) ) {
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];

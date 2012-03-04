@@ -491,6 +491,7 @@ class QueryBuilder
                     $k = $v;
                 $columns[] = $this->driver->getQuoteColumn($k);
                 $values[] = $this->driver->getPlaceHolder($k);
+                $this->driver->setPlaceHolderVar( $k , $v );
             }
 
         } else {
@@ -584,6 +585,7 @@ class QueryBuilder
                     if( is_integer($k) )
                         $k = $v;
                     $conds[] =  $this->driver->getQuoteColumn($k) . ' = ' . $this->driver->getPlaceHolder($k);
+                    $this->driver->setPlaceHolderVar( $k , $v );
                 }
             }
         }

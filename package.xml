@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-03-02</date>
-  <time>04:28:08</time>
+  <date>2012-03-04</date>
+  <time>22:10:15</time>
   <version>
-    <release>1.1.21</release>
-    <api>1.1.21</api>
+    <release>1.2.0</release>
+    <api>1.2.0</api>
   </version>
   <stability>
     <release>stable</release>
@@ -30,17 +30,21 @@
       <file name="tests/SQLBuilder/JoinExpressionTest.php" role="test" md5sum="6df3281b347a6b0fb815738443a8d01c"/>
       <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="0d0f9c82c446ffeac3177b56d5fbe295"/>
       <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="1991c550f9f5c32b349d5668d1b83cfe"/>
-      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="433243d6ffc9b8927823403fc1f2d064"/>
+      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="705bb4d87c0d32e58ccf4e3b20e6091c"/>
       <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="78b0d77aeb9232953106eb29e3b228bf"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a5062319102239677855391ec9af3370"/>
-      <file name="src/SQLBuilder/Driver.php" role="php" md5sum="70f996f407fd78f3621ab23b6e437ac7"/>
-      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="96f5b4e0d1c7f761365851235251c7af"/>
+      <file name="src/SQLBuilder/Driver.php" role="php" md5sum="154a659fd2f0865f2aacff7eb26a4471"/>
+      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="33c1a727883df9b7123a6ab6730b7965"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="46f8f90b3c845bb7e154229b6e11ba2d"/>
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="d12baf4fd930c48d65a4c50e0683abb9"/>
-      <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="1b88a43b9e1045d1a7c4ec575291cb88"/>
-      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="328c601c7d4a57c29f87d0f4230298aa"/>
-      <file name="package.ini" role="data" md5sum="e48941f5986c2b939f25ccd868713716"/>
+      <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="6be5ce3cf1c43daaae4884a021eec3fe"/>
+      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="257fb34eb1c571fc5a65e2b669a3af12"/>
+      <file name="package.ini" role="data" md5sum="b002f1f3f794a584ed81665adc015fd8"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
+      <file name="CHANGES.md" role="doc" md5sum="bf62a1819b7fc4b25a9486b8613c3c48"/>
+      <file name="README.md" role="doc" md5sum="07199a9454ff86fc54d172a0a777d135"/>
+      <file name="SCHEMA_INTEGRATION.md" role="doc" md5sum="31b9938b97072847cf8a0b2471dc8147"/>
+      <file name="todo.md" role="doc" md5sum="cfaafc5002920306d052fbcb5e940e91"/>
     </dir>
   </contents>
   <dependencies>
@@ -82,6 +86,10 @@
       <install name="src/SQLBuilder/QueryBuilder.php" as="SQLBuilder/QueryBuilder.php"/>
       <install name="package.ini" as="package.ini"/>
       <install name="phpunit.xml" as="phpunit.xml"/>
+      <install name="CHANGES.md" as="CHANGES.md"/>
+      <install name="README.md" as="README.md"/>
+      <install name="SCHEMA_INTEGRATION.md" as="SCHEMA_INTEGRATION.md"/>
+      <install name="todo.md" as="todo.md"/>
     </filelist>
   </phprelease>
 </package>
