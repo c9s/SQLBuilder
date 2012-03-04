@@ -8,6 +8,14 @@ class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
 
     public function setup()
     {
+        if( ! extension_loaded('pdo') ) 
+            skip('pdo required');
+
+        if( ! extension_loaded('pdo_pgsql') ) 
+            skip('pdo pgsql required');
+
+
+
         $pdo = $this->pdo = $this->getDb();
         $pdo->query(<<<EOS
 CREATE SEQUENCE "MemberNo_seq"
