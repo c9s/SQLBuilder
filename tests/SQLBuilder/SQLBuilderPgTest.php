@@ -58,7 +58,7 @@ EOS
 
     public function getDb()
     {
-        return new PDO( 'pgsql:dbname=sqlbuilder_test', 'test', 'test' );
+        return new PDO( 'pgsql:dbname=sqlbuilder_test', 'test' );
     }
 
     function queryOk($sql)
