@@ -130,17 +130,14 @@ class Expression extends BaseExpression
 
                 list($k,$op,$v) = $this->op;
                 if( $this->driver->placeholder ) {
-                    $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($k);
 
-                    $this->builder->setPlaceHolderVar( $k , $v );
 
-                    /*
                     if( is_array($v) ) {
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
                     } else {
-                        $sql .= $this->driver->getQuoteColumn( $k ) . ' ' . $op . ' '  . $this->getPlaceHolder($k);
+                        $newK = $this->builder->setPlaceHolderVar( $k , $v );
+                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($newK);
                     }
-                    */
                 }
                 else {
                     if( is_array($v) ) {
@@ -149,8 +146,10 @@ class Expression extends BaseExpression
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
                             . $this->driver->inflate($v);
 
+                        /*
                         if( $this->builder )
                             $this->builder->setPlaceHolderVar( $k , $v );
+                        */
                     }
                 }
             }
