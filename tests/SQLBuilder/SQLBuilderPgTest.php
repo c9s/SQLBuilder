@@ -14,9 +14,11 @@ class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
         if( ! extension_loaded('pdo_pgsql') ) 
             return skip('pdo pgsql required');
 
-
-
         $pdo = $this->pdo = $this->getDb();
+
+        if( ! $this->pdo )
+            return skip('database required.');
+
         $pdo->query(<<<EOS
 CREATE SEQUENCE "MemberNo_seq"
     START WITH 1
@@ -43,7 +45,7 @@ EOS
         $this->pdo->query('drop sequence "MemberNo_seq" ');
     }
 
-    function getDb()
+    public function getDb()
     {
         return new PDO( 'pgsql:dbname=sqlbuilder_test', 'test', 'test' );
     }
