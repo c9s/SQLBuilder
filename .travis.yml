@@ -9,6 +9,7 @@ php:
   - 5.4
 
 before_script:
+  - "psql -c 'create database sqlbuilder_test;' -U postgres"
   - phpenv rehash
   - curl http://install.onionphp.org/ | bash
   - curl -O https://raw.github.com/c9s/Onion/master/onion
