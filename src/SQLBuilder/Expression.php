@@ -148,6 +148,9 @@ class Expression extends BaseExpression
                     } else {
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
                             . $this->driver->inflate($v);
+
+                        if( $this->builder )
+                            $this->builder->setPlaceHolderVar( $k , $v );
                     }
                 }
             }
