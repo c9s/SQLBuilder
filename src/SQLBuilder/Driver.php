@@ -66,6 +66,9 @@ class Driver
 
     public $escaper;
 
+    public $vars = array();
+
+
     static function create()
     {
         return new static;
@@ -159,6 +162,17 @@ class Driver
             return '?';
         }
     }
+
+    public function setPlaceHolderVar($key,$value)
+    {
+        if( $this->placeholder && $this->placeholder === 'named' ) {
+            $this->vars[ ':' . $key  ] = $value;
+        }
+        else {
+            $this->vars[] = $value;
+        }
+    }
+
 
     /**
      * check driver option to quote column name

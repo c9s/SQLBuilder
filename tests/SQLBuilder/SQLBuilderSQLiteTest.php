@@ -60,6 +60,31 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         is("INSERT INTO member ( name,phone) VALUES ('foo','bar')",$sql);
     }
 
+    function testVars() 
+    {
+        $sb = new SQLBuilder\QueryBuilder;
+        $sb->table('member');
+        $sb->driver = $this->getDriver();
+        $sb->driver->configure('quote_column',true);
+        $sb->driver->configure('placeholder','named');
+        $sb->driver->quoter = array( $this->pdo, 'quote' );
+        $sb->insert(array(
+            'name' => 'foo',
+            'phone' => 'bar',
+        ));
+        $sql = $sb->build();
+        ok( $sql );
+        is("INSERT INTO member ( `name`,`phone`) VALUES (:name,:phone)",$sql);
+
+        $vars = $sb->driver->vars;
+        is( 'foo' , $vars[':name'] );
+        is( 'bar' , $vars[':phone'] );
+
+        $stm = $this->pdo->prepare($sql);
+        $stm->execute( $sb->driver->vars );
+        ok( $stm );
+    }
+
     function testQuoteInsert() 
     {
         $sb = new SQLBuilder\QueryBuilder;
