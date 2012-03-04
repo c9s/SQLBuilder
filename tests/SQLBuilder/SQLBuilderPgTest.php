@@ -61,7 +61,7 @@ EOS
         return new PDO( 'pgsql:dbname=sqlbuilder_test', 'postgres' );
     }
 
-    function queryOk($sql)
+    public function queryOk($sql)
     {
         $ret = $this->pdo->query($sql);
         $err = $this->pdo->errorInfo();
@@ -69,7 +69,7 @@ EOS
         return $ret;
     }
 
-    function executeOk($sql,$args)
+    public function executeOk($sql,$args)
     {
         $stm = $this->pdo->prepare($sql);
         $err = $this->pdo->errorInfo();
