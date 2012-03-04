@@ -76,12 +76,12 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         ok( $sql );
         is("INSERT INTO member ( `name`,`phone`) VALUES (:name,:phone)",$sql);
 
-        $vars = $sb->driver->vars;
+        $vars = $sb->vars;
         is( 'foo' , $vars[':name'] );
         is( 'bar' , $vars[':phone'] );
 
         $stm = $this->pdo->prepare($sql);
-        $stm->execute( $sb->driver->vars );
+        $stm->execute( $sb->vars );
         ok( $stm );
     }
 

@@ -12,6 +12,10 @@ class Expression extends BaseExpression
     /* parent expression */
     public $parent;
 
+
+    /* builder */
+    public $builder;
+
     /* op code connects to parent expression */
     public $parentOp;
 
@@ -128,7 +132,7 @@ class Expression extends BaseExpression
                 if( $this->driver->placeholder ) {
                     $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($k);
 
-                    $this->driver->setPlaceHolderVar( $k , $v );
+                    $this->builder->setPlaceHolderVar( $k , $v );
 
                     /*
                     if( is_array($v) ) {

@@ -66,7 +66,6 @@ class Driver
 
     public $escaper;
 
-    public $vars = array();
 
 
     static function create()
@@ -163,15 +162,6 @@ class Driver
         }
     }
 
-    public function setPlaceHolderVar($key,$value)
-    {
-        if( $this->placeholder && $this->placeholder === 'named' ) {
-            $this->vars[ ':' . $key  ] = $value;
-        }
-        else {
-            $this->vars[] = $value;
-        }
-    }
 
 
     /**
@@ -273,14 +263,6 @@ class Driver
     }
 
 
-    /**
-     * Get place holder vars
-     *
-     */
-    public function getVars()
-    {
-        return $this->vars;
-    }
 
 }
 
