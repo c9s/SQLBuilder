@@ -616,5 +616,10 @@ class QueryBuilder
         return '';
     }
 
+
+    public function getVars()
+    {
+        return $this->driver->getVars();
+    }
 }
 

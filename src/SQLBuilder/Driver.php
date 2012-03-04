@@ -272,5 +272,15 @@ class Driver
         return $new;
     }
 
+
+    /**
+     * Get place holder vars
+     *
+     */
+    public function getVars()
+    {
+        return $this->vars;
+    }
+
 }
 
