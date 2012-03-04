@@ -354,6 +354,8 @@ class QueryBuilder
 
     public function build()
     {
+        $this->vars = array();
+
         if( ! $this->behavior )
             throw new Exception('behavior is not defined.');
 
@@ -494,8 +496,10 @@ class QueryBuilder
                 if( is_integer($k) )
                     $k = $v;
                 $columns[] = $this->driver->getQuoteColumn($k);
-                $values[] = $this->driver->getPlaceHolder($k);
-                $this->setPlaceHolderVar( $k , $v );
+
+                $newK = $this->setPlaceHolderVar( $k , $v );
+
+                $values[] = $this->driver->getPlaceHolder($newK);
             }
 
         } else {
@@ -588,8 +592,10 @@ class QueryBuilder
                 } else {
                     if( is_integer($k) )
                         $k = $v;
-                    $conds[] =  $this->driver->getQuoteColumn($k) . ' = ' . $this->driver->getPlaceHolder($k);
-                    $this->setPlaceHolderVar( $k , $v );
+
+                    $newK = $this->setPlaceHolderVar( $k , $v );
+
+                    $conds[] =  $this->driver->getQuoteColumn($k) . ' = ' . $this->driver->getPlaceHolder($newK);
                 }
             }
         }
@@ -626,11 +632,15 @@ class QueryBuilder
         return $this->vars;
     }
 
-
     public function setPlaceHolderVar($key,$value)
     {
         if( $this->driver->placeholder && $this->driver->placeholder === 'named' ) {
+            $i = 1;
+            while( isset($this->vars[':' . $key]) ) {
+                $key .= $i++;
+            }
             $this->vars[ ':' . $key  ] = $value;
+            return $key;
         }
         else {
             $this->vars[] = $value;

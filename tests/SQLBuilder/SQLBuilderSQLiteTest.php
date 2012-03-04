@@ -22,6 +22,12 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
 {
     public $pdo;
 
+    public function noPDOError()
+    {
+        $err = $this->pdo->errorInfo();
+        ok( $err[0] === '00000' );
+    }
+
     function setup()
     {
         $this->pdo = new PDO('sqlite::memory:');
@@ -58,6 +64,36 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         $sql = $sb->build();
         ok( $sql );
         is("INSERT INTO member ( name,phone) VALUES ('foo','bar')",$sql);
+    }
+
+    function testParameterConflict()
+    {
+        $sb = new SQLBuilder\QueryBuilder;
+        $sb->table('member');
+        $sb->driver = $this->getDriver();
+        $sb->driver->configure('quote_column',true);
+        $sb->driver->configure('placeholder','named');
+        $sb->driver->quoter = array( $this->pdo, 'quote' );
+        $sb->update(array(
+            'name' => 'foo',
+            'phone' => 'bar',
+        ));
+        $sb->where()
+                ->equal('name','foo');
+        $sql = $sb->build();
+        ok( $sql );
+        is("UPDATE member SET `name` = :name, `phone` = :phone WHERE `name` = :name1",$sql);
+
+        $vars = $sb->getVars();
+        is( 'foo' , $vars[':name'] );
+        is( 'bar' , $vars[':phone'] );
+        is( 'foo' , $vars[':name1'] );
+
+        // is( 3 , $vars[':id'] );
+        $stm = $this->pdo->prepare($sql);
+        $stm->execute( $sb->vars );
+
+        $this->noPDOError();
     }
 
     function testUpdateVars() 
