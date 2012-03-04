@@ -15,6 +15,10 @@ class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
             return skip('pdo pgsql required');
 
         $pdo = $this->pdo = $this->getDb();
+        $err = $pdo->errorInfo();
+
+        if( $err[1] )
+            return skip('PDO fail');
 
         $pdo->query(<<<EOS
 DROP SEQUENCE IF EXISTS "memberno_seq";
