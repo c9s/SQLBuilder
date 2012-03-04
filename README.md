@@ -67,7 +67,19 @@ This generates SQL with named-parameter for PDO:
 
     INSERT INTO table (foo ,bar ) values (:foo, :bar);
 
-Or question-mark style:
+If you pass variables to build SQL with named parameters, query builder
+converts named parameters for you, to get variables, you can use `getVars` method:
+
+    $vars = $sb->getVars();
+
+    /*
+    array(
+        ':name' => 'Foo',
+        ':phone' => 'Bar',
+    );
+    */
+
+Or to use question-mark style:
 
 ```php
 <?php

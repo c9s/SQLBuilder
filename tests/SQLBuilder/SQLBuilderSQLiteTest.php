@@ -76,7 +76,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         ok( $sql );
         is("INSERT INTO member ( `name`,`phone`) VALUES (:name,:phone)",$sql);
 
-        $vars = $sb->vars;
+        $vars = $sb->getVars();
         is( 'foo' , $vars[':name'] );
         is( 'bar' , $vars[':phone'] );
 
