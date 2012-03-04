@@ -5,21 +5,38 @@ namespace SQLBuilder;
 class JoinExpression
 {
 
+    /**
+     * @var Driver object
+     */
     public $driver;
 
     public $type;
 
+    /**
+     * @var string table name
+     */
     public $table;
 
+
+    /**
+     * @var string alias
+     */
     public $alias;
 
     public $onExpr = array();
 
+    /**
+     * QueryBuilder object
+     */
     public $builder;
 
+
+    /**
+     * Parent Expression or QueryBuilder
+     */
     public $parent;
 
-    function __construct($table,$type = 'LEFT')
+    public function __construct($table,$type = 'LEFT')
     {
         $this->table = $table;
         $this->type = $type;
