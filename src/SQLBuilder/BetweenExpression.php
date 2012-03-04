@@ -15,6 +15,7 @@ class BetweenExpression
         $this->to = $to;
     }
 
+    // xxx: process for placeholder
     public function toSql()
     {
         return $this->driver->getQuoteColumn($this->column) . ' BETWEEN ' 

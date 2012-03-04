@@ -15,6 +15,7 @@ class JoinExpression
 
     public $onExpr = array();
 
+    public $builder;
 
     public $parent;
 
@@ -35,6 +36,7 @@ class JoinExpression
         $subexpr = new ExpressionGroup;
         $subexpr->parent = $this;
         $subexpr->driver = $this->driver;
+        $subexpr->builder = $this->builder;
         $this->onExpr[] = $subexpr;
         return $subexpr->createExpr(null);
     }

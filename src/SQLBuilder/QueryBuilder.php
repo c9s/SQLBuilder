@@ -90,6 +90,8 @@ class QueryBuilder
 
     public $behavior;
 
+    public $vars = array();
+
     const INSERT = 1;
     const UPDATE = 2;
     const DELETE = 3;
@@ -231,6 +233,7 @@ class QueryBuilder
         $this->joinExpr[] = $expr = new JoinExpression($table,$type);
         $expr->driver = $this->driver;
         $expr->parent = $this;
+        $expr->builder = $this;
         return $expr;
     }
 
@@ -254,6 +257,7 @@ class QueryBuilder
         $this->where = $expr = new Expression;
         $expr->driver = $this->driver;
         $expr->parent = $this;
+        $expr->builder = $this;
         return $expr;
     }
 
@@ -491,7 +495,7 @@ class QueryBuilder
                     $k = $v;
                 $columns[] = $this->driver->getQuoteColumn($k);
                 $values[] = $this->driver->getPlaceHolder($k);
-                $this->driver->setPlaceHolderVar( $k , $v );
+                $this->setPlaceHolderVar( $k , $v );
             }
 
         } else {
@@ -585,7 +589,7 @@ class QueryBuilder
                     if( is_integer($k) )
                         $k = $v;
                     $conds[] =  $this->driver->getQuoteColumn($k) . ' = ' . $this->driver->getPlaceHolder($k);
-                    $this->driver->setPlaceHolderVar( $k , $v );
+                    $this->setPlaceHolderVar( $k , $v );
                 }
             }
         }
@@ -619,7 +623,19 @@ class QueryBuilder
 
     public function getVars()
     {
-        return $this->driver->getVars();
+        return $this->vars;
     }
+
+
+    public function setPlaceHolderVar($key,$value)
+    {
+        if( $this->driver->placeholder && $this->driver->placeholder === 'named' ) {
+            $this->vars[ ':' . $key  ] = $value;
+        }
+        else {
+            $this->vars[] = $value;
+        }
+    }
+
 }
 
