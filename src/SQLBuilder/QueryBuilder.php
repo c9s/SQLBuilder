@@ -343,6 +343,7 @@ class QueryBuilder
     {
         $this->having = $expr = new Expression;
         $expr->driver = $this->driver;
+        $expr->builder = $this;
         $expr->parent = $this;
         return $expr;
     }
