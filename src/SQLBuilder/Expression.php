@@ -87,6 +87,7 @@ class Expression extends BaseExpression
     public function between($column,$from,$to)
     {
         $expr = new BetweenExpression( $column, $from, $to );
+        $expr->builder = $this->builder;
         $expr->driver = $this->driver;
         $this->op = $expr;
         return $this;

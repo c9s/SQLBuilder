@@ -25,6 +25,7 @@ class BaseExpression
         $subexpr = new ExpressionGroup;
         $subexpr->parent = $this;
         $subexpr->parentOp = $op;
+        $subexpr->builder = $this->builder;
         $subexpr->driver = $this->driver;
         $this->childs[] = $subexpr;
         return $subexpr;
@@ -34,6 +35,7 @@ class BaseExpression
     {
         $subexpr = new Expression;
         $subexpr->parent = $this;
+        $subexpr->builder = $this->builder;
         $subexpr->parentOp = $op;
         $subexpr->driver = $this->driver;
         $this->childs[] = $subexpr;
