@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-03-06</date>
-  <time>00:19:20</time>
+  <time>00:24:43</time>
   <version>
-    <release>1.2.2</release>
-    <api>1.2.2</api>
+    <release>1.2.3</release>
+    <api>1.2.3</api>
   </version>
   <stability>
     <release>stable</release>
@@ -31,15 +31,15 @@
       <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="0d0f9c82c446ffeac3177b56d5fbe295"/>
       <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="efe34852077581b84c39069db0925f5f"/>
       <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="2d1af3006f71ff08249170494fe45460"/>
-      <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="78b0d77aeb9232953106eb29e3b228bf"/>
+      <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="122bb96f6cd1685dca57b3f4fc7f9736"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a3cbdb36a5b06ea26bced558d22dda25"/>
       <file name="src/SQLBuilder/Driver.php" role="php" md5sum="17a1fa90da668790d946bf779c66036c"/>
-      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="19ec0af36583c144903c7a37c33a683f"/>
+      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="0982b8939c5899d07969f243542a580b"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="46f8f90b3c845bb7e154229b6e11ba2d"/>
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="d12baf4fd930c48d65a4c50e0683abb9"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="213fcf663bbe0996ee10b615e8c3e3c1"/>
-      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="1befbafcbebfdc574d987fabfdb99c90"/>
-      <file name="package.ini" role="data" md5sum="cb43829a9d1c56e817d68196f30a1998"/>
+      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="734641f61bbacc24af1158dc60aaaef3"/>
+      <file name="package.ini" role="data" md5sum="92c509c49caf704e87c2eca53a32ebde"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
       <file name="CHANGES.md" role="doc" md5sum="ee7d7adaae08fe866c414a3b548f589c"/>
       <file name="README.md" role="doc" md5sum="7b8437a95f9c3f05957a988150580071"/>
