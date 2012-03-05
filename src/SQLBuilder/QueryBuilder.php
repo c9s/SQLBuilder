@@ -636,6 +636,8 @@ class QueryBuilder
     public function setPlaceHolderVar($key,$value)
     {
         if( $this->driver->placeholder && $this->driver->placeholder === 'named' ) {
+            $key = str_replace( array('.') , '_' , $key );
+            // a basic counter to avoid key confliction.
             $i = 1;
             while( isset($this->vars[':' . $key]) ) {
                 $key .= $i++;
