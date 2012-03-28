@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-03-06</date>
-  <time>00:36:09</time>
+  <date>2012-03-28</date>
+  <time>14:07:37</time>
   <version>
-    <release>1.2.4</release>
-    <api>1.2.4</api>
+    <release>1.2.5</release>
+    <api>1.2.5</api>
   </version>
   <stability>
     <release>stable</release>
@@ -26,20 +26,20 @@
     <dir name="/">
       <file name="tests/bootstrap.php" role="test" md5sum="e8fe97dfa6d08ce4362e375a7752ca2f"/>
       <file name="tests/SQLBuilder/ExpressionTest.php" role="test" md5sum="c895b1573fa7422c5491ca2164f3db0b"/>
-      <file name="tests/SQLBuilder/InflatorTest.php" role="test" md5sum="8c6649658d05bba7d04a9a6358855bd1"/>
+      <file name="tests/SQLBuilder/InflatorTest.php" role="test" md5sum="d4ce34d75d6c98d25f238b15c1c39d4f"/>
       <file name="tests/SQLBuilder/JoinExpressionTest.php" role="test" md5sum="6df3281b347a6b0fb815738443a8d01c"/>
       <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="0d0f9c82c446ffeac3177b56d5fbe295"/>
-      <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="efe34852077581b84c39069db0925f5f"/>
+      <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="b7c517f703c1e9f8904999f53f73152a"/>
       <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="2d1af3006f71ff08249170494fe45460"/>
       <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="122bb96f6cd1685dca57b3f4fc7f9736"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a3cbdb36a5b06ea26bced558d22dda25"/>
       <file name="src/SQLBuilder/Driver.php" role="php" md5sum="17a1fa90da668790d946bf779c66036c"/>
       <file name="src/SQLBuilder/Expression.php" role="php" md5sum="0982b8939c5899d07969f243542a580b"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="46f8f90b3c845bb7e154229b6e11ba2d"/>
-      <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="d12baf4fd930c48d65a4c50e0683abb9"/>
+      <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="f2f8bfc588e1ad970574e96badc92e60"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="213fcf663bbe0996ee10b615e8c3e3c1"/>
       <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="292f93cb5178927c77c56da942a16857"/>
-      <file name="package.ini" role="data" md5sum="5d6d17f5732ce4ec4013fb79ee0a7647"/>
+      <file name="package.ini" role="data" md5sum="b8937f9ff8ec2753239f908005d8f63b"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
       <file name="CHANGES.md" role="doc" md5sum="ee7d7adaae08fe866c414a3b548f589c"/>
       <file name="README.md" role="doc" md5sum="7b8437a95f9c3f05957a988150580071"/>
