@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/PHPUnit_PDO_TestCase.php';
 
 class TestQueryWrapper extends SQLBuilder\QueryBuilder
 {
@@ -18,29 +19,8 @@ class TestQueryWrapper extends SQLBuilder\QueryBuilder
     }
 }
 
-class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
+class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
 {
-    public $pdo;
-
-    public function noPDOError()
-    {
-        $err = $this->pdo->errorInfo();
-        ok( $err[0] === '00000' );
-    }
-
-    function setup()
-    {
-        $this->pdo = new PDO('sqlite::memory:');
-        $this->pdo->query( 'CREATE TABLE member ( 
-            id integer primary key autoincrement, 
-            name varchar(128) , 
-            phone varchar(128) , 
-            country varchar(128),
-            confirmed boolean
-        );' );
-        $this->pdo->setAttribute( PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION );
-    }
-
     function getDriver()
     {
         $d = new SQLBuilder\Driver;
@@ -173,31 +153,6 @@ class SQLBuilderSQLiteTest extends PHPUnit_Framework_TestCase
         ok( $stm );
     }
 
-    function testCasting()
-    {
-        $sb = new SQLBuilder\QueryBuilder;
-        $sb->table('member');
-        $sb->driver = $this->getDriver();
-        $sb->driver->configure('quote_column',true);
-        $sb->driver->configure('placeholder','named');
-        $sb->driver->quoter = array( $this->pdo, 'quote' );
-        $sb->insert(array(
-            'name' => 'booltest',
-            'confirmed' => true,
-        ));
-
-        $sql = $sb->build();
-        $vars = $sb->getVars();
-        ok( $vars );
-        ok( $sql );
-        $stm = $this->pdo->prepare($sql)->execute( $vars );
-        $this->noPDOError();
-        ok( $stm );
-
-        $stm = $this->pdo->query('select * from member where name = \'booltest\'');
-        $result = $stm->fetchAll();
-        ok( $result[0]['confirmed'] );
-    }
 
     function testQuoteInsert2()
     {
