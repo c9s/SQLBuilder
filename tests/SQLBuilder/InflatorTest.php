@@ -8,9 +8,12 @@ class InflatorTest extends PHPUnit_Framework_TestCase
         $driver = new SQLBuilder\Driver;
         $inf = new Inflator;
         $inf->driver = $driver;
-        
         is( 'TRUE', $inf->inflate( true ) );
         is( 'FALSE', $inf->inflate( false ) );
+
+        $inf->driver->placeholder = true;
+        is(1, $inf->inflate( true ) );
+        is(0, $inf->inflate( false ) );
     }
 
     function testNumber()
