@@ -513,7 +513,7 @@ class QueryBuilder
         }
 
         $sql = 'INSERT INTO ' . $this->getTableSql() . ' ( ';
-        $sql .= join(',',$columns) . ") VALUES (".  join(',', $values ) .")";
+        $sql .= join(',',$columns) . ') VALUES ('.  join(',', $values ) .')';
 
         if( $this->returning && ( 'pgsql' == $this->driver->type ) ) {
             $sql .= ' RETURNING ' . $this->driver->getQuoteColumn($this->returning);
@@ -642,7 +642,7 @@ class QueryBuilder
             while( isset($this->vars[':' . $key]) ) {
                 $key .= $i++;
             }
-            $this->vars[ ':' . $key  ] = $value;
+            $this->vars[ ':' . $key  ] = PDOParameter::cast($value);
             return $key;
         }
         else {

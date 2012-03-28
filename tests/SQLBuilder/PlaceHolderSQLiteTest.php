@@ -24,7 +24,6 @@ class PlaceHolderSQLiteTest extends PHPUnit_PDO_TestCase
             ->equal('confirmed' , true);
         $sql = $sb->build();
         $vars = $sb->getVars();
-        var_dump( $vars ); 
         ok( $vars );
         ok( $sql );
         $this->queryOk( $sql , $vars );
