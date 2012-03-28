@@ -65,7 +65,7 @@ EOS
     {
         $ret = $this->pdo->query($sql);
         $err = $this->pdo->errorInfo();
-        ok( ! $err[1] );
+        ok( ! $err[1] , join(' ',$err) );
         return $ret;
     }
 
