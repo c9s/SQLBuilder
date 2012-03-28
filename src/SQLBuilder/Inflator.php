@@ -6,23 +6,28 @@ class Inflator
 {
     public $driver;
 
-    function inflate($value)
+
+    /**
+     * For variable placeholder like PDO, we need 1 or 0 for boolean type,
+     *
+     * For pgsql and mysql sql statement, 
+     * we use TRUE or FALSE for boolean type.
+     *
+     * FOr sqlite sql statement:
+     * we use 1 or 0 for boolean type.
+     */
+    public function inflate($value)
     {
-        /**
-         * For variable placeholder like PDO, we need 1 or 0 for boolean type,
-         * for pgsql and sqlite sql statement, 
-         * we can use TRUE or FALSE for boolean type.
-         */
         if( $value === null ) {
             return 'NULL';
         }
         elseif( $value === true ) {
-            if( $this->driver->placeholder )
+            if( $this->driver->type === 'sqlite' )
                 return 1;
             return 'TRUE';
         }
         elseif( $value === false ) {
-            if( $this->driver->placeholder )
+            if( $this->driver->type === 'sqlite' )
                 return 0;
             return 'FALSE';
         }
