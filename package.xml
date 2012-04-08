@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-03-28</date>
-  <time>15:19:17</time>
+  <date>2012-04-08</date>
+  <time>17:09:36</time>
   <version>
-    <release>1.2.6</release>
-    <api>1.2.6</api>
+    <release>1.2.7</release>
+    <api>1.2.7</api>
   </version>
   <stability>
     <release>stable</release>
@@ -30,19 +30,19 @@
       <file name="tests/SQLBuilder/JoinExpressionTest.php" role="test" md5sum="6df3281b347a6b0fb815738443a8d01c"/>
       <file name="tests/SQLBuilder/PHPUnit_PDO_TestCase.php" role="test" md5sum="5c5239f80da2f8a98e0fab25e8a4474d"/>
       <file name="tests/SQLBuilder/PlaceHolderSQLiteTest.php" role="test" md5sum="03bbe06ecfcbd6c9afbbbcf37203a535"/>
-      <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="0d0f9c82c446ffeac3177b56d5fbe295"/>
+      <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="54f8ee9417820d933e9f729e6e841728"/>
       <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="b7c517f703c1e9f8904999f53f73152a"/>
       <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="5fa590071590851c703d8f134328d3bb"/>
       <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="122bb96f6cd1685dca57b3f4fc7f9736"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a3cbdb36a5b06ea26bced558d22dda25"/>
-      <file name="src/SQLBuilder/Driver.php" role="php" md5sum="17a1fa90da668790d946bf779c66036c"/>
+      <file name="src/SQLBuilder/Driver.php" role="php" md5sum="6a357f11ef017a9f0b6174359535cb8f"/>
       <file name="src/SQLBuilder/Expression.php" role="php" md5sum="0982b8939c5899d07969f243542a580b"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="46f8f90b3c845bb7e154229b6e11ba2d"/>
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="2ce9f82e7356e8e93274528324374ae0"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="213fcf663bbe0996ee10b615e8c3e3c1"/>
       <file name="src/SQLBuilder/PDOParameter.php" role="php" md5sum="5fef1a765cc6acd8f98da836a0db6560"/>
-      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="d2d94ece1f2ac00b9db7416e59d3cfe9"/>
-      <file name="package.ini" role="data" md5sum="2b3d8805c6246c62e81ac9b9200317cc"/>
+      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="236676bd09a67237c07d2e58db346d1a"/>
+      <file name="package.ini" role="data" md5sum="32078a57c5c7bbaa37c6a0e5a83897df"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
       <file name="CHANGES.md" role="doc" md5sum="ee7d7adaae08fe866c414a3b548f589c"/>
       <file name="README.md" role="doc" md5sum="7b8437a95f9c3f05957a988150580071"/>
