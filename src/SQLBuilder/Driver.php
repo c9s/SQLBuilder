@@ -181,11 +181,11 @@ class Driver
                 return $name;
             if( is_string($c) )
                 return $c . $name . $c;
-            if( $this->type === 'pgsql' )
+            if( 'pgsql' === $this->type )
                 return '"' . $name . '"';
-            elseif ( $this->type === 'mysql' )
+            elseif ( 'mysql' === $this->type )
                 return '`' . $name . '`';
-            elseif ( $this->type === 'sqlite' ) 
+            elseif ( 'sqlite' === $this->type ) 
                 return '`' . $name . '`';
         }
         return $name;
