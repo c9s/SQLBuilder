@@ -496,11 +496,17 @@ class QueryBuilder
             foreach( $this->insert as $k => $v ) {
                 if( is_integer($k) )
                     $k = $v;
-                $columns[] = $this->driver->getQuoteColumn($k);
 
-                $newK = $this->setPlaceHolderVar( $k , $v );
-
-                $values[] = $this->driver->getPlaceHolder($newK);
+                if( is_array($v) ) {
+                    // just interpolate the raw value
+                    $columns[] = $this->driver->getQuoteColumn($k);
+                    $values[] = $v[0];
+                }
+                else {
+                    $columns[] = $this->driver->getQuoteColumn($k);
+                    $newK = $this->setPlaceHolderVar( $k , $v );
+                    $values[] = $this->driver->getPlaceHolder($newK);
+                }
             }
 
         } else {
@@ -589,7 +595,7 @@ class QueryBuilder
         if( $this->driver->placeholder ) {
             foreach( $this->update as $k => $v ) {
                 if( is_array($v) ) {
-                    $conds[] =  $this->driver->getQuoteColumn( $k ) . ' = '. $v;
+                    $conds[] =  $this->driver->getQuoteColumn( $k ) . ' = '. $v[0];
                 } else {
                     if( is_integer($k) )
                         $k = $v;

@@ -112,6 +112,34 @@ class QueryBuilderMySQLTest extends PHPUnit_Framework_TestCase
         ok($sql);
     }
 
+    function testRawSqlForUpdate()
+    {
+        $sb = new QueryBuilder;
+        $sb->table('member');
+        $sb->driver = new Driver;
+        $sb->driver->configure('driver','mysql');
+        $sb->driver->configure('placeholder','named');
+        $sb->update(array( 
+            'created_on' => array('current_timestamp'),
+        ));
+        $sql = $sb->build();
+        is( 'UPDATE member SET created_on = current_timestamp', $sql );
+    }
+
+    function testRawSqlForInsert()
+    {
+        $sb = new QueryBuilder;
+        $sb->table('member');
+        $sb->driver = new Driver;
+        $sb->driver->configure('driver','mysql');
+        $sb->driver->configure('placeholder','named');
+        $sb->insert(array( 
+            'created_on' => array('current_timestamp'),
+        ));
+        $sql = $sb->build();
+        is( 'INSERT INTO member ( created_on) VALUES (current_timestamp)', $sql );
+    }
+
     function testSelect()
     {
         $sb = new QueryBuilder;

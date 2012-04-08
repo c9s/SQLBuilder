@@ -2,7 +2,7 @@
 namespace SQLBuilder;
 
 
-/*
+/**
  *  $driver->configure('driver','pgsql');
  *
  *  trim spaces
@@ -242,6 +242,8 @@ class Driver
      */
     public function inflate($value)
     {
+        if( is_array($value) )
+            return $value[0];
         return $this->inflator->inflate($value);
     }
 
