@@ -122,7 +122,7 @@ class Driver
          */
         case 'driver':
             $this->type = $value;
-            if( $this->type == 'mysql' ) {
+            if( 'mysql' === $this->type ) {
                 $this->quoteColumn = false;
                 $this->quoteTable = false;
             }
