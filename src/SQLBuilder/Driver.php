@@ -205,10 +205,9 @@ class Driver
         if( $c = $this->quoteTable ) {
             if( is_string($c) ) 
                 return $c . $name . $c;
-
-            if( $this->type == 'pgsql' )
+            if( $this->type === 'pgsql' )
                 return '"' . $name . '"';
-            elseif ($this->type == 'mysql') 
+            elseif ($this->type === 'mysql') 
                 return '`' . $name . '`';
         }
         return $name;
