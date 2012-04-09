@@ -203,12 +203,13 @@ class Driver
     public function getQuoteTableName($name) 
     {
         if( $c = $this->quoteTable ) {
-            if( is_string($c) ) 
+            if( is_string($c) ) {
                 return $c . $name . $c;
-            if( $this->type === 'pgsql' )
+            } elseif( 'pgsql' === $this->type) {
                 return '"' . $name . '"';
-            elseif ($this->type === 'mysql') 
+            } elseif ( 'mysql' === $this->type) {
                 return '`' . $name . '`';
+            }
         }
         return $name;
     }
