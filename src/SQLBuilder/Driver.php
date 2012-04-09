@@ -32,31 +32,31 @@ class Driver
     public $type;
 
     /**
-     * should we quote table name in SQL ?
+     * Should we quote table name in SQL ?
      */
     public $quoteTable = false;
 
 
     /**
-     * should we quote column name in SQL ?
+     * Should we quote column name in SQL ?
      */
     public $quoteColumn = false;
 
 
     /**
-     * should we trim space ?
+     * Should we trim space ?
      */
     public $trim = false;
 
 
     /**
-     * get place holder
+     * Get place holder
      */
     public $placeholder = false;
 
 
     /**
-     * string quoter handler
+     * String quoter handler
      *  
      *  Array:
      *
@@ -89,7 +89,7 @@ class Driver
 
 
     /**
-     * configure options
+     * Configure options
      *
      *
      *
@@ -142,7 +142,7 @@ class Driver
 
 
     /**
-     * get place holder string,
+     * Get place holder string,
      * the returned value is depends on driver.
      *
      * for named parameter, this returns a key with a ":" char.
@@ -165,7 +165,7 @@ class Driver
 
 
     /**
-     * check driver option to quote column name
+     * Check driver option to quote column name
      *
      * column quote can be configured by 'quote_column' option.
      *
@@ -193,7 +193,7 @@ class Driver
 
 
     /**
-     * check driver optino to quote table name
+     * Check driver optino to quote table name
      *
      * column quote can be configured by 'quote_table' option.
      *
