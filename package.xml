@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-04-09</date>
-  <time>13:14:23</time>
+  <date>2012-04-16</date>
+  <time>13:37:06</time>
   <version>
-    <release>1.2.7</release>
-    <api>1.2.7</api>
+    <release>1.2.8</release>
+    <api>1.2.8</api>
   </version>
   <stability>
     <release>stable</release>
@@ -41,8 +41,8 @@
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="2ce9f82e7356e8e93274528324374ae0"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="213fcf663bbe0996ee10b615e8c3e3c1"/>
       <file name="src/SQLBuilder/PDOParameter.php" role="php" md5sum="5fef1a765cc6acd8f98da836a0db6560"/>
-      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="90857f57581161b8d18cd19f1e85dc2f"/>
-      <file name="package.ini" role="data" md5sum="32078a57c5c7bbaa37c6a0e5a83897df"/>
+      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="a0ae03cc46c553c7c187f54b056652c9"/>
+      <file name="package.ini" role="data" md5sum="082abb34b3cabb7cf0b6bfe5669ab8c7"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
       <file name="CHANGES.md" role="doc" md5sum="ee7d7adaae08fe866c414a3b548f589c"/>
       <file name="README.md" role="doc" md5sum="7b8437a95f9c3f05957a988150580071"/>
