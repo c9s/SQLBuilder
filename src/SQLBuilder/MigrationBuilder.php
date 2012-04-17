@@ -32,9 +32,6 @@ class MigrationBuilder
             $sql .= ' is not null';
 
         }
-
     }
-
-
 }
 
