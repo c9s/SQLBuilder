@@ -68,7 +68,7 @@ class Column
 
     function integer()
     {
-        $this->type = $integer;
+        $this->type = 'integer';
         return $this;
     }
 
@@ -79,10 +79,17 @@ class Column
         return $this;
     }
 
-    function isNotNull()
+    function notNull()
     {
         $this->notNull = true;
         return $this;
     }
+
+    function primary()
+    {
+        $this->primary = true;
+        return $this;
+    }
+
 
 }
