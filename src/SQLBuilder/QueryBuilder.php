@@ -560,14 +560,14 @@ class QueryBuilder
     protected function buildLimitSql()
     {
         $sql = '';
-        if( $this->driver->type == 'pgsql' ) {
+        if( 'pgsql' === $this->driver->type ) {
             if( $this->limit && $this->offset ) {
                 $sql .= ' LIMIT ' . $this->limit . ' OFFSET ' . $this->offset;
             } else if ( $this->limit ) {
                 $sql .= ' LIMIT ' . $this->limit;
             }
         } 
-        else if( $this->driver->type == 'mysql' ) {
+        else if( 'mysql' === $this->driver->type ) {
             if( $this->limit && $this->offset ) {
                 $sql .= ' LIMIT ' . $this->offset . ' , ' . $this->limit;
             } else if ( $this->limit ) {
