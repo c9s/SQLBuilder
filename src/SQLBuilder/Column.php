@@ -85,6 +85,12 @@ class Column
         return $this;
     }
 
+    function unique()
+    {
+        $this->unique = true;
+        return $this;
+    }
+
     function primary()
     {
         $this->primary = true;
