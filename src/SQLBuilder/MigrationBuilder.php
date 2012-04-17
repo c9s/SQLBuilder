@@ -1,6 +1,7 @@
 <?php
 namespace SQLBuilder;
 use SQLBuilder\Column;
+use RuntimeException;
 
 class MigrationBuilder
 {
@@ -76,6 +77,24 @@ class MigrationBuilder
         return $sql;
     }
 
+    public function renameColumn($table,$columnName,$newColumnName)
+    {
+        $sql = null;
+        switch( $this->driver->type ) {
+        case 'sqlite':
+            throw new RuntimeException("Column renaming is not supported in SQLite.");
+            break;
+        case 'mysql':
+        case 'pgsql':
+            $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName($table)
+                . ' RENAME COLUMN '
+                . $this->driver->getQuoteColumn( $columnName )
+                . ' TO '
+                . $this->driver->getQuoteColumn( $newColumnName );
+            break;
+        }
+        return $sql;
+    }
 
     /**
      * mysql
@@ -87,12 +106,12 @@ class MigrationBuilder
         $sql = '';
         switch( $this->driver->type )
         {
-            case 'sqlite':
             case 'mysql':
                 $sql = 'DROP INDEX ' 
                     . $this->driver->getQuoteTableName($indexName) 
                     . ' ON ' . $this->driver->getQuoteTableName($table);
             break;
+            case 'sqlite':
             case 'pgsql':
                 $sql = 'DROP INDEX ' . $this->driver->getQuoteTableName($indexName);
             break;
