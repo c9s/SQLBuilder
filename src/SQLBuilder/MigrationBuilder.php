@@ -6,11 +6,12 @@ class MigrationBuilder
 {
     public $driver;
 
-
     public function __construct($driver)
     {
         $this->driver = $driver;
     }
+
+
 
     public function addColumn( $table, $column ) 
     {
@@ -54,6 +55,9 @@ class MigrationBuilder
     /**
      * pgsql create index:
      * @link http://www.postgresql.org/docs/8.2/static/sql-createindex.html
+     *
+     * mysql:
+     * @link http://dev.mysql.com/doc/refman/5.0/en/create-index.html
      */
     public function createIndex($table,$indexName,$columnNames)
     {
@@ -72,6 +76,12 @@ class MigrationBuilder
         return $sql;
     }
 
+
+    /**
+     * mysql
+     *
+     * @link http://dev.mysql.com/doc/refman/5.0/en/drop-index.html
+     */
     public function dropIndex($table,$indexName)
     {
         $sql = '';
