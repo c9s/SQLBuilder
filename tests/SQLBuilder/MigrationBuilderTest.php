@@ -33,6 +33,12 @@ class MigrationBuilderTest extends PHPUnit_PDO_TestCase
 
         $sql = $builder->createIndex( 'members', 'email_index', 'email' );
         $this->queryOk( $sql );
+
+        $sql = $builder->dropIndex( 'members', 'email_index' );
+        $this->queryOk( $sql );
+
+        // $sql = $builder->renameColumn( 'members' , 'email' , 'email_new' );
+        // var_dump( $sql ); 
     }
 
     function test2()
