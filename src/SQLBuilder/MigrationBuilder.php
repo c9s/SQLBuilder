@@ -14,24 +14,37 @@ class MigrationBuilder
 
     public function addColumn( $table, $column ) 
     {
-        $sql = 'alter table ' . $this->driver->getQuoteTableName( $table )
-             . ' add column ' . $this->driver->getQuoteColumn( $column->name );
+        $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName( $table )
+             . ' ADD COLUMN ' . $this->driver->getQuoteColumn( $column->name );
 
         // build attributes
         if( isset($column->type) ) {
             $sql .= ' ' . $column->type;
         }
 
-        if( isset($column->default) ) {
-            $sql .= ' default ' . $column->default;
+        if( $column->primary ) {
+            $sql .= ' PRIMARY KEY';
         }
 
+        if( isset($column->default) ) {
+            $sql .= ' DEFAULT ' . $column->default;
+        }
+        
         if( $column->isNull ) {
-            $sql .= ' is null';
+            $sql .= ' IS NULL';
         }
-        elseif( $column->isNotNull ) {
-            $sql .= ' is not null';
+        elseif( $column->notNull ) {
+            $sql .= ' NOT NULL';
         }
+        return $sql;
     }
+
+    public function dropColumn($table,$columnName)
+    {
+        $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName($table)
+               . ' DROP COLUMN ' . $this->driver->getQuoteColumn( $columnName );
+        return $sql;
+    }
+
 }
 

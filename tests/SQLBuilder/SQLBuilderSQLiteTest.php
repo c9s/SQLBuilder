@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/PHPUnit_PDO_TestCase.php';
 
 class TestQueryWrapper extends SQLBuilder\QueryBuilder
 {
