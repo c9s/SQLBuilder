@@ -23,9 +23,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
 {
     function getDriver()
     {
-        $d = new SQLBuilder\Driver;
-        $d->configure('driver','sqlite');
-        return $d;
+        return DriverFactory::create_sqlite_driver();
     }
 
     function testWrapper()
