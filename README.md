@@ -226,7 +226,6 @@ $sb->alias('m')
 
 ### Delete
 
-
 ```php
 <?php
     $sb = new QueryBuilder('member');
@@ -239,6 +238,31 @@ $sb->alias('m')
     $sb->where()->equal('foo',123);
 
     $sql = $sb->build();  // DELETE FROM member  WHERE foo = 123
+```
+
+
+## Migration Builder
+
+```php
+<?php
+$builder = new SQLBuilder\MigrationBuilder( $driver );
+$sql = $builder->addColumn( 'members' , 
+    SQLBuilder\Column::create('price')
+        ->integer()
+        ->notNull()
+        ->default(100)
+);
+// ALTER TABLE members ADD COLUMN price integer DEFAULT 100 NOT NULL
+
+$sql = $builder->addColumn( 'members' , 
+    SQLBuilder\Column::create('email')
+        ->varchar(64)
+);
+// ALTER TABLE members ADD COLUMN email varchar(64)
+
+$sql = $builder->createIndex( 'members', 'email_index', 'email' ); // create index email_index on members (email);
+
+$sql = $builder->dropIndex( 'members', 'email_index' );
 ```
 
 ## Development
