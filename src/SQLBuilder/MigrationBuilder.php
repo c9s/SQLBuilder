@@ -29,6 +29,10 @@ class MigrationBuilder
         if( isset($column->default) ) {
             $sql .= ' DEFAULT ' . $column->default;
         }
+
+        if( $column->unique ) {
+            $sql .= ' UNIQUE';
+        }
         
         if( $column->isNull ) {
             $sql .= ' IS NULL';
@@ -43,6 +47,22 @@ class MigrationBuilder
     {
         $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName($table)
                . ' DROP COLUMN ' . $this->driver->getQuoteColumn( $columnName );
+        return $sql;
+    }
+
+    public function createIndex($table,$indexName,$columnNames)
+    {
+        $self = $this;
+        $sql = "CREATE INDEX " . $this->driver->getQuoteTableName($indexName) . " ON " . $this->driver->getQuoteTableName($table);
+        if( is_array($columnNames) ) {
+            $sql .= ' (' . join(',' , array_map( function($name) use ($self) { 
+                                        return $self->driver->getQuoteColumn( $name );
+                                    }, $columnNames ) )
+                . ')';
+        }
+        else {
+            $sql .= ' (' . $this->driver->getQuoteColumn( $columnNames ) . ')';
+        }
         return $sql;
     }
 

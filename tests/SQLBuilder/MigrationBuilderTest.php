@@ -11,7 +11,6 @@ class MigrationBuilderTest extends PHPUnit_PDO_TestCase
         return $sqls;
     }
 
-
     function test()
     {
         $driver = DriverFactory::create_sqlite_driver();
@@ -23,6 +22,16 @@ class MigrationBuilderTest extends PHPUnit_PDO_TestCase
                 ->default(100)
         );
         is( 'ALTER TABLE members ADD COLUMN price integer DEFAULT 100 NOT NULL', $sql );
+        $this->queryOk( $sql );
+
+        $sql = $builder->addColumn( 'members' , 
+            SQLBuilder\Column::create('email')
+                ->varchar(64)
+        );
+        is( 'ALTER TABLE members ADD COLUMN email varchar(64)', $sql );
+        $this->queryOk( $sql );
+
+        $sql = $builder->createIndex( 'members', 'email_index', 'email' );
         $this->queryOk( $sql );
     }
 
