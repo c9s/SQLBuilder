@@ -50,10 +50,16 @@ class MigrationBuilder
         return $sql;
     }
 
+
+    /**
+     * pgsql create index:
+     * @link http://www.postgresql.org/docs/8.2/static/sql-createindex.html
+     */
     public function createIndex($table,$indexName,$columnNames)
     {
         $self = $this;
-        $sql = "CREATE INDEX " . $this->driver->getQuoteTableName($indexName) . " ON " . $this->driver->getQuoteTableName($table);
+        $sql = 'CREATE INDEX ' . $this->driver->getQuoteTableName($indexName) 
+            . ' ON ' . $this->driver->getQuoteTableName($table);
         if( is_array($columnNames) ) {
             $sql .= ' (' . join(',' , array_map( function($name) use ($self) { 
                                         return $self->driver->getQuoteColumn( $name );
@@ -62,6 +68,24 @@ class MigrationBuilder
         }
         else {
             $sql .= ' (' . $this->driver->getQuoteColumn( $columnNames ) . ')';
+        }
+        return $sql;
+    }
+
+    public function dropIndex($table,$indexName)
+    {
+        $sql = '';
+        switch( $this->driver->type )
+        {
+            case 'sqlite':
+            case 'mysql':
+                $sql = 'DROP INDEX ' 
+                    . $this->driver->getQuoteTableName($indexName) 
+                    . ' ON ' . $this->driver->getQuoteTableName($table);
+            break;
+            case 'pgsql':
+                $sql = 'DROP INDEX ' . $this->driver->getQuoteTableName($indexName);
+            break;
         }
         return $sql;
     }
