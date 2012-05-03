@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-04-18</date>
-  <time>01:26:18</time>
+  <date>2012-05-03</date>
+  <time>22:10:38</time>
   <version>
     <release>1.3.0</release>
     <api>1.3.0</api>
@@ -40,19 +40,19 @@
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a3cbdb36a5b06ea26bced558d22dda25"/>
       <file name="src/SQLBuilder/Column.php" role="php" md5sum="1eaeb4a62e164a20912defe10aaf3a6f"/>
       <file name="src/SQLBuilder/Driver.php" role="php" md5sum="cab74a6b63ae30c4ef4633720c9a5525"/>
-      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="0982b8939c5899d07969f243542a580b"/>
+      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="9d6e0bb6c9e7ea1dfb16db6fd6054eee"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="46f8f90b3c845bb7e154229b6e11ba2d"/>
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="2ce9f82e7356e8e93274528324374ae0"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="213fcf663bbe0996ee10b615e8c3e3c1"/>
       <file name="src/SQLBuilder/MigrationBuilder.php" role="php" md5sum="41382c7430a8c7801575e0d93be0dae1"/>
       <file name="src/SQLBuilder/PDOParameter.php" role="php" md5sum="5fef1a765cc6acd8f98da836a0db6560"/>
-      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="80af121365369d64001c8496c3054409"/>
+      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="465e371d307d193a3b5cf6123119423f"/>
       <file name="package.ini" role="data" md5sum="47ae39e4b3c7591268c92f9f8836cbc4"/>
       <file name="phpunit.xml" role="data" md5sum="363519b86a5ac6aac0b747dc4760d828"/>
       <file name="CHANGES.md" role="doc" md5sum="ee7d7adaae08fe866c414a3b548f589c"/>
-      <file name="README.md" role="doc" md5sum="d62de31f4053503cf314cbe1129ecc77"/>
+      <file name="README.md" role="doc" md5sum="0ef609c6d24f2d9cd99afeca2d07a13f"/>
       <file name="SCHEMA_INTEGRATION.md" role="doc" md5sum="31b9938b97072847cf8a0b2471dc8147"/>
-      <file name="todo.md" role="doc" md5sum="cfaafc5002920306d052fbcb5e940e91"/>
+      <file name="todo.md" role="doc" md5sum="a173039568848b1ac61769f6545b270c"/>
     </dir>
   </contents>
   <dependencies>
