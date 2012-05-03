@@ -624,7 +624,7 @@ class QueryBuilder
 
     protected function buildConditionSql()
     {
-        if( $this->where )
+        if( $this->where && $this->where->isComplete() )
             return ' WHERE ' . $this->where->toSql();
         return '';
     }
