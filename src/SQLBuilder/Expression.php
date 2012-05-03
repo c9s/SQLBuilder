@@ -6,7 +6,7 @@ class Expression extends BaseExpression
 {
     public $driver;
 
-    /* child */
+    /* children */
     public $childs = array();
 
     /* parent expression */
@@ -119,12 +119,24 @@ class Expression extends BaseExpression
     }
 
 
+
+    /**
+     * is a complete expression
+     *
+     * @return bool 
+     */
+    public function isComplete()
+    {
+        return ( ! $this->op && empty($this->childs) );
+    }
+
     public function toSql()
     {
         $sql = '';
 
         if( $this->parentOp )
             $sql .= $this->parentOp . ' ';
+
 
         if( $this->op ) {
             if( is_array( $this->op ) ) {
@@ -162,7 +174,7 @@ class Expression extends BaseExpression
             }
         }
 
-        if( $this->childs ) {
+        if( ! empty($this->childs) ) {
             foreach( $this->childs as $child ) {
                 $sql .= ' '. $child->toSql();
             }
