@@ -127,7 +127,7 @@ class Expression extends BaseExpression
      */
     public function isComplete()
     {
-        return ( ! $this->op && empty($this->childs) );
+        return ( $this->op || ! empty($this->childs) );
     }
 
     public function toSql()
