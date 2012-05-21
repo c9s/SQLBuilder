@@ -9,7 +9,7 @@
     <bootstrap />
 
     <!-- A phpDox project to process, you can have multiple projects in one config file -->
-    <project name="phpdox" source="${basedir}/src" workdir="${basedir}/xml">
+    <project name="phpdox" source="src" workdir="xml">
         <!--  @name    - The name of the project -->
         <!--  @source  - The source directory of the application to process -->
         <!--  @workdir - The directory to store the xml data files in -->
@@ -45,7 +45,7 @@
         </collector>
     
         <!--  Configuration of generation process -->
-        <generator output="${basedir}/docs">
+        <generator output="docs">
             <!-- @output - (Base-)Directory to store output data in -->
             
             <!-- A generation process consists of one or more build tasks -->
@@ -59,7 +59,7 @@
 
             <!--  default engine "html" -->            
             <build engine="html" enabled="true" output="html">
-                <template dir="${phpDox.home}/templates/html" />
+
             </build>
             
             <!-- 
