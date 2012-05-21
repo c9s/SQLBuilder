@@ -64,7 +64,6 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
     }
 
 
-
     public function setup()
     {
         $this->pdo = new PDO(
@@ -81,6 +80,7 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
 
     public function setupSchema()
     {
+        // get schema file (if we provide them)
         if( $this->schema ) {
             foreach( $this->schema as $file ) {
                 $content = file_get_contents($file);
@@ -91,11 +91,12 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
 
         }
 
-
-        // get schema SQL and send query
-        $sqls = $this->schema();
-        foreach( $sqls as $sql ) {
-            $this->pdo->query($sql);
+        // get schema from class method, which is SQL. 
+        // then send query
+        if( $sqls = $this->schema() ) {
+            foreach( $sqls as $sql ) {
+                $this->pdo->query($sql);
+            }
         }
         // well done!
     }
@@ -108,15 +109,6 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
     public function schema()
     {
         $sqls = array();
-        $sqls[] =<<<SQL
-        CREATE TABLE member ( 
-            id integer primary key autoincrement, 
-            name varchar(128) , 
-            phone varchar(128) , 
-            country varchar(128),
-            confirmed boolean
-        );
-SQL;
         return $sqls;
     }
 
