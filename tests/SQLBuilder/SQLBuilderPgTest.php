@@ -50,16 +50,19 @@ EOS
         );
     }
 
+    public function getDb()
+    {
+        $pdo = new PDO( 'pgsql:dbname=sqlbuilder_test', 'postgres' );
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
+    }
+
     public function tearDown()
     {
         $this->pdo->query('drop table "Member" ');
         $this->pdo->query('drop sequence "MemberNo_seq" ');
     }
 
-    public function getDb()
-    {
-        return new PDO( 'pgsql:dbname=sqlbuilder_test', 'postgres' );
-    }
 
     public function queryOk($sql)
     {
