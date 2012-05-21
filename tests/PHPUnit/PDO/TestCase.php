@@ -28,14 +28,45 @@
  */
 abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
 {
+
+    /**
+     * @var PDO PDO connection handle
+     */
     public $pdo;
 
+
+    /**
+     * @var string database connection string (DSN)
+     */
     public $dsn = 'sqlite::memory:';
+
+    /**
+     * @var string database username
+     */
     public $user;
+
+    /**
+     * @var string database password
+     */
     public $pass;
+
+
+    /**
+     * @var array PDO connection options
+     */
     public $options;
 
+
+    /**
+     * @var array Schema files
+     */
     public $schema;
+
+
+    /**
+     * @var array Fixture files
+     */
+    public $fixture;
 
     public function noPDOError()
     {
@@ -99,6 +130,19 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
             }
         }
         // well done!
+    }
+
+    public function setupFixture()
+    {
+        if( $this->fixture ) {
+            foreach( $this->fixture as $file {
+                $content = file_get_contents($file);
+                $statements = preg_split( '#;\s*$#', $content );
+                foreach( $statements as $statement ) {
+                    $this->queryOk($statement);
+                }
+            }
+        }
     }
 
     public function testConnection() 
