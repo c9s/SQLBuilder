@@ -16,12 +16,19 @@
  *      // setup your database password (optional)
  *      public $pass = 'postgres';
  *
+ *
+ *      // optional
  *      public $options = array( ... PDO connection options ... );
  *
  *      
  *      // provide your schema sql files
  *      public $schema = array( 
  *         'tests/schema/user.sql'
+ *      );
+ *
+ *      // provide your fixture sql files
+ *      public $fixture = array( 
+ *          'tests/fixtures/file.sql',
  *      );
  *
  *   }
