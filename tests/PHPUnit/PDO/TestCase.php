@@ -70,11 +70,15 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
      */
     public $schema;
 
+    public $schemaDir = 'tests/schema';
+
 
     /**
      * @var array Fixture files
      */
     public $fixture;
+
+    public $fixtureDir = 'tests/fixture';
 
     public function noPDOError()
     {
@@ -122,7 +126,18 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
         // get schema file (if we provide them)
         if( $this->schema ) {
             foreach( $this->schema as $file ) {
+
+                // try to find schema file in schema directory
+                if (! file_exists($file) ) {
+                    if( file_exists($this->schemaDir . DIRECTORY_SEPARATOR . $file) ) {
+                        $file = $this->schemaDir . DIRECTORY_SEPARATOR . $file;
+                    }
+                    else {
+                        throw new Exception( "schema file $file not found." );
+                    }
+                }
                 $content = file_get_contents($file);
+
                 $statements = preg_split( '#;\s*$#', $content );
                 foreach( $statements as $statement ) 
                     $this->queryOk($statement);
@@ -144,6 +159,17 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
     {
         if( $this->fixture ) {
             foreach( $this->fixture as $file ) {
+
+                if (! file_exists($file) ) {
+                    if( file_exists($this->fixtureDir . DIRECTORY_SEPARATOR . $file) ) {
+                        $file = $this->fixtureDir . DIRECTORY_SEPARATOR . $file;
+                    }
+                    else {
+                        throw new Exception( "fixture file $file not found." );
+                    }
+                }
+
+
                 $content = file_get_contents($file);
                 $statements = preg_split( '#;\s*$#', $content );
                 foreach( $statements as $statement ) {
