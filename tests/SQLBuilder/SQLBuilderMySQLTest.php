@@ -15,6 +15,7 @@ class QueryBuilderMySQLTest extends PHPUnit_Framework_TestCase
         return $d;
     }
 
+
     function testInsert()
     {
         $sb = new QueryBuilder;
