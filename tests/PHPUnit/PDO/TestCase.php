@@ -143,7 +143,7 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
     public function setupFixture()
     {
         if( $this->fixture ) {
-            foreach( $this->fixture as $file {
+            foreach( $this->fixture as $file ) {
                 $content = file_get_contents($file);
                 $statements = preg_split( '#;\s*$#', $content );
                 foreach( $statements as $statement ) {
