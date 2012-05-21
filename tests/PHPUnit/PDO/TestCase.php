@@ -18,6 +18,12 @@
  *
  *      public $options = array( ... PDO connection options ... );
  *
+ *      
+ *      // provide your schema sql files
+ *      public $schema = array( 
+ *         'tests/schema/user.sql'
+ *      );
+ *
  *   }
  */
 abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
@@ -29,19 +35,43 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
     public $pass;
     public $options;
 
+    public $schema;
+
     public function noPDOError()
     {
         $err = $this->pdo->errorInfo();
         ok( $err[0] === '00000' );
     }
 
+    public function getDSN()
+    {
+        return $this->dsn;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    public function getPass()
+    {
+        return $this->pass;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+
+
     public function setup()
     {
         $this->pdo = new PDO(
-            $this->dsn,  
-            $this->user,  
-            $this->pass, 
-            $this->options ?: null
+            $this->getDSN(),  
+            $this->getUser(),  
+            $this->getPass(), 
+            $this->getOptions() ?: null
         );
 
         // throw Exception on Error.
@@ -51,6 +81,17 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
 
     public function setupSchema()
     {
+        if( $this->schema ) {
+            foreach( $this->schema as $file ) {
+                $content = file_get_contents($file);
+                $statements = preg_split( '#;\s*$#', $content );
+                foreach( $statements as $statement ) 
+                    $this->queryOk($statement);
+            }
+
+        }
+
+
         // get schema SQL and send query
         $sqls = $this->schema();
         foreach( $sqls as $sql ) {
@@ -63,7 +104,6 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('PDO', $this->pdo);
     }
-
 
     public function schema()
     {
@@ -81,6 +121,12 @@ SQL;
     }
 
 
+    /**
+     * Test Query
+     *
+     * @param string $sql SQL statement.
+     * @param array $args Arguments for executing SQL statement.
+     */
     public function queryOk($sql, $args = null)
     {
         if( $args ) {
