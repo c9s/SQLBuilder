@@ -1,7 +1,8 @@
 <?php
 
-
 /**
+ * @class PHPUnit_PDO_TestCase
+ *
  * Usage
  *
  *   class YourTest extends PHPUnit_PDO_TestCase
@@ -159,8 +160,7 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
 
     public function schema()
     {
-        $sqls = array();
-        return $sqls;
+        return;
     }
 
 
