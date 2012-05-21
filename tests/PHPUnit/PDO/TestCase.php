@@ -70,6 +70,10 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
      */
     public $schema;
 
+
+    /**
+     * @var string Schema directory path
+     */
     public $schemaDir = 'tests/schema';
 
 
@@ -78,7 +82,12 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
      */
     public $fixture;
 
+
+    /**
+     * @var string Fixture directory path
+     */
     public $fixtureDir = 'tests/fixture';
+
 
     public function noPDOError()
     {
