@@ -3,6 +3,19 @@
          backupGlobals="false"
          colors="true"
          verbose="true">
+  <php>
+
+    <!-- MySQL Database Testing -->
+    <var name="DB_MYSQL_DSN" value="mysql:dbname=sqlbuilder_tests;host=localhost" />
+    <var name="DB_MYSQL_USER" value="test" />
+    <var name="DB_MYSQL_PASSWD" value="test" />
+
+    <!-- 
+    <var name="DB_MYSQL_DBNAME" value="sqlbuilder_tests" />
+    -->
+
+  </php>
+
   <testsuites>
     <testsuite name="PHPUnit">
       <directory suffix="Test.php">tests</directory>
