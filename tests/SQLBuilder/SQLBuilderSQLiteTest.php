@@ -20,9 +20,7 @@ class TestQueryWrapper extends SQLBuilder\QueryBuilder
 
 class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
 {
-
     public $schema = array( 'tests/schema/member.sql' );
-
 
     function getDriver()
     {
