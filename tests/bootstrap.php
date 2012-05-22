@@ -1,5 +1,5 @@
 <?php
-require 'vendor/pear/PHPUnit/TestMore.php';
+require 'PHPUnit/TestMore.php';
 require 'vendor/pear/Universal/ClassLoader/BasePathClassLoader.php';
 require 'tests/DriverFactory.php';
 require 'tests/PHPUnit/PDO/TestCase.php';
