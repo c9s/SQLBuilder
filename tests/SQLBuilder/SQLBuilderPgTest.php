@@ -2,98 +2,49 @@
 use SQLBuilder\QueryBuilder;
 use SQLBuilder\Driver;
 
-class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
+// class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
+class SQLBuilderPgTest extends PHPUnit_PDO_TestCase
 {
-    public $pdo;
+    public $dsn = 'pgsql:dbname=sqlbuilder_test';
 
-    public function setup()
+
+    function schema()
     {
-        if( ! extension_loaded('pdo') ) 
-            return skip('pdo required');
+        $sqls = array();
 
-        if( ! extension_loaded('pdo_pgsql') ) 
-            return skip('pdo pgsql required');
+        $sqls[] =<<<EOS
+DROP SEQUENCE IF EXISTS "memberno_seq"
+EOS;
 
-        $pdo = $this->pdo = $this->getDb();
-        $err = $pdo->errorInfo();
-
-        if( $err[1] )
-            return skip('PDO fail');
-
-        $pdo->query(<<<EOS
-DROP SEQUENCE IF EXISTS "memberno_seq";
-EOS
-        );
-
-        $pdo->query(<<<EOS
+        $sqls[] =<<<EOS
 CREATE SEQUENCE "memberno_seq"
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-EOS
-        );
+EOS;
 
-        $pdo->query(<<<EOS
+        $sqls[] =<<<EOS
 DROP TABLE IF EXISTS "Member";
-EOS
-        );
+EOS;
 
-        $pdo->query(<<<EOS
+        $sqls[] =<<<EOS
 CREATE TABLE "Member" (
     "MemberNo" integer primary key default nextval('MemberNo_seq'),
     "MemberName" varchar(128),
     "MemberConfirm" boolean
 );
-EOS
-        );
-    }
+EOS;
 
-    public function getDb()
-    {
-        $pdo = new PDO( 'pgsql:dbname=sqlbuilder_test', 'postgres' );
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $pdo;
+
+        return $sqls;
     }
 
     public function tearDown()
     {
         $this->pdo->query('drop table "Member" ');
         $this->pdo->query('drop sequence "MemberNo_seq" ');
-    }
-
-
-    public function queryOk($sql)
-    {
-        $ret = $this->pdo->query($sql);
-        $err = $this->pdo->errorInfo();
-        ok( ! $err[1] , join(' ',$err) );
-        return $ret;
-    }
-
-    public function executeOk($sql,$args)
-    {
-        $stm = $this->pdo->prepare($sql);
-        $err = $this->pdo->errorInfo();
-
-        ok( ! $err[1] , $err[0] );
-
-        ok( $stm );
-        $stm->execute( $args );
-
-        $err = $this->pdo->errorInfo();
-        ok( ! $err[1] );
-        return $stm;
-    }
-
-    function recordOk($sql)
-    {
-        $stm = $this->queryOk($sql);
-        $row = $stm->fetch();
-        ok( $row );
-        ok( ! empty( $row ));
-        return $row;
     }
 
     function getPgDriver()
