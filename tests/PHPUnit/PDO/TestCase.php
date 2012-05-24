@@ -115,9 +115,20 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
         return $this->options;
     }
 
+    public function getDb()
+    {
+        return $this->pdo;
+    }
 
     public function setup()
     {
+        if( ! extension_loaded('pdo') ) 
+            return skip('pdo required');
+
+        // XXX: check pdo driver
+#          if( ! extension_loaded('pdo_pgsql') ) 
+#              return skip('pdo pgsql required');
+
         $this->pdo = new PDO(
             $this->getDSN(),  
             $this->getUser(),  
@@ -215,6 +226,31 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
         }
         $this->noPDOError();
         return $stm;
+    }
+
+    public function executeOk($sql,$args)
+    {
+        $stm = $this->pdo->prepare($sql);
+        $err = $this->pdo->errorInfo();
+
+        ok( ! $err[1] , $err[0] );
+
+        ok( $stm );
+        $stm->execute( $args );
+
+        $err = $this->pdo->errorInfo();
+        ok( ! $err[1] );
+        return $stm;
+
+    }
+
+    function recordOk($sql)
+    {
+        $stm = $this->queryOk($sql);
+        $row = $stm->fetch();
+        ok( $row );
+        ok( ! empty( $row ));
+        return $row;
     }
 
 }
