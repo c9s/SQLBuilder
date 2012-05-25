@@ -1,10 +1,13 @@
 <?php
-namespace SQLBuilder;
-use PHPUnit_Framework_TestCase;
-use Exception;
 
-class QueryBuilderMySQLTest extends PHPUnit_Framework_TestCase
+use SQLBuilder\QueryBuilder;
+use SQLBuilder\Driver;
+
+class QueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
 {
+    public $schema = array(
+        'member.sql',
+    );
 
     function getDriver()
     {
