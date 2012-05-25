@@ -6,14 +6,11 @@
   <php>
 
     <!-- MySQL Database Testing -->
-    <var name="DB_MYSQL_DSN" value="mysql:dbname=sqlbuilder_tests;host=localhost" />
-    <var name="DB_MYSQL_USER" value="test" />
-    <var name="DB_MYSQL_PASSWD" value="test" />
+    <var name="DB_MYSQL_USER"   value="root"/>
+    <var name="DB_MYSQL_PASSWD" value="123123"/>
 
-    <!-- 
-    <var name="DB_MYSQL_DBNAME" value="sqlbuilder_tests" />
-    -->
-
+    <var name="DB_PGSQL_USER"   value="root"/>
+    <var name="DB_PGSQL_PASSWD" value="123123"/>
   </php>
 
   <testsuites>
