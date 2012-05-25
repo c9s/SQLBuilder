@@ -1,32 +1,61 @@
 <?php
+use SQLBuilder\QueryBuilder;
+use SQLBuilder\Driver;
 
-namespace SQLBuilder;
-use PHPUnit_Framework_TestCase;
-use Exception;
-
-class SQLBuilderTest extends PHPUnit_Framework_TestCase
+// class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
+class SQLBuilderPgTest extends PHPUnit_PDO_TestCase
 {
-    static $pdo;
+    public $dsn = 'pgsql:dbname=sqlbuilder_test';
 
-    function getDb()
+    function schema()
     {
-        if( self::$pdo )
-            return self::$pdo;
-        return self::$pdo = new PDO;
+        $sqls = array();
+
+        $sqls[] =<<<EOS
+DROP SEQUENCE IF EXISTS "memberno_seq"
+EOS;
+
+        $sqls[] =<<<EOS
+CREATE SEQUENCE "memberno_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+EOS;
+
+        $sqls[] =<<<EOS
+DROP TABLE IF EXISTS "Member";
+EOS;
+
+        $sqls[] =<<<EOS
+CREATE TABLE "Member" (
+    "MemberNo" integer primary key default nextval('memberno_seq'),
+    "MemberName" varchar(128),
+    "MemberConfirm" boolean
+);
+EOS;
+
+
+        return $sqls;
+    }
+
+    public function tearDown()
+    {
+        $this->pdo->query('drop table "Member" ');
+        $this->pdo->query('drop sequence "memberno_seq" ');
     }
 
     function getPgDriver()
     {
-        $driver = new Driver;
-        $driver->configure('driver','postgresql');
+        $driver = new SQLBuilder\Driver;
+        $driver->configure('driver','pgsql');
         $driver->configure('quote_table',true);
         $driver->configure('quote_column',true);
         $driver->configure('trim',true);
         $driver->configure('placeholder','named');
         return $driver;
     }
-
-
 
     function testInsert()
     {
@@ -35,34 +64,50 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
         $sb = new QueryBuilder;
         $sb->driver = $driver;
         $sb->table('Member')->insert(array(
-            'foo' => 'foo',
-            'bar' => 'bar',
+            'MemberName' => 'insert',
+            'MemberConfirm' => true,
         ));
         $sql = $sb->build();
-        is( 'INSERT INTO "Member" ( "foo","bar") VALUES (:foo,:bar)' , $sql );
+        is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (:MemberName,:MemberConfirm)' , $sql );
+
+        $this->executeOk( $sql , array( 
+            ':MemberName' => 'insert',
+            ':MemberConfirm' => true
+        ));
+
+        $record = $this->recordOk( 'select * from "Member" where "MemberName" = \'insert\' ' );
+        ok( $record['MemberConfirm'] );
+
+
 
         $driver->configure('placeholder',false);
         $sb->insert(array(
-            'foo' => 'foo',
-            'bar' => 'bar',
+            'MemberName' => 'insert2',
+            'MemberConfirm' => true,
         ));
         $sql = $sb->build();
-        is( 'INSERT INTO "Member" ( "foo","bar") VALUES (\'foo\',\'bar\')' , $sql );
+        is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (\'insert2\',TRUE)' , $sql );
+        $this->queryOk( $sql );
+
+        $record = $this->recordOk( 'select * from "Member" where "MemberName" = \'insert2\' ' );
+        ok( $record['MemberConfirm'] );
+
+
 
         $driver->configure('placeholder',true);
         $sql = $sb->build();
-        is( 'INSERT INTO "Member" ( "foo","bar") VALUES (?,?)' , $sql );
+        is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (?,?)' , $sql );
+
+        $this->executeOk( $sql , array( 'insert3' , 1 ) );
+
+        $record = $this->recordOk( 'select * from "Member" where "MemberName" = \'insert3\' ' );
+        ok( $record['MemberConfirm'] );
     }
-
-
 
     function testDelete()
     {
-        $driver = new Driver;
-        $driver->configure('driver','postgresql');
-        $driver->configure('trim',true);
-        $driver->configure('quote_table',true);
-        $driver->configure('quote_column',true);
+        $driver = $this->getPgDriver();
+        $driver->configure('placeholder',null); // inflate values
 
         $sb = new QueryBuilder;
         $sb->driver = $driver;
@@ -80,7 +125,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
     function testUpdate()
     {
         $d = new Driver;
-        $d->configure('driver','postgresql');
+        $d->configure('driver','pgsql');
         $d->configure('quote_table',true);
         $d->configure('quote_column',true);
         $d->configure('trim',true);
@@ -104,7 +149,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
     function testSelect()
     {
         $d = new Driver;
-        $d->configure('driver','postgresql');
+        $d->configure('driver','pgsql');
         $d->configure('quote_table',true);
         $d->configure('quote_column',true);
         $d->configure('trim',true);
@@ -143,6 +188,7 @@ class SQLBuilderTest extends PHPUnit_Framework_TestCase
 
         $sql = $sb->build();
         is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10 OFFSET 20' ,$sql );
-
     }
+
+
 }

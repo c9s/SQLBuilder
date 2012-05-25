@@ -1,6 +1,19 @@
-# SQLBuilder for PHP5.3 
+# SQLBuilder for PHP5.3 [![Build Status](https://secure.travis-ci.org/c9s/SQLBuilder.png)](http://travis-ci.org/c9s/SQLBuilder)
 
 SQLBuilder Simply focuses on providing a simple syntax for building SQL statement.
+
+When switching database backend, you can simple change the driver type of query
+builder, and it will generate the proper SQL for your backend, you don't have
+to modify code to support different platform.
+
+for example, pgsql support `returning` statement, this kind of syntax will only 
+be built when this feature is supported.
+
+
+## Install through PEAR
+
+    $ sudo pear channe-discover pear.corneltek.com
+    $ sudo pear install corneltek/SQLBuilder
 
 ## Driver
 
@@ -8,24 +21,32 @@ get your SQL driver
 
 ```php
 <?php
-$driver = new SQLBuilder\Driver('postgresql');
+$driver = new SQLBuilder\Driver('pgsql');
 $driver = SQLBuilder\Driver::getInstance();
-$driver = SQLBuilder\Driver::create('postgresql');
+$driver = SQLBuilder\Driver::create('pgsql');
 ```
 
-### Configure Driver escaper
+### Configure Driver Quoter
+
+string quote/escape handler:
 
 ```php
 <?php
-$driver->configure('escaper',array($pg,'escape'));
-$driver->configure('escaper',array($pdo,'quote'));
+$driver->configure('escape',array($pg,'escape'));
+$driver->configure('quoter',array($pdo,'quote'));
+
+$driver->escaper = 'addslashes';
+
+$driver->quoter = function($string) {
+    return '\'' . $string . '\'';
+};
 ```
 
-### Configure database driver for postgresql
+### Configure database driver for pgsql
 
 ```php
 <?php
-$driver->configure('driver','postgresql');
+$driver->configure('driver','pgsql');
 ```
 
 Trim spaces for SQL ? 
@@ -53,6 +74,20 @@ This generates SQL with named-parameter for PDO:
     INSERT INTO table (foo ,bar ) values (:foo, :bar);
 
 Configure for question-mark style:
+
+If you pass variables to build SQL with named parameters, query builder
+converts named parameters for you, to get variables, you can use `getVars` method:
+
+    $vars = $sb->getVars();
+
+    /*
+    array(
+        ':name' => 'Foo',
+        ':phone' => 'Bar',
+    );
+    */
+
+Or to use question-mark style:
 
 ```php
 <?php
@@ -113,11 +148,12 @@ Build Select SQL
 ```php
 <?php
 $sqlbuilder->select('*')->table('items')
+    ->groupBy('name')
     ->limit(10)->offset(100);
 ?>
 ```
 
-For postgresql, generates:
+For pgsql, generates:
 
     SELECT * FROM items OFFSET 100 LIMIT 10;
 
@@ -195,7 +231,6 @@ $sb->alias('m')
 
 ### Delete
 
-
 ```php
 <?php
     $sb = new QueryBuilder('member');
@@ -210,6 +245,31 @@ $sb->alias('m')
     $sql = $sb->build();  // DELETE FROM member  WHERE foo = 123
 ```
 
+
+## Migration Builder
+
+```php
+<?php
+$builder = new SQLBuilder\MigrationBuilder( $driver );
+$sql = $builder->addColumn( 'members' , 
+    SQLBuilder\Column::create('price')
+        ->integer()
+        ->notNull()
+        ->default(100)
+);
+// ALTER TABLE members ADD COLUMN price integer DEFAULT 100 NOT NULL
+
+$sql = $builder->addColumn( 'members' , 
+    SQLBuilder\Column::create('email')
+        ->varchar(64)
+);
+// ALTER TABLE members ADD COLUMN email varchar(64)
+
+$sql = $builder->createIndex( 'members', 'email_index', 'email' ); // create index email_index on members (email);
+
+$sql = $builder->dropIndex( 'members', 'email_index' );
+```
+
 ## Development
 
 `PHPUnit_TestMore` is needed.
@@ -217,7 +277,6 @@ $sb->alias('m')
     curl -s http://install.onionphp.org/ | sh
     onion -d bundle
     phpunit tests
-
 
 ## Reference
 
@@ -228,5 +287,4 @@ $sb->alias('m')
 ## Author
 
 Yo-An Lin (c9s) <cornelius.howl@gmail.com>
-
 
