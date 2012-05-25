@@ -2,6 +2,9 @@
 
 class PlaceHolderSQLiteTest extends PHPUnit_PDO_TestCase
 {
+    public $schema = array(
+        'member.sql'
+    );
 
     function getDriver()
     {
@@ -11,7 +14,6 @@ class PlaceHolderSQLiteTest extends PHPUnit_PDO_TestCase
         $d->quoter = array( $this->pdo, 'quote' );
         return $d;
     }
-
 
     function testCasting()
     {

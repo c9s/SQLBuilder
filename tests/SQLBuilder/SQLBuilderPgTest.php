@@ -7,7 +7,6 @@ class SQLBuilderPgTest extends PHPUnit_PDO_TestCase
 {
     public $dsn = 'pgsql:dbname=sqlbuilder_test';
 
-
     function schema()
     {
         $sqls = array();
@@ -31,7 +30,7 @@ EOS;
 
         $sqls[] =<<<EOS
 CREATE TABLE "Member" (
-    "MemberNo" integer primary key default nextval('MemberNo_seq'),
+    "MemberNo" integer primary key default nextval('memberno_seq'),
     "MemberName" varchar(128),
     "MemberConfirm" boolean
 );
@@ -44,7 +43,7 @@ EOS;
     public function tearDown()
     {
         $this->pdo->query('drop table "Member" ');
-        $this->pdo->query('drop sequence "MemberNo_seq" ');
+        $this->pdo->query('drop sequence "memberno_seq" ');
     }
 
     function getPgDriver()
