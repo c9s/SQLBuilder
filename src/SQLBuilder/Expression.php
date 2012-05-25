@@ -8,11 +8,15 @@ class Expression
 
     public $driver;
 
-    /* child */
+    /* children */
     public $childs = array();
 
     /* parent expression */
     public $parent;
+
+
+    /* builder */
+    public $builder;
 
     /* op code connects to parent expression */
     public $parentOp;
@@ -85,6 +89,7 @@ class Expression
     public function between($column,$from,$to)
     {
         $expr = new BetweenExpression( $column, $from, $to );
+        $expr->builder = $this->builder;
         $expr->driver = $this->driver;
         $this->op = $expr;
         return $this;
@@ -101,6 +106,8 @@ class Expression
             return $this->newOr();
             break;
         }
+        if( $this->parent )
+            return call_user_func_array( array($this->parent,$method) , $args );
     }
 
     public function newAnd()
@@ -114,6 +121,17 @@ class Expression
     }
 
 
+
+    /**
+     * is a complete expression
+     *
+     * @return bool 
+     */
+    public function isComplete()
+    {
+        return ( $this->op || ! empty($this->childs) );
+    }
+
     public function toSql()
     {
         $sql = '';
@@ -121,29 +139,32 @@ class Expression
         if( $this->parentOp )
             $sql .= $this->parentOp . ' ';
 
+
         if( $this->op ) {
             if( is_array( $this->op ) ) {
 
                 list($k,$op,$v) = $this->op;
                 if( $this->driver->placeholder ) {
-                    $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($k);
 
-                    /*
+
                     if( is_array($v) ) {
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
                     } else {
-                        $sql .= $this->driver->getQuoteColumn( $k ) . ' ' . $op . ' '  . $this->getPlaceHolder($k);
+                        $newK = $this->builder->setPlaceHolderVar( $k , $v );
+                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($newK);
                     }
-                    */
                 }
                 else {
                     if( is_array($v) ) {
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
-                    } elseif( is_integer($v) ) {
-                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v;
                     } else {
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
-                            . $this->driver->escape($v);
+                            . $this->driver->inflate($v);
+
+                        /*
+                        if( $this->builder )
+                            $this->builder->setPlaceHolderVar( $k , $v );
+                        */
                     }
                 }
             }
@@ -155,7 +176,7 @@ class Expression
             }
         }
 
-        if( $this->childs ) {
+        if( ! empty($this->childs) ) {
             foreach( $this->childs as $child ) {
                 $sql .= ' '. $child->toSql();
             }
