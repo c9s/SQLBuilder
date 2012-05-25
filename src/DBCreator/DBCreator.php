@@ -5,6 +5,7 @@ use Exception;
 
 class DBCreator
 {
+
     public function create( $driverType , $options ) {
         switch( $driverType ) {
             case 'sqlite':
@@ -30,12 +31,12 @@ class DBCreator
             return $pdo;
             break;
         case 'mysql':
-            $pdo = new PDO("mysql:", @$options['user'] , @$options['password'] , @$options['attributes'] );
+            $pdo = new PDO("mysql:", @$options['username'] , @$options['password'] , @$options['attributes'] );
             $pdo->setAttribute( PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION );
             return $pdo;
             break;
         case 'pgsql':
-            $pdo = new PDO("pgsql:", @$options['user'] , @$options['password'] , @$options['attributes'] );
+            $pdo = new PDO("pgsql:", @$options['username'] , @$options['password'] , @$options['attributes'] );
             $pdo->setAttribute( PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION );
             return $pdo;
             break;
@@ -77,6 +78,29 @@ class DBCreator
         return $pdo;
     }
 
+    public function drop( $type , $options ) {
+        $pdo = $this->createConnection($type ,$options);
+        $dbname = $options['database'];
+        $this->dropFromConnection( $pdo, $dbname );
+    }
+
+    public function dropFromConnection($pdo,$dbname)
+    {
+        $driverName = $pdo->getAttribute( PDO::ATTR_DRIVER_NAME );
+        switch( $driverName ) {
+            case 'sqlite':
+                if( $dbname != ':memory' && file_exists($dbname) )
+                    unlink($dbname);
+            break;
+            case 'mysql':
+            case 'pgsql':
+                $pdo->query( "DROP DATABASE $dbname;" );
+            break;
+            default:
+                throw new Exception("Unsupported driver $driverName");
+                break;
+        }
+    }
 
 }
 
