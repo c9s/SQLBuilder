@@ -56,7 +56,13 @@ Trim spaces for SQL ?
 $driver->configure('trim',true);
 ```
 
-Place holder style ? named-parameter is supported by POD:
+### Place Holder style
+
+SQLBuilder supports two styles: 
+- named parameter by PDO
+- question-mark paramter by mysql, PDO.
+
+configure for named-parameter:
 
 ```php
 <?php
@@ -66,6 +72,8 @@ $driver->configure('placeholder','named');
 This generates SQL with named-parameter for PDO:
 
     INSERT INTO table (foo ,bar ) values (:foo, :bar);
+
+Configure for question-mark style:
 
 If you pass variables to build SQL with named parameters, query builder
 converts named parameters for you, to get variables, you can use `getVars` method:
@@ -91,11 +99,11 @@ This generates:
     INSERT INTO table (foo ,bar ) values (?,?);
 
 
-## CRUD SQL Generation
+## Query SQL Generation
 
 ### Select
 
-CRUD SQL Builder for table 'Member':
+Build SQL query for table 'Member':
 
 ```php
 <?php
@@ -133,7 +141,7 @@ Build Select SQL
 
 `where()` returns Expression object.
 
-`Condition->back()` returns CRUD SQL builder object
+`Condition->back()` returns QueryBuilder object
 
 ### Limit, Offset
 
@@ -198,13 +206,11 @@ $sb = new QueryBuilder('member');
 $sb->driver = new Driver;
 $sb->driver->configure('driver','mysql');
 $sb->driver->configure('placeholder','named');
-
 $sb->update( array( 'set1' => 'value1') );
 $sb->whereFromArgs(array( 
     'cond1' => ':blah',       // is equal to    where()->equal('cond1',':blah')
 ));
-
-$sql = $sb->build();
+$sql = $sb->build();   // UPDATE member SET set1 = 'value1' WHERE cond1 = :cond1
 ```
 
 
@@ -272,8 +278,13 @@ $sql = $builder->dropIndex( 'members', 'email_index' );
     onion -d bundle
     phpunit tests
 
+## Reference
 
-PgSQL test:
+- http://dev.mysql.com/doc/refman/5.0/en/sql-syntax.html
+- http://www.postgresql.org/docs/8.2/static/sql-syntax.html
+- http://www.sqlite.org/optoverview.html
 
-    createdb sqlbuilder_test
-    createuser test
+## Author
+
+Yo-An Lin (c9s) <cornelius.howl@gmail.com>
+

@@ -1,7 +1,8 @@
 <?php
 namespace SQLBuilder;
 
-class ExpressionGroup extends Expression
+class ExpressionGroup 
+    extends Expression
 {
     public function toSql()
     {
