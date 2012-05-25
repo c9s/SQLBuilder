@@ -12,8 +12,6 @@ class MigrationBuilder
         $this->driver = $driver;
     }
 
-
-
     public function addColumn( $table, $column ) 
     {
         $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName( $table )
