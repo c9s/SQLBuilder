@@ -6,7 +6,7 @@
  <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
  <target name="build"
-   depends="prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpunit,phpcb"/>
+   depends="prepare,bundle,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpunit,phpcb,package"/>
 
  <target name="build-parallel"
    depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
@@ -119,12 +119,44 @@
  </target>
 
  <target name="phpdox" description="Generate API documentation using phpDox">
-  <exec executable="phpdox"/>
+    <exec executable="phpdox"/>
+ </target>
+
+ <target name="bundle">
+     <if>
+        <available file="package.ini"/>
+        <then>
+            <exec executable="onion" failonerror="true">
+                <arg value="-q"/>
+                <arg value="bundle"/>
+            </exec>
+        </then>
+     </if>
+ </target>
+
+ <target name="package">
+     <if>
+         <available file="scripts/compile.sh"/>
+         <then>
+            <exec executable="bash" failonerror="true">
+                <arg value="scripts/compile.sh"/>
+            </exec>
+         </then>
+     </if>
+     <if>
+         <available file="package.ini"/>
+        <then>
+            <exec executable="onion" failonerror="true">
+                <arg value="-d"/>
+                <arg value="build"/>
+            </exec>
+        </then>
+     </if>
  </target>
 
  <!-- may we have a simple condition for phpunit.xml and phpunit-ci.xml ? -->
  <target name="phpunit" description="Run unit tests with PHPUnit">
-    <!-- create test database -->
+
     <if>
         <available file="phpunit-ci.xml"/>
         <then>
@@ -137,6 +169,7 @@
             <exec executable="phpunit" failonerror="true"/>
         </else>
     </if>
+
  </target>
 
  <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
