@@ -128,7 +128,6 @@ class MigrationBuilder
     }
 
 
-
     public function renameColumn($table,$columnName,$newColumnName)
     {
         $sql = null;
