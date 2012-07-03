@@ -129,7 +129,7 @@
         <then>
             <exec executable="onion" failonerror="true">
                 <arg value="-q"/>
-                <arg value="bundle"/>
+                <arg value="install"/>
             </exec>
         </then>
      </if>
