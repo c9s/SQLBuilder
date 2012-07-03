@@ -6,10 +6,10 @@
  <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
  <target name="build"
-   depends="prepare,bundle,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpunit,phpcb,package"/>
+   depends="bundle,prepare,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpunit,phpcb,package"/>
 
  <target name="build-parallel"
-   depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
+   depends="bundle,prepare,lint,tools-parallel,phpunit,phpcb"/>
 
  <target name="tools-parallel" description="Run tools in parallel">
   <parallel threadCount="2">
@@ -145,7 +145,7 @@
          </then>
      </if>
      <if>
-         <available file="package.ini"/>
+        <available file="package.ini"/>
         <then>
             <exec executable="onion" failonerror="true">
                 <arg value="-d"/>
