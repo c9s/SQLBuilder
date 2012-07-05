@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-07-05</date>
-  <time>21:27:55</time>
+  <time>22:33:56</time>
   <version>
     <release>1.3.2</release>
     <api>1.3.2</api>
@@ -36,7 +36,7 @@
       <file name="tests/SQLBuilder/PlaceHolderSQLiteTest.php" role="test" md5sum="1c7b83aac42b351ba2ccf8cac3460f42"/>
       <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="6bbd9b26a7d8968d4e20b8a99c1d0b17"/>
       <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="349077ef5f77265bb03ced87a9f3c105"/>
-      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="a50bd48ddd7f963dc3b9c91e6ccfef75"/>
+      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="7461d9d7f02129e8accc4785e172a6dd"/>
       <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="122bb96f6cd1685dca57b3f4fc7f9736"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a3cbdb36a5b06ea26bced558d22dda25"/>
       <file name="src/SQLBuilder/Column.php" role="php" md5sum="1eaeb4a62e164a20912defe10aaf3a6f"/>
@@ -47,7 +47,7 @@
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="213fcf663bbe0996ee10b615e8c3e3c1"/>
       <file name="src/SQLBuilder/MigrationBuilder.php" role="php" md5sum="c8e658c4f6e782cf59402b2dd7f14774"/>
       <file name="src/SQLBuilder/PDOParameter.php" role="php" md5sum="5fef1a765cc6acd8f98da836a0db6560"/>
-      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="0555498b8d8b1eb6d0bd64322fee539d"/>
+      <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="ff6314463d0e6f3925481e8d8713c3e6"/>
       <file name="package.ini" role="data" md5sum="40eaf90e52ff819d31f5c3dfa253ae2c"/>
       <file name="phpunit.xml" role="data" md5sum="1c51ad68ae9f2f003c6b983f5948ea56"/>
       <file name="CHANGES.md" role="doc" md5sum="ee7d7adaae08fe866c414a3b548f589c"/>
