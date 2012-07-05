@@ -190,5 +190,17 @@ class Expression
         return $this->toSql();
     }
 
+    public function __clone() 
+    {
+        // clone childs
+        $newChilds = array();
+        foreach( $this->childs as $child ) {
+            $cloneChild = clone $child;
+            $cloneChild->parent = $this;
+            $newChilds[] = $cloneChild;
+        }
+        $this->childs = $newChilds;
+    }
+
 }
 
