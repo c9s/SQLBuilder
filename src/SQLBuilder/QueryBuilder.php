@@ -84,10 +84,26 @@ class QueryBuilder
      */
     public $selected;
 
+
+    /**
+     * Arguments for insert statement.
+     *
+     * @var array
+     */
     public $insert;
 
+
+    /**
+     * Arguments for update statement.
+     *
+     * @var array
+     */
     public $update;
 
+
+    /**
+     * Behavior
+     */
     public $behavior;
 
     public $vars = array();
@@ -657,6 +673,11 @@ class QueryBuilder
         else {
             $this->vars[] = $value;
         }
+    }
+
+    public function __clone()
+    {
+        $this->where     = clone $this->where;
     }
 
 }
