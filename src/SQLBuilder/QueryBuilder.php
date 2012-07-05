@@ -677,7 +677,9 @@ class QueryBuilder
 
     public function __clone()
     {
-        $this->where     = clone $this->where;
+        if( $this->where ) {
+            $this->where = clone $this->where;
+        }
     }
 
 }

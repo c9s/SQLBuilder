@@ -37,6 +37,15 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         is( 99, $ret );
     }
 
+    function testClone() 
+    {
+        $sb = new SQLBuilder\QueryBuilder;
+        $sb->table('member');
+
+        $b = clone $sb;
+        is('member',$b->table);
+    }
+
     function testInsert()
     {
         $sb = new SQLBuilder\QueryBuilder;
