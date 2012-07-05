@@ -37,7 +37,39 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         is( 99, $ret );
     }
 
-    function testClone() 
+    function testCloneWithNamedParameter()
+    {
+        $b1 = new SQLBuilder\QueryBuilder;
+        $b1->driver = $this->getDriver();
+        $b1->driver->configure('placeholder','named');
+        $b1->table('member');
+        $b1->where()
+                ->equal('name','Cindy');
+        $b1->build();
+
+        is(array( ':name' => 'Cindy' ), $b1->vars);
+
+        $b2 = clone $b1;
+
+        ok($b2->where);
+        is( array( 'name' , '=' , 'Cindy' ), $b2->where->op );
+        is( array( 'name' , '=' , 'Cindy' ), $b1->where->op );
+        
+        ok($b2->where !== $b1->where );
+        is($b2->where->op , $b1->where->op ); // the same operand (copy array)
+        is($b2->vars, $b1->vars );
+        is(array( ':name' => 'Cindy' ), $b2->vars);
+
+
+        $b2->build();
+        is(array( ':name' => 'Cindy' ), $b2->vars);
+
+        is($b1->table,$b2->table);
+        is($b1->vars,$b2->vars);
+        is($b1->build() , $b2->build() );
+    }
+
+    function testCloneWithBasicArguments() 
     {
         $b1 = new SQLBuilder\QueryBuilder;
         $b1->driver = $this->getDriver();
