@@ -88,6 +88,8 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
      */
     public $fixtureDir = 'tests/fixture';
 
+    public $envVariablePrefix = 'Test_';
+
 
     public function noPDOError()
     {
@@ -97,17 +99,17 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
 
     public function getDSN()
     {
-        return $this->dsn;
+        return $this->dsn ?: getenv( $this->envVariablePrefix . 'DSN' );
     }
 
     public function getUser()
     {
-        return $this->user;
+        return $this->user ?: getenv( $this->envVariablePrefix . 'USER');
     }
 
     public function getPass()
     {
-        return $this->pass;
+        return $this->pass ?: getenv( $this->envVariablePrefix . 'PASS');
     }
 
     public function getOptions()
@@ -139,6 +141,8 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
         // throw Exception on Error.
         $this->pdo->setAttribute( PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION );
         $this->setupSchema();
+
+        ok($this->pdo);
     }
 
     public function setupSchema()

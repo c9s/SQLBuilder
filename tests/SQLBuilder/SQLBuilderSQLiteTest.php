@@ -11,7 +11,6 @@ class TestQueryWrapper extends SQLBuilder\QueryBuilder
      *              ->equal('id',1)
      *          ->execute();
      */
-
     public function execute()
     {
         return 99;

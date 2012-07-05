@@ -5,7 +5,7 @@ use SQLBuilder\Driver;
 // class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
 class SQLBuilderPgTest extends PHPUnit_PDO_TestCase
 {
-    public $dsn = 'pgsql:dbname=testing';
+    public $dsn = 'pgsql:host=localhost;dbname=testing';
     public $user = 'testing';
     public $pass = 'testing';
 
