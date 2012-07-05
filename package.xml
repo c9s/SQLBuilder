@@ -11,7 +11,7 @@
     <active>yes</active>
   </lead>
   <date>2012-07-05</date>
-  <time>22:33:56</time>
+  <time>22:48:02</time>
   <version>
     <release>1.3.2</release>
     <api>1.3.2</api>
@@ -26,7 +26,7 @@
     <dir name="/">
       <file name="tests/bootstrap.php" role="test" md5sum="e9a8dd4f18212e85d28d8e90ad9a5738"/>
       <file name="tests/DriverFactory.php" role="test" md5sum="31d5c73962bfa5037680a1c3d058f681"/>
-      <file name="tests/PHPUnit/PDO/TestCase.php" role="test" md5sum="189618293da1702fa973386408f51239"/>
+      <file name="tests/PHPUnit/PDO/TestCase.php" role="test" md5sum="9921e93c938431d0b3ed74525610be83"/>
       <file name="tests/schema/member.sql" role="test" md5sum="785e1eda92eb16b775099f330eac66d5"/>
       <file name="tests/SQLBuilder/ColumnTest.php" role="test" md5sum="95b22665ab5a3a8489a1fbac99cf1cfb"/>
       <file name="tests/SQLBuilder/ExpressionTest.php" role="test" md5sum="c895b1573fa7422c5491ca2164f3db0b"/>
@@ -35,8 +35,8 @@
       <file name="tests/SQLBuilder/MigrationBuilderTest.php" role="test" md5sum="1b04153b0c68a0919e9c25d201c3480a"/>
       <file name="tests/SQLBuilder/PlaceHolderSQLiteTest.php" role="test" md5sum="1c7b83aac42b351ba2ccf8cac3460f42"/>
       <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="6bbd9b26a7d8968d4e20b8a99c1d0b17"/>
-      <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="349077ef5f77265bb03ced87a9f3c105"/>
-      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="7461d9d7f02129e8accc4785e172a6dd"/>
+      <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="a9b49c5388b1dff4ac5b0064b8db36f1"/>
+      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="3a5d095c3d6ef39bbd9488134d865bb8"/>
       <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="122bb96f6cd1685dca57b3f4fc7f9736"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a3cbdb36a5b06ea26bced558d22dda25"/>
       <file name="src/SQLBuilder/Column.php" role="php" md5sum="1eaeb4a62e164a20912defe10aaf3a6f"/>
