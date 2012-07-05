@@ -371,8 +371,8 @@ class QueryBuilder
 
     public function build()
     {
+        // reset sql vars (for applying SQL statement)
         $this->vars = array();
-
         if( ! $this->behavior )
             throw new Exception('behavior is not defined.');
 
@@ -658,6 +658,13 @@ class QueryBuilder
         return $this->vars;
     }
 
+
+    /**
+     * Save varaible for SQL statement, 
+     * returns new variable name if the variable name is already defined.
+     *
+     *
+     */
     public function setPlaceHolderVar($key,$value)
     {
         if( $this->driver->placeholder && $this->driver->placeholder === 'named' ) {
@@ -672,13 +679,16 @@ class QueryBuilder
         }
         else {
             $this->vars[] = $value;
+            return $key;
         }
     }
 
     public function __clone()
     {
         if( $this->where ) {
+            // after clone, set new builder object to self.
             $this->where = clone $this->where;
+            $this->where->builder = $this;  
         }
     }
 
