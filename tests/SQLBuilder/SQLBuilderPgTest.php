@@ -159,7 +159,7 @@ EOS;
         $sb = new QueryBuilder();
         $sb->driver = $d;
         $sb->table('Member');
-        $sb->select( '*' );
+        $sb->select( '*' , true );
 
         ok( $sb );
 
@@ -176,7 +176,7 @@ EOS;
         $sql = $sb->build();
         is( 'SELECT * FROM "Member"  WHERE "foo" = :foo' , $sql );
 
-        $sb->select(array('COUNT(*)'));
+        $sb->select(array('COUNT(*)'),true);  // override current select query
 
         $sql = $sb->build();
         is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo' , $sql );
