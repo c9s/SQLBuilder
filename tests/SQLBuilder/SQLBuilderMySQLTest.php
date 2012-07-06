@@ -169,7 +169,7 @@ class QueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
         $sql = $sb->build();
         is( 'SELECT * FROM member  WHERE foo = :foo' , $sql );
 
-        $sb->select(array('COUNT(*)'),true); // override current query
+        $sb->select(array('COUNT(*)')); // override current query
 
         $sql = $sb->build();
         is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo' , $sql );
