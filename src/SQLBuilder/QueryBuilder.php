@@ -82,7 +82,7 @@ class QueryBuilder
      *
      * @var string[] an array contains column names
      */
-    public $selected;
+    public $selected = array();
 
 
     /**
@@ -104,7 +104,7 @@ class QueryBuilder
     /**
      * Behavior
      */
-    public $behavior;
+    public $behavior = 4; // default to static::SELECT
 
     public $vars = array();
 
@@ -114,16 +114,12 @@ class QueryBuilder
     const SELECT = 4;
 
 
-
-
     /**
      * @param string $table table name
      */
     public function __construct($table = null)
     {
         $this->table = $table;
-        $this->selected = array('*');
-        $this->behavior = static::SELECT;
     }
 
 
@@ -158,7 +154,6 @@ class QueryBuilder
     }
 
 
-
     /**
      * select behavior
      *
@@ -166,11 +161,22 @@ class QueryBuilder
      */
     public function select($columns)
     {
-        $columns = func_get_args();
-        if( is_array($columns[0]) )
-            $this->selected = $columns[0];
-        else
-            $this->selected = $columns;
+        $args = func_get_args();
+        $columns = $args[0];
+        $override = isset($args[1]) && $args[1];
+        if( is_array($columns) ) {
+            if( $override ) {
+                $this->selected = $columns;
+            } else {
+                $this->selected = array_merge( $this->selected, $columns );
+            }
+        } else {
+            if( $override ) {
+                $this->selected = array($columns);
+            } else {
+                $this->selected[] = $columns;
+            }
+        }
         $this->behavior = static::SELECT;
         return $this;
     }

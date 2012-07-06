@@ -234,7 +234,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         $sb = new SQLBuilder\QueryBuilder;
         $sb->driver = $this->getDriver();
         $sb->driver->quoter = array($this->pdo,'quote');
-        $sb->table('member')->select('name')
+        $sb->table('member')->select('name',true)
             ->groupBy('country','name')
             ->order('name');
         $sql = $sb->build();
@@ -254,7 +254,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         is( "SELECT name FROM member  GROUP BY country,name HAVING name = 'Taiwan' ORDER BY name desc", $sql );
         $this->pdo->query( $sql );
 
-        $sb->table('member')->select('name')
+        $sb->table('member')->select('name',true)
             ->where()
                 ->equal('name','ZZ')
             ->groupBy('country','name')
