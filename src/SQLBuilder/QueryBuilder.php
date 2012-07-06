@@ -82,7 +82,7 @@ class QueryBuilder
      *
      * @var string[] an array contains column names
      */
-    public $selected = array();
+    public $selected = array('*');
 
 
     /**
@@ -154,28 +154,35 @@ class QueryBuilder
     }
 
 
+    public function addSelect($columns) {
+        $args = func_get_args();
+        $columns = $args[0];
+        if( is_array($columns) ) {
+            $this->selected = array_merge( $this->selected , $columns );
+        } else {
+            $this->selected = array_merge( $this->selected , $args );
+        }
+        $this->behavior = static::SELECT;
+        return $this;
+    }
+
     /**
-     * select behavior
+     * Select behavior
      *
-     * @param array
+     * @param array|string
+     *
+     *    ->select('column1','column2')
+     *    ->select(array('column1','column2'))
+     *    ->select(array('column1' => 'new_name'))
      */
     public function select($columns)
     {
         $args = func_get_args();
         $columns = $args[0];
-        $override = isset($args[1]) && $args[1];
         if( is_array($columns) ) {
-            if( $override ) {
-                $this->selected = $columns;
-            } else {
-                $this->selected = array_merge( $this->selected, $columns );
-            }
+            $this->selected = $columns;
         } else {
-            if( $override ) {
-                $this->selected = array($columns);
-            } else {
-                $this->selected[] = $columns;
-            }
+            $this->selected = $args;
         }
         $this->behavior = static::SELECT;
         return $this;
