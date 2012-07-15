@@ -75,8 +75,8 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         $expr = $this->createExpr();
         $expr->like( 'content' , '%aaa%' );
         $backExpr = $expr->group()
-            ->equal( 'a' , 'b' )
-            ->equal( 'c' , 'd' )
+                ->equal( 'a' , 'b' )
+                ->equal( 'c' , 'd' )
             ->ungroup()
             ->or()->equal( 'name' , 'foo' )
             ->or()->equal( 'name' , 'bar' )
