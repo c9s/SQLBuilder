@@ -131,7 +131,7 @@ Build Select SQL
             ->greater( 'a' , array('date(2011-01-01)') );  // do not escape
                 ->or()->less( 'a' , 123 )
                 ->and()->like( 'content' , '%content%' );
-            ->group()                  // and ( a = 123 or b != 123 )
+            ->group()                  // AND ( a = 123 AND b != 123 )
                 ->is( 'a' , 123 )
                 ->isNot( 'b', 123 )             
             ->ungroup()
