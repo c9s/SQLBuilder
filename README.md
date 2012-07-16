@@ -82,6 +82,8 @@ Configure for question-mark style:
 If you pass variables to build SQL with named parameters, query builder
 converts named parameters for you, to get variables, you can use `getVars` method:
 
+```php
+<?php
     $vars = $sb->getVars();
 
     /*
@@ -90,6 +92,7 @@ converts named parameters for you, to get variables, you can use `getVars` metho
         ':phone' => 'Bar',
     );
     */
+```
 
 Or to use question-mark style:
 
@@ -167,12 +170,15 @@ For mysql, generates:
 
 ### Between
 
+```php
+<?php
     $query->select('*')->table('items')
         ->where()
         ->between('created_on', '2011-01-01' , '2011-02-01' )
         ->limit(10)->offset(100);
 
-    SELECT * FROM items WHERE created_on BETWEEN '2011-01-01' AND '2011-02-01'
+    // SELECT * FROM items WHERE created_on BETWEEN '2011-01-01' AND '2011-02-01'
+```
 
 ### Insert
 
