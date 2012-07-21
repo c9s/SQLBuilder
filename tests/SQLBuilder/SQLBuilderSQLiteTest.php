@@ -76,14 +76,23 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         $b1->table('member');
         $b1->alias('m');
         $b1->where()
-                ->equal('m.name','Cindy');
+                ->equal('m.name','Cindy')
+                ->equal('m.name','John');
         $sql = $b1->build();
-        is( array( ':m_name' => 'Cindy' ) , $b1->vars , 'check ->vars' );
+        is( array( 
+            ':m_name' => 'Cindy',
+            ':m_name1' => 'John',
+        ) , $b1->vars , 'check ->vars' );
 
         $b2 = clone $b1;
         is($b1->table,$b2->table);
         is($b1->vars,$b2->vars);
         is($b1->build() , $b2->build() );
+
+        is( array( 
+            ':m_name' => 'Cindy',
+            ':m_name1' => 'John',
+        ) , $b2->vars , 'check ->vars' );
 
         $b2->select('count(*)');
         $b2->where()
@@ -91,8 +100,9 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
 
         $sql = $b2->build();
         is( array(
-            ':m_name' => "Cindy",
-            ':city' => "Taipei" ) , $b2->vars );
+            ':m_name' => 'Cindy',
+            ':m_name1' => 'John',
+            ':city' => 'Taipei' ) , $b2->vars );
 
         ok($b1->build() != $b2->build() );
 
@@ -102,15 +112,26 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
     {
         $b1 = new SQLBuilder\QueryBuilder;
         $b1->driver = $this->getDriver();
+        $b1->driver->configure('placeholder','named');
         $b1->table('member');
         $b1->where()
-                ->equal('name','Cindy');
+            ->equal('name','Cindy')
+            ->equal('name','John');
         $sql = $b1->build();
+
+        ok(!empty($b1->vars));
 
         $b2 = clone $b1;
         is($b1->table,$b2->table);
         is($b1->vars,$b2->vars);
         is($b1->build() , $b2->build() );
+
+        ok( isset($b1->vars[':name']) );
+        ok( isset($b1->vars[':name1']) );
+        ok( isset($b2->vars[':name']) );
+        ok( isset($b2->vars[':name1']) );
+        ok(!empty($b1->vars));
+        ok(!empty($b2->vars));
 
         $b2->where()
             ->equal('city','Taipei');
