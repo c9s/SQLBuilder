@@ -190,7 +190,14 @@ class Expression
         return $this->toSql();
     }
 
-    public function __clone() 
+    public function setBuilder($builder) {
+        $this->builder = $builder;
+        foreach( $this->childs as $child ) {
+            $child->setBuilder($builder);
+        }
+    }
+
+    public function __clone()
     {
         // clone childs
         $newChilds = array();
@@ -201,6 +208,6 @@ class Expression
         }
         $this->childs = $newChilds;
     }
-
 }
+
 

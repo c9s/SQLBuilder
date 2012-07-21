@@ -701,7 +701,7 @@ class QueryBuilder
         if( $this->where ) {
             // after clone, set new builder object to self.
             $this->where = clone $this->where;
-            $this->where->builder = $this;  
+            $this->where->setBuilder($this);
         }
     }
 

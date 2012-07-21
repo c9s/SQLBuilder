@@ -26,13 +26,13 @@ class JoinExpression
     public $onExpr = array();
 
     /**
-     * QueryBuilder object
+     * @var object QueryBuilder object
      */
     public $builder;
 
 
     /**
-     * Parent Expression or QueryBuilder
+     * @var object Parent Expression or QueryBuilder
      */
     public $parent;
 
