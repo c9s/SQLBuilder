@@ -32,25 +32,25 @@ class Driver
     public $type;
 
     /**
-     * Should we quote table name in SQL ?
+     * @var boolean Should we quote table name in SQL ?
      */
     public $quoteTable = false;
 
 
     /**
-     * Should we quote column name in SQL ?
+     * @var boolean Should we quote column name in SQL ?
      */
     public $quoteColumn = false;
 
 
     /**
-     * Should we trim space ?
+     * @var boolean Should we trim space ?
      */
     public $trim = false;
 
 
     /**
-     * Get place holder
+     * @var boolean enable or disable place holder
      */
     public $placeholder = false;
 
@@ -82,6 +82,9 @@ class Driver
     public function __construct($driverType = null)
     {
         $this->type = $driverType;
+
+        // default escaper (we can override this by giving 
+        // new callback)
         $this->escaper = 'addslashes';
         $this->inflator = new Inflator;
         $this->inflator->driver = $this;
