@@ -703,6 +703,15 @@ class QueryBuilder
             $this->where = clone $this->where;
             $this->where->setBuilder($this);
         }
+        if( $this->joinExpr ) {
+            $nodes = array();
+            foreach( $this->joinExpr as $expr ) {
+                $n = clone $expr;
+                $n->builder = $this;
+                $nodes[] = $n;
+            }
+            $this->joinExpr = $nodes;
+        }
     }
 
 }

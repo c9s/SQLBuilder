@@ -20,4 +20,10 @@ class ExpressionGroup
         return $sql;
     }
 
+    public function setBuilder($builder) {
+        $this->builder = $builder;
+        foreach( $this->childs as $child ) {
+            $child->setBuilder($builder);
+        }
+    }
 }
