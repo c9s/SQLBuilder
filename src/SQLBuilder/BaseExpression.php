@@ -7,6 +7,8 @@ class BaseExpression
 {
     public $driver;
 
+    public $builder;
+
     /**
      * back to top parent 
      */
@@ -40,6 +42,10 @@ class BaseExpression
         $subexpr->driver = $this->driver;
         $this->childs[] = $subexpr;
         return $subexpr;
+    }
+
+    public function setBuilder($builder) {
+        $this->builder = $builder;
     }
 }
 

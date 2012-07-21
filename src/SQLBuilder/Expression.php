@@ -6,17 +6,14 @@ class Expression
     extends BaseExpression
 {
 
-    public $driver;
-
     /* children */
     public $childs = array();
 
-    /* parent expression */
+    /**
+     * @var object Parent Expression or QueryBuilder
+     */
     public $parent;
 
-
-    /* builder */
-    public $builder;
 
     /* op code connects to parent expression */
     public $parentOp;

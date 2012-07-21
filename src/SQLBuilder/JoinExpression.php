@@ -2,14 +2,8 @@
 
 namespace SQLBuilder;
 
-class JoinExpression
+class JoinExpression extends BaseExpression
 {
-
-    /**
-     * @var Driver object
-     */
-    public $driver;
-
     public $type;
 
     /**
@@ -24,17 +18,6 @@ class JoinExpression
     public $alias;
 
     public $onExpr = array();
-
-    /**
-     * @var object QueryBuilder object
-     */
-    public $builder;
-
-
-    /**
-     * @var object Parent Expression or QueryBuilder
-     */
-    public $parent;
 
     public function __construct($table,$type = 'LEFT')
     {
@@ -57,6 +40,8 @@ class JoinExpression
         $this->onExpr[] = $subexpr;
         return $subexpr->createExpr(null);
     }
+
+
 
     public function toSql()
     {

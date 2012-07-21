@@ -105,8 +105,37 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
             ':city' => 'Taipei' ) , $b2->vars );
 
         ok($b1->build() != $b2->build() );
-
     }
+
+    function testCloneWithJoinExpression() {
+        $b1 = new SQLBuilder\QueryBuilder;
+        $b1->driver = $this->getDriver();
+        $b1->driver->configure('placeholder','named');
+        $b1->table('member');
+        $b1->alias('m');
+        $b1->join('member_picture')
+            ->alias('mp')
+            ->on()
+                ->equal('mp.member_id',array('m.id'));
+        $b1->where()
+            ->equal('name','Cindy')
+            ->equal('name','John');
+        $sql = $b1->build();
+        ok($sql);
+        ok($b1->vars);
+
+        $b2 = clone $b1;
+        $sql2 = $b2->build();
+        is($sql,$sql2);
+        ok( $b2->vars ); 
+        ok( isset($b2->vars[':name']) ); 
+        ok( isset($b2->vars[':name1']) ); 
+
+        $b2->select('count(*)');
+        $sql = $b2->build();
+        ok($sql);
+    }
+
 
     function testCloneWithBasicArguments() 
     {
