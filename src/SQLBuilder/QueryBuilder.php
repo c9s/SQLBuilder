@@ -280,8 +280,9 @@ class QueryBuilder
             return $this->whereFromArgs( $args );
         }
 
-        if( $this->where )
+        if( $this->where ) {
             return $this->where;
+        }
 
         $this->where = $expr = new Expression;
         $expr->driver = $this->driver;
