@@ -24,6 +24,8 @@ class Expression
     {
         if( $this->op ) {
             return $this->and()->setOp($op);
+        } elseif( $this->childs ) {
+            return $this->and()->setOp($op);
         } else {
             $this->op = $op;
             return $this;
