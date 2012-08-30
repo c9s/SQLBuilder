@@ -46,13 +46,15 @@ class MigrationBuilder
         if( isset($column->default) ) {
             $default = $column->default;
 
-            if( is_string($column->default) ) {
-                $default = $this->driver->quote($column->default);
+            if( is_callable($default) ) {
+                $default = call_user_func($default);
             }
-            elseif( is_array($column->default) ) {
-                $default = $column->default[0];
-            } else {
-                $default = $column->default;
+
+            if( is_string($default) ) {
+                $default = $this->driver->quote($default);
+            }
+            elseif( is_array($default) ) {
+                $default = $default[0];
             }
             $sql .= ' DEFAULT ' . $default;
         }
