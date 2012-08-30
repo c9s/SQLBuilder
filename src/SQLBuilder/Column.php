@@ -72,10 +72,9 @@ class Column
         return $this;
     }
 
-
-    function isNull()
+    function null()
     {
-        $this->isNotNull = true;
+        $this->null = true;
         return $this;
     }
 

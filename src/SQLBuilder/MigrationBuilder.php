@@ -12,6 +12,22 @@ class MigrationBuilder
         $this->driver = $driver;
     }
 
+    public function _convertArrayToColumn($array) 
+    {
+        $column = Column::create($array['name']);
+        if(isset($array['type']))
+            $column->type = $array['type'];
+        if(isset($array['null']))
+            $column->null();
+        if(isset($array['notNull']))
+            $column->notNull();
+        if(isset($array['unique']))
+            $column->unique();
+        if(isset($array['default']))
+            $column->default($array['default']);
+        return $column;
+    }
+
     public function addColumn( $table, $column ) 
     {
         $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName( $table )
@@ -33,7 +49,6 @@ class MigrationBuilder
         if( $column->unique ) {
             $sql .= ' UNIQUE';
         }
-        
         if( $column->isNull ) {
             $sql .= ' IS NULL';
         }
