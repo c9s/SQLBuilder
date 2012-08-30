@@ -10,8 +10,8 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-08-30</date>
-  <time>23:47:01</time>
+  <date>2012-08-31</date>
+  <time>00:33:06</time>
   <version>
     <release>1.3.4</release>
     <api>1.3.4</api>
@@ -24,7 +24,7 @@
   <notes>-</notes>
   <contents>
     <dir name="/">
-      <file name="doc/migration.md" role="doc" md5sum="ae4632fbb9c4b40c200ca9ec9227bbaa"/>
+      <file name="doc/migration.md" role="doc" md5sum="05e39d9440a65c671cc27338e256c1aa"/>
       <file name="tests/bootstrap.php" role="test" md5sum="f5b787a45ebd96de1740b65f8869eb2e"/>
       <file name="tests/DriverFactory.php" role="test" md5sum="31d5c73962bfa5037680a1c3d058f681"/>
       <file name="tests/PHPUnit/PDO/TestCase.php" role="test" md5sum="9921e93c938431d0b3ed74525610be83"/>
