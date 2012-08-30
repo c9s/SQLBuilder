@@ -44,7 +44,17 @@ class MigrationBuilder
         }
 
         if( isset($column->default) ) {
-            $sql .= ' DEFAULT ' . $column->default;
+            $default = $column->default;
+
+            if( is_string($column->default) ) {
+                $default = $this->driver->quote($column->default);
+            }
+            elseif( is_array($column->default) ) {
+                $default = $column->default[0];
+            } else {
+                $default = $column->default;
+            }
+            $sql .= ' DEFAULT ' . $default;
         }
 
         if( $column->unique ) {
