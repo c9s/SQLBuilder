@@ -11,10 +11,10 @@
     <active>yes</active>
   </lead>
   <date>2012-08-31</date>
-  <time>00:33:06</time>
+  <time>02:02:09</time>
   <version>
-    <release>1.3.4</release>
-    <api>1.3.4</api>
+    <release>1.3.5</release>
+    <api>1.3.5</api>
   </version>
   <stability>
     <release>stable</release>
@@ -46,10 +46,10 @@
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="0a182f9a447c19360b9f3c910559a507"/>
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="2ce9f82e7356e8e93274528324374ae0"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="93d805df26cef4814b41cabc493bb589"/>
-      <file name="src/SQLBuilder/MigrationBuilder.php" role="php" md5sum="b2e1b80bc4e182055f5989c92a357d0d"/>
+      <file name="src/SQLBuilder/MigrationBuilder.php" role="php" md5sum="37a234ad1834e25f75db1d8ac73cf1c9"/>
       <file name="src/SQLBuilder/PDOParameter.php" role="php" md5sum="5fef1a765cc6acd8f98da836a0db6560"/>
       <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="14ea5729832913d063b6e33e8128adf4"/>
-      <file name="package.ini" role="data" md5sum="8393497c4d387dc81535a67f85f40636"/>
+      <file name="package.ini" role="data" md5sum="f96a8d72df62a430e426f404a8374aae"/>
       <file name="phpunit.xml" role="data" md5sum="1c51ad68ae9f2f003c6b983f5948ea56"/>
       <file name="CHANGES.md" role="doc" md5sum="ee7d7adaae08fe866c414a3b548f589c"/>
       <file name="README.md" role="doc" md5sum="cab9b71cb5d746cc7859e095470b948d"/>
