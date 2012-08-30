@@ -26,7 +26,7 @@ class MigrationBuilderTest extends PHPUnit_PDO_TestCase
         $this->queryOk( $sql );
 
         $sql = $builder->addColumn( 'members' , 
-            SQLBuilder\Column::create('email')
+            Column::create('email')
                 ->varchar(64)
         );
         is( 'ALTER TABLE members ADD COLUMN email varchar(64)', $sql );

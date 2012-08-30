@@ -50,8 +50,8 @@ class MigrationBuilder
         if( $column->unique ) {
             $sql .= ' UNIQUE';
         }
-        if( $column->isNull ) {
-            $sql .= ' IS NULL';
+        if( $column->null ) {
+            $sql .= ' NULL';
         }
         elseif( $column->notNull ) {
             $sql .= ' NOT NULL';
