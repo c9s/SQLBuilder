@@ -1,4 +1,5 @@
 <?php
+use SQLBuilder\Column;
 
 class MigrationBuilderTest extends PHPUnit_PDO_TestCase
 {
@@ -16,7 +17,7 @@ class MigrationBuilderTest extends PHPUnit_PDO_TestCase
         $driver = DriverFactory::create_sqlite_driver();
         $builder = new SQLBuilder\MigrationBuilder( $driver );
         $sql = $builder->addColumn( 'members' , 
-            SQLBuilder\Column::create('price')
+            Column::create('price')
                 ->integer()
                 ->notNull()
                 ->default(100)
