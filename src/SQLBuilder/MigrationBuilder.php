@@ -30,6 +30,7 @@ class MigrationBuilder
 
     public function addColumn( $table, $column ) 
     {
+        $column = is_array($column) ? $this->_convertArrayToColumn($column) : $column;
         $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName( $table )
              . ' ADD COLUMN ' . $this->driver->getQuoteColumn( $column->name );
 
