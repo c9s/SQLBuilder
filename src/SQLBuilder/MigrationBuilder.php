@@ -28,11 +28,10 @@ class MigrationBuilder
         return $column;
     }
 
-    public function addColumn($table, $column) 
+    public function addColumnClause($column) 
     {
         $column = is_array($column) ? $this->_convertArrayToColumn($column) : $column;
-        $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName( $table )
-             . ' ADD COLUMN ' . $this->driver->getQuoteColumn( $column->name );
+        $sql = ' ADD COLUMN ' . $this->driver->getQuoteColumn( $column->name );
 
         // build attributes
         if( isset($column->type) ) {
@@ -69,6 +68,26 @@ class MigrationBuilder
             $sql .= ' NOT NULL';
         }
         return $sql;
+    }
+
+
+    public function addColumns($table,$columns) 
+    {
+        $sql  = 'ALTER TABLE ' . $this->driver->getQuoteTableName( $table );
+        $columns = is_object($columns) || !isset($columns[0])
+                    ? array($columns)
+                    : $columns;
+        $clauses = array();
+        foreach( $columns as $column ) {
+            $clauses[] = $this->addColumnClause($column);
+        }
+        return $sql . join(',',$clauses);
+    }
+
+    public function addColumn($table, $column)
+    {
+        $sql  = 'ALTER TABLE ' . $this->driver->getQuoteTableName( $table );
+        return $sql . $this->addColumnClause($column);
     }
 
     public function dropTable($table)
