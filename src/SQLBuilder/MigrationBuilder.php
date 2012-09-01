@@ -28,7 +28,7 @@ class MigrationBuilder
         return $column;
     }
 
-    public function addColumn( $table, $column ) 
+    public function addColumn($table, $column) 
     {
         $column = is_array($column) ? $this->_convertArrayToColumn($column) : $column;
         $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName( $table )
@@ -71,10 +71,15 @@ class MigrationBuilder
         return $sql;
     }
 
+    public function dropTable($table)
+    {
+        return 'DROP TABLE ' . $this->driver->getQuoteTableName($table);
+    }
+
     public function dropColumn($table,$columnName)
     {
         $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName($table)
-               . ' DROP COLUMN ' . $this->driver->getQuoteColumn( $columnName );
+               . ' DROP COLUMN ' . $this->driver->getQuoteColumn($columnName);
         return $sql;
     }
 
