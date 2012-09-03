@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-09-01</date>
-  <time>18:13:48</time>
+  <date>2012-09-03</date>
+  <time>11:17:22</time>
   <version>
-    <release>1.3.6</release>
-    <api>1.3.6</api>
+    <release>1.3.7</release>
+    <api>1.3.7</api>
   </version>
   <stability>
     <release>stable</release>
@@ -42,17 +42,18 @@
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a3cbdb36a5b06ea26bced558d22dda25"/>
       <file name="src/SQLBuilder/Column.php" role="php" md5sum="94418d6cd1f78c3233f6c46506059360"/>
       <file name="src/SQLBuilder/Driver.php" role="php" md5sum="4d57014434b079947240d9b22e817ac8"/>
-      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="475c7edc23bfc3cde47ea1c86d5ddeee"/>
+      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="dbec5a9599d3e87055bc058a71cdaa6a"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="0a182f9a447c19360b9f3c910559a507"/>
-      <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="2ce9f82e7356e8e93274528324374ae0"/>
+      <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="a4c6e3331fe569cae3e35d26248e3f18"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="93d805df26cef4814b41cabc493bb589"/>
-      <file name="src/SQLBuilder/MigrationBuilder.php" role="php" md5sum="897b2a46301a0b5d701e0c23cc80ac22"/>
+      <file name="src/SQLBuilder/MigrationBuilder.php" role="php" md5sum="cbe2ef365c7c9dca0bf395f9dca0ca4e"/>
       <file name="src/SQLBuilder/PDOParameter.php" role="php" md5sum="5fef1a765cc6acd8f98da836a0db6560"/>
       <file name="src/SQLBuilder/QueryBuilder.php" role="php" md5sum="14ea5729832913d063b6e33e8128adf4"/>
-      <file name="package.ini" role="data" md5sum="acf42e3d7f1eb68389d01f89c686c33e"/>
+      <file name="package.ini" role="data" md5sum="86726904895e7a9c7cde98bc3e0e08f9"/>
       <file name="phpunit.xml" role="data" md5sum="1c51ad68ae9f2f003c6b983f5948ea56"/>
       <file name="CHANGES.md" role="doc" md5sum="ee7d7adaae08fe866c414a3b548f589c"/>
       <file name="README.md" role="doc" md5sum="cab9b71cb5d746cc7859e095470b948d"/>
+      <file name="SCHEMA_INTEGRATION.md" role="doc" md5sum="31b9938b97072847cf8a0b2471dc8147"/>
       <file name="todo.md" role="doc" md5sum="a173039568848b1ac61769f6545b270c"/>
     </dir>
   </contents>
@@ -102,6 +103,7 @@
       <install name="phpunit.xml" as="phpunit.xml"/>
       <install name="CHANGES.md" as="CHANGES.md"/>
       <install name="README.md" as="README.md"/>
+      <install name="SCHEMA_INTEGRATION.md" as="SCHEMA_INTEGRATION.md"/>
       <install name="todo.md" as="todo.md"/>
     </filelist>
   </phprelease>
