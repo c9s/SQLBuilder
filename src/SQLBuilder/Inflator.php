@@ -1,7 +1,12 @@
 <?php
 namespace SQLBuilder;
 use DateTime;
+use Closure;
 
+
+/**
+ * XXX: this should be renamed to Deflator
+ */
 class Inflator
 {
     public $driver;
@@ -18,6 +23,10 @@ class Inflator
      */
     public function inflate($value)
     {
+        if( $value instanceof Closure ) {
+            $value = call_user_func($value);
+        }
+
         if( $value === null ) {
             return 'NULL';
         }
@@ -42,9 +51,12 @@ class Inflator
         }
         elseif( is_object($value) ) {
             // convert DateTime object into string
-            if( is_a($value,'DateTime') ) {
+            if( $value instanceof DateTime ) {
                 return $value->format(DateTime::ISO8601);
             }
+        }
+        elseif( is_array($value) ) { // raw value
+            return $value[0];
         }
         return $value;
     }

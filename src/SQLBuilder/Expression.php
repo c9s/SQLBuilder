@@ -80,7 +80,7 @@ class Expression
         // back to Expression Group
         $p = $this;
         while( $p = $p->parent ) {
-            if( is_a($p, 'SQLBuilder\ExpressionGroup') )
+            if( $p instanceof \SQLBuilder\ExpressionGroup )
                 return $p->parent;
         }
     }
