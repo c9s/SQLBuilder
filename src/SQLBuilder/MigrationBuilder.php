@@ -48,14 +48,7 @@ class MigrationBuilder
             if( is_callable($default) ) {
                 $default = call_user_func($default);
             }
-
-            if( is_string($default) ) {
-                $default = $this->driver->quote($default);
-            }
-            elseif( is_array($default) ) {
-                $default = $default[0];
-            }
-            $sql .= ' DEFAULT ' . $default;
+            $sql .= ' DEFAULT ' . $this->driver->inflate($default);
         }
 
         if( $column->unique ) {
