@@ -187,5 +187,12 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         is( "created_on BETWEEN 10 AND 20" , $expr->toSql() );
     }
 
-}
+    public function testBetweenWithOtherExpression()
+    {
+        $expr = $this->createExpr();
+        $expr->equal('foo', 1)
+             ->between('id', 10, 20);
+        is( "foo = 1 AND id BETWEEN 10 AND 20", $expr->toSql() );
+    }
 
+}

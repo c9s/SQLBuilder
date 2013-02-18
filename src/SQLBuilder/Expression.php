@@ -90,7 +90,7 @@ class Expression
         $expr = new BetweenExpression( $column, $from, $to );
         $expr->builder = $this->builder;
         $expr->driver = $this->driver;
-        $this->op = $expr;
+        $this->setOp($expr);
         return $this;
     }
 
