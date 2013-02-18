@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2012-09-03</date>
-  <time>11:20:11</time>
+  <date>2013-02-18</date>
+  <time>13:01:04</time>
   <version>
-    <release>1.3.7</release>
-    <api>1.3.7</api>
+    <release>1.3.8</release>
+    <api>1.3.8</api>
   </version>
   <stability>
     <release>stable</release>
@@ -30,7 +30,7 @@
       <file name="tests/PHPUnit/PDO/TestCase.php" role="test" md5sum="9921e93c938431d0b3ed74525610be83"/>
       <file name="tests/schema/member.sql" role="test" md5sum="785e1eda92eb16b775099f330eac66d5"/>
       <file name="tests/SQLBuilder/ColumnTest.php" role="test" md5sum="95b22665ab5a3a8489a1fbac99cf1cfb"/>
-      <file name="tests/SQLBuilder/ExpressionTest.php" role="test" md5sum="0049252b234fa45ffc7c97e2469b4b08"/>
+      <file name="tests/SQLBuilder/ExpressionTest.php" role="test" md5sum="46816c673c9e015babf1e0f5fd08250a"/>
       <file name="tests/SQLBuilder/InflatorTest.php" role="test" md5sum="d760bbee212601c69400f022e9b0369c"/>
       <file name="tests/SQLBuilder/JoinExpressionTest.php" role="test" md5sum="6df3281b347a6b0fb815738443a8d01c"/>
       <file name="tests/SQLBuilder/MigrationBuilderTest.php" role="test" md5sum="71153407d5154a26b39b0c741d1f2457"/>
@@ -42,7 +42,7 @@
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a3cbdb36a5b06ea26bced558d22dda25"/>
       <file name="src/SQLBuilder/Column.php" role="php" md5sum="94418d6cd1f78c3233f6c46506059360"/>
       <file name="src/SQLBuilder/Driver.php" role="php" md5sum="4d57014434b079947240d9b22e817ac8"/>
-      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="dbec5a9599d3e87055bc058a71cdaa6a"/>
+      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="df6ae41010ab73d94a89003ec5454326"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="0a182f9a447c19360b9f3c910559a507"/>
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="a4c6e3331fe569cae3e35d26248e3f18"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="93d805df26cef4814b41cabc493bb589"/>
