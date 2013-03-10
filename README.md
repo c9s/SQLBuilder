@@ -94,8 +94,9 @@ $driver->configure('placeholder',true);
 
 This generates:
 
-    INSERT INTO table (foo ,bar ) values (?,?);
-
+```sql
+INSERT INTO table (foo ,bar ) values (?,?);
+```
 
 ## Query SQL Generation
 
@@ -151,11 +152,15 @@ $sqlbuilder->select('*')->table('items')
 
 For pgsql, generates:
 
-    SELECT * FROM items OFFSET 100 LIMIT 10;
+```sql
+SELECT * FROM items OFFSET 100 LIMIT 10;
+```
 
 For mysql, generates:
 
-    SELECT * FROM items LIMIT 100,10;
+```sql
+SELECT * FROM items LIMIT 100,10;
+```
 
 ### Between
 
@@ -164,8 +169,10 @@ $query->select('*')->table('items')
     ->where()
     ->between('created_on', '2011-01-01' , '2011-02-01' )
     ->limit(10)->offset(100);
+```
 
-// SELECT * FROM items WHERE created_on BETWEEN '2011-01-01' AND '2011-02-01'
+```sql
+SELECT * FROM items WHERE created_on BETWEEN '2011-01-01' AND '2011-02-01'
 ```
 
 ### Insert
