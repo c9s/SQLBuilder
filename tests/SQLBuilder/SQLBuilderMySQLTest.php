@@ -18,8 +18,7 @@ class QueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
         return $d;
     }
 
-
-    function testInsert()
+    public function testInsert()
     {
         $sb = new QueryBuilder;
         $sb->table('member');
@@ -43,7 +42,7 @@ class QueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
         is( 'INSERT INTO member ( foo,bar) VALUES (?,?)' , $sql );
     }
 
-    function testDelete()
+    public function testDelete()
     {
         $sb = new QueryBuilder;
         $sb->table('member');
