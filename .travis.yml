@@ -1,7 +1,7 @@
-postgres:
-  adapter: postgresql
-  database: sqlbuilder_test
-  username: postgres
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database sqlbuilder_test;' -U postgres
 language: php
 php:
   - 5.3.2
