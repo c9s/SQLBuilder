@@ -3,7 +3,7 @@
 use SQLBuilder\QueryBuilder;
 use SQLBuilder\Driver;
 
-class QueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
+class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
 {
 
     public $envVariablePrefix = 'MYSQL_';

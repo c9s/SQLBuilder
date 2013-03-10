@@ -2,17 +2,17 @@
 <phpunit bootstrap="tests/bootstrap.php"
          backupGlobals="false"
          colors="true"
+         stopOnFailure="true"
+         stopOnError="true"
          verbose="true">
   <php>
+    <env name="MYSQL_DSN"   value="mysql:host=localhost;dbname=sqlbuilder_test"/>
+    <env name="MYSQL_USER"   value="root"/>
+    <env name="MYSQL_DB" value="sqlbuilder_test"/>
 
-    <!-- MySQL Database Testing -->
-    <var name="MYSQL_DSN"   value="mysql:host=localhost;"/>
-    <var name="MYSQL_USER"   value="root"/>
-    <var name="MYSQL_DB" value="sqlbuilder_test"/>
-
-    <var name="PGSQL_DSN"   value="pgsql:host=localhost;"/>
-    <var name="PGSQL_USER"   value="postgres"/>
-    <var name="PGSQL_DB" value="sqlbuilder_test"/>
+    <env name="PGSQL_DSN"   value="pgsql:host=localhost;dbname=sqlbuilder_test"/>
+    <env name="PGSQL_USER"   value="postgres"/>
+    <env name="PGSQL_DB" value="sqlbuilder_test"/>
   </php>
 
   <testsuites>
