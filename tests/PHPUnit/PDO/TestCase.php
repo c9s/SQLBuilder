@@ -174,9 +174,10 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
                 }
                 $content = file_get_contents($file);
 
-                $statements = preg_split( '#;\s*$#', $content );
-                foreach( $statements as $statement ) 
-                    $this->queryOk($statement);
+                $statements = preg_split( '#;\s*$#ms', $content );
+                foreach( $statements as $statement )  {
+                    $this->queryOk(trim($statement));
+                }
             }
 
         }
@@ -234,10 +235,14 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
      */
     public function queryOk($sql, $args = null)
     {
-        if( $args ) {
+        if ( ! $sql )
+            return;
+
+        if ( $args ) {
             $stm = $this->pdo->prepare( $sql )->execute( $args );
         }
         else {
+            // echo "Query: " , $sql, "\n";
             $stm = $this->pdo->query( $sql );
         }
         $this->noPDOError();

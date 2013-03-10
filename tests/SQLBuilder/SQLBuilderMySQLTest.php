@@ -8,10 +8,7 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
 
     public $envVariablePrefix = 'MYSQL_';
 
-    public $schema = array(
-        'member.sql',
-    );
-
+    public $schema = array( 'tests/schema/member_mysql.sql' );
 
     public function getDriver()
     {

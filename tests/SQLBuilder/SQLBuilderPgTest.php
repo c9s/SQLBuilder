@@ -12,7 +12,7 @@ class SQLBuilderPgTest extends PHPUnit_PDO_TestCase
         $sqls = array();
 
         $sqls[] =<<<EOS
-DROP SEQUENCE IF EXISTS "memberno_seq"
+DROP SEQUENCE IF EXISTS "memberno_seq" CASCADE
 EOS;
 
         $sqls[] =<<<EOS
