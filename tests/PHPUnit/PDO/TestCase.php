@@ -90,7 +90,6 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
 
     public $envVariablePrefix = 'Test_';
 
-
     public function noPDOError()
     {
         $err = $this->pdo->errorInfo();
@@ -124,19 +123,26 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
 
     public function setup()
     {
-        if( ! extension_loaded('pdo') ) 
+        if( ! extension_loaded('pdo') )
             return skip('pdo required');
 
         // XXX: check pdo driver
 #          if( ! extension_loaded('pdo_pgsql') ) 
 #              return skip('pdo pgsql required');
 
-        $this->pdo = new PDO(
-            $this->getDSN(),  
-            $this->getUser(),  
-            $this->getPass(), 
-            $this->getOptions() ?: null
-        );
+
+        if ( $this->getDSN() && $this->getUser() && $this->getPass() ) {
+            $this->pdo = new PDO(
+                $this->getDSN(),
+                $this->getUser(),
+                $this->getPass(),
+                $this->getOptions() ?: null
+            );
+        } elseif ( $this->getDSN() && $this->getUser() ) {
+            $this->pdo = new PDO( $this->getDSN(), $this->getUser() );
+        } elseif ( $this->getDSN() ) {
+            $this->pdo = new PDO( $this->getDSN() );
+        }
 
         // throw Exception on Error.
         $this->pdo->setAttribute( PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION );
