@@ -135,6 +135,7 @@ Build Select SQL
             ->is( 'a' , 'null' )       // a is null
             ->isNot( 'a' , 'null' )    // a is not equal
             ->greater( 'a' , '2011-01-01' );
+            ->in( 'a', array(1,2,3,4,5) )
             ->greater( 'a' , array('date(2011-01-01)') );  // do not escape
                 ->or()->less( 'a' , 123 )
                 ->and()->like( 'content' , '%content%' );
