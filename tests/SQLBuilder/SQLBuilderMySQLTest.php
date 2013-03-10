@@ -5,11 +5,15 @@ use SQLBuilder\Driver;
 
 class QueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
 {
+
+    public $envVariablePrefix = 'MYSQL_';
+
     public $schema = array(
         'member.sql',
     );
 
-    function getDriver()
+
+    public function getDriver()
     {
         $d = new Driver;
         $d->configure('driver','mysql');

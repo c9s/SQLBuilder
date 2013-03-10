@@ -1,7 +1,6 @@
 services:
   - postgresql
-before_script:
-  - psql -c 'create database sqlbuilder_test;' -U postgres
+  - mysql
 language: php
 php:
   - 5.3.2
@@ -9,7 +8,8 @@ php:
   - 5.4
 
 before_script:
-  - "psql -c 'create database sqlbuilder_test;' -U postgres"
+  - psql -c 'create database sqlbuilder_test;' -U postgres
+  - mysql -e 'create database sqlbuilder_test;'
   - phpenv rehash
   - curl http://install.onionphp.org/ | bash
   - curl -O https://raw.github.com/c9s/Onion/master/onion

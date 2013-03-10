@@ -5,11 +5,10 @@ use SQLBuilder\Driver;
 // class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
 class SQLBuilderPgTest extends PHPUnit_PDO_TestCase
 {
-    public $dsn = 'pgsql:host=localhost;dbname=testing';
-    public $user = 'testing';
-    public $pass = 'testing';
 
-    function schema()
+    public $envVariablePrefix = 'PGSQL_';
+
+    public function schema()
     {
         $sqls = array();
 
@@ -48,7 +47,7 @@ EOS;
         $this->pdo->query('drop sequence "memberno_seq" ');
     }
 
-    function getPgDriver()
+    public function getPgDriver()
     {
         $driver = new SQLBuilder\Driver;
         $driver->configure('driver','pgsql');
@@ -59,7 +58,7 @@ EOS;
         return $driver;
     }
 
-    function testInsert()
+    public function testInsert()
     {
         $driver = $this->getPgDriver();
 
@@ -106,7 +105,7 @@ EOS;
         ok( $record['MemberConfirm'] );
     }
 
-    function testDelete()
+    public function testDelete()
     {
         $driver = $this->getPgDriver();
         $driver->configure('placeholder',null); // inflate values
@@ -124,7 +123,7 @@ EOS;
         is( 'DELETE FROM "Member"  WHERE "foo" = :foo' , $sql );
     }
 
-    function testUpdate()
+    public function testUpdate()
     {
         $d = new Driver;
         $d->configure('driver','pgsql');
@@ -148,7 +147,7 @@ EOS;
         is( 'UPDATE "Member" SET "set1" = \'value1\' WHERE "cond1" = \':blah\'' , $sql );
     }
 
-    function testSelect()
+    public function testSelect()
     {
         $d = new Driver;
         $d->configure('driver','pgsql');
