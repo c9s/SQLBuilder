@@ -5,7 +5,6 @@ use SQLBuilder\Driver;
 // class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
 class SQLBuilderPgTest extends PHPUnit_PDO_TestCase
 {
-
     public $envVariablePrefix = 'PGSQL_';
 
     public function schema()
@@ -39,12 +38,6 @@ EOS;
 
 
         return $sqls;
-    }
-
-    public function tearDown()
-    {
-        $this->pdo->query('drop table "Member" ');
-        $this->pdo->query('drop sequence "memberno_seq" ');
     }
 
     public function getPgDriver()

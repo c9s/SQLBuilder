@@ -6,3 +6,4 @@ require 'tests/PHPUnit/PDO/TestCase.php';
 $loader = new \Universal\ClassLoader\BasePathClassLoader(array('src','vendor/pear'));
 $loader->useIncludePath(false);
 $loader->register(true); // use prepend
+

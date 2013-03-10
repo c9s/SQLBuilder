@@ -2,11 +2,14 @@
 
 class PlaceHolderSQLiteTest extends PHPUnit_PDO_TestCase
 {
+
+    public $dsn = 'sqlite::memory:';
+
     public $schema = array(
         'member.sql'
     );
 
-    function getDriver()
+    public function getDriver()
     {
         $d = new SQLBuilder\Driver;
         $d->configure('driver','sqlite');
@@ -15,7 +18,7 @@ class PlaceHolderSQLiteTest extends PHPUnit_PDO_TestCase
         return $d;
     }
 
-    function testCasting()
+    public function testCasting()
     {
         $sb = new SQLBuilder\QueryBuilder;
         $sb->table('member');

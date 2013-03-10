@@ -46,7 +46,7 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
     /**
      * @var string database connection string (DSN)
      */
-    public $dsn = 'sqlite::memory:';
+    public $dsn;
 
     /**
      * @var string database username
@@ -90,6 +90,7 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
 
     public $envVariablePrefix = 'Test_';
 
+
     public function noPDOError()
     {
         $err = $this->pdo->errorInfo();
@@ -121,7 +122,7 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
         return $this->pdo;
     }
 
-    public function setup()
+    public function setUp()
     {
         if( ! extension_loaded('pdo') )
             return skip('pdo required');
@@ -129,7 +130,6 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
         // XXX: check pdo driver
 #          if( ! extension_loaded('pdo_pgsql') ) 
 #              return skip('pdo pgsql required');
-
 
         if ( $this->getDSN() && $this->getUser() && $this->getPass() ) {
             $this->pdo = new PDO(
@@ -142,6 +142,12 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
             $this->pdo = new PDO( $this->getDSN(), $this->getUser() );
         } elseif ( $this->getDSN() ) {
             $this->pdo = new PDO( $this->getDSN() );
+        } else {
+            throw new Exception("Please define DSN for class: " . get_class($this) );
+        }
+
+        if ( ! $this->pdo ) {
+            throw new Exception("Can not create PDO connection: " . get_class($this) );
         }
 
         // throw Exception on Error.

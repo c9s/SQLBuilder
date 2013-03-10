@@ -21,6 +21,8 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
 {
     public $schema = array( 'tests/schema/member.sql' );
 
+    public $dsn = 'sqlite::memory:';
+
     function getDriver()
     {
         return DriverFactory::create_sqlite_driver();
