@@ -22,7 +22,6 @@ be built when this feature is supported.
 get your SQL driver
 
 ```php
-<?php
 $driver = new SQLBuilder\Driver('pgsql');
 $driver = SQLBuilder\Driver::getInstance();
 $driver = SQLBuilder\Driver::create('pgsql');
@@ -33,7 +32,6 @@ $driver = SQLBuilder\Driver::create('pgsql');
 string quote/escape handler:
 
 ```php
-<?php
 $driver->configure('escape',array($pg,'escape'));
 $driver->configure('quoter',array($pdo,'quote'));
 
@@ -47,14 +45,12 @@ $driver->quoter = function($string) {
 ### Configure database driver for pgsql
 
 ```php
-<?php
 $driver->configure('driver','pgsql');
 ```
 
 Trim spaces for SQL ? 
 
 ```php
-<?php
 $driver->configure('trim',true);
 ```
 
@@ -67,7 +63,6 @@ SQLBuilder supports two styles:
 configure for named-parameter:
 
 ```php
-<?php
 $driver->configure('placeholder','named');
 ```
 
@@ -81,21 +76,19 @@ If you pass variables to build SQL with named parameters, query builder
 converts named parameters for you, to get variables, you can use `getVars` method:
 
 ```php
-<?php
-    $vars = $sb->getVars();
+$vars = $sb->getVars();
 
-    /*
-    array(
-        ':name' => 'Foo',
-        ':phone' => 'Bar',
-    );
-    */
+/*
+array(
+    ':name' => 'Foo',
+    ':phone' => 'Bar',
+);
+*/
 ```
 
 Or to use question-mark style:
 
 ```php
-<?php
 $driver->configure('placeholder',true);
 ```
 
@@ -111,7 +104,6 @@ This generates:
 Build SQL query for table 'Member':
 
 ```php
-<?php
 $sqlbuilder = new SQLBuilder\QueryBuilder;
 $sqlbuilder->driver = $driver;
 $sqlbuilder->table('Member');
@@ -125,24 +117,23 @@ $sqlbuilder->select(array(
 Build Select SQL
 
 ```php
-<?php
-    $sql = $sqlbuilder->table('Member')->select('*')
-        ->where()
-            ->equal( 'a' , 'bar' )   // a = 'bar'
-            ->notEqual( 'a' , 'bar' )   // a != 'bar'
-            ->is( 'a' , 'null' )       // a is null
-            ->isNot( 'a' , 'null' )    // a is not equal
-            ->greater( 'a' , '2011-01-01' );
-            ->in( 'a', array(1,2,3,4,5) )
-            ->greater( 'a' , array('date(2011-01-01)') );  // do not escape
-                ->or()->less( 'a' , 123 )
-                ->and()->like( 'content' , '%content%' );
-            ->group()                  // AND ( a = 123 AND b != 123 )
-                ->is( 'a' , 123 )
-                ->isNot( 'b', 123 )             
-            ->ungroup()
-            ->back()                  // back to sql builder
-            ->build();
+$sql = $sqlbuilder->table('Member')->select('*')
+    ->where()
+        ->equal( 'a' , 'bar' )   // a = 'bar'
+        ->notEqual( 'a' , 'bar' )   // a != 'bar'
+        ->is( 'a' , 'null' )       // a is null
+        ->isNot( 'a' , 'null' )    // a is not equal
+        ->greater( 'a' , '2011-01-01' );
+        ->in( 'a', array(1,2,3,4,5) )
+        ->greater( 'a' , array('date(2011-01-01)') );  // do not escape
+            ->or()->less( 'a' , 123 )
+            ->and()->like( 'content' , '%content%' );
+        ->group()                  // AND ( a = 123 AND b != 123 )
+            ->is( 'a' , 123 )
+            ->isNot( 'b', 123 )             
+        ->ungroup()
+        ->back()                  // back to sql builder
+        ->build();
 ```
 
 `where()` returns Expression object.
@@ -152,7 +143,6 @@ Build Select SQL
 ### Limit, Offset
 
 ```php
-<?php
 $sqlbuilder->select('*')->table('items')
     ->groupBy('name')
     ->limit(10)->offset(100);
@@ -170,47 +160,44 @@ For mysql, generates:
 ### Between
 
 ```php
-<?php
-    $query->select('*')->table('items')
-        ->where()
-        ->between('created_on', '2011-01-01' , '2011-02-01' )
-        ->limit(10)->offset(100);
+$query->select('*')->table('items')
+    ->where()
+    ->between('created_on', '2011-01-01' , '2011-02-01' )
+    ->limit(10)->offset(100);
 
-    // SELECT * FROM items WHERE created_on BETWEEN '2011-01-01' AND '2011-02-01'
+// SELECT * FROM items WHERE created_on BETWEEN '2011-01-01' AND '2011-02-01'
 ```
 
 ### Insert
 
-Do insertion:
+Insertion:
 
 ```php
-<?php
-    $sqlbuilder->insert(array(
-        // placeholder => 'value'
-        'foo' => 'foo',
-        'bar' => 'bar',
-    ));
+$sqlbuilder->insert(array(
+    // placeholder => 'value'
+    'foo' => 'foo',
+    'bar' => 'bar',
+));
 ```
 
 For question-mark style SQL, you might need this:
 
 ```php
-<?php
-    $sqlbuilder->insert(array(
-        'foo',
-        'bar',
-    ));
+$sqlbuilder->insert(array(
+    'foo',
+    'bar',
+));
 ```
 
-The last, build SQL:
+The last thing, build the SQL statement:
 
-    $sql = $sqlbuilder->build();
+```php
+$sql = $sqlbuilder->build();
+```
 
 ### Update
 
-
 ```php
-<?php
 $sb = new QueryBuilder('member');
 $sb->driver = new Driver;
 $sb->driver->configure('driver','mysql');
@@ -226,7 +213,6 @@ $sql = $sb->build();   // UPDATE member SET set1 = 'value1' WHERE cond1 = :cond1
 ### Join
 
 ```php
-<?php
 $sb = new QueryBuilder('Member');
 $sb->alias('m')
     ->join('table_name')
@@ -241,24 +227,22 @@ $sb->alias('m')
 ### Delete
 
 ```php
-<?php
-    $sb = new QueryBuilder('member');
-    $sb->driver = new Driver;
-    $sb->driver->configure('driver','mysql');
-    $sb->driver->configure('trim',true);
-    $sb->delete();
-    $sb->whereFromArgs(array( 'foo' => '123' ));
+$sb = new QueryBuilder('member');
+$sb->driver = new Driver;
+$sb->driver->configure('driver','mysql');
+$sb->driver->configure('trim',true);
+$sb->delete();
+$sb->whereFromArgs(array( 'foo' => '123' ));
 
-    $sb->where()->equal('foo',123);
+$sb->where()->equal('foo',123);
 
-    $sql = $sb->build();  // DELETE FROM member  WHERE foo = 123
+$sql = $sb->build();  // DELETE FROM member  WHERE foo = 123
 ```
 
 
 ## Migration Builder
 
 ```php
-<?php
 $builder = new SQLBuilder\MigrationBuilder( $driver );
 $sql = $builder->addColumn( 'members' , 
     SQLBuilder\Column::create('price')
