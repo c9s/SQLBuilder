@@ -6,7 +6,7 @@ class PlaceHolderSQLiteTest extends PHPUnit_PDO_TestCase
     public $dsn = 'sqlite::memory:';
 
     public $schema = array(
-        'member.sql'
+        'member_sqlite.sql'
     );
 
     public function getDriver()

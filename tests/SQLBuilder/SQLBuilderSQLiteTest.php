@@ -19,7 +19,7 @@ class TestQueryWrapper extends SQLBuilder\QueryBuilder
 
 class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
 {
-    public $schema = array( 'tests/schema/member.sql' );
+    public $schema = array( 'tests/schema/member_sqlite.sql' );
 
     public $dsn = 'sqlite::memory:';
 
