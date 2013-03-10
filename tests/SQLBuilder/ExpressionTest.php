@@ -10,6 +10,15 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
         return $expr;
     }
 
+
+    public function testInExpression()
+    {
+        $expr = $this->createExpr();
+        $expr->in( 'a' , array(1,2,3,4));
+        is( 'a IN (1, 2, 3, 4)', $expr->toSql() );
+    }
+
+
     public function testOpIs()
     {
         $expr = $this->createExpr();
