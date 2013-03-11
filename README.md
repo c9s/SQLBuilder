@@ -31,6 +31,13 @@ $ pear install corneltek/SQLBuilder
 
 ### Install through Composer
 
+```json
+{
+    "require": {
+        "c9s/SQLBuilder": "*"
+    }
+}
+```
 
 ## Synopsis
 
@@ -83,14 +90,14 @@ Trim spaces for SQL ?
 $driver->configure('trim',true);
 ```
 
-### Place Holder Style
+### Changing Placeholder Style
 
-SQLBuilder supports two styles:
+SQLBuilder supports two placeholder styles:
 
 - named parameter by PDO
 - question-mark paramter by mysql, PDO.
 
-configure for named-parameter:
+#### Named Placeholder:
 
 ```php
 $driver->configure('placeholder','named');
@@ -98,22 +105,27 @@ $driver->configure('placeholder','named');
 
 This generates SQL with named-parameter for PDO:
 
-    INSERT INTO table (foo ,bar ) values (:foo, :bar);
+```
+INSERT INTO table (foo ,bar ) values (:foo, :bar);
+```
 
-Configure for question-mark style:
+#### Question-mark Placeholder
 
-If you pass variables to build SQL with named parameters, query builder
-converts named parameters for you, to get variables, you can use `getVars` method:
+If you pass variables to build SQL with named parameters, query
+builder converts named parameters for you, to get variables, you
+can use `getVars` method:
 
 ```php
 $vars = $sb->getVars();
+```
 
-/*
+Which returns:
+
+```php
 array(
     ':name' => 'Foo',
     ':phone' => 'Bar',
 );
-*/
 ```
 
 Or to use question-mark style:
@@ -135,11 +147,11 @@ INSERT INTO table (foo ,bar ) values (?,?);
 Build SQL query for table 'Member':
 
 ```php
-$sqlbuilder = new SQLBuilder\QueryBuilder;
-$sqlbuilder->driver = $driver;
-$sqlbuilder->table('Member');
-$sqlbuilder->select('*','column1','column2');
-$sqlbuilder->select(array( 
+$builder = new SQLBuilder\QueryBuilder;
+$builder->driver = $driver;
+$builder->table('Member');
+$builder->select('*','column1','column2');
+$builder->select(array( 
     'column1' => 'as1',
     'column2' => 'as2',
 ));
@@ -148,7 +160,7 @@ $sqlbuilder->select(array(
 Build Select SQL
 
 ```php
-$sql = $sqlbuilder->table('Member')->select('*')
+$sql = $builder->table('Member')->select('*')
     ->where()
         ->equal( 'a' , 'bar' )   // a = 'bar'
         ->notEqual( 'a' , 'bar' )   // a != 'bar'
@@ -167,26 +179,26 @@ $sql = $sqlbuilder->table('Member')->select('*')
         ->build();
 ```
 
-`where()` returns Expression object.
+The `where()` returns `SQLBuilder\Expression` object.
 
 `Condition->back()` returns QueryBuilder object
 
-### Limit, Offset
+### Limit And Offset
 
 ```php
-$sqlbuilder->select('*')->table('items')
+$builder->select('*')->table('items')
     ->groupBy('name')
     ->limit(10)->offset(100);
 ?>
 ```
 
-For pgsql, generates:
+For PostgreSQL, which generates:
 
 ```sql
 SELECT * FROM items OFFSET 100 LIMIT 10;
 ```
 
-For mysql, generates:
+For MySql, which generates:
 
 ```sql
 SELECT * FROM items LIMIT 100,10;
@@ -197,12 +209,33 @@ SELECT * FROM items LIMIT 100,10;
 ```php
 $query->select('*')->table('items')
     ->where()
-    ->between('created_on', '2011-01-01' , '2011-02-01' )
-    ->limit(10)->offset(100);
+    ->between('created_on', '2011-01-01' , '2011-02-01' );
 ```
 
 ```sql
 SELECT * FROM items WHERE created_on BETWEEN '2011-01-01' AND '2011-02-01'
+```
+
+### In
+
+```php
+$query->select('*')->table('items')
+    ->where()
+    ->in('a', array(1,2,3,4));
+```
+
+```sql
+SELECT * FROM items WHERE a IN (1,2,3,4);
+```
+
+```php
+$query->select('*')->table('City')
+    ->where()
+    ->in('name', array('Taipei','France','Japan'));
+```
+
+```sql
+SELECT * FROM City WHERE name IN ('Taipei','France','Japan');
 ```
 
 ### Insert
@@ -210,7 +243,7 @@ SELECT * FROM items WHERE created_on BETWEEN '2011-01-01' AND '2011-02-01'
 Insertion:
 
 ```php
-$sqlbuilder->insert(array(
+$builder->insert(array(
     // placeholder => 'value'
     'foo' => 'foo',
     'bar' => 'bar',
@@ -220,7 +253,7 @@ $sqlbuilder->insert(array(
 For question-mark style SQL, you might need this:
 
 ```php
-$sqlbuilder->insert(array(
+$builder->insert(array(
     'foo',
     'bar',
 ));
@@ -229,7 +262,7 @@ $sqlbuilder->insert(array(
 The last thing, build the SQL statement:
 
 ```php
-$sql = $sqlbuilder->build();
+$sql = $builder->build();
 ```
 
 ### Update
