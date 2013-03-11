@@ -18,7 +18,7 @@ be built when this feature is supported.
 * Ability to change SQL style, question-mark style, named-placeholder style.
 * Ability to change quote style, table name quoting, column name quoting..etc.
 * Configurable escaper and quoter.
-
+* No package dependency.
 
 ## Installation
 
