@@ -337,9 +337,23 @@ $sql = $builder->dropIndex( 'members', 'email_index' );
 
 `PHPUnit_TestMore` is needed.
 
-    curl -s http://install.onionphp.org/ | sh
-    onion -d bundle
-    phpunit tests
+```sh
+$ pear channel-discover pear.corneltek.com
+$ pear install corneltek/PHPUnit_TestMore
+```
+
+Install Universal package for the classloader:
+
+```sh
+curl -s http://install.onionphp.org/ | sh
+onion -d install
+```
+
+Copy the `phpunit.xml` file for your local configuration:
+
+```sh
+phpunit -c your-phpunit.xml tests
+```
 
 ## Reference
 
