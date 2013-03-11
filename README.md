@@ -34,7 +34,7 @@ $ pear install corneltek/SQLBuilder
 ```json
 {
     "require": {
-        "c9s/SQLBuilder": "*"
+        "c9s/sqlbuilder": "*"
     }
 }
 ```
