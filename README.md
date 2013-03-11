@@ -147,8 +147,7 @@ INSERT INTO table (foo ,bar ) values (?,?);
 Build SQL query for table 'Member':
 
 ```php
-$builder = new SQLBuilder\QueryBuilder;
-$builder->driver = $driver;
+$builder = new SQLBuilder\QueryBuilder($driver);
 $builder->table('Member');
 $builder->select('*','column1','column2');
 $builder->select(array( 
@@ -268,10 +267,11 @@ $sql = $builder->build();
 ### Update
 
 ```php
-$sb = new QueryBuilder('member');
-$sb->driver = new Driver;
-$sb->driver->configure('driver','mysql');
-$sb->driver->configure('placeholder','named');
+$driver = new Driver;
+$driver->configure('driver','mysql');
+$driver->configure('placeholder','named');
+
+$sb = new QueryBuilder('member',$driver);
 $sb->update( array( 'set1' => 'value1') );
 $sb->whereFromArgs(array( 
     'cond1' => ':blah',       // is equal to    where()->equal('cond1',':blah')

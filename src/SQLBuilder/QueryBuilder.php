@@ -121,13 +121,15 @@ class QueryBuilder
     public function __construct()
     {
         $args = func_get_args();
-        if ( is_string($args[0]) ) {
-            $this->table = $args[0];
-        }
-        elseif ( $args[0] instanceof Driver ) {
-            $this->driver = $args[0];
-            if ( isset($args[1]) ) {
-                $this->table = $args[1];
+        if ( ! empty($args) ) {
+            if ( is_string($args[0]) ) {
+                $this->table = $args[0];
+            }
+            elseif ( $args[0] instanceof Driver ) {
+                $this->driver = $args[0];
+                if ( isset($args[1]) ) {
+                    $this->table = $args[1];
+                }
             }
         }
     }
