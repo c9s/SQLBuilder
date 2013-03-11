@@ -23,7 +23,7 @@ use Exception;
  *
  * @code
  */
-class QueryBuilder 
+class QueryBuilder
 {
     /**
      * table name 
@@ -115,14 +115,22 @@ class QueryBuilder
 
 
     /**
+     * @param Driver $driver object
      * @param string $table table name
      */
-    public function __construct($table = null)
+    public function __construct()
     {
-        $this->table = $table;
+        $args = func_get_args();
+        if ( is_string($args[0]) ) {
+            $this->table = $args[0];
+        }
+        elseif ( $args[0] instanceof Driver ) {
+            $this->driver = $args[0];
+            if ( isset($args[1]) ) {
+                $this->table = $args[1];
+            }
+        }
     }
-
-
 
     /**
      * set table name

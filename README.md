@@ -2,24 +2,53 @@
 
 [![Build Status](https://secure.travis-ci.org/c9s/SQLBuilder.png)](http://travis-ci.org/c9s/SQLBuilder)
 
-SQLBuilder Simply focuses on providing a simple syntax for building SQL statement.
+SQLBuilder focuses on providing a simple syntax for building SQL statements.
 
-When switching database backend, you can simple change the driver type of query
+When switching database backend, you can simplely change the driver type of query
 builder, and it will generate the proper SQL for your backend, you don't have
-to modify code to support different platform.
+to modify the code to support different backend.
 
-for example, pgsql support `returning` statement, this kind of syntax will only 
+For example, pgsql support `returning` statement, this kind of syntax will only
 be built when this feature is supported.
 
+## Features
 
-## Install through PEAR
+* Simple.
+* Fast & Powerful.
+* Ability to change SQL style, question-mark style, named-placeholder style.
+* Ability to change quote style, table name quoting, column name quoting..etc.
+* Configurable escaper and quoter.
 
-    $ sudo pear channe-discover pear.corneltek.com
-    $ sudo pear install corneltek/SQLBuilder
+
+## Installation
+
+### Install through PEAR
+
+```sh
+$ pear channe-discover pear.corneltek.com
+$ pear install corneltek/SQLBuilder
+```
+
+### Install through Composer
+
+
+## Synopsis
+
+```php
+$driver = new Driver('mysql');
+
+$b = new SQLBuilder\QueryBuilder($driver,'Member');
+$b->select('*');
+$b->where()
+    ->equal( 'a' , 'bar' );
+$sql = $b->build();
+
+// SELECT * FROM Member where a = 'bar'
+```
 
 ## Driver
 
-get your SQL driver
+Get your SQL driver
 
 ```php
 $driver = new SQLBuilder\Driver('pgsql');
@@ -27,7 +56,7 @@ $driver = SQLBuilder\Driver::getInstance();
 $driver = SQLBuilder\Driver::create('pgsql');
 ```
 
-### Configure Driver Quoter
+### Configuring Driver Quoter
 
 string quote/escape handler:
 
@@ -42,7 +71,7 @@ $driver->quoter = function($string) {
 };
 ```
 
-### Configure database driver for pgsql
+### Configuring Database Driver For pgsql
 
 ```php
 $driver->configure('driver','pgsql');
@@ -54,9 +83,10 @@ Trim spaces for SQL ?
 $driver->configure('trim',true);
 ```
 
-### Place Holder style
+### Place Holder Style
 
-SQLBuilder supports two styles: 
+SQLBuilder supports two styles:
+
 - named parameter by PDO
 - question-mark paramter by mysql, PDO.
 
@@ -220,7 +250,7 @@ $sql = $sb->build();   // UPDATE member SET set1 = 'value1' WHERE cond1 = :cond1
 ### Join
 
 ```php
-$sb = new QueryBuilder('Member');
+$sb = new QueryBuilder($driver,'Member');
 $sb->alias('m')
     ->join('table_name')
         ->alias('t')
@@ -234,10 +264,10 @@ $sb->alias('m')
 ### Delete
 
 ```php
-$sb = new QueryBuilder('member');
-$sb->driver = new Driver;
-$sb->driver->configure('driver','mysql');
-$sb->driver->configure('trim',true);
+$driver = new Driver;
+$driver->configure('driver','mysql');
+$driver->configure('trim',true);
+$sb = new QueryBuilder($driver,'member');
 $sb->delete();
 $sb->whereFromArgs(array( 'foo' => '123' ));
 
