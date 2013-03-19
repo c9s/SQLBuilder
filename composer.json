@@ -9,5 +9,10 @@
     ],
     "require": {
 
+    },
+    "autoload": {
+        "psr-0": {
+            "SQLBuilder": "src/"
+        }
     }
 }
