@@ -5,4 +5,5 @@ require 'tests/DriverFactory.php';
 require 'tests/PHPUnit/PDO/TestCase.php';
 $loader = new \Universal\ClassLoader\BasePathClassLoader(array('src','vendor/pear'));
 $loader->useIncludePath(true);
-$loader->register();
+// prepend to the spl class loader list
+$loader->register(true);
