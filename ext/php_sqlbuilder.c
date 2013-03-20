@@ -4,7 +4,7 @@
 #include "php.h"
 #include "php_sqlbuilder.h"
 
-static function_entry sqlbuilder_functions[] = {
+static const zend_function_entry sqlbuilder_functions[] = {
     PHP_FE(sqlbuilder_test, NULL)
     {NULL, NULL, NULL}
 };
