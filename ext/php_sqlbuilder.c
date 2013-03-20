@@ -56,6 +56,45 @@ PHP_MINIT_FUNCTION(sqlbuilder_driver)
     return SUCCESS;
 }
 
+typedef struct {
+    char *str;
+    int   len;
+    int   cap;
+} xstring;
+
+
+
+xstring * xstring_new();
+xstring * xstring_new_from_string(char * str, int len);
+
+xstring * xstring_new()
+{
+    return emalloc( sizeof(xstring) );
+}
+
+xstring * xstring_new_from_string(char * str, int len)
+{
+    xstring * xstr;
+    xstr = xstring_new();
+    xstr->str = str;
+    xstr->len = len;
+    xstr->cap = len;
+    return xstr;
+}
+
+void xstring_concat_string(xstring * xstr, char * str, int len)
+{
+    if ( len + xstr->len > xstr->cap ) {
+        // do realloc
+        xstr->cap += len + 128;
+        xstr->str = realloc( xstr->str , sizeof(char) * xstr->cap );
+    }
+    memcpy(xstr->str + xstr->len, str, len);
+    xstr->len += len;
+    memcpy(xstr->str + xstr->len, "\0", 1);
+}
+
+
 
 PHPAPI void str_column_double_quote(char * str, int str_len, zval * return_value)
 {
