@@ -455,12 +455,12 @@ class QueryBuilder
         $sql .= $this->buildConditionSql();
 
         /* only supported in mysql, sqlite */
-        if( 'mysql' === $this->driver->type 
+        if ( 'mysql' === $this->driver->type 
             || 'sqlite' === $this->driver->type ) {
             $sql .= $this->buildLimitSql();
         }
 
-        if( $this->driver->trim ) {
+        if ( $this->driver->trim ) {
             return trim($sql);
         }
         return $sql;
@@ -481,8 +481,9 @@ class QueryBuilder
         if( $this->driver->type == 'mysql' || $this->driver->type == 'sqlite' )
             $sql .= $this->buildLimitSql();
 
-        if( $this->driver->trim )
+        if ( $this->driver->trim ) {
             return trim($sql);
+        }
         return $sql;
     }
 

@@ -9,9 +9,9 @@ class PDOParameter
      */
     static function cast($value, $type = null)
     {
-        if( $value === true )
+        if ( $value === true )
             return 1;
-        if( $value === false )
+        if ( $value === false )
             return 0;
         return $value;
     }
