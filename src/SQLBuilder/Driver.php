@@ -209,7 +209,7 @@ class Driver
      */
     public function getQuoteTableName($name) 
     {
-        if( $c = $this->quoteTable ) {
+        if ( $c = $this->quoteTable ) {
             if( is_string($c) ) {
                 return $c . $name . $c;
             } elseif( 'pgsql' === $this->type) {
@@ -235,11 +235,13 @@ class Driver
          *
          *  $driver->configure('quote',array($pgconn,'escape_string'));
          */
-        if( $this->quoter )
+        if ( $this->quoter ) {
             return call_user_func( $this->quoter , $string );
+        }
 
-        if( $this->escaper )
+        if ( $this->escaper ) {
             return '\'' . call_user_func( $this->escaper , $string ) . '\'';
+        }
     }
 
     /**
@@ -271,8 +273,6 @@ class Driver
         }
         return $new;
     }
-
-
 
 }
 

@@ -22,7 +22,7 @@ class Expression
 
     public function setOp($op)
     {
-        if( $this->op ) {
+        if ( $this->op ) {
             return $this->and()->setOp($op);
         } elseif( $this->childs ) {
             return $this->and()->setOp($op);
@@ -80,8 +80,9 @@ class Expression
         // back to Expression Group
         $p = $this;
         while( $p = $p->parent ) {
-            if( $p instanceof \SQLBuilder\ExpressionGroup )
+            if ( $p instanceof \SQLBuilder\ExpressionGroup ) {
                 return $p->parent;
+            }
         }
     }
 
@@ -135,15 +136,16 @@ class Expression
     {
         $sql = '';
 
-        if( $this->parentOp )
+        if ( $this->parentOp ) {
             $sql .= $this->parentOp . ' ';
+        }
 
 
-        if( $this->op ) {
-            if( is_array( $this->op ) ) {
+        if ( $this->op ) {
+            if ( is_array( $this->op ) ) {
 
                 list($k,$op,$v) = $this->op;
-                if( $this->driver->placeholder ) {
+                if ( $this->driver->placeholder ) {
 
 
                     if( is_array($v) ) {
@@ -154,7 +156,7 @@ class Expression
                     }
                 }
                 else {
-                    if( is_array($v) ) {
+                    if ( is_array($v) ) {
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
                     } else {
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
@@ -167,7 +169,7 @@ class Expression
                     }
                 }
             }
-            elseif( is_object( $this->op ) ) {
+            elseif ( is_object( $this->op ) ) {
                 $sql .= $this->op->toSql();
             }
             else {
@@ -175,7 +177,7 @@ class Expression
             }
         }
 
-        if( ! empty($this->childs) ) {
+        if ( ! empty($this->childs) ) {
             foreach( $this->childs as $child ) {
                 $sql .= ' '. $child->toSql();
             }
