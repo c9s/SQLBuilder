@@ -4,15 +4,19 @@
 /* allocate an empty xstring structure */
 PHPAPI xstring * xstring_alloc()
 {
-    return emalloc( sizeof(xstring) );
+    xstring * x = emalloc( sizeof(xstring) );
+    x->str = NULL;
+    x->len = 0;
+    x->cap = 0;
+    return x;
 }
 
 
 PHPAPI xstring * xstring_new(int cap)
 {
     xstring * x = xstring_alloc();
-    x->cap = cap;
-    x->str = emalloc(sizeof(char) * cap);
+    x->cap = cap + 1;
+    x->str = emalloc(sizeof(char) * x->cap);
     x->len = 0;
     return x;
 }
@@ -35,6 +39,15 @@ PHPAPI xstring * xstring_new_from_string(char * str)
 }
 
 
+
+PHPAPI void xstring_init_from_stringl(xstring * xstr, char * str, int len)
+{
+    xstr->str = str;
+    xstr->len = len;
+    xstr->cap = len;
+}
+
+
 PHPAPI void xstring_concat_string(xstring * xstr, char * str, int len)
 {
     if ( xstr->len + len > xstr->cap ) {
@@ -50,7 +63,7 @@ PHPAPI void xstring_concat_string(xstring * xstr, char * str, int len)
 PHPAPI void xstring_realloc(xstring *xstr, int size)
 {
     xstr->cap += size;
-    xstr->str = realloc( xstr->str , sizeof(char) * xstr->cap );
+    xstr->str = erealloc( xstr->str , sizeof(char) * xstr->cap );
 }
 
 
@@ -68,12 +81,8 @@ PHPAPI void xstring_scale_large(xstring *xstr, int size)
 
 
 
-PHPAPI xstring * xstring_quote_string(xstring * xstr, char * quote , int quote_len)
+PHPAPI xstring * xstring_quote_stringl(xstring * xstr, char * quote , int quote_len)
 {
-    if ( xstr->len + quote_len > xstr->cap ) {
-        xstring_realloc(xstr, quote_len);
-    }
-
     xstring *xnewstr;
     
     if ( xstr->len + quote_len > xstr->cap ) {
@@ -83,12 +92,18 @@ PHPAPI xstring * xstring_quote_string(xstring * xstr, char * quote , int quote_l
         xnewstr = xstring_new( xstr->cap );
     }
 
-    xnewstr->len = xstr->len + quote_len;
-    memcpy(xnewstr, quote, quote_len);
-    memcpy(xnewstr + quote_len, xstr->str, xstr->len);
-    memcpy(xnewstr + quote_len + xstr->len, quote, quote_len);
+    xnewstr->len = xstr->len + quote_len * 2;
+    memcpy(xnewstr->str, quote, quote_len);
+    memcpy(xnewstr->str + quote_len, xstr->str, xstr->len);
+    memcpy(xnewstr->str + quote_len + xstr->len, quote, quote_len);
     return xnewstr;
 }
+
+PHPAPI void xstring_free_outer(xstring *xstr)
+{
+    efree(xstr);
+}
+
 
 PHPAPI void xstring_free(xstring *xstr)
 {
@@ -110,6 +125,13 @@ PHPAPI zval *    xstring_to_zval(xstring *xstr)
     Z_STRVAL_P(zstr) = xstr->str;
     Z_STRLEN_P(zstr) = xstr->len;
     return zstr;
+}
+
+PHPAPI void xstring_set_zval(xstring *xstr, zval *zstr, short copy)
+{
+    zstr->type = IS_STRING;
+    Z_STRVAL_P(zstr) = copy ? estrndup(xstr->str, xstr->len) : xstr->str;
+    Z_STRLEN_P(zstr) = xstr->len;
 }
 
 
