@@ -42,6 +42,9 @@ ZEND_GET_MODULE(sqlbuilder)
 #endif
 
 
+
+
+
 PHP_MINIT_FUNCTION(sqlbuilder)
 {
     PHP_MINIT(sqlbuilder_driver)(INIT_FUNC_ARGS_PASSTHRU);
