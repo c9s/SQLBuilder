@@ -97,7 +97,15 @@ PHP_FUNCTION(sqlbuilder_single_quote)
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &str, &str_len ) == FAILURE) {
         RETURN_FALSE;
     }
-    str_column_single_quote(str, str_len, return_value);
+
+    xstring xstr;
+    xstring *xq;
+    xstring_init_from_stringl(&xstr, str, str_len);
+
+    xq = xstring_quote_stringl(&xstr, "'" , 1 );
+    xstring_set_zval(xq, return_value, 0);
+    zval_copy_ctor(return_value);
+    xstring_free_outer(xq);
 }
 
 PHP_FUNCTION(sqlbuilder_double_quote)
