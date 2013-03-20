@@ -28,4 +28,7 @@ PHPAPI xstring * xstring_quote_stringl(xstring * xstr, char * quote , int quote_
 PHPAPI zval *    xstring_to_zval(xstring *xstr);
 PHPAPI void      xstring_set_zval(xstring *xstr, zval *zval, short copy);
 
+#define xstring_set_zval_copy(xstr, val) xstring_set_zval(xstr, val, 1)
+
+
 #endif
