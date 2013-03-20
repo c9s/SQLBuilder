@@ -5,7 +5,8 @@
 #define PHP_SQLBUILDER_VERSION "1.0"
 #define PHP_SQLBUILDER_EXTNAME "sqlbuilder"
 
-PHP_FUNCTION(sqlbuilder_test);
+PHP_FUNCTION(sqlbuilder_single_quote);
+PHP_FUNCTION(sqlbuilder_double_quote);
 
 PHP_MINIT_FUNCTION(sqlbuilder);
 PHP_MINIT_FUNCTION(sqlbuilder_driver);
