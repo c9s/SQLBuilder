@@ -157,7 +157,7 @@ class QueryBuilder
     public function addSelect($columns) {
         $args = func_get_args();
         $columns = $args[0];
-        if( is_array($columns) ) {
+        if ( is_array($columns) ) {
             $this->selected = array_merge( $this->selected , $columns );
         } else {
             $this->selected = array_merge( $this->selected , $args );
@@ -179,7 +179,7 @@ class QueryBuilder
     {
         $args = func_get_args();
         $columns = $args[0];
-        if( is_array($columns) ) {
+        if ( is_array($columns) ) {
             $this->selected = $columns;
         } else {
             $this->selected = $args;
@@ -213,7 +213,7 @@ class QueryBuilder
     /*** limit , offset methods ***/
     public function limit($limit)
     {
-        if( $this->driver->type == 'sqlite' ) {
+        if ( $this->driver->type == 'sqlite' ) {
             // throw new Exception('sqlite does not support limit syntax');
         }
         $this->limit = $limit;
@@ -228,7 +228,7 @@ class QueryBuilder
      */
     public function offset($offset)
     {
-        if( $this->driver->type == 'sqlite' ) {
+        if ( $this->driver->type == 'sqlite' ) {
             // throw new Exception('sqlite does not support offset syntax');
         }
         $this->offset = $offset;
@@ -276,11 +276,11 @@ class QueryBuilder
      */
     public function where( $args = null )
     {
-        if( $args && is_array($args) ) {
+        if ( $args && is_array($args) ) {
             return $this->whereFromArgs( $args );
         }
 
-        if( $this->where ) {
+        if ( $this->where ) {
             return $this->where;
         }
 
@@ -301,7 +301,7 @@ class QueryBuilder
      */
     public function whereFromArgs($args)
     {
-        if( null === $args || empty($args) )
+        if ( null === $args || empty($args) )
             return $this;
 
         $expr = $this->where();
@@ -355,7 +355,7 @@ class QueryBuilder
     public function groupBy($column)
     {
         $args = func_get_args();
-        if( count($args) > 1 ) {
+        if ( count($args) > 1 ) {
             $this->groupBys = $args;
         } else {
             $this->groupBys[] = $column;
@@ -387,7 +387,7 @@ class QueryBuilder
     {
         // reset sql vars (for applying SQL statement)
         $this->vars = array();
-        if( ! $this->behavior )
+        if ( ! $this->behavior )
             throw new Exception('behavior is not defined.');
 
         switch( $this->behavior )
@@ -423,7 +423,7 @@ class QueryBuilder
     {
         $sql  = '';
         $sql .= $this->driver->getQuoteTableName($this->table);
-        if( $this->alias )
+        if ( $this->alias )
             $sql .= ' ' . $this->alias;
         return $sql;
     }
@@ -439,10 +439,10 @@ class QueryBuilder
         foreach( $this->selected as $k => $v ) {
 
             /* column => alias */
-            if( is_string($k) ) {
+            if ( is_string($k) ) {
                 $cols[] = $this->driver->getQuoteColumn($k) . '  AS ' . $v;
             }
-            elseif( is_integer($k) ) {
+            elseif ( is_integer($k) ) {
                 $cols[] = $this->driver->getQuoteColumn($v);
             }
         }
@@ -478,7 +478,7 @@ class QueryBuilder
         $sql .= $this->buildConditionSql();
 
         /* only supported in mysql, sqlite */
-        if( $this->driver->type == 'mysql' || $this->driver->type == 'sqlite' )
+        if ( $this->driver->type == 'mysql' || $this->driver->type == 'sqlite' )
             $sql .= $this->buildLimitSql();
 
         if ( $this->driver->trim ) {
@@ -510,7 +510,7 @@ class QueryBuilder
 
         $sql .= $this->buildLimitSql();
 
-        if( $this->driver->trim )
+        if ( $this->driver->trim )
             return trim($sql);
         return $sql;
     }
@@ -526,17 +526,16 @@ class QueryBuilder
 
         /* build sql arguments */
 
-        if( $this->driver->placeholder ) {
+        if ( $this->driver->placeholder ) {
             foreach( $this->insert as $k => $v ) {
-                if( is_integer($k) )
+                if ( is_integer($k) )
                     $k = $v;
 
-                if( is_array($v) ) {
+                if ( is_array($v) ) {
                     // just interpolate the raw value
                     $columns[] = $this->driver->getQuoteColumn($k);
                     $values[] = $v[0];
-                }
-                else {
+                } else {
                     $columns[] = $this->driver->getQuoteColumn($k);
                     $newK = $this->setPlaceHolderVar( $k , $v );
                     $values[] = $this->driver->getPlaceHolder($newK);
@@ -545,8 +544,9 @@ class QueryBuilder
 
         } else {
             foreach( $this->insert as $k => $v ) {
-                if( is_integer($k) )
+                if ( is_integer($k) ) {
                     $k = $v;
+                }
                 $columns[] = $this->driver->getQuoteColumn( $k );
                 $values[]  = $this->driver->inflate($v);
             }
@@ -555,12 +555,13 @@ class QueryBuilder
         $sql = 'INSERT INTO ' . $this->getTableSql() . ' ( ';
         $sql .= join(',',$columns) . ') VALUES ('.  join(',', $values ) .')';
 
-        if( $this->returning && ( 'pgsql' == $this->driver->type ) ) {
+        if ( $this->returning && ( 'pgsql' == $this->driver->type ) ) {
             $sql .= ' RETURNING ' . $this->driver->getQuoteColumn($this->returning);
         }
 
-        if ( $this->driver->trim )
+        if ( $this->driver->trim ) {
             return trim($sql);
+        }
         return $sql;
     }
 
@@ -576,7 +577,7 @@ class QueryBuilder
     protected function buildOrderSql()
     {
         $sql = '';
-        if( !empty($this->orders) ) {
+        if ( !empty($this->orders) ) {
             $sql .= ' ORDER BY ';
             $parts = array();
             foreach( $this->orders as $order ) {
@@ -591,21 +592,21 @@ class QueryBuilder
     protected function buildLimitSql()
     {
         $sql = '';
-        if( 'pgsql' === $this->driver->type ) {
-            if( $this->limit && $this->offset ) {
+        if ( 'pgsql' === $this->driver->type ) {
+            if ( $this->limit && $this->offset ) {
                 $sql .= ' LIMIT ' . $this->limit . ' OFFSET ' . $this->offset;
-            } else if ( $this->limit ) {
+            } elseif ( $this->limit ) {
                 $sql .= ' LIMIT ' . $this->limit;
             }
         } 
-        else if( 'mysql' === $this->driver->type ) {
-            if( $this->limit && $this->offset ) {
+        elseif ( 'mysql' === $this->driver->type ) {
+            if ( $this->limit && $this->offset ) {
                 $sql .= ' LIMIT ' . $this->offset . ' , ' . $this->limit;
-            } else if ( $this->limit ) {
+            } elseif ( $this->limit ) {
                 $sql .= ' LIMIT ' . $this->limit;
             }
         }
-        else if( $this->driver->type == 'sqlite' ) {
+        elseif ( $this->driver->type == 'sqlite' ) {
             // just ignore
         }
         return $sql;
@@ -614,7 +615,7 @@ class QueryBuilder
     protected function buildGroupBySql()
     {
         $self = $this;
-        if( ! empty($this->groupBys) ) {
+        if ( ! empty($this->groupBys) ) {
             return ' GROUP BY ' . join( ',' , 
                 array_map( function($val) use ($self) { 
                     return $self->driver->getQuoteColumn( $val );
@@ -626,12 +627,12 @@ class QueryBuilder
     protected function buildSetterSql()
     {
         $conds = array();
-        if( $this->driver->placeholder ) {
+        if ( $this->driver->placeholder ) {
             foreach( $this->update as $k => $v ) {
-                if( is_array($v) ) {
+                if ( is_array($v) ) {
                     $conds[] =  $this->driver->getQuoteColumn( $k ) . ' = '. $v[0];
                 } else {
-                    if( is_integer($k) )
+                    if ( is_integer($k) )
                         $k = $v;
 
                     $newK = $this->setPlaceHolderVar( $k , $v );
@@ -642,7 +643,7 @@ class QueryBuilder
         }
         else {
             foreach( $this->update as $k => $v ) {
-                if( is_array($v) ) {
+                if ( is_array($v) ) {
                     $conds[] = $this->driver->getQuoteColumn($k) . ' = ' . $v ;
                 } else {
                     $conds[] = $this->driver->getQuoteColumn($k) . ' = ' 
@@ -655,15 +656,17 @@ class QueryBuilder
 
     protected function buildConditionSql()
     {
-        if( $this->where && $this->where->isComplete() )
+        if ( $this->where && $this->where->isComplete() ) {
             return ' WHERE ' . $this->where->toSql();
+        }
         return '';
     }
 
     protected function buildHavingSql()
     {
-        if ($this->having )
+        if ($this->having ) {
             return ' HAVING ' . $this->having->toSql();
+        }
         return '';
     }
 
@@ -682,7 +685,7 @@ class QueryBuilder
      */
     public function setPlaceHolderVar($key,$value)
     {
-        if( $this->driver->placeholder && $this->driver->placeholder === 'named' ) {
+        if ( $this->driver->placeholder && $this->driver->placeholder === 'named' ) {
             $key = preg_replace('#\W+#','_', $key );
             // a basic counter to avoid key confliction.
             $i = 1;
@@ -691,8 +694,7 @@ class QueryBuilder
             }
             $this->vars[ ':' . $key  ] = PDOParameter::cast($value);
             return $key;
-        }
-        else {
+        } else {
             $this->vars[] = $value;
             return $key;
         }
@@ -700,12 +702,12 @@ class QueryBuilder
 
     public function __clone()
     {
-        if( $this->where ) {
+        if ( $this->where ) {
             // after clone, set new builder object to self.
             $this->where = clone $this->where;
             $this->where->setBuilder($this);
         }
-        if( $this->joinExpr ) {
+        if ( $this->joinExpr ) {
             $nodes = array();
             foreach( $this->joinExpr as $expr ) {
                 $n = clone $expr;
