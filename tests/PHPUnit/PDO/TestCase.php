@@ -46,7 +46,7 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
     /**
      * @var string database connection string (DSN)
      */
-    public $dsn = 'sqlite::memory:';
+    public $dsn;
 
     /**
      * @var string database username
@@ -122,21 +122,33 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
         return $this->pdo;
     }
 
-    public function setup()
+    public function setUp()
     {
-        if( ! extension_loaded('pdo') ) 
+        if( ! extension_loaded('pdo') )
             return skip('pdo required');
 
         // XXX: check pdo driver
 #          if( ! extension_loaded('pdo_pgsql') ) 
 #              return skip('pdo pgsql required');
 
-        $this->pdo = new PDO(
-            $this->getDSN(),  
-            $this->getUser(),  
-            $this->getPass(), 
-            $this->getOptions() ?: null
-        );
+        if ( $this->getDSN() && $this->getUser() && $this->getPass() ) {
+            $this->pdo = new PDO(
+                $this->getDSN(),
+                $this->getUser(),
+                $this->getPass(),
+                $this->getOptions() ?: null
+            );
+        } elseif ( $this->getDSN() && $this->getUser() ) {
+            $this->pdo = new PDO( $this->getDSN(), $this->getUser() );
+        } elseif ( $this->getDSN() ) {
+            $this->pdo = new PDO( $this->getDSN() );
+        } else {
+            throw new Exception("Please define DSN for class: " . get_class($this) );
+        }
+
+        if ( ! $this->pdo ) {
+            throw new Exception("Can not create PDO connection: " . get_class($this) );
+        }
 
         // throw Exception on Error.
         $this->pdo->setAttribute( PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION );
@@ -162,9 +174,10 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
                 }
                 $content = file_get_contents($file);
 
-                $statements = preg_split( '#;\s*$#', $content );
-                foreach( $statements as $statement ) 
-                    $this->queryOk($statement);
+                $statements = preg_split( '#;\s*$#ms', $content );
+                foreach( $statements as $statement )  {
+                    $this->queryOk(trim($statement));
+                }
             }
 
         }
@@ -222,10 +235,14 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
      */
     public function queryOk($sql, $args = null)
     {
-        if( $args ) {
+        if ( ! $sql )
+            return;
+
+        if ( $args ) {
             $stm = $this->pdo->prepare( $sql )->execute( $args );
         }
         else {
+            // echo "Query: " , $sql, "\n";
             $stm = $this->pdo->query( $sql );
         }
         $this->noPDOError();

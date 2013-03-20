@@ -4,6 +4,8 @@ use SQLBuilder\Column;
 class MigrationBuilderTest extends PHPUnit_PDO_TestCase
 {
 
+    public $dsn = 'sqlite::memory:';
+
     function schema()
     {
         $sqls = array();;

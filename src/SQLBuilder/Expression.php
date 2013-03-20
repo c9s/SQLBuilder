@@ -57,6 +57,15 @@ class Expression
         return $this->setOp(array( $c, 'like', $n ));
     }
 
+    public function in($c, $values)
+    {
+        $expr = new InExpression($c, $values);
+        $expr->builder = $this->builder;
+        $expr->driver = $this->driver;
+        $this->setOp($expr);
+        return $this;
+    }
+
     public function greater($c,$n)
     {
         return $this->setOp(array( $c, '>', $n ));
@@ -140,17 +149,19 @@ class Expression
             $sql .= $this->parentOp . ' ';
         }
 
-
         if ( $this->op ) {
             if ( is_array( $this->op ) ) {
 
                 list($k,$op,$v) = $this->op;
                 if ( $this->driver->placeholder ) {
 
-
+                    // we should not escape the value
+                    // if the value is wrapped with an array
                     if( is_array($v) ) {
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
-                    } else {
+                    }
+                    else {
+                        // escape as usuall
                         $newK = $this->builder->setPlaceHolderVar( $k , $v );
                         $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($newK);
                     }

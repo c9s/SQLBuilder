@@ -10,11 +10,11 @@
     <email>cornelius.howl@gmail.com</email>
     <active>yes</active>
   </lead>
-  <date>2013-02-18</date>
-  <time>13:01:04</time>
+  <date>2013-03-11</date>
+  <time>01:27:08</time>
   <version>
-    <release>1.3.8</release>
-    <api>1.3.8</api>
+    <release>1.3.10</release>
+    <api>1.3.10</api>
   </version>
   <stability>
     <release>stable</release>
@@ -25,25 +25,13 @@
   <contents>
     <dir name="/">
       <file name="doc/migration.md" role="doc" md5sum="05e39d9440a65c671cc27338e256c1aa"/>
-      <file name="tests/bootstrap.php" role="test" md5sum="f5b787a45ebd96de1740b65f8869eb2e"/>
-      <file name="tests/DriverFactory.php" role="test" md5sum="31d5c73962bfa5037680a1c3d058f681"/>
-      <file name="tests/PHPUnit/PDO/TestCase.php" role="test" md5sum="9921e93c938431d0b3ed74525610be83"/>
-      <file name="tests/schema/member.sql" role="test" md5sum="785e1eda92eb16b775099f330eac66d5"/>
-      <file name="tests/SQLBuilder/ColumnTest.php" role="test" md5sum="95b22665ab5a3a8489a1fbac99cf1cfb"/>
-      <file name="tests/SQLBuilder/ExpressionTest.php" role="test" md5sum="46816c673c9e015babf1e0f5fd08250a"/>
-      <file name="tests/SQLBuilder/InflatorTest.php" role="test" md5sum="d760bbee212601c69400f022e9b0369c"/>
-      <file name="tests/SQLBuilder/JoinExpressionTest.php" role="test" md5sum="6df3281b347a6b0fb815738443a8d01c"/>
-      <file name="tests/SQLBuilder/MigrationBuilderTest.php" role="test" md5sum="71153407d5154a26b39b0c741d1f2457"/>
-      <file name="tests/SQLBuilder/PlaceHolderSQLiteTest.php" role="test" md5sum="1c7b83aac42b351ba2ccf8cac3460f42"/>
-      <file name="tests/SQLBuilder/SQLBuilderMySQLTest.php" role="test" md5sum="40b50e879ef810604eb55431a76b5591"/>
-      <file name="tests/SQLBuilder/SQLBuilderPgTest.php" role="test" md5sum="8af8cf09479f6d069060678229c0045b"/>
-      <file name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" role="test" md5sum="681c68825b8304957474823c156ce102"/>
       <file name="src/SQLBuilder/BaseExpression.php" role="php" md5sum="6903d8f899c11ca4c6a4e2fe79f82833"/>
       <file name="src/SQLBuilder/BetweenExpression.php" role="php" md5sum="a3cbdb36a5b06ea26bced558d22dda25"/>
       <file name="src/SQLBuilder/Column.php" role="php" md5sum="94418d6cd1f78c3233f6c46506059360"/>
       <file name="src/SQLBuilder/Driver.php" role="php" md5sum="4d57014434b079947240d9b22e817ac8"/>
-      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="df6ae41010ab73d94a89003ec5454326"/>
+      <file name="src/SQLBuilder/Expression.php" role="php" md5sum="499145627c9a2dd9de706c73bc179f48"/>
       <file name="src/SQLBuilder/ExpressionGroup.php" role="php" md5sum="0a182f9a447c19360b9f3c910559a507"/>
+      <file name="src/SQLBuilder/InExpression.php" role="php" md5sum="9e70c9ebefb67da4d4facdc5e0985ed7"/>
       <file name="src/SQLBuilder/Inflator.php" role="php" md5sum="a4c6e3331fe569cae3e35d26248e3f18"/>
       <file name="src/SQLBuilder/JoinExpression.php" role="php" md5sum="93d805df26cef4814b41cabc493bb589"/>
       <file name="src/SQLBuilder/MigrationBuilder.php" role="php" md5sum="cbe2ef365c7c9dca0bf395f9dca0ca4e"/>
@@ -69,25 +57,13 @@
   <phprelease>
     <filelist>
       <install name="doc/migration.md" as="migration.md"/>
-      <install name="tests/bootstrap.php" as="bootstrap.php"/>
-      <install name="tests/DriverFactory.php" as="DriverFactory.php"/>
-      <install name="tests/PHPUnit/PDO/TestCase.php" as="PHPUnit/PDO/TestCase.php"/>
-      <install name="tests/schema/member.sql" as="schema/member.sql"/>
-      <install name="tests/SQLBuilder/ColumnTest.php" as="SQLBuilder/ColumnTest.php"/>
-      <install name="tests/SQLBuilder/ExpressionTest.php" as="SQLBuilder/ExpressionTest.php"/>
-      <install name="tests/SQLBuilder/InflatorTest.php" as="SQLBuilder/InflatorTest.php"/>
-      <install name="tests/SQLBuilder/JoinExpressionTest.php" as="SQLBuilder/JoinExpressionTest.php"/>
-      <install name="tests/SQLBuilder/MigrationBuilderTest.php" as="SQLBuilder/MigrationBuilderTest.php"/>
-      <install name="tests/SQLBuilder/PlaceHolderSQLiteTest.php" as="SQLBuilder/PlaceHolderSQLiteTest.php"/>
-      <install name="tests/SQLBuilder/SQLBuilderMySQLTest.php" as="SQLBuilder/SQLBuilderMySQLTest.php"/>
-      <install name="tests/SQLBuilder/SQLBuilderPgTest.php" as="SQLBuilder/SQLBuilderPgTest.php"/>
-      <install name="tests/SQLBuilder/SQLBuilderSQLiteTest.php" as="SQLBuilder/SQLBuilderSQLiteTest.php"/>
       <install name="src/SQLBuilder/BaseExpression.php" as="SQLBuilder/BaseExpression.php"/>
       <install name="src/SQLBuilder/BetweenExpression.php" as="SQLBuilder/BetweenExpression.php"/>
       <install name="src/SQLBuilder/Column.php" as="SQLBuilder/Column.php"/>
       <install name="src/SQLBuilder/Driver.php" as="SQLBuilder/Driver.php"/>
       <install name="src/SQLBuilder/Expression.php" as="SQLBuilder/Expression.php"/>
       <install name="src/SQLBuilder/ExpressionGroup.php" as="SQLBuilder/ExpressionGroup.php"/>
+      <install name="src/SQLBuilder/InExpression.php" as="SQLBuilder/InExpression.php"/>
       <install name="src/SQLBuilder/Inflator.php" as="SQLBuilder/Inflator.php"/>
       <install name="src/SQLBuilder/JoinExpression.php" as="SQLBuilder/JoinExpression.php"/>
       <install name="src/SQLBuilder/MigrationBuilder.php" as="SQLBuilder/MigrationBuilder.php"/>

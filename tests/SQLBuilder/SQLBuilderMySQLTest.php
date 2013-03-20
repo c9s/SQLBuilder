@@ -3,13 +3,14 @@
 use SQLBuilder\QueryBuilder;
 use SQLBuilder\Driver;
 
-class QueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
+class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
 {
-    public $schema = array(
-        'member.sql',
-    );
 
-    function getDriver()
+    public $envVariablePrefix = 'MYSQL_';
+
+    public $schema = array( 'tests/schema/member_mysql.sql' );
+
+    public function getDriver()
     {
         $d = new Driver;
         $d->configure('driver','mysql');
@@ -18,8 +19,7 @@ class QueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
         return $d;
     }
 
-
-    function testInsert()
+    public function testInsert()
     {
         $sb = new QueryBuilder;
         $sb->table('member');
@@ -43,7 +43,7 @@ class QueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
         is( 'INSERT INTO member ( foo,bar) VALUES (?,?)' , $sql );
     }
 
-    function testDelete()
+    public function testDelete()
     {
         $sb = new QueryBuilder;
         $sb->table('member');
