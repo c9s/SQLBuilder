@@ -177,19 +177,23 @@ class Driver
      */
     public function getQuoteColumn($name)
     {
-
-        if( $c = $this->quoteColumn ) {
+        if ( $c = $this->quoteColumn ) {
             // return raw value if column name contains (non-word chars), eg: min( ), max( )
-            if( preg_match('/\W/',$name) )
+            if ( preg_match('/\W/',$name) ) {
                 return $name;
-            if( is_string($c) )
+            }
+            if ( is_string($c) ) {
                 return $c . $name . $c;
-            if( 'pgsql' === $this->type )
+            }
+            if ( 'pgsql' === $this->type ) {
                 return '"' . $name . '"';
-            elseif ( 'mysql' === $this->type )
+            }
+            elseif ( 'mysql' === $this->type ) {
                 return '`' . $name . '`';
-            elseif ( 'sqlite' === $this->type ) 
+            }
+            elseif ( 'sqlite' === $this->type ) {
                 return '`' . $name . '`';
+            }
         }
         return $name;
     }
@@ -245,8 +249,9 @@ class Driver
      */
     public function inflate($value)
     {
-        if( is_array($value) )
+        if( is_array($value) ) {
             return $value[0];
+        }
         return $this->inflator->inflate($value);
     }
 
