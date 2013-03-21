@@ -1,5 +1,5 @@
 {
-    "name": "c9s/sqlbuilder",
+    "name": "corneltek/sqlbuilder",
     "description": "Fast and Powerful SQLBuilder for PHP5.3",
     "authors": [
         {
@@ -10,9 +10,5 @@
     "require": {
 
     },
-    "autoload": {
-        "psr-0": {
-            "SQLBuilder": "src/"
-        }
-    }
+    "autoload": { "psr-0": { "SQLBuilder": "src/" } }
 }
