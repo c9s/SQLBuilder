@@ -1,9 +1,19 @@
 {
-    "name": "corneltek/sqlbuilder",
+    "name": "corneltek\/sqlbuilder",
     "description": "Fast and Powerful SQLBuilder for PHP5.3",
     "authors": [
-        { "name": "c9s", "email": "cornelius.howl@gmail.com" }
+        {
+            "name": "c9s",
+            "email": "cornelius.howl@gmail.com"
+        }
     ],
-    "require": { },
-    "autoload": { "psr-0": { "SQLBuilder": "src/" } }
+    "require": [
+
+    ],
+    "autoload": {
+        "psr-0": {
+            "SQLBuilder": "src\/"
+        }
+    },
+    "version": "1.3.12"
 }
