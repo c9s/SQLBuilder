@@ -10,7 +10,6 @@ before_script:
   - psql -c 'create database sqlbuilder_test;' -U postgres
   - mysql -e 'create database sqlbuilder_test;'
   - phpenv rehash
-  - php onion install
   - composer install --dev
 
 script: phpunit
