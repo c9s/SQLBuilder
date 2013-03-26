@@ -8,12 +8,12 @@
         }
     ],
     "require-dev": {
-        "corneltek/phpunit-testmore": "dev-master"
+        "corneltek\/phpunit-testmore": "dev-master"
     },
     "autoload": {
         "psr-0": {
             "SQLBuilder": "src"
         }
     },
-    "version": "1.3.12"
+    "version": "1.3.13"
 }
