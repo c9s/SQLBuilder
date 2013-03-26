@@ -10,10 +10,7 @@ before_script:
   - psql -c 'create database sqlbuilder_test;' -U postgres
   - mysql -e 'create database sqlbuilder_test;'
   - phpenv rehash
-  - pear channel-discover pear.corneltek.com
-  - pear install -f -a corneltek/PHPUnit_TestMore
-  - pear install -f -a corneltek/Universal
-  - curl -O https://raw.github.com/c9s/Onion/master/onion
   - php onion install
+  - composer install --dev
 
 script: phpunit
