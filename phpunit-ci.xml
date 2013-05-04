@@ -6,9 +6,11 @@
   <php>
 
     <!-- MySQL Database Testing -->
-    <var name="DB_MYSQL_DSN" value="mysql:dbname=sqlbuilder_tests;host=localhost" />
-    <var name="DB_MYSQL_USER" value="test" />
-    <var name="DB_MYSQL_PASSWD" value="test" />
+    <env name="MYSQL_DSN"   value="mysql:host=localhost;dbname=sqlbuilder"/>
+    <env name="MYSQL_USER"  value="testing"/>
+
+    <env name="PGSQL_DSN"   value="pgsql:host=localhost;dbname=sqlbuilder"/>
+    <env name="PGSQL_USER"   value="postgres"/>
 
     <!-- 
     <var name="DB_MYSQL_DBNAME" value="sqlbuilder_tests" />

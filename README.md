@@ -355,6 +355,18 @@ Copy the `phpunit.xml` file for your local configuration:
 phpunit -c your-phpunit.xml tests
 ```
 
+## Contribution
+
+To test with mysql database:
+
+    $ mysql -uroot -p
+    create database sqlbuilder charset utf8;
+    grant all privileges on sqlbuilder.* to 'testing'@'localhost';
+
+To test with pgsql database:
+
+    $ sudo -u postgres createdb sqlbuilder
+
 ## Reference
 
 - http://dev.mysql.com/doc/refman/5.0/en/sql-syntax.html
