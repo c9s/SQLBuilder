@@ -171,12 +171,11 @@ class IndexBuilder extends QueryBuilder
 
     Usage:
 
-        $migration->addForeignKey('product_id','products');
-        $migration->addForeignKey('product_id','products','id');
-
+        $migration->addForeignKey('products', 'product_id', 'products');
+        $migration->addForeignKey('products', 'product_id', 'products','id');
 
      */
-    public function addForeignKey($table,$columnName,$referenceTable,$referenceColumn = null) 
+    public function addForeignKey($table, $columnName, $referenceTable,$referenceColumn = null) 
     {
         // SQLite doesn't support ADD CONSTRAINT
         if( 'sqlite' === $this->driver->type ) {
@@ -189,7 +188,7 @@ class IndexBuilder extends QueryBuilder
             . ' ADD FOREIGN KEY '
             . '(' . $this->driver->getQuoteTableName($columnName) . ')'
             . ' REFERENCES '
-            . $this->driver->getQuoteTableName($table)
+            . $this->driver->getQuoteTableName($referenceTable)
             . ( $referenceColumn ? '(' . $this->driver->getQuoteColumn($referenceColumn) . ')' : '' )
             ;
         return $sql;
