@@ -309,6 +309,28 @@ $sb->where()->equal('foo',123);
 $sql = $sb->build();  // DELETE FROM member  WHERE foo = 123
 ```
 
+## Index Builder
+
+To generate something like:
+
+
+```sql
+CREATE INDEX CONCURRENTLY on tags (name text_pattern_ops) WHERE media_count >= 100
+```
+
+Simply do this:
+
+```php
+$b = new IndexBuilder($driver);
+
+$b->create('index_name')
+    ->on( 'table_name' )
+    ->concurrently()
+    ->columns('foo','bar',array('name','text_pattern_ops'))
+    ->where()
+        ->greater('media_count', 500)
+    ;
+```
 
 ## Migration Builder
 
