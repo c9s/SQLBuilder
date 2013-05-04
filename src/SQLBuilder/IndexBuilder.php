@@ -93,7 +93,7 @@ class IndexBuilder extends QueryBuilder
         $sql .= 'ON ' . $this->driver->getQuoteTableName($this->on) . ' ';
 
         if ( $this->using && $this->driver->type == 'pgsql' ) {
-            $sql .= 'USING ' . $this->using . ' ';
+            $sql .= 'USING ' . strtoupper($this->using) . ' ';
         }
 
         $sql .= '(' 
