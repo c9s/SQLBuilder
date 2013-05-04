@@ -161,11 +161,22 @@ class IndexBuilder extends QueryBuilder
 
         http://www.postgresql.org/docs/8.1/static/ddl-alter.html
 
+
+
+    REFERENCES tbl_name (index_col_name,...)
+        [MATCH FULL | MATCH PARTIAL | MATCH SIMPLE]
+        [ON DELETE reference_option]
+        [ON UPDATE reference_option]
+
+    reference_option:
+        RESTRICT | CASCADE | SET NULL | NO ACTION
+
     SQL-92 syntax
 
         ALTER TABLE child ADD CONSTRAINT fk_child_parent
                     FOREIGN KEY (parent_id) 
-                    REFERENCES child(id);
+                    REFERENCES child(id)
+                    ;
 
     SQLite ??? (is not supported)
 
@@ -175,7 +186,9 @@ class IndexBuilder extends QueryBuilder
         $migration->addForeignKey('products', 'product_id', 'products','id');
 
      */
-    public function addForeignKey($table, $columnName, $referenceTable,$referenceColumn = null) 
+    public function addForeignKey($table, $columnName, $referenceTable, 
+        $referenceColumn, 
+        $onDelete = null )
     {
         // SQLite doesn't support ADD CONSTRAINT
         if( 'sqlite' === $this->driver->type ) {
@@ -184,13 +197,18 @@ class IndexBuilder extends QueryBuilder
 
         // ALTER TABLE employee ADD FOREIGN KEY (group_id) REFERENCES product_groups;
         $sql = 'ALTER TABLE ' 
-            . $this->driver->getQuoteTableName($table)
-            . ' ADD FOREIGN KEY '
-            . '(' . $this->driver->getQuoteTableName($columnName) . ')'
-            . ' REFERENCES '
-            . $this->driver->getQuoteTableName($referenceTable)
-            . ( $referenceColumn ? '(' . $this->driver->getQuoteColumn($referenceColumn) . ')' : '' )
-            ;
+        $sql .= $this->driver->getQuoteTableName($table);
+        $sql .= ' ADD FOREIGN KEY ';
+        $sql .= '(' . $this->driver->getQuoteTableName($columnName) . ')';
+        $sql .= ' REFERENCES ';
+        $sql .= $this->driver->getQuoteTableName($referenceTable);
+        $sql .= ( $referenceColumn ? '(' . $this->driver->getQuoteColumn($referenceColumn) . ')' : '' );
+
+        if ( $onDelete ) {
+            // ON DELETE CASCADE
+            // ON DELETE RESTRICT
+            $sql .= " ON DELETE " . strtoupper($onDelete);
+        }
         return $sql;
     }
 
