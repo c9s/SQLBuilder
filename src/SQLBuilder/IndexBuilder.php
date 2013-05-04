@@ -29,6 +29,7 @@ class IndexBuilder extends QueryBuilder
     public $columns;
     public $concurrently;
     public $where;
+    public $using;
 
     public function __construct($driver)
     {
@@ -67,6 +68,10 @@ class IndexBuilder extends QueryBuilder
         return $this;
     }
 
+    public function using($type) {
+        $this->using = $type;
+        return $this;
+    }
 
     public function build() {
         $self = $this;
@@ -86,6 +91,11 @@ class IndexBuilder extends QueryBuilder
 
         $sql .= $this->driver->getQuoteTableName($this->name) . ' ';
         $sql .= 'ON ' . $this->driver->getQuoteTableName($this->on) . ' ';
+
+        if ( $this->using && $this->driver->type == 'pgsql' ) {
+            $sql .= 'USING ' . $this->using . ' ';
+        }
+
         $sql .= '(' 
                 . join(',' , array_map( function($n) use ($self) { 
                     if ( is_array($n) ) {
