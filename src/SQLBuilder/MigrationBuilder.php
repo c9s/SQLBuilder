@@ -3,7 +3,8 @@ namespace SQLBuilder;
 use SQLBuilder\Column;
 use RuntimeException;
 
-class MigrationBuilder
+class MigrationBuilder 
+{
     public $driver;
 
     public function __construct($driver)
