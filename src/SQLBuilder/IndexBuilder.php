@@ -89,7 +89,13 @@ class IndexBuilder extends QueryBuilder
         $sql .= '(' 
                 . join(',' , array_map( function($n) use ($self) { 
                     if ( is_array($n) ) {
-                        return $self->driver->getQuoteColumn( $n[0] ) . ' ' . $n[1];
+                        if ( count($n) == 2 ) {
+                            // column name and appended attributes
+                            return $self->driver->getQuoteColumn( $n[0] ) . ' ' . $n[1];
+                        } elseif ( count($n) == 1 ) {
+                            // with raw format
+                            return $n[0];
+                        }
                     } else {
                         return $self->driver->getQuoteColumn( $n );
                     }
