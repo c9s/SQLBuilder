@@ -1,6 +1,24 @@
 <?php
 namespace SQLBuilder;
 
+
+/**
+ * @link http://blog.gtuhl.com/2009/08/07/postgresql-tips-and-tricks/
+ *
+ * pgsql create index:
+ * @link http://www.postgresql.org/docs/8.2/static/sql-createindex.html
+ *
+ *     Concurrently create:
+ *
+ *     CREATE INDEX CONCURRENTLY idx_salary ON employees(last_name, salary);
+ *
+ *     Functional concurrently create:
+ *
+ *     CREATE INDEX CONCURRENTLY on tokens (substr(token), 0, 8)
+ *
+ * mysql:
+ * @link http://dev.mysql.com/doc/refman/5.0/en/create-index.html
+ */
 class IndexBuilder extends QueryBuilder
 {
     public $driver;
@@ -89,20 +107,6 @@ class IndexBuilder extends QueryBuilder
      *
      *
      * CREATE INDEX {index name} ON {table}( {columns...} );
-     *
-     * pgsql create index:
-     * @link http://www.postgresql.org/docs/8.2/static/sql-createindex.html
-     *
-     *     Concurrently create:
-     *
-     *     CREATE INDEX CONCURRENTLY idx_salary ON employees(last_name, salary);
-     *
-     *     Functional concurrently create:
-     *
-     *     CREATE INDEX CONCURRENTLY on tokens (substr(token), 0, 8)
-     *
-     * mysql:
-     * @link http://dev.mysql.com/doc/refman/5.0/en/create-index.html
      *
      * @param string $table table nmae
      * @param string $indexName index name
