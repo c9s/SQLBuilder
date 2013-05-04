@@ -49,7 +49,7 @@ class IndexBuilder extends QueryBuilder
         $sql = '';
 
         $sql .= 'CREATE INDEX ';
-        if ($this->concurrently) {
+        if ($this->concurrently && $this->driver->type == 'pgsql' ) {
             $sql .= 'CONCURRENTLY ';
         }
 
