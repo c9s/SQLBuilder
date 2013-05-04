@@ -196,7 +196,7 @@ class IndexBuilder extends QueryBuilder
         }
 
         // ALTER TABLE employee ADD FOREIGN KEY (group_id) REFERENCES product_groups;
-        $sql = 'ALTER TABLE ' 
+        $sql = 'ALTER TABLE ' ;
         $sql .= $this->driver->getQuoteTableName($table);
         $sql .= ' ADD FOREIGN KEY ';
         $sql .= '(' . $this->driver->getQuoteTableName($columnName) . ')';
