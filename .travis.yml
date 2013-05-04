@@ -12,4 +12,5 @@ before_script:
   - phpenv rehash
   - composer install --dev
 
-script: phpunit
+script:
+  - phpunit
