@@ -361,7 +361,10 @@ To test with mysql database:
 
     $ mysql -uroot -p
     create database sqlbuilder charset utf8;
-    grant all privileges on sqlbuilder.* to 'testing'@'localhost';
+    grant all privileges on sqlbuilder.* to 'testing'@'localhost' identified by '';
+
+    --- or use this to remove password for testing account
+    SET PASSWORD FOR testing@localhost=PASSWORD('');
 
 To test with pgsql database:
 
