@@ -43,7 +43,16 @@ class IndexBuilder
     }
 
     public function build() {
-        return '';
+        $self = $this;
+        $sql = '';
+        $sql .= 'CREATE INDEX ' . $this->driver->getQuoteTableName($this->name) ;
+        $sql .= ' ON ' . $this->driver->getQuoteTableName($this->on);
+        $sql .= ' (' 
+                . join(',' , array_map( function($name) use ($self) { 
+                    return $self->driver->getQuoteColumn( $name );
+                }, $this->columns ) ) 
+                . ')';
+        return $sql;
     }
 
     /**
