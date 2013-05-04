@@ -5,6 +5,7 @@ class IndexBuilder extends QueryBuilder
 {
     public $driver;
 
+    public $unique;
     public $name;
     public $on;
     public $columns;
@@ -18,6 +19,11 @@ class IndexBuilder extends QueryBuilder
 
     public function create($name) {
         $this->name = $name;
+        return $this;
+    }
+
+    public function unique() {
+        $this->unique = true;
         return $this;
     }
 
@@ -48,14 +54,21 @@ class IndexBuilder extends QueryBuilder
         $self = $this;
         $sql = '';
 
-        $sql .= 'CREATE INDEX ';
+        $sql .= 'CREATE ';
+
+        if ($this->unique) {
+            $sql .= 'UNIQUE ';
+        }
+
+        $sql .= 'INDEX ';
+
         if ($this->concurrently && $this->driver->type == 'pgsql' ) {
             $sql .= 'CONCURRENTLY ';
         }
 
-        $sql .= $this->driver->getQuoteTableName($this->name);
-        $sql .= ' ON ' . $this->driver->getQuoteTableName($this->on);
-        $sql .= ' (' 
+        $sql .= $this->driver->getQuoteTableName($this->name) . ' ';
+        $sql .= 'ON ' . $this->driver->getQuoteTableName($this->on) . ' ';
+        $sql .= '(' 
                 . join(',' , array_map( function($n) use ($self) { 
                     if ( is_array($n) ) {
                         return $self->driver->getQuoteColumn( $n[0] ) . ' ' . $n[1];
