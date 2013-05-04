@@ -6,7 +6,7 @@
  <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
  <target name="build"
-   depends="prepare,bundle,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpunit,phpcb,package"/>
+   depends="prepare,composer,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpunit,phpcb,package"/>
 
  <target name="build-parallel"
    depends="prepare,bundle,lint,tools-parallel,phpunit,phpcb"/>
@@ -22,6 +22,18 @@
    <antcall target="phploc"/>
    <antcall target="phpdox"/>
   </parallel>
+ </target>
+
+ <target name="composer">
+     <if>
+        <available file="composer.json"/>
+        <then>
+            <exec executable="composer" failonerror="true">
+                <arg value="install"/>
+                <arg value="--dev"/>
+            </exec>
+        </then>
+     </if>
  </target>
 
  <target name="clean" description="Cleanup build artifacts">
