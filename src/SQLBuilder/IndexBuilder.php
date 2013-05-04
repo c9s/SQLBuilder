@@ -45,7 +45,13 @@ class IndexBuilder
     public function build() {
         $self = $this;
         $sql = '';
-        $sql .= 'CREATE INDEX ' . $this->driver->getQuoteTableName($this->name) ;
+
+        $sql .= 'CREATE INDEX ';
+        if ($this->concurrently) {
+            $sql .= 'CONCURRENTLY ';
+        }
+
+        $sql .= $this->driver->getQuoteTableName($this->name);
         $sql .= ' ON ' . $this->driver->getQuoteTableName($this->on);
         $sql .= ' (' 
                 . join(',' , array_map( function($name) use ($self) { 
