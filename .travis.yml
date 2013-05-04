@@ -7,8 +7,8 @@ php:
   - 5.4
 
 before_script:
-  - psql -c 'create database sqlbuilder_test;' -U postgres
-  - mysql -e 'create database sqlbuilder_test;'
+  - psql -c 'create database sqlbuilder;' -U postgres
+  - mysql -e 'create database sqlbuilder;'
   - phpenv rehash
   - composer install --dev
 
