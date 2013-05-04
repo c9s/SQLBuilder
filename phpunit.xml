@@ -8,6 +8,7 @@
   <php>
     <env name="MYSQL_DSN"   value="mysql:host=localhost;dbname=sqlbuilder"/>
     <env name="MYSQL_USER"   value="testing"/>
+    <env name="MYSQL_PASS"   value="testing"/>
     <!--
     <env name="MYSQL_DB" value="sqlbuilder_test"/>
     -->
