@@ -5,19 +5,72 @@ class IndexBuilder
 {
     public $driver;
 
+    public $name;
+    public $on;
+    public $columns;
+    public $concurrently;
+
     public function __construct($driver)
     {
         $this->driver = $driver;
     }
 
+    public function create($name) {
+        $this->name = $name;
+        return $this;
+    }
+
+    public function on($on, $columns = array()) {
+        $this->on = $on;
+        if ( ! empty($columns) ) {
+            $this->columns = $columns;
+        }
+        return $this;
+    }
+
+    public function columns($a) {
+        if ( is_string($a) ) {
+            $this->columns = func_get_args();
+        } elseif ( is_array($a) ) {
+            $this->columns = $a;
+        }
+        return $this;
+    }
+
+    public function concurrently() {
+        $this->concurrently = true;
+        return $this;
+    }
+
+    public function build() {
+        return '';
+    }
+
     /**
+     * Create Index
+     *
+     *
+     * CREATE INDEX {index name} ON {table}( {columns...} );
+     *
      * pgsql create index:
      * @link http://www.postgresql.org/docs/8.2/static/sql-createindex.html
      *
+     *     Concurrently create:
+     *
+     *     CREATE INDEX CONCURRENTLY idx_salary ON employees(last_name, salary);
+     *
+     *     Functional concurrently create:
+     *
+     *     CREATE INDEX CONCURRENTLY on tokens (substr(token), 0, 8)
+     *
      * mysql:
      * @link http://dev.mysql.com/doc/refman/5.0/en/create-index.html
+     *
+     * @param string $table table nmae
+     * @param string $indexName index name
+     * @param string[] $columnNames
      */
-    public function createIndex($table,$indexName,$columnNames)
+    public function createIndex($table, $indexName, $columnNames)
     {
         $self = $this;
         $sql = 'CREATE INDEX ' . $this->driver->getQuoteTableName($indexName) 
@@ -114,7 +167,7 @@ class IndexBuilder
 
 
      */
-    public function addForeignKey($table,$columnName,$referenceTable,$referenceColumn = null) 
+    public function addForeignKey($table, $columnName, $referenceTable, $referenceColumn = null) 
     {
         // SQLite doesn't support ADD CONSTRAINT
         if( 'sqlite' === $this->driver->type ) {

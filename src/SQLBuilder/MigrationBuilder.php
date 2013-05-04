@@ -4,7 +4,6 @@ use SQLBuilder\Column;
 use RuntimeException;
 
 class MigrationBuilder
-{
     public $driver;
 
     public function __construct($driver)
