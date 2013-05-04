@@ -44,7 +44,7 @@ class MigrationBuilderTest extends PHPUnit_PDO_TestCase
         // var_dump( $sql ); 
     }
 
-    function testForeignKey() 
+    public function testForeignKey() 
     {
         $driver = DriverFactory::create_mysql_driver();
         $builder = new SQLBuilder\MigrationBuilder( $driver );
