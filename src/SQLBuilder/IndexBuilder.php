@@ -1,7 +1,7 @@
 <?php
 namespace SQLBuilder;
 
-class IndexBuilder
+class IndexBuilder extends QueryBuilder
 {
     public $driver;
 
@@ -9,6 +9,7 @@ class IndexBuilder
     public $on;
     public $columns;
     public $concurrently;
+    public $where;
 
     public function __construct($driver)
     {
@@ -42,6 +43,7 @@ class IndexBuilder
         return $this;
     }
 
+
     public function build() {
         $self = $this;
         $sql = '';
@@ -54,10 +56,18 @@ class IndexBuilder
         $sql .= $this->driver->getQuoteTableName($this->name);
         $sql .= ' ON ' . $this->driver->getQuoteTableName($this->on);
         $sql .= ' (' 
-                . join(',' , array_map( function($name) use ($self) { 
-                    return $self->driver->getQuoteColumn( $name );
+                . join(',' , array_map( function($n) use ($self) { 
+                    if ( is_array($n) ) {
+                        return $self->driver->getQuoteColumn( $n[0] ) . ' ' . $n[1];
+                    } else {
+                        return $self->driver->getQuoteColumn( $n );
+                    }
                 }, $this->columns ) ) 
                 . ')';
+
+        if ( $this->where && $this->where->isComplete() ) {
+            $sql .= ' WHERE ' . $this->where->toSql();
+        }
         return $sql;
     }
 
