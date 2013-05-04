@@ -105,19 +105,8 @@ class MigrationBuilder
      */
     public function createIndex($table,$indexName,$columnNames)
     {
-        $self = $this;
-        $sql = 'CREATE INDEX ' . $this->driver->getQuoteTableName($indexName) 
-            . ' ON ' . $this->driver->getQuoteTableName($table);
-        if( is_array($columnNames) ) {
-            $sql .= ' (' . join(',' , array_map( function($name) use ($self) { 
-                                        return $self->driver->getQuoteColumn( $name );
-                                    }, $columnNames ) )
-                . ')';
-        }
-        else {
-            $sql .= ' (' . $this->driver->getQuoteColumn( $columnNames ) . ')';
-        }
-        return $sql;
+        $builder = new IndexBuilder($this->driver);
+        return $builder->createIndex($table, $indexName, $columnNames );
     }
 
 
