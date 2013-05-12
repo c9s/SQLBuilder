@@ -30,6 +30,7 @@ class IndexBuilder extends QueryBuilder
     public $concurrently;
     public $where;
     public $using;
+    public $ifExists = false;
 
     public function __construct($driver)
     {
@@ -44,6 +45,10 @@ class IndexBuilder extends QueryBuilder
     public function unique() {
         $this->unique = true;
         return $this;
+    }
+
+    public function ifExists() {
+        return $this->ifExists = true;
     }
 
     public function on($on, $columns = array()) {
@@ -224,17 +229,23 @@ class IndexBuilder extends QueryBuilder
         switch( $this->driver->type )
         {
             case 'mysql':
-                $sql = 'DROP INDEX ' 
-                    . $this->driver->getQuoteTableName($indexName) 
+                $sql = 'DROP INDEX ' ;
+                if ($this->ifExists) {
+                    $sql .= 'IF EXISTS ';
+                }
+                $sql .= $this->driver->getQuoteTableName($indexName) 
                     . ' ON ' . $this->driver->getQuoteTableName($table);
             break;
             case 'sqlite':
             case 'pgsql':
-                $sql = 'DROP INDEX ' . $this->driver->getQuoteTableName($indexName);
+                $sql = 'DROP INDEX ';
+                if ($this->ifExists) {
+                    $sql .= 'IF EXISTS ';
+                }
+                $sql .= $this->driver->getQuoteTableName($indexName);
             break;
         }
         return $sql;
     }
-
 }
 
