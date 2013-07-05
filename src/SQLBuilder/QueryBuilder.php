@@ -568,8 +568,13 @@ class QueryBuilder
             }
         }
 
-        $sql = 'INSERT INTO ' . $this->getTableSql() . ' ( ';
-        $sql .= join(',',$columns) . ') VALUES ('.  join(',', $values ) .')';
+        $sql = 'INSERT INTO ' . $this->getTableSql() 
+            . ' ( '
+            . join(',',$columns) 
+            . ') VALUES (' 
+            . join(',', $values ) 
+            . ')';
+            ;
 
         if ( $this->returning && ( 'pgsql' == $this->driver->type ) ) {
             $sql .= ' RETURNING ' . $this->driver->getQuoteColumn($this->returning);
@@ -614,15 +619,13 @@ class QueryBuilder
             } elseif ( $this->limit ) {
                 $sql .= ' LIMIT ' . $this->limit;
             }
-        } 
-        elseif ( 'mysql' === $this->driver->type ) {
+        } elseif ( 'mysql' === $this->driver->type ) {
             if ( $this->limit && $this->offset ) {
                 $sql .= ' LIMIT ' . $this->offset . ' , ' . $this->limit;
             } elseif ( $this->limit ) {
                 $sql .= ' LIMIT ' . $this->limit;
             }
-        }
-        elseif ( $this->driver->type == 'sqlite' ) {
+        } elseif ( $this->driver->type == 'sqlite' ) {
             // just ignore
         }
         return $sql;
