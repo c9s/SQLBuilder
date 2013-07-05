@@ -433,9 +433,15 @@ class QueryBuilder
     {
         $sql  = '';
         $sql .= $this->driver->getQuoteTableName($this->table);
-        if ( $this->alias )
-            $sql .= ' ' . $this->alias;
         return $sql;
+    }
+
+    protected function getTableAlias()
+    {
+        if ( $this->alias ) {
+            return ' ' . $this->alias;
+        }
+        return '';
     }
 
 
@@ -479,17 +485,17 @@ class QueryBuilder
 
     protected function buildUpdate()
     {
-        $sql = 'UPDATE ' . $this->getTableSql() . ' SET ';
-
-        $sql .= $this->buildSetterSql();
-
-        $sql .= $this->buildJoinSql();
-
-        $sql .= $this->buildConditionSql();
+        $sql = 'UPDATE ' . $this->getTableSql() 
+            . ' SET '
+            . $this->buildSetterSql()
+            . $this->buildJoinSql()
+            . $this->buildConditionSql()
+            ;
 
         /* only supported in mysql, sqlite */
-        if ( $this->driver->type == 'mysql' || $this->driver->type == 'sqlite' )
+        if ( $this->driver->type == 'mysql' || $this->driver->type == 'sqlite' ) {
             $sql .= $this->buildLimitSql();
+        }
 
         if ( $this->driver->trim ) {
             return trim($sql);
@@ -506,7 +512,7 @@ class QueryBuilder
         /* check required arguments */
         $sql = 'SELECT ' 
             . $this->buildSelectColumns()
-            . ' FROM ' . $this->getTableSql() . ' ';
+            . ' FROM ' . $this->getTableSql() . $this->getTableAlias() . ' ';
 
         $sql .= $this->buildJoinSql();
 
