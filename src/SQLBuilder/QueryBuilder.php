@@ -485,7 +485,9 @@ class QueryBuilder
 
     protected function buildUpdate()
     {
+        // Do not build with table alias for SQLite, because SQLite does not support it.
         $sql = 'UPDATE ' . $this->getTableSql() 
+            . ( $this->driver->type != 'sqlite' ? $this->getTableAlias() : '' )
             . ' SET '
             . $this->buildSetterSql()
             . $this->buildJoinSql()
@@ -512,22 +514,20 @@ class QueryBuilder
         /* check required arguments */
         $sql = 'SELECT ' 
             . $this->buildSelectColumns()
-            . ' FROM ' . $this->getTableSql() . $this->getTableAlias() . ' ';
+            . ' FROM ' 
+            . $this->getTableSql() 
+            . $this->getTableAlias() 
+            . ' ' . $this->buildJoinSql()
+            . $this->buildConditionSql()
+            . $this->buildGroupBySql()
+            . $this->buildHavingSql()
+            . $this->buildOrderSql()
+            . $this->buildLimitSql()
+            ;
 
-        $sql .= $this->buildJoinSql();
-
-        $sql .= $this->buildConditionSql();
-
-        $sql .= $this->buildGroupBySql();
-
-        $sql .= $this->buildHavingSql();
-
-        $sql .= $this->buildOrderSql();
-
-        $sql .= $this->buildLimitSql();
-
-        if ( $this->driver->trim )
+        if ( $this->driver->trim ) {
             return trim($sql);
+        }
         return $sql;
     }
 
