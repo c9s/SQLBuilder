@@ -429,14 +429,14 @@ class QueryBuilder
      * quotes can be used in postgresql:
      *     select * from "table_name";
      */
-    protected function getTableSql()
+    public function getTableSql()
     {
         $sql  = '';
         $sql .= $this->driver->getQuoteTableName($this->table);
         return $sql;
     }
 
-    protected function getTableAlias()
+    public function getTableAlias()
     {
         if ( $this->alias ) {
             return ' ' . $this->alias;
@@ -447,9 +447,9 @@ class QueryBuilder
 
 
     /**
-     * builder, protected methods
+     * builder
      */
-    protected function buildSelectColumns()
+    public function buildSelectColumns()
     {
         $cols = array();
         foreach( $this->selected as $k => $v ) {
@@ -465,7 +465,7 @@ class QueryBuilder
         return join(', ',$cols);
     }
 
-    protected function buildDelete()
+    public function buildDelete()
     {
         $sql = 'DELETE FROM ' . $this->getTableSql() . ' ';
         $sql .= $this->buildConditionSql();
@@ -483,7 +483,7 @@ class QueryBuilder
     }
 
 
-    protected function buildUpdate()
+    public function buildUpdate()
     {
         // Do not build with table alias for SQLite, because SQLite does not support it.
         $sql = 'UPDATE ' . $this->getTableSql() 
@@ -509,7 +509,7 @@ class QueryBuilder
     /** 
      * build select sql
      */
-    protected function buildSelect()
+    public function buildSelect()
     {
         /* check required arguments */
         $sql = 'SELECT ' 
@@ -534,7 +534,7 @@ class QueryBuilder
 
 
 
-    protected function buildInsert()
+    public function buildInsert()
     {
         /* check required arguments */
         $columns = array();
@@ -586,7 +586,7 @@ class QueryBuilder
         return $sql;
     }
 
-    protected function buildJoinSql()
+    public function buildJoinSql()
     {
         $sql = '';
         foreach( $this->joinExpr as $expr ) {
@@ -595,7 +595,7 @@ class QueryBuilder
         return $sql;
     }
 
-    protected function buildOrderSql()
+    public function buildOrderSql()
     {
         $sql = '';
         if ( !empty($this->orders) ) {
@@ -610,7 +610,7 @@ class QueryBuilder
         return $sql;
     }
 
-    protected function buildLimitSql()
+    public function buildLimitSql()
     {
         $sql = '';
         if ( 'pgsql' === $this->driver->type ) {
@@ -631,7 +631,7 @@ class QueryBuilder
         return $sql;
     }
 
-    protected function buildGroupBySql()
+    public function buildGroupBySql()
     {
         $self = $this;
         if ( ! empty($this->groupBys) ) {
@@ -643,7 +643,7 @@ class QueryBuilder
         }
     }
 
-    protected function buildSetterSql()
+    public function buildSetterSql()
     {
         $conds = array();
         if ( $this->driver->placeholder ) {
@@ -673,7 +673,7 @@ class QueryBuilder
         return join(', ',$conds);
     }
 
-    protected function buildConditionSql()
+    public function buildConditionSql()
     {
         if ( $this->where && $this->where->isComplete() ) {
             return ' WHERE ' . $this->where->toSql();
@@ -681,7 +681,7 @@ class QueryBuilder
         return '';
     }
 
-    protected function buildHavingSql()
+    public function buildHavingSql()
     {
         if ($this->having ) {
             return ' HAVING ' . $this->having->toSql();
