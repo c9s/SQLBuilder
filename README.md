@@ -25,7 +25,7 @@ be built when this feature is supported.
 ### Install through PEAR
 
 ```sh
-$ pear channe-discover pear.corneltek.com
+$ pear channel-discover pear.corneltek.com
 $ pear install corneltek/SQLBuilder
 ```
 
