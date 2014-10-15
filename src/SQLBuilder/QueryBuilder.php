@@ -374,6 +374,16 @@ class QueryBuilder
         return $this;
     }
 
+    public function clearGroupBy() {
+        $this->groupBys = array();
+        return $this;
+    }
+
+    public function clearOrderBy() {
+        $this->orders = array();
+        return $this;
+    }
+
 
     /**
      * to support syntax like:
