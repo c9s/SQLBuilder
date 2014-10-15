@@ -19,6 +19,8 @@ class JoinExpression extends BaseExpression
 
     public $onExpr = array();
 
+    public $lastExpr;
+
     public function __construct($table,$type = 'LEFT')
     {
         $this->table = $table;
@@ -38,7 +40,7 @@ class JoinExpression extends BaseExpression
         $subexpr->driver = $this->driver;
         $subexpr->builder = $this->builder;
         $this->onExpr[] = $subexpr;
-        return $subexpr->createExpr(null);
+        return $this->lastExpr = $subexpr->createExpr(null);
     }
 
 
