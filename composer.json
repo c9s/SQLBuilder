@@ -1,5 +1,5 @@
 {
-    "name": "corneltek\/sqlbuilder",
+    "name": "corneltek/sqlbuilder",
     "description": "Fast and Powerful SQLBuilder for PHP5.3",
     "authors": [
         {
@@ -8,12 +8,12 @@
         }
     ],
     "require-dev": {
-        "corneltek\/phpunit-testmore": "dev-master"
+        "corneltek/phpunit-testmore": "dev-master"
     },
     "autoload": {
         "psr-0": {
             "SQLBuilder": "src"
         }
     },
-    "version": "1.5.6"
+    "version": "1.5.7"
 }
