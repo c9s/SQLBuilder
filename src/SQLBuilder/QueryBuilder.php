@@ -421,7 +421,7 @@ class QueryBuilder
         }
     }
 
-    public function getTableAliasSql()
+    public function buildTableAliasSql()
     {
         if ($this->alias) {
             return ' ' . $this->alias;
@@ -434,11 +434,10 @@ class QueryBuilder
     /**
      * builder
      */
-    public function buildSelectColumns()
+    public function buildSelectColumnSql()
     {
         $cols = array();
         foreach( $this->selected as $k => $v ) {
-
             /* column => alias */
             if (is_string($k)) {
                 $cols[] = $this->driver->quoteColumn($k) . ' AS ' . $v;
@@ -467,14 +466,14 @@ class QueryBuilder
     {
         // Do not build with table alias for SQLite, because SQLite does not support it.
         $sql = 'UPDATE ' . $this->driver->quoteTableName($this->table)
-            . ( ! $this->driver instanceof SQLiteDriver ? $this->getTableAliasSql() : '' )
+            . ( ! $this->driver instanceof SQLiteDriver ? $this->buildTableAliasSql() : '' )
             . ' SET '
             . $this->buildSetterSql()
             . $this->buildJoinSql()
             . $this->buildConditionSql()
             ;
 
-        /* only supported in mysql, sqlite */
+        /* the LIMIT statement in Update clause is only supported in mysql, sqlite */
         if ($this->driver instanceof MySQLDriver || $this->driver instanceof SQLiteDriver) {
             $sql .= $this->buildLimitSql();
         }
@@ -489,10 +488,10 @@ class QueryBuilder
     {
         /* check required arguments */
         $sql = 'SELECT ' 
-            . $this->buildSelectColumns()
+            . $this->buildSelectColumnSql()
             . ' FROM ' 
             . $this->driver->quoteTableName($this->table)
-            . $this->getTableAliasSql() 
+            . $this->buildTableAliasSql() 
             . $this->buildJoinSql()
             . $this->buildConditionSql()
             . $this->buildGroupBySql()
