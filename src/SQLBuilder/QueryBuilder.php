@@ -8,21 +8,22 @@ use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 
 /**
- *
  * SQL Builder for generating CRUD SQL
  *
  * @code
  *
- *  $sqlbuilder = new SQLBuilder\QueryBuilder();
+ *  $sqlbuilder = new SQLBuilder\QueryBuilder($driver);
  *
  *  $sqlbuilder->insert(array(
  *      'foo' => 'foo',
  *      'bar' => 'bar',
  *  ));
+ *
  *  $sqlbuilder->insert(array(
  *      'foo',
  *      'bar',
  *  ));
+ *
  *  $sql = $sqlbuilder->build();
  *
  * @code
@@ -219,9 +220,6 @@ class QueryBuilder
     /*** limit , offset methods ***/
     public function limit($limit)
     {
-        if ( $this->driver instanceof SQLiteDriver ) {
-            // throw new Exception('sqlite does not support limit syntax');
-        }
         $this->limit = $limit;
         return $this;
     }
@@ -234,9 +232,6 @@ class QueryBuilder
      */
     public function offset($offset)
     {
-        if ($this->driver instanceof SQLiteDriver) {
-            // throw new Exception('sqlite does not support offset syntax');
-        }
         $this->offset = $offset;
         return $this;
     }
@@ -426,25 +421,9 @@ class QueryBuilder
         }
     }
 
-
-
-
-    /**
-     * get table name (with quote or not)
-     *
-     * quotes can be used in postgresql:
-     *     select * from "table_name";
-     */
-    public function getTableSql()
+    public function getTableAliasSql()
     {
-        $sql  = '';
-        $sql .= $this->driver->quoteTableName($this->table);
-        return $sql;
-    }
-
-    public function getTableAlias()
-    {
-        if ( $this->alias ) {
+        if ($this->alias) {
             return ' ' . $this->alias;
         }
         return '';
@@ -461,10 +440,9 @@ class QueryBuilder
         foreach( $this->selected as $k => $v ) {
 
             /* column => alias */
-            if ( is_string($k) ) {
-                $cols[] = $this->driver->quoteColumn($k) . '  AS ' . $v;
-            }
-            elseif ( is_integer($k) ) {
+            if (is_string($k)) {
+                $cols[] = $this->driver->quoteColumn($k) . ' AS ' . $v;
+            } elseif ( is_integer($k) || is_numeric($k) ) {
                 $cols[] = $this->driver->quoteColumn($v);
             }
         }
@@ -473,7 +451,7 @@ class QueryBuilder
 
     public function buildDelete()
     {
-        $sql = 'DELETE FROM ' . $this->getTableSql() . ' ';
+        $sql = 'DELETE FROM ' . $this->driver->quoteTableName($this->table) . ' ';
         $sql .= $this->buildConditionSql();
 
         /* only supported in mysql, sqlite */
@@ -492,8 +470,8 @@ class QueryBuilder
     public function buildUpdate()
     {
         // Do not build with table alias for SQLite, because SQLite does not support it.
-        $sql = 'UPDATE ' . $this->getTableSql() 
-            . ( ! $this->driver instanceof SQLiteDriver ? $this->getTableAlias() : '' )
+        $sql = 'UPDATE ' . $this->driver->quoteTableName($this->table)
+            . ( ! $this->driver instanceof SQLiteDriver ? $this->getTableAliasSql() : '' )
             . ' SET '
             . $this->buildSetterSql()
             . $this->buildJoinSql()
@@ -521,8 +499,8 @@ class QueryBuilder
         $sql = 'SELECT ' 
             . $this->buildSelectColumns()
             . ' FROM ' 
-            . $this->getTableSql() 
-            . $this->getTableAlias() 
+            . $this->driver->quoteTableName($this->table)
+            . $this->getTableAliasSql() 
             . ' ' . $this->buildJoinSql()
             . $this->buildConditionSql()
             . $this->buildGroupBySql()
@@ -576,7 +554,7 @@ class QueryBuilder
             }
         }
 
-        $sql = 'INSERT INTO ' . $this->getTableSql() 
+        $sql = 'INSERT INTO ' . $this->driver->quoteTableName($this->table)
             . ' ( '
             . join(',',$columns) 
             . ') VALUES (' 
