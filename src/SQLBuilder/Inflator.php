@@ -29,40 +29,43 @@ class Inflator
      */
     public function inflate($value)
     {
-        if( $value instanceof Closure ) {
-            $value = call_user_func($value);
+        if ($value instanceof Closure) {
+            return call_user_func($value);
         }
 
-        if( $value === null ) {
+        if ($value === NULL ) {
             return 'NULL';
         }
-        elseif( $value === true ) {
-            if( $this->driver instanceof SQLiteDriver )
+        elseif ($value === true ) {
+            if ($this->driver instanceof SQLiteDriver)
                 return 1;
             return 'TRUE';
         }
-        elseif( $value === false ) {
-            if( $this->driver instanceof SQLiteDriver)
+        elseif ($value === false ) {
+            if ($this->driver instanceof SQLiteDriver)
                 return 0;
             return 'FALSE';
         }
-        elseif( is_integer($value) ) {
-            return (int) $value;
+        elseif (is_integer($value) ) {
+            return intval($value);
         }
-        elseif( is_float($value) ) {
-            return (float) $value;
+        elseif (is_float($value) ) {
+            return floatval($value);
         }
-        elseif( is_string($value) ) {
+        elseif (is_string($value) ) {
             return $this->driver->quote($value);
         }
-        elseif( is_object($value) ) {
+        elseif (is_object($value) ) {
             // convert DateTime object into string
             if( $value instanceof DateTime ) {
                 return $value->format(DateTime::ISO8601);
             }
         }
-        elseif( is_array($value) ) { // raw value
+        elseif (is_array($value) ) { // raw value
             return $value[0];
+        }
+        elseif ($value instanceof RawValue) {
+            return $value[0]->__toString();
         }
         return $value;
     }
