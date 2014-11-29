@@ -1,6 +1,7 @@
 <?php
 namespace SQLBuilder;
 use SQLBuilder\Driver;
+use SQLBuilder\Driver\SQLiteDriver;
 use DateTime;
 use Closure;
 
@@ -36,12 +37,12 @@ class Inflator
             return 'NULL';
         }
         elseif( $value === true ) {
-            if( $this->driver->type === 'sqlite' )
+            if( $this->driver instanceof SQLiteDriver )
                 return 1;
             return 'TRUE';
         }
         elseif( $value === false ) {
-            if( $this->driver->type === 'sqlite' )
+            if( $this->driver instanceof SQLiteDriver)
                 return 0;
             return 'FALSE';
         }

@@ -1,5 +1,6 @@
 <?php
 namespace SQLBuilder\Driver;
+use SQLBuilder\Inflator;
 
 abstract class BaseDriver
 {
