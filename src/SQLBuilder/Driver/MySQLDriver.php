@@ -23,6 +23,8 @@ class MySQLDriver extends BaseDriver
     */
 
 
+
+
     /**
      * Check driver optino to quote table name
      *
@@ -34,11 +36,7 @@ class MySQLDriver extends BaseDriver
     public function quoteTableName($name) 
     {
         if ($this->quoteTable) {
-            if (is_string($c)) {
-                return $c . $name . $c;
-            } else {
-                return '`' . $name . '`';
-            }
+            return '`' . $name . '`';
         }
         return $name;
     }
@@ -56,9 +54,6 @@ class MySQLDriver extends BaseDriver
         if ( $c = $this->quoteColumn ) {
             if (preg_match('/\W/',$name)) {
                 return $name;
-            }
-            if (is_string($c)) {
-                return $c . $name . $c;
             }
             return '`' . $name . '`';
         }
