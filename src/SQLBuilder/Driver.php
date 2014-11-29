@@ -241,16 +241,16 @@ class Driver
     }
 
     /**
-     * inflate value to SQL statement
+     * deflate value to SQL statement
      *
      * for example, boolean types should be translate to string TRUE or FALSE.
      */
-    public function inflate($value)
+    public function deflate($value)
     {
         if( is_array($value) ) {
             return $value[0];
         }
-        return $this->inflator->inflate($value);
+        return $this->inflator->deflate($value);
     }
 
 

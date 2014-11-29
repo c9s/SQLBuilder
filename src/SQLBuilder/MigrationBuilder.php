@@ -48,7 +48,7 @@ class MigrationBuilder
             if( is_callable($default) ) {
                 $default = call_user_func($default);
             }
-            $sql .= ' DEFAULT ' . $this->driver->inflate($default);
+            $sql .= ' DEFAULT ' . $this->driver->deflate($default);
         }
 
         if( $column->unique ) {

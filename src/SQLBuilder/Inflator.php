@@ -27,7 +27,7 @@ class Inflator
      * FOr sqlite sql statement:
      * we use 1 or 0 for boolean type.
      */
-    public function inflate($value)
+    public function deflate($value)
     {
         if ($value instanceof Closure) {
             return call_user_func($value);

@@ -537,7 +537,7 @@ class QueryBuilder
                     $k = $v;
                 }
                 $columns[] = $this->driver->quoteColumn( $k );
-                $values[]  = $this->driver->inflate($v);
+                $values[]  = $this->driver->deflate($v);
             }
         }
 
@@ -636,7 +636,7 @@ class QueryBuilder
                 } elseif ($v instanceof RawValue) {
                     $conds[] = $this->driver->quoteColumn($k) . ' = ' . $v->__toString();
                 } else {
-                    $conds[] = $this->driver->quoteColumn($k) . ' = ' . $this->driver->inflate($v);
+                    $conds[] = $this->driver->quoteColumn($k) . ' = ' . $this->driver->deflate($v);
                 }
             }
         }
