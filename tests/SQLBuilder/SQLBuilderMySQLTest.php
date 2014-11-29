@@ -12,7 +12,6 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
     public function getDriver()
     {
         $d = new MySQLDriver;
-        $d->setTrim(true);
         $d->setNamedParamMarker();
         return $d;
     }
@@ -44,7 +43,6 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
     function testSelect()
     {
         $driver = new MySQLDriver;
-        $driver->setTrim(true);
 
         $sb = new QueryBuilder($driver);
         $sb->table('member');
@@ -85,7 +83,6 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
     public function testDelete()
     {
         $driver = $this->getDriver();
-        $driver->setTrim(true);
         $driver->setNoParamMarker();
 
         $sb = new QueryBuilder($driver);
@@ -104,7 +101,6 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
     public function testUpdate()
     {
         $driver = new MySQLDriver;
-        $driver->setTrim(true);
         $driver->setNamedParamMarker(true);
 
         $sb = new QueryBuilder($driver);
@@ -124,7 +120,6 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
     public function testSelectWithJoin()
     {
         $driver = new MySQLDriver;
-        $driver->setTrim(true);
 
         $sb = new QueryBuilder($driver);
         $sb->table('member');

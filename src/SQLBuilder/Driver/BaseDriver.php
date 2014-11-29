@@ -19,16 +19,7 @@ abstract class BaseDriver
      */
     const NAMED_PARAM_MARKER = 2;
 
-
-
-    /**
-     * @var boolean Should we trim space ?
-     */
-    public $trim = false;
-
-
     public $paramMarker = self::NAMED_PARAM_MARKER;
-
 
     public $quoteColumn;
 
@@ -78,10 +69,6 @@ abstract class BaseDriver
      */
     public function setQuoteColumn($enable = true) {
         $this->quoteColumn = $enable;
-    }
-
-    public function setTrim($enable = true) {
-        $this->trim = $enable;
     }
 
     // The SQL statement can contain zero or more named (:name) or question mark (?) parameter markers
