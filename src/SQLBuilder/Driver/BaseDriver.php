@@ -61,6 +61,11 @@ abstract class BaseDriver
     }
 
 
+    public function setQuoter(callable $quoter) {
+        $this->quoter = $quoter;
+    }
+
+
     /**
      * @param boolean $enable 
      */
@@ -125,31 +130,6 @@ abstract class BaseDriver
      */
     abstract public function quoteColumn($name);
 
-    /*
-    {
-        if ( $c = $this->quoteColumn ) {
-            // return raw value if column name contains (non-word chars), eg: min( ), max( )
-            if ( preg_match('/\W/',$name) ) {
-                return $name;
-            }
-            if ( is_string($c) ) {
-                return $c . $name . $c;
-            }
-            if ( 'pgsql' === $this->type ) {
-                return '"' . $name . '"';
-            }
-            elseif ( 'mysql' === $this->type ) {
-                return '`' . $name . '`';
-            }
-            elseif ( 'sqlite' === $this->type ) {
-                return '`' . $name . '`';
-            }
-        }
-        return $name;
-    }
-     */
-
-
     /**
      * Check driver optino to quote table name
      *
@@ -159,22 +139,6 @@ abstract class BaseDriver
      * @return string table name with/without quotes.
      */
     abstract public function quoteTableName($name);
-
-    /*
-    {
-        if ( $c = $this->quoteTable ) {
-            if( is_string($c) ) {
-                return $c . $name . $c;
-            } elseif( 'pgsql' === $this->type) {
-                return '"' . $name . '"';
-            } elseif ( 'mysql' === $this->type) {
-                return '`' . $name . '`';
-            }
-        }
-        return $name;
-    }
-    */
-
 
 
     /**
@@ -228,6 +192,9 @@ abstract class BaseDriver
         }
         return $new;
     }
+
+
+
 }
 
 

@@ -13,7 +13,7 @@ class PlaceHolderSQLiteTest extends PHPUnit_PDO_TestCase
     {
         $d = new SQLBuilder\Driver\SQLiteDriver;
         $d->setNamedParamMarker();
-        $d->quoter = array( $this->pdo, 'quote' );
+        $d->setQuoter(array($this->pdo, 'quote'));
         return $d;
     }
 
