@@ -171,7 +171,7 @@ class Expression
                         $sql .= $this->driver->quoteColumn($k) . ' ' . $op . ' ' . $v[0];
                     } else {
                         $sql .= $this->driver->quoteColumn($k) . ' ' . $op . ' ' 
-                            . $this->driver->inflate($v);
+                            . $this->driver->deflate($v);
 
                         /*
                         if( $this->builder )

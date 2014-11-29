@@ -19,7 +19,7 @@ class MySQLDriver extends BaseDriver
     /*
     public function quote($value) { return $value; }
 
-    public function inflate($value) { return $value; }
+    public function deflate($value) { return $value; }
     */
 
 
