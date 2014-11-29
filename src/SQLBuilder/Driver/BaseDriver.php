@@ -30,6 +30,10 @@ abstract class BaseDriver
     public $paramMarker = self::NAMED_PARAM_MARKER;
 
 
+    public $quoteColumn;
+
+    public $quoteTable;
+
 
     /**
      * String quoter handler
