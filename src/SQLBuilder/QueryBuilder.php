@@ -377,7 +377,7 @@ class QueryBuilder
 
     /**
      * to support syntax like:
-     *     GROUP BY product_id, p.name, p.price, p.cost
+     *    GROUP BY product_id, p.name, p.price, p.cost
      * HAVING sum(p.price * s.units) > 5000;
      */
     public function having()
@@ -451,7 +451,7 @@ class QueryBuilder
 
     public function buildDelete()
     {
-        $sql = 'DELETE FROM ' . $this->driver->quoteTableName($this->table) . ' ';
+        $sql = 'DELETE FROM ' . $this->driver->quoteTableName($this->table);
         $sql .= $this->buildConditionSql();
 
         /* only supported in mysql, sqlite */
@@ -501,7 +501,7 @@ class QueryBuilder
             . ' FROM ' 
             . $this->driver->quoteTableName($this->table)
             . $this->getTableAliasSql() 
-            . ' ' . $this->buildJoinSql()
+            . $this->buildJoinSql()
             . $this->buildConditionSql()
             . $this->buildGroupBySql()
             . $this->buildHavingSql()
@@ -632,7 +632,7 @@ class QueryBuilder
     public function buildSetterSql()
     {
         $conds = array();
-        if ( $this->driver->paramMarker ) {
+        if ($this->driver->paramMarker) {
             foreach( $this->update as $k => $v ) {
                 if (is_array($v)) {
                     $conds[] =  $this->driver->quoteColumn( $k ) . ' = '. $v[0];
@@ -653,8 +653,7 @@ class QueryBuilder
                 } elseif ($v instanceof RawValue) {
                     $conds[] = $this->driver->quoteColumn($k) . ' = ' . $v->__toString();
                 } else {
-                    $conds[] = $this->driver->quoteColumn($k) . ' = ' 
-                        . $this->driver->inflate($v);
+                    $conds[] = $this->driver->quoteColumn($k) . ' = ' . $this->driver->inflate($v);
                 }
             }
         }
@@ -663,7 +662,7 @@ class QueryBuilder
 
     public function buildConditionSql()
     {
-        if ( $this->where && $this->where->isComplete() ) {
+        if ($this->where && $this->where->isComplete()) {
             return ' WHERE ' . $this->where->toSql();
         }
         return '';

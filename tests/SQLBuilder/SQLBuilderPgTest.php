@@ -104,11 +104,11 @@ EOS;
         $sb->whereFromArgs(array( 'foo' => '123' ));
 
         $sql = $sb->build();
-        is( 'DELETE FROM "Member"  WHERE "foo" = \'123\'' , $sql );
+        is( 'DELETE FROM "Member" WHERE "foo" = \'123\'' , $sql );
 
         $driver->setNamedParamMarker();
         $sql = $sb->build();
-        is( 'DELETE FROM "Member"  WHERE "foo" = :foo' , $sql );
+        is( 'DELETE FROM "Member" WHERE "foo" = :foo' , $sql );
     }
 
     public function testUpdate()
@@ -157,22 +157,22 @@ EOS;
         ));
 
         $sql = $sb->build();
-        is( 'SELECT * FROM "Member"  WHERE "foo" = :foo' , $sql );
+        is( 'SELECT * FROM "Member" WHERE "foo" = :foo' , $sql );
 
         $sb->select(array('COUNT(*)'));  // override current select query
 
         $sql = $sb->build();
-        is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo' , $sql );
+        is( 'SELECT COUNT(*) FROM "Member" WHERE "foo" = :foo' , $sql );
 
         $sb->limit(10);
 
         $sql = $sb->build();
-        is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10' ,$sql );
+        is( 'SELECT COUNT(*) FROM "Member" WHERE "foo" = :foo LIMIT 10' ,$sql );
 
         $sb->offset(20);
 
         $sql = $sb->build();
-        is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10 OFFSET 20' ,$sql );
+        is( 'SELECT COUNT(*) FROM "Member" WHERE "foo" = :foo LIMIT 10 OFFSET 20' ,$sql );
     }
 
 

@@ -334,7 +334,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
             ->order('name');
         $sql = $sb->build();
 
-        is('SELECT name FROM member  GROUP BY country,name ORDER BY name desc', $sql );
+        is('SELECT name FROM member GROUP BY country,name ORDER BY name desc', $sql );
         
         $stm = $this->pdo->query( $sql );
 
@@ -346,7 +346,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         $sb->having()->equal('name','Taiwan');
         $sql = $sb->build();
 
-        is( "SELECT name FROM member  GROUP BY country,name HAVING name = 'Taiwan' ORDER BY name desc", $sql );
+        is( "SELECT name FROM member GROUP BY country,name HAVING name = 'Taiwan' ORDER BY name desc", $sql );
         $this->pdo->query( $sql );
 
         $sb->table('member')->select('name')

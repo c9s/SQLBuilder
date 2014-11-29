@@ -64,22 +64,22 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
 
 
         $sql = $sb->build();
-        is( 'SELECT * FROM member  WHERE foo = :foo' , $sql);
+        is( 'SELECT * FROM member WHERE foo = :foo' , $sql);
 
         $sb->select(array('COUNT(*)')); // override current query
 
         $sql = $sb->build();
-        is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo' , $sql );
+        is( 'SELECT COUNT(*) FROM member WHERE foo = :foo' , $sql );
 
         $sb->limit(10);
 
         $sql = $sb->build();
-        is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo LIMIT 10' ,$sql );
+        is( 'SELECT COUNT(*) FROM member WHERE foo = :foo LIMIT 10' ,$sql );
 
         $sb->offset(20);
 
         $sql = $sb->build();
-        is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo LIMIT 20 , 10' ,$sql );
+        is( 'SELECT COUNT(*) FROM member WHERE foo = :foo LIMIT 20 , 10' ,$sql );
     }
 
     public function testDelete()
@@ -94,11 +94,11 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
         $sb->whereFromArgs(array( 'foo' => 'string' ));
         $sql = $sb->build();
 
-        is( 'DELETE FROM member  WHERE foo = \'string\'' , $sql );
+        is( 'DELETE FROM member WHERE foo = \'string\'' , $sql );
 
         $driver->setNamedParamMarker();
         $sql = $sb->build();
-        is( 'DELETE FROM member  WHERE foo = :foo' , $sql );
+        is( 'DELETE FROM member WHERE foo = :foo' , $sql );
     }
 
     public function testUpdate()
@@ -138,8 +138,14 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
         ok($back);
         is($back,$sb);
 
+        $sb->where()
+            ->equal('m.name', 'John')
+            ->and()
+            ->equal('m.phone', '12345678')
+            ;
+
         $sql = $back->build();
-        is("SELECT * FROM member m  LEFT JOIN tweets t ON (t.member_id = m.id)", $sql );
+        is("SELECT * FROM member m LEFT JOIN tweets t ON (t.member_id = m.id) WHERE m.name = :m_name AND m.phone = :m_phone", $sql );
     }
 
     public function testCascading()
