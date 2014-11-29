@@ -85,8 +85,7 @@ class Driver
         // default escaper (we can override this by giving 
         // new callback)
         $this->escaper = 'addslashes';
-        $this->inflator = new Inflator;
-        $this->inflator->driver = $this;
+        $this->inflator = new Inflator($this);
     }
 
 

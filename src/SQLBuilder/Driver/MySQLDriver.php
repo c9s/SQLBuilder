@@ -1,9 +1,24 @@
 <?php
 namespace SQLBuilder\Driver;
 use SQLBuilder\Driver;
+use SQLBuilder\Inflator;
 
 class MySQLDriver extends Driver
 {
+
+    public $quoteColumn = false;
+    public $quoteTable = false;
+
+    public function __construct()
+    {
+        // we keep this for backward compatibiltiy
+        $this->type = 'mysql';
+
+        // default escaper (we can override this by giving 
+        // new callback)
+        $this->escaper = 'addslashes';
+        $this->inflator = new Inflator($this);
+    }
 
     /**
      * Check driver optino to quote table name
