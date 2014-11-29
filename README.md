@@ -1,4 +1,4 @@
-# SQLBuilder for PHP5.3
+# SQLBuilder for PHP
 
 [![Build Status](https://secure.travis-ci.org/c9s/php-SQLBuilder.png)](http://travis-ci.org/c9s/php-SQLBuilder)
 
