@@ -1,6 +1,5 @@
 <?php
 namespace SQLBuilder\Driver;
-use SQLBuilder\Inflator;
 
 abstract class BaseDriver
 {
@@ -45,12 +44,6 @@ abstract class BaseDriver
         static $self;
         return $self ? $self : $self = new static;
     }
-
-    public function __construct()
-    {
-        $this->inflator = new Inflator($this);
-    }
-
 
     public function setQuoter(callable $quoter) {
         $this->quoter = $quoter;

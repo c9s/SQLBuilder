@@ -1,6 +1,5 @@
 <?php
 namespace SQLBuilder\Driver;
-use SQLBuilder\Inflator;
 
 class MySQLDriver extends BaseDriver
 {
@@ -8,21 +7,12 @@ class MySQLDriver extends BaseDriver
     public $quoteColumn = false;
     public $quoteTable = false;
 
-    public function __construct()
-    {
-        // default escaper (we can override this by giving 
-        // new callback)
-        $this->inflator = new Inflator($this);
-    }
-
 
     /*
     public function quote($value) { return $value; }
 
     public function deflate($value) { return $value; }
     */
-
-
 
 
     /**
