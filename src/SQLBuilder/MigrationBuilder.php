@@ -31,7 +31,7 @@ class MigrationBuilder
     public function addColumnClause($column) 
     {
         $column = is_array($column) ? $this->_convertArrayToColumn($column) : $column;
-        $sql = ' ADD COLUMN ' . $this->driver->getQuoteColumn( $column->name );
+        $sql = ' ADD COLUMN ' . $this->driver->quoteColumn( $column->name );
 
         // build attributes
         if( isset($column->type) ) {
@@ -91,7 +91,7 @@ class MigrationBuilder
     public function dropColumn($table,$columnName)
     {
         $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName($table)
-               . ' DROP COLUMN ' . $this->driver->getQuoteColumn($columnName);
+               . ' DROP COLUMN ' . $this->driver->quoteColumn($columnName);
         return $sql;
     }
 
@@ -126,9 +126,9 @@ class MigrationBuilder
         case 'pgsql':
             $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName($table)
                 . ' RENAME COLUMN '
-                . $this->driver->getQuoteColumn( $columnName )
+                . $this->driver->quoteColumn( $columnName )
                 . ' TO '
-                . $this->driver->getQuoteColumn( $newColumnName );
+                . $this->driver->quoteColumn( $newColumnName );
             break;
         }
         return $sql;
