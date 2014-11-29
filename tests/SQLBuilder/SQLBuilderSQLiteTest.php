@@ -193,7 +193,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         $driver = $this->getDriver();
         $driver->setQuoteColumn(true);
         $driver->setNamedParamMarker();
-        $driver->quoter = array( $this->pdo, 'quote' );
+        $driver->setQuoter(array( $this->pdo, 'quote' ));
 
         $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member');
@@ -224,7 +224,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         $driver = $this->getDriver();
         $driver->setQuoteColumn();
         $driver->setNamedParamMarker();
-        $driver->quoter = array( $this->pdo, 'quote' );
+        $driver->setQuoter(array( $this->pdo, 'quote' ));
 
         $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member');
@@ -253,7 +253,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         $driver = $this->getDriver();
         $driver->setQuoteColumn(true);
         $driver->setNamedParamMarker();
-        $driver->quoter = array( $this->pdo, 'quote' );
+        $driver->setQuoter(array( $this->pdo, 'quote' ));
 
         $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member');
@@ -279,7 +279,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         $driver = $this->getDriver();
         $driver->setQuoteColumn(true);
         $driver->setNoParamMarker();
-        $driver->quoter = array( $this->pdo, 'quote' );
+        $driver->setQuoter(array( $this->pdo, 'quote' ));
 
         $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member');
@@ -299,7 +299,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         $driver = $this->getDriver();
         $driver->setQuoteColumn(true);
         $driver->setNoParamMarker();
-        $driver->quoter = array( $this->pdo, 'quote' );
+        $driver->setQuoter(array( $this->pdo, 'quote' ));
 
         $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member');
@@ -325,7 +325,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         }
 
         $driver = $this->getDriver();
-        $driver->quoter = array($this->pdo,'quote');
+        $driver->setQuoter(array( $this->pdo, 'quote' ));
         $driver->setNoParamMarker();
 
         $sb = new SQLBuilder\QueryBuilder($driver);
