@@ -60,7 +60,7 @@ EOS;
             'MemberConfirm' => true,
         ));
         $sql = $sb->build();
-        is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (:MemberName,:MemberConfirm)' , $sql );
+        is( 'INSERT INTO "Member" ("MemberName","MemberConfirm") VALUES (:MemberName,:MemberConfirm)' , $sql );
 
         $this->executeOk( $sql , array( 
             ':MemberName' => 'insert',
@@ -77,7 +77,7 @@ EOS;
             'MemberConfirm' => true,
         ));
         $sql = $sb->build();
-        is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (\'insert2\',TRUE)' , $sql );
+        is( 'INSERT INTO "Member" ("MemberName","MemberConfirm") VALUES (\'insert2\',TRUE)' , $sql );
         $this->queryOk( $sql );
 
         $record = $this->recordOk( 'select * from "Member" where "MemberName" = \'insert2\' ' );
@@ -86,7 +86,7 @@ EOS;
 
         $driver->setQMarkParamMarker();
         $sql = $sb->build();
-        is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (?,?)' , $sql );
+        is( 'INSERT INTO "Member" ("MemberName","MemberConfirm") VALUES (?,?)' , $sql );
 
         $this->executeOk( $sql , array( 'insert3' , 1 ) );
 

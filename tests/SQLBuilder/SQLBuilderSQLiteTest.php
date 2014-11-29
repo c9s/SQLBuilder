@@ -185,7 +185,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         ));
         $sql = $sb->build();
         ok( $sql );
-        is("INSERT INTO member ( name,phone) VALUES ('foo','bar')", $sql);
+        is("INSERT INTO member (name,phone) VALUES ('foo','bar')", $sql);
     }
 
     function testParameterConflict()
@@ -263,7 +263,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         ));
         $sql = $sb->build();
         ok( $sql );
-        is("INSERT INTO member ( `name`,`phone`) VALUES (:name,:phone)",$sql);
+        is("INSERT INTO member (`name`,`phone`) VALUES (:name,:phone)",$sql);
 
         $vars = $sb->getVars();
         is( 'foo' , $vars[':name'] );
@@ -289,7 +289,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         ));
         $sql = $sb->build();
         ok( $sql );
-        is("INSERT INTO member ( `name`,`phone`) VALUES ('foo','bar')",$sql);
+        is("INSERT INTO member (`name`,`phone`) VALUES ('foo','bar')",$sql);
         $stm = $this->pdo->query($sql);
         ok( $stm );
     }
@@ -309,7 +309,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         ));
         $sql = $sb->build();
         ok( $sql );
-        is("INSERT INTO member ( `name`,`phone`) VALUES ('fo''o','bar')",$sql);
+        is("INSERT INTO member (`name`,`phone`) VALUES ('fo''o','bar')",$sql);
         $stm = $this->pdo->query($sql);
         ok( $stm );
     }

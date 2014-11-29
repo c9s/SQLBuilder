@@ -459,10 +459,6 @@ class QueryBuilder
             || $this->driver instanceof SQLiteDriver ) {
             $sql .= $this->buildLimitSql();
         }
-
-        if ( $this->driver->trim ) {
-            return trim($sql);
-        }
         return $sql;
     }
 
@@ -481,10 +477,6 @@ class QueryBuilder
         /* only supported in mysql, sqlite */
         if ($this->driver instanceof MySQLDriver || $this->driver instanceof SQLiteDriver) {
             $sql .= $this->buildLimitSql();
-        }
-
-        if ( $this->driver->trim ) {
-            return trim($sql);
         }
         return $sql;
     }
@@ -508,10 +500,6 @@ class QueryBuilder
             . $this->buildOrderSql()
             . $this->buildLimitSql()
             ;
-
-        if ( $this->driver->trim ) {
-            return trim($sql);
-        }
         return $sql;
     }
 
@@ -555,7 +543,7 @@ class QueryBuilder
         }
 
         $sql = 'INSERT INTO ' . $this->driver->quoteTableName($this->table)
-            . ' ( '
+            . ' ('
             . join(',',$columns) 
             . ') VALUES (' 
             . join(',', $values ) 
@@ -564,10 +552,6 @@ class QueryBuilder
 
         if ($this->returning && ($this->driver instanceof PgSQLDriver) ) {
             $sql .= ' RETURNING ' . $this->driver->quoteColumn($this->returning);
-        }
-
-        if ( $this->driver->trim ) {
-            return trim($sql);
         }
         return $sql;
     }
