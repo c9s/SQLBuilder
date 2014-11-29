@@ -21,7 +21,7 @@
 
     <testsuites>
         <testsuite name="PHPUnit">
-            <directory suffix="Test.php">tests</directory>
+            <directory suffix="Test.php">tests/SQLBuilder/SQLBuilderMySQLTest.php</directory>
         </testsuite>
     </testsuites>
 
