@@ -151,20 +151,6 @@ abstract class BaseDriver
     }
 
     /**
-     * inflate value to SQL statement
-     *
-     * for example, boolean types should be translate to string TRUE or FALSE.
-     */
-    public function inflate($value)
-    {
-        if (is_array($value)) {
-            return $value[0];
-        }
-        return $this->inflator->inflate($value);
-    }
-
-
-    /**
      * Convert a normal associative array to 
      * named parameter array.
      *
@@ -180,6 +166,55 @@ abstract class BaseDriver
         return $new;
     }
 
+
+
+    /**
+     * For variable placeholder like PDO, we need 1 or 0 for boolean type,
+     *
+     * For pgsql and mysql sql statement, 
+     * we use TRUE or FALSE for boolean type.
+     *
+     * FOr sqlite sql statement:
+     * we use 1 or 0 for boolean type.
+     */
+    public function inflate($value)
+    {
+        if ($value instanceof Closure) {
+            return call_user_func($value);
+        }
+
+        if ($value === NULL ) {
+            return 'NULL';
+        }
+        elseif ($value === true ) {
+            return 'TRUE';
+        }
+        elseif ($value === false ) {
+            return 'FALSE';
+        }
+        elseif (is_integer($value) ) {
+            return intval($value);
+        }
+        elseif (is_float($value) ) {
+            return floatval($value);
+        }
+        elseif (is_string($value) ) {
+            return $this->quote($value);
+        }
+        elseif (is_object($value) ) {
+            // convert DateTime object into string
+            if( $value instanceof DateTime ) {
+                return $value->format(DateTime::ISO8601);
+            }
+        }
+        elseif (is_array($value) ) { // raw value
+            return $value[0];
+        }
+        elseif ($value instanceof RawValue) {
+            return $value[0]->__toString();
+        }
+        return $value;
+    }
 
 
 }
