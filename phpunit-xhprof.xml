@@ -10,12 +10,12 @@
     convertWarningsToExceptions="true">
 
     <php>
-        <env name="MYSQL_DSN"   value="mysql:host=localhost;dbname=sqlbuilder_test"/>
-        <env name="MYSQL_USER"   value="root"/>
-        <!-- <env name="MYSQL_DB" value="sqlbuilder_test"/> -->
-        <env name="PGSQL_DSN"   value="pgsql:host=localhost;dbname=sqlbuilder_test"/>
+        <env name="MYSQL_DSN"   value="mysql:host=localhost;dbname=sqlbuilder"/>
+        <env name="MYSQL_USER"   value="testing"/>
+<!--         <env name="MYSQL_DB" value="sqlbuilder_test"/> -->
+        <env name="PGSQL_DSN"   value="pgsql:host=localhost;dbname=sqlbuilder"/>
         <env name="PGSQL_USER"   value="postgres"/>
-        <!-- <env name="PGSQL_DB" value="sqlbuilder_test"/> -->
+<!--         <env name="PGSQL_DB" value="sqlbuilder_test"/> -->
     </php>
 
 
