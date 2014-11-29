@@ -1,7 +1,6 @@
 <?php
-
 use SQLBuilder\QueryBuilder;
-use SQLBuilder\Driver;
+use SQLBuilder\Driver\MySQLDriver;
 
 class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
 {
@@ -12,18 +11,16 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
 
     public function getDriver()
     {
-        $d = new Driver;
-        $d->configure('driver','mysql');
-        $d->configure('trim',true);
-        $d->configure('placeholder','named');
+        $d = new MySQLDriver;
+        $d->setTrim(true);
+        $d->setNamedParamMarker();
         return $d;
     }
 
     public function testInsert()
     {
-        $sb = new QueryBuilder;
+        $sb = new QueryBuilder($this->getDriver());
         $sb->table('member');
-        $sb->driver = $this->getDriver();
 
         $sql = $sb->insert(array(
             'foo' => 'foo',
@@ -31,126 +28,26 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
         ))->build();
         is( 'INSERT INTO member ( foo,bar) VALUES (:foo,:bar)' , $sql );
 
-        $sb->driver->configure('placeholder',false);
+        $sb->driver->setNoParamMarker();
         $sql = $sb->insert(array(
             'foo' => 'foo',
             'bar' => 'bar',
             ))->build();
         is( 'INSERT INTO member ( foo,bar) VALUES (\'foo\',\'bar\')' , $sql );
 
-        $sb->driver->configure('placeholder',true);
+
+        $sb->driver->setQMarkParamMarker();
         $sql = $sb->build();
         is( 'INSERT INTO member ( foo,bar) VALUES (?,?)' , $sql );
     }
 
-    public function testDelete()
-    {
-        $sb = new QueryBuilder;
-        $sb->table('member');
-        $sb->driver = new Driver;
-        $sb->driver->configure('driver','mysql');
-        $sb->driver->configure('trim',true);
-        $sb->delete();
-        $sb->whereFromArgs(array( 'foo' => 'string' ));
-        $sql = $sb->build();
-        is( 'DELETE FROM member  WHERE foo = \'string\'' , $sql );
-
-        $sb->driver->configure('placeholder','named');
-        $sql = $sb->build();
-        is( 'DELETE FROM member  WHERE foo = :foo' , $sql );
-    }
-
-    function testUpdate()
-    {
-        $sb = new QueryBuilder;
-        $sb->table('member');
-        $sb->driver = new Driver;
-        $sb->driver->configure('driver','mysql');
-        $sb->driver->configure('trim',true);
-        $sb->driver->configure('placeholder','named');
-        $sb->whereFromArgs(array( 
-            'cond1' => ':blah',
-        ));
-        $sb->update( array( 'set1' => 'value1') );
-        $sql = $sb->build();
-        is( 'UPDATE member SET set1 = :set1 WHERE cond1 = :cond1' , $sql );
-
-        $sb->driver->configure('placeholder',false);
-        $sql = $sb->build();
-        is( 'UPDATE member SET set1 = \'value1\' WHERE cond1 = \':blah\'' , $sql );
-    }
-
-    function testSelectWithJoin()
-    {
-        $sb = new QueryBuilder;
-        $sb->table('member');
-        $sb->driver = new Driver;
-        $sb->driver->configure('driver','mysql');
-        $sb->driver->configure('trim',true);
-        $sb->select( '*' )
-            ->alias('m');
-        $back = $sb->join('tweets')
-            ->alias('t')
-            ->on()->equal('t.member_id',array('m.id'))->back();
-
-        ok($back);
-        is($back,$sb);
-
-        $sql = $back->build();
-        is("SELECT * FROM member m  LEFT JOIN tweets t ON (t.member_id = m.id)", $sql );
-    }
-
-    function testCascading()
-    {
-        $sb = new QueryBuilder;
-        $sb->driver = new Driver;
-        $sql = $sb->table('member')
-            ->select( '*' )
-            ->where()
-                ->equal('id',1)
-                ->equal('name','foo')
-                ->back()
-            ->join('tweets')->alias('t')->on()->equal('t',array('m.id'))
-                ->back()
-            ->build();
-        ok($sql);
-    }
-
-    function testRawSqlForUpdate()
-    {
-        $sb = new QueryBuilder;
-        $sb->table('member');
-        $sb->driver = new Driver;
-        $sb->driver->configure('driver','mysql');
-        $sb->driver->configure('placeholder','named');
-        $sb->update(array( 
-            'created_on' => array('current_timestamp'),
-        ));
-        $sql = $sb->build();
-        is( 'UPDATE member SET created_on = current_timestamp', $sql );
-    }
-
-    function testRawSqlForInsert()
-    {
-        $sb = new QueryBuilder;
-        $sb->table('member');
-        $sb->driver = new Driver;
-        $sb->driver->configure('driver','mysql');
-        $sb->driver->configure('placeholder','named');
-        $sb->insert(array( 
-            'created_on' => array('current_timestamp'),
-        ));
-        $sql = $sb->build();
-        is( 'INSERT INTO member ( created_on) VALUES (current_timestamp)', $sql );
-    }
-
     function testSelect()
     {
-        $sb = new QueryBuilder;
+        $driver = new MySQLDriver;
+        $driver->setTrim(true);
+
+        $sb = new QueryBuilder($driver);
         $sb->table('member');
-        $sb->driver = new Driver;
-        $sb->driver->configure('driver','mysql');
-        $sb->driver->configure('trim',true);
         $sb->select( '*' );
 
         ok( $sb );
@@ -160,14 +57,14 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
 
         is( 'SELECT * FROM member' , trim($sql));
 
-        $sb->driver->configure('placeholder','named');
+        $driver->setNamedParamMarker();
         $sb->whereFromArgs(array(
             'foo' => ':foo',
         ));
 
 
         $sql = $sb->build();
-        is( 'SELECT * FROM member  WHERE foo = :foo' , $sql );
+        is( 'SELECT * FROM member  WHERE foo = :foo' , $sql);
 
         $sb->select(array('COUNT(*)')); // override current query
 
@@ -185,5 +82,108 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
         is( 'SELECT COUNT(*) FROM member  WHERE foo = :foo LIMIT 20 , 10' ,$sql );
     }
 
+    public function testDelete()
+    {
+        $driver = $this->getDriver();
+        $driver->setTrim(true);
+        $driver->setNoParamMarker();
 
+        $sb = new QueryBuilder($driver);
+        $sb->table('member');
+        $sb->delete();
+        $sb->whereFromArgs(array( 'foo' => 'string' ));
+        $sql = $sb->build();
+
+        is( 'DELETE FROM member  WHERE foo = \'string\'' , $sql );
+
+        $driver->setNamedParamMarker();
+        $sql = $sb->build();
+        is( 'DELETE FROM member  WHERE foo = :foo' , $sql );
+    }
+
+    public function testUpdate()
+    {
+        $driver = new MySQLDriver;
+        $driver->setTrim(true);
+        $driver->setNamedParamMarker(true);
+
+        $sb = new QueryBuilder($driver);
+        $sb->table('member');
+        $sb->whereFromArgs(array( 
+            'cond1' => ':blah',
+        ));
+        $sb->update( array( 'set1' => 'value1') );
+        $sql = $sb->build();
+        is('UPDATE member SET set1 = :set1 WHERE cond1 = :cond1' , $sql );
+
+        $driver->setNoParamMarker();
+        $sql = $sb->build();
+        is('UPDATE member SET set1 = \'value1\' WHERE cond1 = \':blah\'' , $sql );
+    }
+
+    public function testSelectWithJoin()
+    {
+        $driver = new MySQLDriver;
+        $driver->setTrim(true);
+
+        $sb = new QueryBuilder($driver);
+        $sb->table('member');
+        $sb->select( '*' )
+            ->alias('m');
+
+        $back = $sb->join('tweets')
+            ->alias('t')
+            ->on()->equal('t.member_id',array('m.id'))->back();
+
+        ok($back);
+        is($back,$sb);
+
+        $sql = $back->build();
+        is("SELECT * FROM member m  LEFT JOIN tweets t ON (t.member_id = m.id)", $sql );
+    }
+
+    public function testCascading()
+    {
+        $driver = new MySQLDriver;
+
+        $sb = new QueryBuilder($driver);
+        $sql = $sb->table('member')
+            ->select( '*' )
+            ->where()
+                ->equal('id',1)
+                ->equal('name','foo')
+                ->back()
+            ->join('tweets')->alias('t')->on()->equal('t',array('m.id'))
+                ->back()
+            ->build();
+        ok($sql);
+    }
+
+    public function testRawSqlForUpdate()
+    {
+        $driver = new MySQLDriver;
+        $driver->setNamedParamMarker(true);
+
+        $sb = new QueryBuilder($driver);
+        $sb->table('member');
+        $sb->update(array( 
+            'created_on' => array('current_timestamp'),
+        ));
+        $sql = $sb->build();
+        is( 'UPDATE member SET created_on = current_timestamp', $sql );
+    }
+
+    public function testRawSqlForInsert()
+    {
+        $driver = new MySQLDriver;
+        $driver->setNamedParamMarker();
+
+        $sb = new QueryBuilder($driver);
+        $sb->table('member');
+        $sb->insert(array( 
+            'created_on' => array('current_timestamp'),
+        ));
+        $sql = $sb->build();
+        is( 'INSERT INTO member ( created_on) VALUES (current_timestamp)', $sql );
+    }
 }

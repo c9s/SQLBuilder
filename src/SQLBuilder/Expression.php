@@ -153,7 +153,7 @@ class Expression
             if ( is_array( $this->op ) ) {
 
                 list($k,$op,$v) = $this->op;
-                if ( $this->driver->placeholder ) {
+                if ( $this->driver->paramMarker ) {
 
                     // we should not escape the value
                     // if the value is wrapped with an array
@@ -163,7 +163,7 @@ class Expression
                     else {
                         // escape as usuall
                         $newK = $this->builder->setPlaceHolderVar( $k , $v );
-                        $sql .= $this->driver->quoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($newK);
+                        $sql .= $this->driver->quoteColumn($k) . ' ' . $op . ' '  . $this->driver->getParamMarker($newK);
                     }
                 }
                 else {

@@ -2,6 +2,10 @@
 namespace SQLBuilder;
 use Exception;
 use SQLBuilder\RawValue;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Driver\SQLiteDriver;
 
 /**
  *
@@ -12,7 +16,6 @@ use SQLBuilder\RawValue;
  *  $sqlbuilder = new SQLBuilder\QueryBuilder();
  *
  *  $sqlbuilder->insert(array(
- *       // placeholder => 'value'
  *      'foo' => 'foo',
  *      'bar' => 'bar',
  *  ));
@@ -119,19 +122,11 @@ class QueryBuilder
      * @param Driver $driver object
      * @param string $table table name
      */
-    public function __construct()
+    public function __construct(BaseDriver $driver, $table = NULL)
     {
-        $args = func_get_args();
-        if ( ! empty($args) ) {
-            if ( is_string($args[0]) ) {
-                $this->table = $args[0];
-            }
-            elseif ( $args[0] instanceof Driver ) {
-                $this->driver = $args[0];
-                if ( isset($args[1]) ) {
-                    $this->table = $args[1];
-                }
-            }
+        $this->driver = $driver;
+        if ($table) {
+            $this->table = $table;
         }
     }
 
@@ -163,7 +158,6 @@ class QueryBuilder
         $this->behavior = static::UPDATE;
         return $this;
     }
-
 
     public function addSelect($columns) {
         $args = func_get_args();
@@ -199,6 +193,7 @@ class QueryBuilder
         return $this;
     }
 
+
     /**
      * args: column to value 
      */
@@ -224,7 +219,7 @@ class QueryBuilder
     /*** limit , offset methods ***/
     public function limit($limit)
     {
-        if ( $this->driver->type == 'sqlite' ) {
+        if ( $this->driver instanceof SQLiteDriver ) {
             // throw new Exception('sqlite does not support limit syntax');
         }
         $this->limit = $limit;
@@ -239,7 +234,7 @@ class QueryBuilder
      */
     public function offset($offset)
     {
-        if ( $this->driver->type == 'sqlite' ) {
+        if ($this->driver instanceof SQLiteDriver) {
             // throw new Exception('sqlite does not support offset syntax');
         }
         $this->offset = $offset;
@@ -482,8 +477,8 @@ class QueryBuilder
         $sql .= $this->buildConditionSql();
 
         /* only supported in mysql, sqlite */
-        if ( 'mysql' === $this->driver->type 
-            || 'sqlite' === $this->driver->type ) {
+        if ( $this->driver instanceof MySQLDriver
+            || $this->driver instanceof SQLiteDriver ) {
             $sql .= $this->buildLimitSql();
         }
 
@@ -498,7 +493,7 @@ class QueryBuilder
     {
         // Do not build with table alias for SQLite, because SQLite does not support it.
         $sql = 'UPDATE ' . $this->getTableSql() 
-            . ( $this->driver->type != 'sqlite' ? $this->getTableAlias() : '' )
+            . ( ! $this->driver instanceof SQLiteDriver ? $this->getTableAlias() : '' )
             . ' SET '
             . $this->buildSetterSql()
             . $this->buildJoinSql()
@@ -506,7 +501,7 @@ class QueryBuilder
             ;
 
         /* only supported in mysql, sqlite */
-        if ( $this->driver->type == 'mysql' || $this->driver->type == 'sqlite' ) {
+        if ($this->driver instanceof MySQLDriver || $this->driver instanceof SQLiteDriver) {
             $sql .= $this->buildLimitSql();
         }
 
@@ -553,7 +548,7 @@ class QueryBuilder
 
         /* build sql arguments */
 
-        if ( $this->driver->placeholder ) {
+        if ( $this->driver->paramMarker ) {
             foreach( $this->insert as $k => $v ) {
                 if (is_integer($k))
                     $k = $v;
@@ -567,7 +562,7 @@ class QueryBuilder
                 } else {
                     $columns[] = $this->driver->quoteColumn($k);
                     $newK = $this->setPlaceHolderVar( $k , $v );
-                    $values[] = $this->driver->getPlaceHolder($newK);
+                    $values[] = $this->driver->getParamMarker($newK);
                 }
             }
 
@@ -589,7 +584,7 @@ class QueryBuilder
             . ')';
             ;
 
-        if ( $this->returning && ( 'pgsql' == $this->driver->type ) ) {
+        if ($this->returning && ($this->driver instanceof PgSQLDriver) ) {
             $sql .= ' RETURNING ' . $this->driver->quoteColumn($this->returning);
         }
 
@@ -626,19 +621,19 @@ class QueryBuilder
     public function buildLimitSql()
     {
         $sql = '';
-        if ( 'pgsql' === $this->driver->type ) {
+        if ( $this->driver instanceof PgSQLDriver ) {
             if ( $this->limit && $this->offset ) {
                 $sql .= ' LIMIT ' . $this->limit . ' OFFSET ' . $this->offset;
             } elseif ( $this->limit ) {
                 $sql .= ' LIMIT ' . $this->limit;
             }
-        } elseif ( 'mysql' === $this->driver->type ) {
+        } elseif ( $this->driver instanceof MySQLDriver ) {
             if ( $this->limit && $this->offset ) {
                 $sql .= ' LIMIT ' . $this->offset . ' , ' . $this->limit;
             } elseif ( $this->limit ) {
                 $sql .= ' LIMIT ' . $this->limit;
             }
-        } elseif ( $this->driver->type == 'sqlite' ) {
+        } elseif ($this->driver instanceof SQLiteDriver) {
             // just ignore
         }
         return $sql;
@@ -659,7 +654,7 @@ class QueryBuilder
     public function buildSetterSql()
     {
         $conds = array();
-        if ( $this->driver->placeholder ) {
+        if ( $this->driver->paramMarker ) {
             foreach( $this->update as $k => $v ) {
                 if (is_array($v)) {
                     $conds[] =  $this->driver->quoteColumn( $k ) . ' = '. $v[0];
@@ -669,7 +664,7 @@ class QueryBuilder
                     if (is_integer($k))
                         $k = $v;
                     $newK = $this->setPlaceHolderVar( $k , $v );
-                    $conds[] =  $this->driver->quoteColumn($k) . ' = ' . $this->driver->getPlaceHolder($newK);
+                    $conds[] =  $this->driver->quoteColumn($k) . ' = ' . $this->driver->getParamMarker($newK);
                 }
             }
         }
@@ -719,7 +714,7 @@ class QueryBuilder
      */
     public function setPlaceHolderVar($key,$value)
     {
-        if ( $this->driver->placeholder && $this->driver->placeholder === 'named' ) {
+        if ( $this->driver->paramMarker && $this->driver->paramMarker === BaseDriver::NAMED_PARAM_MARKER ) {
             $key = preg_replace('#\W+#','_', $key );
             // a basic counter to avoid key confliction.
             $i = 1;

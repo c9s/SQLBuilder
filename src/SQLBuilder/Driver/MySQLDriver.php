@@ -1,20 +1,27 @@
 <?php
 namespace SQLBuilder\Driver;
-use SQLBuilder\Driver;
 use SQLBuilder\Inflator;
 
-class MySQLDriver extends Driver
+class MySQLDriver extends BaseDriver
 {
+
+    public $quoteColumn = false;
+    public $quoteTable = false;
+
     public function __construct()
     {
-        // we keep this for backward compatibiltiy
-        $this->type = 'mysql';
-
         // default escaper (we can override this by giving 
         // new callback)
-        $this->escaper = 'addslashes';
         $this->inflator = new Inflator($this);
     }
+
+
+    /*
+    public function quote($value) { return $value; }
+
+    public function inflate($value) { return $value; }
+    */
+
 
     /**
      * Check driver optino to quote table name
@@ -26,7 +33,13 @@ class MySQLDriver extends Driver
      */
     public function quoteTableName($name) 
     {
-        // Should we quote table name?
+        if ($this->quoteTable) {
+            if (is_string($c)) {
+                return $c . $name . $c;
+            } else {
+                return '`' . $name . '`';
+            }
+        }
         return $name;
     }
 
@@ -40,6 +53,15 @@ class MySQLDriver extends Driver
      */
     public function quoteColumn($name)
     {
+        if ( $c = $this->quoteColumn ) {
+            if (preg_match('/\W/',$name)) {
+                return $name;
+            }
+            if (is_string($c)) {
+                return $c . $name . $c;
+            }
+            return '`' . $name . '`';
+        }
         return $name;
     }
 }
