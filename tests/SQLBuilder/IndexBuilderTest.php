@@ -6,6 +6,7 @@ class IndexBuilderTest extends PHPUnit_Framework_TestCase
     public function test()
     {
         $driver = DriverFactory::create_pgsql_driver();
+
         $b = new IndexBuilder($driver);
         ok($b);
 

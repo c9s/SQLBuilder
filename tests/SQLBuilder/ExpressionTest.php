@@ -5,8 +5,12 @@ class ExpressionTest extends PHPUnit_Framework_TestCase
 
     public function createExpr()
     {
+        $driver = new SQLBuilder\Driver\MySQLDriver;
+        $driver->setNoParamMarker();
+
         $expr = new SQLBuilder\Expression;
-        $expr->driver = new SQLBuilder\Driver;
+        $expr->driver = $driver;
+        $expr->builder = new SQLBuilder\QueryBuilder($driver);
         return $expr;
     }
 
