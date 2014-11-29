@@ -45,7 +45,6 @@ EOS;
         $driver = new PgSQLDriver;
         $driver->setQuoteTable(true);
         $driver->setQuoteColumn(true);
-        $driver->setTrim(true);
         $driver->setNamedParamMarker();
         return $driver;
     }
@@ -116,7 +115,6 @@ EOS;
         $d = new PgSQLDriver;
         $d->setQuoteTable(true);
         $d->setQuoteColumn(true);
-        $d->setTrim();
         $d->setNamedParamMarker();
 
         $sb = new QueryBuilder($d);
@@ -138,7 +136,6 @@ EOS;
         $d = new PgSQLDriver;
         $d->setQuoteTable(true);
         $d->setQuoteColumn(true);
-        $d->setTrim(true);
 
         $sb = new QueryBuilder($d);
         $sb->table('Member');
