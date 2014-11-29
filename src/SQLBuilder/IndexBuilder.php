@@ -1,6 +1,10 @@
 <?php
 namespace SQLBuilder;
-use SQLBuilder\Driver;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\SQLiteDriver;
+use Exception;
 
 /**
  * @link http://blog.gtuhl.com/2009/08/07/postgresql-tips-and-tricks/
@@ -31,7 +35,7 @@ class IndexBuilder extends QueryBuilder
     public $where;
     public $using;
 
-    public function __construct(Driver $driver)
+    public function __construct(BaseDriver $driver)
     {
         $this->driver = $driver;
     }
@@ -85,14 +89,14 @@ class IndexBuilder extends QueryBuilder
 
         $sql .= 'INDEX ';
 
-        if ($this->concurrently && $this->driver->type == 'pgsql' ) {
+        if ($this->concurrently && $this->driver instanceof PgSQLDriver) {
             $sql .= 'CONCURRENTLY ';
         }
 
         $sql .= $this->driver->quoteTableName($this->name) . ' ';
         $sql .= 'ON ' . $this->driver->quoteTableName($this->on) . ' ';
 
-        if ( $this->using && $this->driver->type == 'pgsql' ) {
+        if ( $this->using && $this->driver instanceof PgSQLDriver) {
             $sql .= 'USING ' . strtoupper($this->using) . ' ';
         }
 
@@ -190,7 +194,7 @@ class IndexBuilder extends QueryBuilder
         $onDelete = null )
     {
         // SQLite doesn't support ADD CONSTRAINT
-        if( 'sqlite' === $this->driver->type ) {
+        if ($this->driver instanceof SQLiteDriver) {
             return '';
         }
 
@@ -221,27 +225,30 @@ class IndexBuilder extends QueryBuilder
      */
     public function dropIndex($table, $indexName, $ifExists = true)
     {
-        $sql = '';
-        switch( $this->driver->type )
-        {
-            case 'mysql':
-                $sql = 'DROP INDEX ' ;
-                if ($ifExists) {
-                    $sql .= 'IF EXISTS ';
-                }
-                $sql .= $this->driver->quoteTableName($indexName) 
-                    . ' ON ' . $this->driver->quoteTableName($table);
-            break;
-            case 'sqlite':
-            case 'pgsql':
-                $sql = 'DROP INDEX ';
-                if ($ifExists) {
-                    $sql .= 'IF EXISTS ';
-                }
-                $sql .= $this->driver->quoteTableName($indexName);
-            break;
+        if ($this->driver instanceof MySQLDriver) {
+            $sql = 'DROP INDEX ' ;
+            if ($ifExists) {
+                $sql .= 'IF EXISTS ';
+            }
+            $sql .= $this->driver->quoteTableName($indexName) 
+                . ' ON ' . $this->driver->quoteTableName($table);
+            return $sql;
+
+        } elseif ($this->driver instanceof PgSQLDriver) {
+            $sql = 'DROP INDEX ';
+            if ($ifExists) {
+                $sql .= 'IF EXISTS ';
+            }
+            $sql .= $this->driver->quoteTableName($indexName);
+            return $sql;
+        } else {
+            $sql = 'DROP INDEX ';
+            if ($ifExists) {
+                $sql .= 'IF EXISTS ';
+            }
+            $sql .= $this->driver->quoteTableName($indexName);
+            return $sql;
         }
-        return $sql;
     }
 }
 

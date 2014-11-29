@@ -4,8 +4,12 @@ class JoinExpressionTest extends PHPUnit_Framework_TestCase
 {
     public function createExpr()
     {
+        $driver = new SQLBuilder\Driver\MySQLDriver;
+
         $expr = new SQLBuilder\JoinExpression('users');
-        $expr->driver = new SQLBuilder\Driver;
+        $expr->driver = $driver;
+        $expr->builder = new SQLBuilder\QueryBuilder($driver);
+
         return $expr;
     }
 
