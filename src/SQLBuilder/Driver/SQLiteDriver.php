@@ -1,6 +1,9 @@
 <?php
 namespace SQLBuilder\Driver;
+use DateTime;
+use Exception;
 use RuntimeException;
+
 
 class SQLiteDriver extends BaseDriver
 {
