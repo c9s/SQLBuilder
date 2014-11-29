@@ -1,43 +1,23 @@
 <?php
-namespace SQLBuilder;
+namespace SQLBuilder\Driver;
 
-/**
- *  $driver->configure('driver','pgsql');
- *
- *  trim spaces
- *
- *  $driver->configure('trim',true);
- *
- *  $driver->configure('placeholder','named');
- *
- *  $driver->configure('quoter',array($pg,'escape'));
- *
- *  $driver->configure('quoter',array($pdo,'quote'));
- *  $driver->quoter = function($string) { 
- *      return your_escape_function( $string );
- *  };
- *
- */
-
-class Driver
+abstract class BaseDriver
 {
+    const NO_PARAM_MARKER = 0;
+
     /**
-     * driver type
+     * Question mark parameter marker
      *
-     * @var string mysql, pgsql, sqlite
+     * (?,?)
      */
-    public $type;
-
-    /**
-     * @var boolean Should we quote table name in SQL ?
-     */
-    public $quoteTable = false;
+    const QMARK_PARAM_MARKER = 1;
 
 
     /**
-     * @var boolean Should we quote column name in SQL ?
+     * Named parameter marker
      */
-    public $quoteColumn = false;
+    const NAMED_PARAM_MARKER = 2;
+
 
 
     /**
@@ -46,10 +26,8 @@ class Driver
     public $trim = false;
 
 
-    /**
-     * @var boolean enable or disable place holder
-     */
-    public $placeholder = false;
+    public $paramMarker = self::NAMED_PARAM_MARKER;
+
 
 
     /**
@@ -60,10 +38,6 @@ class Driver
      *    array($obj,'method')
      */
     public $quoter;
-
-    public $escaper;
-
-
 
     static function create()
     {
@@ -76,72 +50,46 @@ class Driver
         return $self ? $self : $self = new static;
     }
 
-    public function __construct($driverType = null)
+    public function __construct()
     {
-        $this->type = $driverType;
-
-        // default escaper (we can override this by giving 
-        // new callback)
-        $this->escaper = 'addslashes';
         $this->inflator = new Inflator($this);
     }
 
 
     /**
-     * Configure options
-     *
-     *
-     *
+     * @param boolean $enable 
      */
-    public function configure($key,$value)
-    {
-        switch( $key ) {
-        case 'trim':
-            $this->trim = $value;
-            break;
-
-            /* named or true */
-        case 'placeholder':
-            $this->placeholder = $value;
-            break;
-
-        case 'quote_table':
-            $this->quoteTable = $value;
-            break;
-
-        case 'quote_column':
-            $this->quoteColumn = $value;
-            break;
-
-
-        /** 
-         * valid driver:
-         *
-         *   pgsql, mysql, sqlite
-         */
-        case 'driver':
-            $this->type = $value;
-            if( 'mysql' === $this->type ) {
-                $this->quoteColumn = false;
-                $this->quoteTable = false;
-            }
-            break;
-
-            /**
-             * sql style:
-             *    PDO or mysqli ... etc
-             */
-        case 'style':
-            $this->style = $value;
-            break;
-
-        }
+    public function setQuoteTable($enable = true) { 
+        $this->quoteTable = $enable;
     }
 
+    /**
+     * @param boolean $enable 
+     */
+    public function setQuoteColumn($enable = true) {
+        $this->quoteColumn = $enable;
+    }
 
+    public function setTrim($enable = true) {
+        $this->trim = $enable;
+    }
+
+    // The SQL statement can contain zero or more named (:name) or question mark (?) parameter markers
+    public function setNamedParamMarker() { 
+        $this->paramMarker = self::NAMED_PARAM_MARKER;
+    }
+
+    public function setQMarkParamMarker() {
+        $this->paramMarker = self::QMARK_PARAM_MARKER;
+    }
+
+    public function setNoParamMarker() {
+        $this->paramMarker = self::NO_PARAM_MARKER;
+    }
 
     /**
-     * Get place holder string,
+     * Get param marker
+     *
      * the returned value is depends on driver.
      *
      * for named parameter, this returns a key with a ":" char.
@@ -153,10 +101,9 @@ class Driver
      */
     public function getParamMarker($key)
     {
-        if( $this->placeholder && $this->placeholder === 'named' ) {
+        if( $this->paramMarker && $this->paramMarker === self::NAMED_PARAM_MARKER ) {
             return ':' . $key;
-        }
-        else {
+        } else {
             return '?';
         }
     }
@@ -171,7 +118,9 @@ class Driver
      * @param string $name column name
      * @return string column name with/without quotes.
      */
-    public function quoteColumn($name)
+    abstract public function quoteColumn($name);
+
+    /*
     {
         if ( $c = $this->quoteColumn ) {
             // return raw value if column name contains (non-word chars), eg: min( ), max( )
@@ -193,6 +142,7 @@ class Driver
         }
         return $name;
     }
+     */
 
 
     /**
@@ -203,7 +153,9 @@ class Driver
      * @param string $name table name
      * @return string table name with/without quotes.
      */
-    public function quoteTableName($name) 
+    abstract public function quoteTableName($name);
+
+    /*
     {
         if ( $c = $this->quoteTable ) {
             if( is_string($c) ) {
@@ -216,6 +168,9 @@ class Driver
         }
         return $name;
     }
+    */
+
+
 
     /**
      * quote & escape string with single quote 
@@ -231,13 +186,12 @@ class Driver
          *
          *  $driver->configure('quote',array($pgconn,'escape_string'));
          */
-        if ( $this->quoter ) {
-            return call_user_func( $this->quoter , $string );
+        if ($this->quoter) {
+            return call_user_func($this->quoter, $string);
         }
 
-        if ( $this->escaper ) {
-            return '\'' . call_user_func( $this->escaper , $string ) . '\'';
-        }
+        // Defualt escape function, this is not safe.
+        return "'" . addslashes($string) . "'";
     }
 
     /**
@@ -247,7 +201,7 @@ class Driver
      */
     public function inflate($value)
     {
-        if( is_array($value) ) {
+        if (is_array($value)) {
             return $value[0];
         }
         return $this->inflator->inflate($value);
@@ -269,6 +223,7 @@ class Driver
         }
         return $new;
     }
-
 }
+
+
 

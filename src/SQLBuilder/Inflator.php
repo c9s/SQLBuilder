@@ -12,7 +12,7 @@ class Inflator
 {
     public $driver;
 
-    public function __construct(Driver $driver) 
+    public function __construct($driver) 
     {
         $this->driver = $driver;
     }
