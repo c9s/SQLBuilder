@@ -26,19 +26,19 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
             'foo' => 'foo',
             'bar' => 'bar',
         ))->build();
-        is( 'INSERT INTO member ( foo,bar) VALUES (:foo,:bar)' , $sql );
+        is( 'INSERT INTO member (foo,bar) VALUES (:foo,:bar)' , $sql );
 
         $sb->driver->setNoParamMarker();
         $sql = $sb->insert(array(
             'foo' => 'foo',
             'bar' => 'bar',
             ))->build();
-        is( 'INSERT INTO member ( foo,bar) VALUES (\'foo\',\'bar\')' , $sql );
+        is( 'INSERT INTO member (foo,bar) VALUES (\'foo\',\'bar\')' , $sql );
 
 
         $sb->driver->setQMarkParamMarker();
         $sql = $sb->build();
-        is( 'INSERT INTO member ( foo,bar) VALUES (?,?)' , $sql );
+        is( 'INSERT INTO member (foo,bar) VALUES (?,?)' , $sql );
     }
 
     function testSelect()
@@ -190,6 +190,6 @@ class SQLQueryBuilderMySQLTest extends PHPUnit_PDO_TestCase
             'created_on' => array('current_timestamp'),
         ));
         $sql = $sb->build();
-        is( 'INSERT INTO member ( created_on) VALUES (current_timestamp)', $sql );
+        is( 'INSERT INTO member (created_on) VALUES (current_timestamp)', $sql );
     }
 }
