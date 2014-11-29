@@ -1,6 +1,6 @@
 <?php
 namespace SQLBuilder;
-
+use SQLBuilder\Driver;
 
 /**
  * @link http://blog.gtuhl.com/2009/08/07/postgresql-tips-and-tricks/
@@ -31,7 +31,7 @@ class IndexBuilder extends QueryBuilder
     public $where;
     public $using;
 
-    public function __construct($driver)
+    public function __construct(Driver $driver)
     {
         $this->driver = $driver;
     }
