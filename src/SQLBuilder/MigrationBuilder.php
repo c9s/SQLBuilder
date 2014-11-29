@@ -66,7 +66,7 @@ class MigrationBuilder
 
     public function addColumns($table,$columns) 
     {
-        $sql  = 'ALTER TABLE ' . $this->driver->getQuoteTableName( $table );
+        $sql  = 'ALTER TABLE ' . $this->driver->quoteTableName( $table );
         $columns = is_object($columns) || !isset($columns[0])
                     ? array($columns)
                     : $columns;
@@ -79,18 +79,18 @@ class MigrationBuilder
 
     public function addColumn($table, $column)
     {
-        $sql  = 'ALTER TABLE ' . $this->driver->getQuoteTableName( $table );
+        $sql  = 'ALTER TABLE ' . $this->driver->quoteTableName( $table );
         return $sql . $this->addColumnClause($column);
     }
 
     public function dropTable($table)
     {
-        return 'DROP TABLE ' . $this->driver->getQuoteTableName($table);
+        return 'DROP TABLE ' . $this->driver->quoteTableName($table);
     }
 
     public function dropColumn($table,$columnName)
     {
-        $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName($table)
+        $sql = 'ALTER TABLE ' . $this->driver->quoteTableName($table)
                . ' DROP COLUMN ' . $this->driver->quoteColumn($columnName);
         return $sql;
     }
@@ -124,7 +124,7 @@ class MigrationBuilder
             break;
         case 'mysql':
         case 'pgsql':
-            $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName($table)
+            $sql = 'ALTER TABLE ' . $this->driver->quoteTableName($table)
                 . ' RENAME COLUMN '
                 . $this->driver->quoteColumn( $columnName )
                 . ' TO '

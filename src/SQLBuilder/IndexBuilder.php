@@ -89,8 +89,8 @@ class IndexBuilder extends QueryBuilder
             $sql .= 'CONCURRENTLY ';
         }
 
-        $sql .= $this->driver->getQuoteTableName($this->name) . ' ';
-        $sql .= 'ON ' . $this->driver->getQuoteTableName($this->on) . ' ';
+        $sql .= $this->driver->quoteTableName($this->name) . ' ';
+        $sql .= 'ON ' . $this->driver->quoteTableName($this->on) . ' ';
 
         if ( $this->using && $this->driver->type == 'pgsql' ) {
             $sql .= 'USING ' . strtoupper($this->using) . ' ';
@@ -130,8 +130,8 @@ class IndexBuilder extends QueryBuilder
     public function createIndex($table, $indexName, $columnNames)
     {
         $self = $this;
-        $sql = 'CREATE INDEX ' . $this->driver->getQuoteTableName($indexName) 
-            . ' ON ' . $this->driver->getQuoteTableName($table);
+        $sql = 'CREATE INDEX ' . $this->driver->quoteTableName($indexName) 
+            . ' ON ' . $this->driver->quoteTableName($table);
         if( is_array($columnNames) ) {
             $sql .= ' (' . join(',' , array_map( function($name) use ($self) { 
                                         return $self->driver->quoteColumn( $name );
@@ -196,11 +196,11 @@ class IndexBuilder extends QueryBuilder
 
         // ALTER TABLE employee ADD FOREIGN KEY (group_id) REFERENCES product_groups;
         $sql = 'ALTER TABLE ' ;
-        $sql .= $this->driver->getQuoteTableName($table);
+        $sql .= $this->driver->quoteTableName($table);
         $sql .= ' ADD FOREIGN KEY ';
-        $sql .= '(' . $this->driver->getQuoteTableName($columnName) . ')';
+        $sql .= '(' . $this->driver->quoteTableName($columnName) . ')';
         $sql .= ' REFERENCES ';
-        $sql .= $this->driver->getQuoteTableName($referenceTable);
+        $sql .= $this->driver->quoteTableName($referenceTable);
         $sql .= ( $referenceColumn ? '(' . $this->driver->quoteColumn($referenceColumn) . ')' : '' );
 
         if ( $onDelete ) {
@@ -229,8 +229,8 @@ class IndexBuilder extends QueryBuilder
                 if ($ifExists) {
                     $sql .= 'IF EXISTS ';
                 }
-                $sql .= $this->driver->getQuoteTableName($indexName) 
-                    . ' ON ' . $this->driver->getQuoteTableName($table);
+                $sql .= $this->driver->quoteTableName($indexName) 
+                    . ' ON ' . $this->driver->quoteTableName($table);
             break;
             case 'sqlite':
             case 'pgsql':
@@ -238,7 +238,7 @@ class IndexBuilder extends QueryBuilder
                 if ($ifExists) {
                     $sql .= 'IF EXISTS ';
                 }
-                $sql .= $this->driver->getQuoteTableName($indexName);
+                $sql .= $this->driver->quoteTableName($indexName);
             break;
         }
         return $sql;

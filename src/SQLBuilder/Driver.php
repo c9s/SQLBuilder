@@ -205,7 +205,7 @@ class Driver
      * @param string $name table name
      * @return string table name with/without quotes.
      */
-    public function getQuoteTableName($name) 
+    public function quoteTableName($name) 
     {
         if ( $c = $this->quoteTable ) {
             if( is_string($c) ) {

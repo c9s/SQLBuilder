@@ -443,7 +443,7 @@ class QueryBuilder
     public function getTableSql()
     {
         $sql  = '';
-        $sql .= $this->driver->getQuoteTableName($this->table);
+        $sql .= $this->driver->quoteTableName($this->table);
         return $sql;
     }
 

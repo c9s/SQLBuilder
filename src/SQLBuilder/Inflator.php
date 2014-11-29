@@ -1,8 +1,8 @@
 <?php
 namespace SQLBuilder;
+use SQLBuilder\Driver;
 use DateTime;
 use Closure;
-use SQLBuilder\Driver;
 
 
 /**
