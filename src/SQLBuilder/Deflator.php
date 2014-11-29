@@ -9,7 +9,7 @@ use Closure;
 /**
  * XXX: this should be renamed to Deflator
  */
-class Inflator
+class Deflator
 {
     public $driver;
 

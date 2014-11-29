@@ -1,6 +1,5 @@
 <?php
 namespace SQLBuilder\Driver;
-use SQLBuilder\Inflator;
 use RuntimeException;
 
 class SQLiteDriver extends BaseDriver
