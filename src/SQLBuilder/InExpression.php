@@ -21,7 +21,7 @@ class InExpression
 
     public function toSql()
     {
-        $sql = $this->driver->getQuoteColumn($this->column) . ' IN ' ;
+        $sql = $this->driver->quoteColumn($this->column) . ' IN ' ;
         $escVals = array();
         foreach( $this->values as $val ) {
             $escVals[] = $this->driver->inflate( $val );

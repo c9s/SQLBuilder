@@ -101,13 +101,13 @@ class IndexBuilder extends QueryBuilder
                     if ( is_array($n) ) {
                         if ( count($n) == 2 ) {
                             // column name and appended attributes
-                            return $self->driver->getQuoteColumn( $n[0] ) . ' ' . $n[1];
+                            return $self->driver->quoteColumn( $n[0] ) . ' ' . $n[1];
                         } elseif ( count($n) == 1 ) {
                             // with raw format
                             return $n[0];
                         }
                     } else {
-                        return $self->driver->getQuoteColumn( $n );
+                        return $self->driver->quoteColumn( $n );
                     }
                 }, $this->columns ) ) 
                 . ')';
@@ -134,12 +134,12 @@ class IndexBuilder extends QueryBuilder
             . ' ON ' . $this->driver->getQuoteTableName($table);
         if( is_array($columnNames) ) {
             $sql .= ' (' . join(',' , array_map( function($name) use ($self) { 
-                                        return $self->driver->getQuoteColumn( $name );
+                                        return $self->driver->quoteColumn( $name );
                                     }, $columnNames ) )
                 . ')';
         }
         else {
-            $sql .= ' (' . $this->driver->getQuoteColumn( $columnNames ) . ')';
+            $sql .= ' (' . $this->driver->quoteColumn( $columnNames ) . ')';
         }
         return $sql;
     }
@@ -201,7 +201,7 @@ class IndexBuilder extends QueryBuilder
         $sql .= '(' . $this->driver->getQuoteTableName($columnName) . ')';
         $sql .= ' REFERENCES ';
         $sql .= $this->driver->getQuoteTableName($referenceTable);
-        $sql .= ( $referenceColumn ? '(' . $this->driver->getQuoteColumn($referenceColumn) . ')' : '' );
+        $sql .= ( $referenceColumn ? '(' . $this->driver->quoteColumn($referenceColumn) . ')' : '' );
 
         if ( $onDelete ) {
             // ON DELETE CASCADE

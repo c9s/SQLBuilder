@@ -158,19 +158,19 @@ class Expression
                     // we should not escape the value
                     // if the value is wrapped with an array
                     if( is_array($v) ) {
-                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
+                        $sql .= $this->driver->quoteColumn($k) . ' ' . $op . ' ' . $v[0];
                     }
                     else {
                         // escape as usuall
                         $newK = $this->builder->setPlaceHolderVar( $k , $v );
-                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($newK);
+                        $sql .= $this->driver->quoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($newK);
                     }
                 }
                 else {
                     if ( is_array($v) ) {
-                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
+                        $sql .= $this->driver->quoteColumn($k) . ' ' . $op . ' ' . $v[0];
                     } else {
-                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
+                        $sql .= $this->driver->quoteColumn($k) . ' ' . $op . ' ' 
                             . $this->driver->inflate($v);
 
                         /*

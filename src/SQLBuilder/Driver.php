@@ -1,7 +1,6 @@
 <?php
 namespace SQLBuilder;
 
-
 /**
  *  $driver->configure('driver','pgsql');
  *
@@ -175,7 +174,7 @@ class Driver
      * @param string $name column name
      * @return string column name with/without quotes.
      */
-    public function getQuoteColumn($name)
+    public function quoteColumn($name)
     {
         if ( $c = $this->quoteColumn ) {
             // return raw value if column name contains (non-word chars), eg: min( ), max( )

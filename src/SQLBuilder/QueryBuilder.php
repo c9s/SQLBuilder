@@ -467,10 +467,10 @@ class QueryBuilder
 
             /* column => alias */
             if ( is_string($k) ) {
-                $cols[] = $this->driver->getQuoteColumn($k) . '  AS ' . $v;
+                $cols[] = $this->driver->quoteColumn($k) . '  AS ' . $v;
             }
             elseif ( is_integer($k) ) {
-                $cols[] = $this->driver->getQuoteColumn($v);
+                $cols[] = $this->driver->quoteColumn($v);
             }
         }
         return join(', ',$cols);
@@ -559,13 +559,13 @@ class QueryBuilder
                     $k = $v;
                 if (is_array($v)) {
                     // just interpolate the raw value
-                    $columns[] = $this->driver->getQuoteColumn($k);
+                    $columns[] = $this->driver->quoteColumn($k);
                     $values[] = $v[0];
                 } elseif ($v instanceof RawValue) {
-                    $columns[] = $this->driver->getQuoteColumn($k);
+                    $columns[] = $this->driver->quoteColumn($k);
                     $values[] = $v;
                 } else {
-                    $columns[] = $this->driver->getQuoteColumn($k);
+                    $columns[] = $this->driver->quoteColumn($k);
                     $newK = $this->setPlaceHolderVar( $k , $v );
                     $values[] = $this->driver->getPlaceHolder($newK);
                 }
@@ -576,7 +576,7 @@ class QueryBuilder
                 if (is_integer($k)) {
                     $k = $v;
                 }
-                $columns[] = $this->driver->getQuoteColumn( $k );
+                $columns[] = $this->driver->quoteColumn( $k );
                 $values[]  = $this->driver->inflate($v);
             }
         }
@@ -590,7 +590,7 @@ class QueryBuilder
             ;
 
         if ( $this->returning && ( 'pgsql' == $this->driver->type ) ) {
-            $sql .= ' RETURNING ' . $this->driver->getQuoteColumn($this->returning);
+            $sql .= ' RETURNING ' . $this->driver->quoteColumn($this->returning);
         }
 
         if ( $this->driver->trim ) {
@@ -616,7 +616,7 @@ class QueryBuilder
             $parts = array();
             foreach( $this->orders as $order ) {
                 list( $column , $ordering ) = $order;
-                $parts[] = $this->driver->getQuoteColumn($column) . ' ' . $ordering;
+                $parts[] = $this->driver->quoteColumn($column) . ' ' . $ordering;
             }
             $sql .= join(',',$parts);
         }
@@ -650,7 +650,7 @@ class QueryBuilder
         if ( ! empty($this->groupBys) ) {
             return ' GROUP BY ' . join( ',' , 
                 array_map( function($val) use ($self) { 
-                    return $self->driver->getQuoteColumn( $val );
+                    return $self->driver->quoteColumn( $val );
                 } , $this->groupBys )
             );
         }
@@ -662,25 +662,25 @@ class QueryBuilder
         if ( $this->driver->placeholder ) {
             foreach( $this->update as $k => $v ) {
                 if (is_array($v)) {
-                    $conds[] =  $this->driver->getQuoteColumn( $k ) . ' = '. $v[0];
+                    $conds[] =  $this->driver->quoteColumn( $k ) . ' = '. $v[0];
                 } elseif ($v instanceof RawValue) {
-                    $conds[] =  $this->driver->getQuoteColumn( $k ) . ' = '. $v->__toString();
+                    $conds[] =  $this->driver->quoteColumn( $k ) . ' = '. $v->__toString();
                 } else {
                     if (is_integer($k))
                         $k = $v;
                     $newK = $this->setPlaceHolderVar( $k , $v );
-                    $conds[] =  $this->driver->getQuoteColumn($k) . ' = ' . $this->driver->getPlaceHolder($newK);
+                    $conds[] =  $this->driver->quoteColumn($k) . ' = ' . $this->driver->getPlaceHolder($newK);
                 }
             }
         }
         else {
             foreach( $this->update as $k => $v ) {
                 if (is_array($v)) {
-                    $conds[] = $this->driver->getQuoteColumn($k) . ' = ' . $v[0];
+                    $conds[] = $this->driver->quoteColumn($k) . ' = ' . $v[0];
                 } elseif ($v instanceof RawValue) {
-                    $conds[] = $this->driver->getQuoteColumn($k) . ' = ' . $v->__toString();
+                    $conds[] = $this->driver->quoteColumn($k) . ' = ' . $v->__toString();
                 } else {
-                    $conds[] = $this->driver->getQuoteColumn($k) . ' = ' 
+                    $conds[] = $this->driver->quoteColumn($k) . ' = ' 
                         . $this->driver->inflate($v);
                 }
             }
