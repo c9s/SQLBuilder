@@ -404,16 +404,16 @@ class QueryBuilder
         switch( $this->behavior )
         {
         case static::UPDATE:
-            return $this->buildUpdate();
+            return $this->buildUpdateSql();
             break;
         case static::INSERT:
-            return $this->buildInsert();
+            return $this->buildInsertSql();
             break;
         case static::DELETE:
-            return $this->buildDelete();
+            return $this->buildDeleteSql();
             break;
         case static::SELECT:
-            return $this->buildSelect();
+            return $this->buildSelectSql();
             break;
         default:
             throw new Exception('behavior is not defined.');
@@ -449,7 +449,7 @@ class QueryBuilder
         return join(', ',$cols);
     }
 
-    public function buildDelete()
+    public function buildDeleteSql()
     {
         $sql = 'DELETE FROM ' . $this->driver->quoteTableName($this->table);
         $sql .= $this->buildConditionSql();
@@ -467,7 +467,7 @@ class QueryBuilder
     }
 
 
-    public function buildUpdate()
+    public function buildUpdateSql()
     {
         // Do not build with table alias for SQLite, because SQLite does not support it.
         $sql = 'UPDATE ' . $this->driver->quoteTableName($this->table)
@@ -493,7 +493,7 @@ class QueryBuilder
     /** 
      * build select sql
      */
-    public function buildSelect()
+    public function buildSelectSql()
     {
         /* check required arguments */
         $sql = 'SELECT ' 
@@ -518,7 +518,7 @@ class QueryBuilder
 
 
 
-    public function buildInsert()
+    public function buildInsertSql()
     {
         /* check required arguments */
         $columns = array();
