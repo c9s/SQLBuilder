@@ -6,8 +6,7 @@ class InflatorTest extends PHPUnit_Framework_TestCase
     function testBool()
     {
         $driver = new SQLBuilder\Driver;
-        $inf = new Inflator;
-        $inf->driver = $driver;
+        $inf = new Inflator($driver);
         is( 'TRUE', $inf->inflate( true ) );
         is( 'FALSE', $inf->inflate( false ) );
     }
@@ -15,8 +14,7 @@ class InflatorTest extends PHPUnit_Framework_TestCase
     function testNumber()
     {
         $driver = new SQLBuilder\Driver;
-        $inf = new Inflator;
-        $inf->driver = $driver;
+        $inf = new Inflator($driver);
 
         is( 1 , $inf->inflate( 1 ) );
         is( 1.2 , $inf->inflate( 1.2 ) );

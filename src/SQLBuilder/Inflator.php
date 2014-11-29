@@ -2,6 +2,7 @@
 namespace SQLBuilder;
 use DateTime;
 use Closure;
+use SQLBuilder\Driver;
 
 
 /**
@@ -11,6 +12,10 @@ class Inflator
 {
     public $driver;
 
+    public function __construct(Driver $driver) 
+    {
+        $this->driver = $driver;
+    }
 
     /**
      * For variable placeholder like PDO, we need 1 or 0 for boolean type,
@@ -60,12 +65,5 @@ class Inflator
         }
         return $value;
     }
-
-    static function getInstance()
-    {
-        static $ins;
-        return $ins ?: $ins = new self;
-    }
-
 }
 
