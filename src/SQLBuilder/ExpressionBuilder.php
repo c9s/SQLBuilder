@@ -53,6 +53,25 @@ class UnaryExpr extends Expr
         $this->op = $op;
         $this->operand = $operand;
     }
+
+    public function toSql() {
+        return $this->op . ' ' . $this->operand;
+    }
+}
+
+class StringExpr extends Expr 
+{
+    public $str;
+
+    public function __construct($str)
+    {
+        $this->str = $str;
+    }
+
+    public function toSql()
+    {
+        return $this->str;
+    }
 }
 
 class BinaryExpr extends Expr 
@@ -68,6 +87,10 @@ class BinaryExpr extends Expr
         $this->op = $op;
         $this->operand = $operand;
         $this->operand2 = $operand2;
+    }
+
+    public function toSql() {
+        return $this->operand . ' ' . $this->op . ' ' . $this->operand2;
     }
 }
 
@@ -88,6 +111,10 @@ class BetweenExpr extends Expr {
         $this->min = $min;
         $this->max = $max;
     }
+
+    public function toSql() {
+        return $this->exprStr . ' BETWEEN ' . $this->min . ' AND ' . $this->max;
+    }
 }
 
 class InExpr extends Expr { 
@@ -98,6 +125,11 @@ class InExpr extends Expr {
     {
         $this->exprStr = $exprStr;
         $this->set = $set;
+    }
+
+    public function toSql() {
+        // TODO: check instance (ParamMarker or Variable) and quote the string if need
+        return $this->exprStr . ' IN (' . join(',', $this->set) . ')';
     }
 }
 
