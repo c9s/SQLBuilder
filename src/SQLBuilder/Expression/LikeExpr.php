@@ -37,6 +37,10 @@ class LikeExpr extends Expr {
         case Criteria::EXACT:
             $pat = $this->pat;
             break;
+
+        default:
+            $pat = '%' . $this->pat . '%';
+            break;
         }
         return $this->exprStr . ' LIKE ' . $driver->deflate($pat);
     }
