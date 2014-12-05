@@ -1,141 +1,40 @@
 <?php
 namespace SQLBuilder;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Expression\Expr;
+use SQLBuilder\Expression\BetweenExpr;
+use SQLBuilder\Expression\StringExpr;
+use SQLBuilder\Expression\UnaryExpr;
+use SQLBuilder\Expression\BinaryExpr;
+use SQLBuilder\Expression\InExpr;
+use SQLBuilder\Expression\NotInExpr;
 
 class Op { }
 
 class AndOp extends Op {
-
-    public function __toString() {
+    public function toSql(BaseDriver $driver) {
         return 'AND';
     }
-
 }
 
 class OrOp extends Op { 
-    public function __toString() {
+    public function toSql(BaseDriver $driver) {
         return 'OR';
     }
 }
 
 class XorOp extends Op { 
-    public function __toString() {
+    public function toSql(BaseDriver $driver) {
         return 'XOR';
     }
 }
 
 class NotOp extends Op { 
-    public function __toString() {
+    public function toSql(BaseDriver $driver) {
         return '!';
     }
 }
 
-class Variable { 
-
-    public $var;
-
-    public function __construct($var)
-    {
-        $this->var = $var;
-    }
-}
-
-class Expr { 
-
-}
-
-class UnaryExpr extends Expr 
-{
-    public $op;
-
-    public $operand;
-
-    public function __construct($op, $operand) {
-        $this->op = $op;
-        $this->operand = $operand;
-    }
-
-    public function toSql() {
-        return $this->op . ' ' . $this->operand;
-    }
-}
-
-class StringExpr extends Expr 
-{
-    public $str;
-
-    public function __construct($str)
-    {
-        $this->str = $str;
-    }
-
-    public function toSql()
-    {
-        return $this->str;
-    }
-}
-
-class BinaryExpr extends Expr 
-{
-
-    public $op;
-
-    public $operand;
-
-    public $operand2;
-
-    public function __construct($operand, $op, $operand2) {
-        $this->op = $op;
-        $this->operand = $operand;
-        $this->operand2 = $operand2;
-    }
-
-    public function toSql() {
-        return $this->operand . ' ' . $this->op . ' ' . $this->operand2;
-    }
-}
-
-
-/**
- * http://dev.mysql.com/doc/refman/5.0/en/comparison-operators.html#operator_between
- */
-class BetweenExpr extends Expr { 
-
-    public $exprStr;
-
-    public $min;
-
-    public $max;
-
-    public function __construct($exprStr, $min, $max) {
-        $this->exprStr = $exprStr;
-        $this->min = $min;
-        $this->max = $max;
-    }
-
-    public function toSql() {
-        return $this->exprStr . ' BETWEEN ' . $this->min . ' AND ' . $this->max;
-    }
-}
-
-class InExpr extends Expr { 
-
-    public $set = array();
-
-    public function __construct($exprStr, array $set)
-    {
-        $this->exprStr = $exprStr;
-        $this->set = $set;
-    }
-
-    public function toSql() {
-        // TODO: check instance (ParamMarker or Variable) and quote the string if need
-        return $this->exprStr . ' IN (' . join(',', $this->set) . ')';
-    }
-}
-
-class NotInExpr extends InExpr { 
-
-}
 
 class ExpressionBuilder
 {
@@ -150,7 +49,7 @@ class ExpressionBuilder
      * http://dev.mysql.com/doc/refman/5.0/en/expressions.html
      */
     public function appendExprObject(Expr $expr) {
-        if (! end($this->exprs) instanceof Op) {
+        if (count($this->exprs) > 0 && ! end($this->exprs) instanceof Op) {
             $this->exprs[] = new AndOp;
         }
         $this->exprs[] = $expr;
@@ -237,7 +136,13 @@ class ExpressionBuilder
         $this->appendExprObject(new NotInExpr($exprStr, $set));
     }
 
-
+    public function toSql(BaseDriver $driver) {
+        $sql = '';
+        foreach ($this->exprs as $expr) {
+            $sql .= ' ' . $expr->toSql($driver);
+        }
+        return $sql;
+    }
 }
 
 
