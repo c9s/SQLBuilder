@@ -201,7 +201,7 @@ abstract class BaseDriver
 
             } elseif ($value instanceof ParamMarker) {
 
-                throw new LogicException('ParamMarker is not supported yet.');
+                return ':' . $val->name;
 
             } elseif ($value instanceof Variable) {
 
