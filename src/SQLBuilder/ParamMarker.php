@@ -8,6 +8,10 @@ class ParamMarker
     public function __construct($name) {
         $this->name = $name;
     }
+
+    public function getMark() {
+        return ':' . $this->name;
+    }
 }
 
 
