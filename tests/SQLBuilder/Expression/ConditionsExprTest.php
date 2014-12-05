@@ -47,6 +47,26 @@ class ConditionsExprTest extends PHPUnit_Framework_TestCase
         is("a <> 1", $sql);
     }
 
+    public function testIsNot() {
+        $driver = new SQLBuilder\Driver\MySQLDriver;
+
+        $expr = new ConditionsExpr;
+        $expr->isNot('is_book', TRUE);
+        $sql = $expr->toSql($driver);
+        is("is_book IS NOT TRUE", $sql);
+
+
+        $expr = new ConditionsExpr;
+        $expr->isNot('is_book', FALSE);
+        $sql = $expr->toSql($driver);
+        is("is_book IS NOT FALSE", $sql);
+
+        $expr = new ConditionsExpr;
+        $expr->isNot('is_book', new Unknown);
+        $sql = $expr->toSql($driver);
+        is("is_book IS NOT UNKNOWN", $sql);
+    }
+
     public function testIs() {
         $driver = new SQLBuilder\Driver\MySQLDriver;
 
