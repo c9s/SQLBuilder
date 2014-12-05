@@ -21,13 +21,15 @@ class ParamsExpr extends Expr {
         $this->params[] = $val;
     }
 
-    public function renderSet(BaseDriver $driver, array $set) {
+    public function renderSet(BaseDriver $driver, array $set) 
+    {
         return array_map(function($val) use($driver) {
             return $driver->deflate($val);
         }, $set);
     }
 
-    public function toSql(BaseDriver $driver) {
+    public function toSql(BaseDriver $driver) 
+    {
         return join(',', $this->renderSet($driver, $this->params));
     }
 
