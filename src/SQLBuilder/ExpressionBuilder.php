@@ -137,11 +137,11 @@ class ExpressionBuilder
     }
 
     public function toSql(BaseDriver $driver) {
-        $sql = '';
+        $clauses = array();
         foreach ($this->exprs as $expr) {
-            $sql .= ' ' . $expr->toSql($driver);
+            $clauses[] = $expr->toSql($driver);
         }
-        return $sql;
+        return join(' ',$clauses);
     }
 }
 
