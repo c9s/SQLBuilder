@@ -15,23 +15,10 @@ class InExpr extends Expr {
         $this->set = $set;
     }
 
-    // XXX: use Driver to deflate value
-    public function deflateValue(BaseDriver $driver, $val) {
-        if (is_int($val) || is_float($val)) {
-            return var_export($val, true);
-        } elseif (is_string($val)) {
-            return $driver->quote($val);
-        } elseif ($val instanceof ParamMarker) {
-            return $val->name;
-        } else {
-            throw new LogicException("Unsupported type");
-        }
-    }
-
     public function renderSet(BaseDriver $driver, array $set) {
         $values = array();
         foreach($set as $val) {
-            $values[] = $this->deflateValue($driver, $val);
+            $values[] = $driver->deflate($val);
         }
         return $values;
     }
