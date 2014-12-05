@@ -1,5 +1,5 @@
 <?php
-namespace SQLBuilder;
+namespace SQLBuilder\Expression;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Expression\Expr;
 use SQLBuilder\Expression\BetweenExpr;
@@ -40,7 +40,7 @@ class NotOp extends Op {
 }
 
 
-class ExpressionBuilder
+class ConditionsExpr
 {
     public $exprs = array();
 
@@ -161,6 +161,4 @@ class ExpressionBuilder
         return join(' ',$clauses);
     }
 }
-
-
 
