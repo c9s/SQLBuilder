@@ -5,6 +5,7 @@ use Exception;
 use RuntimeException;
 use LogicException;
 use SQLBuilder\RawValue;
+use SQLBuilder\DataType\Unknown;
 
 abstract class BaseDriver
 {
@@ -206,9 +207,14 @@ abstract class BaseDriver
             return $this->quote($value);
 
         } elseif (is_object($value) ) {
-            // convert DateTime object into string
-            if ($value instanceof DateTime ) {
 
+            if ($value instanceof Unknown) {
+
+                return 'UNKNOWN';
+
+            } elseif ($value instanceof DateTime ) {
+
+                // convert DateTime object into string
                 return $value->format(DateTime::ISO8601);
 
             } elseif ($value instanceof ParamMarker) {

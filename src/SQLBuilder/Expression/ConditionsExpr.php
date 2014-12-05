@@ -11,6 +11,7 @@ use SQLBuilder\Expression\NotInExpr;
 use SQLBuilder\Expression\LikeExpr;
 use SQLBuilder\Expression\RegExpExpr;
 use SQLBuilder\Expression\NotRegExpExpr;
+use SQLBuilder\Expression\IsExpr;
 use SQLBuilder\Criteria;
 
 class Op { }
@@ -116,6 +117,9 @@ class ConditionsExpr
         // return call_user_func_array( array($this->parent,$method) , $args );
     }
 
+    public function is($exprStr, $boolean) {
+        $this->appendExprObject(new IsExpr($exprStr, $boolean));
+    }
 
     public function between($exprStr, $min, $max)
     {

@@ -1,6 +1,7 @@
 <?php
 use SQLBuilder\Expression\ConditionsExpr;
 use SQLBuilder\Criteria;
+use SQLBuilder\DataType\Unknown;
 
 class ConditionsExprTest extends PHPUnit_Framework_TestCase
 {
@@ -46,6 +47,26 @@ class ConditionsExprTest extends PHPUnit_Framework_TestCase
         is("a <> 1", $sql);
     }
 
+    public function testIs() {
+        $driver = new SQLBuilder\Driver\MySQLDriver;
+
+        $expr = new ConditionsExpr;
+        $expr->is('is_book', TRUE);
+        $sql = $expr->toSql($driver);
+        is("is_book IS TRUE", $sql);
+
+
+        $expr = new ConditionsExpr;
+        $expr->is('is_book', FALSE);
+        $sql = $expr->toSql($driver);
+        is("is_book IS FALSE", $sql);
+
+        $expr = new ConditionsExpr;
+        $expr->is('is_book', new Unknown);
+        $sql = $expr->toSql($driver);
+        is("is_book IS UNKNOWN", $sql);
+    }
+
 
     public function likeExprProvider() {
         return [
@@ -55,6 +76,8 @@ class ConditionsExprTest extends PHPUnit_Framework_TestCase
             [ Criteria::ENDS_WITH,   "John", "name LIKE '%John'" ],
         ];
     }
+
+
 
     /**
      * @dataProvider likeExprProvider

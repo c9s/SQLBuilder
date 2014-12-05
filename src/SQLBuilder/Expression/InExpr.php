@@ -3,10 +3,10 @@ namespace SQLBuilder\Expression;
 use SQLBuilder\Expression\Expr;
 use SQLBuilder\Expression\ListExpr;
 use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\ParamMarker;
-use LogicException;
 
 class InExpr extends Expr { 
+
+    public $exprStr;
 
     public $listExpr;
 
