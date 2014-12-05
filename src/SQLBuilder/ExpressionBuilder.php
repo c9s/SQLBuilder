@@ -9,6 +9,8 @@ use SQLBuilder\Expression\BinaryExpr;
 use SQLBuilder\Expression\InExpr;
 use SQLBuilder\Expression\NotInExpr;
 use SQLBuilder\Expression\LikeExpr;
+use SQLBuilder\Expression\RegExpExpr;
+use SQLBuilder\Expression\NotRegExpExpr;
 use SQLBuilder\Criteria;
 
 class Op { }
@@ -141,6 +143,10 @@ class ExpressionBuilder
     public function like($exprStr, $pat, $criteria = Criteria::CONTAINS)
     {
         $this->appendExprObject(new LikeExpr($exprStr, $pat, $criteria));
+    }
+
+    public function regExp($exprStr, $pat) {
+        $this->appendExprObject(new RegExpExpr($exprStr, $pat));
     }
 
     public function toSql(BaseDriver $driver) {
