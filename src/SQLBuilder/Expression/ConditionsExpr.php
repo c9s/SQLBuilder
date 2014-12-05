@@ -121,6 +121,11 @@ class ConditionsExpr
         $this->appendExprObject(new IsExpr($exprStr, $boolean));
     }
 
+    public function isNot($exprStr, $boolean) {
+        $this->appendExprObject(new IsNotExpr($exprStr, $boolean));
+    }
+
+
     public function between($exprStr, $min, $max)
     {
         $this->appendExprObject(new BetweenExpr($exprStr, $min, $max));
