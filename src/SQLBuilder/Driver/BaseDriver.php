@@ -3,6 +3,8 @@ namespace SQLBuilder\Driver;
 use DateTime;
 use Exception;
 use RuntimeException;
+use LogicException;
+use SQLBuilder\RawValue;
 
 abstract class BaseDriver
 {
@@ -181,33 +183,39 @@ abstract class BaseDriver
 
         if ($value === NULL ) {
             return 'NULL';
-        }
-        elseif ($value === true ) {
+        } elseif ($value === true ) {
             return 'TRUE';
-        }
-        elseif ($value === false ) {
+        } elseif ($value === false ) {
             return 'FALSE';
-        }
-        elseif (is_integer($value) ) {
+        } elseif (is_integer($value) ) {
             return intval($value);
-        }
-        elseif (is_float($value) ) {
+        } elseif (is_float($value) ) {
             return floatval($value);
-        }
-        elseif (is_string($value) ) {
+        } elseif (is_string($value) ) {
             return $this->quote($value);
-        }
-        elseif (is_object($value) ) {
+        } elseif (is_object($value) ) {
             // convert DateTime object into string
-            if( $value instanceof DateTime ) {
+            if ($value instanceof DateTime ) {
+
                 return $value->format(DateTime::ISO8601);
+
+            } elseif ($value instanceof ParamMarker) {
+
+                throw new LogicException('ParamMarker is not supported yet.');
+
+            } elseif ($value instanceof Variable) {
+
+                throw new LogicException('Variable is not supported yet.');
+
+            } else {
+                throw new LogicException('Unsupported class: ' . get_class($value));
             }
-        }
-        elseif (is_array($value) ) { // raw value
+        } elseif (is_array($value) && count($value) == 1) { // raw value
             return $value[0];
-        }
-        elseif ($value instanceof RawValue) {
+        } elseif ($value instanceof RawValue) {
             return $value[0]->__toString();
+        } else {
+            throw new LogicException('Unsupported type');
         }
         return $value;
     }

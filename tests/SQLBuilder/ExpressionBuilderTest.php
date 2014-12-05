@@ -45,14 +45,13 @@ class ExpressionBuilderTest extends PHPUnit_Framework_TestCase
         is("a <> 1", $sql);
     }
 
-    public function testExpressionBuilder()
+    public function testBetweenExpr()
     {
         $driver = new SQLBuilder\Driver\MySQLDriver;
-        $exprBuilder = new ExpressionBuilder;
-        $exprBuilder->in('b', [ 'a', 'b', 'c' ]);
-        $exprBuilder->notIn('z', [ 'a', 'b', 'c' ]);
-        $exprBuilder->between('created_at', date('c') , date('c', time() + 3600));
-        echo $exprBuilder->toSql($driver);
+        $expr = new ExpressionBuilder;
+        $expr->between('created_at', date('c') , date('c', time() + 3600));
+        $sql = $expr->toSql($driver);
+        // is("", $sql);
     }
 }
 

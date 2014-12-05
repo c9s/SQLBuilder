@@ -15,6 +15,7 @@ class InExpr extends Expr {
         $this->set = $set;
     }
 
+    // XXX: use Driver to deflate value
     public function deflateValue(BaseDriver $driver, $val) {
         if (is_int($val) || is_float($val)) {
             return var_export($val, true);
