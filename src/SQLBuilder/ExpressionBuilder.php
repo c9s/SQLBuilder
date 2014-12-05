@@ -8,6 +8,8 @@ use SQLBuilder\Expression\UnaryExpr;
 use SQLBuilder\Expression\BinaryExpr;
 use SQLBuilder\Expression\InExpr;
 use SQLBuilder\Expression\NotInExpr;
+use SQLBuilder\Expression\LikeExpr;
+use SQLBuilder\Criteria;
 
 class Op { }
 
@@ -134,6 +136,11 @@ class ExpressionBuilder
     public function notIn($exprStr, array $set)
     {
         $this->appendExprObject(new NotInExpr($exprStr, $set));
+    }
+
+    public function like($exprStr, $pat, $criteria = Criteria::CONTAINS)
+    {
+        $this->appendExprObject(new LikeExpr($exprStr, $pat, $criteria));
     }
 
     public function toSql(BaseDriver $driver) {

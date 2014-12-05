@@ -1,5 +1,6 @@
 <?php
 use SQLBuilder\ExpressionBuilder;
+use SQLBuilder\Criteria;
 
 class ExpressionBuilderTest extends PHPUnit_Framework_TestCase
 {
@@ -43,6 +44,27 @@ class ExpressionBuilderTest extends PHPUnit_Framework_TestCase
         $expr->notEqual('a', 1);
         $sql = $expr->toSql($driver);
         is("a <> 1", $sql);
+    }
+
+
+    public function likeExprProvider() {
+        return [
+            [ NULL ,                 "John", "name LIKE '%John%'" ],
+            [ Criteria::CONTAINS ,   "John", "name LIKE '%John%'" ],
+            [ Criteria::STARTS_WITH, "John", "name LIKE 'John%'" ],
+            [ Criteria::ENDS_WITH,   "John", "name LIKE '%John'" ],
+        ];
+    }
+
+    /**
+     * @dataProvider likeExprProvider
+     */
+    public function testLikeExpr($criteria, $pat, $expectedSql) {
+        $driver = new SQLBuilder\Driver\MySQLDriver;
+        $expr = new ExpressionBuilder;
+        $expr->like('name', $pat, $criteria);
+        $sql = $expr->toSql($driver);
+        is($expectedSql, $sql);
     }
 
     public function testBetweenExpr()
