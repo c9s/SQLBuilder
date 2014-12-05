@@ -1,7 +1,7 @@
 <?php
 namespace SQLBuilder;
 
-class Variable { 
+class Bind { 
 
     public $name;
 
@@ -27,5 +27,8 @@ class Variable {
         return $this->name;
     }
 
+    public function getMark() {
+        return ':' . $this->name;
+    }
 }
 

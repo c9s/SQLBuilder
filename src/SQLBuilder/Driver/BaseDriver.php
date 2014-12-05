@@ -182,17 +182,29 @@ abstract class BaseDriver
         }
 
         if ($value === NULL ) {
+
             return 'NULL';
+
         } elseif ($value === true ) {
+
             return 'TRUE';
+
         } elseif ($value === false ) {
+
             return 'FALSE';
+
         } elseif (is_integer($value) ) {
+
             return intval($value);
+
         } elseif (is_float($value) ) {
+
             return floatval($value);
+
         } elseif (is_string($value) ) {
+
             return $this->quote($value);
+
         } elseif (is_object($value) ) {
             // convert DateTime object into string
             if ($value instanceof DateTime ) {
@@ -201,19 +213,25 @@ abstract class BaseDriver
 
             } elseif ($value instanceof ParamMarker) {
 
-                return ':' . $val->name;
+                return $value->getMark();
 
-            } elseif ($value instanceof Variable) {
+            } elseif ($value instanceof Bind) {
 
-                throw new LogicException('Variable is not supported yet.');
+                // TODO: push value to the argument pool
+                return $value->getMark();
 
             } else {
                 throw new LogicException('Unsupported class: ' . get_class($value));
             }
+
         } elseif (is_array($value) && count($value) == 1) { // raw value
+
             return $value[0];
+
         } elseif ($value instanceof RawValue) {
+
             return $value[0]->__toString();
+
         } else {
             throw new LogicException('Unsupported type');
         }
