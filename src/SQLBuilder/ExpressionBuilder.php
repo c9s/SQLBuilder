@@ -149,6 +149,10 @@ class ExpressionBuilder
         $this->appendExprObject(new RegExpExpr($exprStr, $pat));
     }
 
+    public function notRegExp($exprStr, $pat) {
+        $this->appendExprObject(new NotRegExpExpr($exprStr, $pat));
+    }
+
     public function toSql(BaseDriver $driver) {
         $clauses = array();
         foreach ($this->exprs as $expr) {

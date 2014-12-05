@@ -10,7 +10,7 @@ class ListExpr extends ParamsExpr {
 
     public function toSql(BaseDriver $driver)
     {
-        return '(' . join(',', $this->renderSet($driver, $this->set)) . ')';
+        return '(' . parent::toSql($driver) . ')';
     }
 
 }
