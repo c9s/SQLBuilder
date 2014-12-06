@@ -4,9 +4,10 @@ use SQLBuilder\Expression\Expr;
 use SQLBuilder\Expression\ListExpr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\DataType\Unknown;
+use SQLBuilder\ToSqlInterface;
 use LogicException;
 
-class IsExpr extends Expr { 
+class IsExpr extends Expr implements ToSqlInterface { 
 
     public $exprStr;
 

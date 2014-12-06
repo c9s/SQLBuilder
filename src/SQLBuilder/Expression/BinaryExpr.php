@@ -2,8 +2,9 @@
 namespace SQLBuilder\Expression;
 use SQLBuilder\Expression\Expr;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\ToSqlInterface;
 
-class BinaryExpr extends Expr 
+class BinaryExpr extends Expr implements ToSqlInterface
 {
 
     public $op;

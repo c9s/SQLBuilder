@@ -5,8 +5,9 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Criteria;
 use LogicException;
+use SQLBuilder\ToSqlInterface;
 
-class RegExpExpr extends Expr { 
+class RegExpExpr extends Expr implements ToSqlInterface { 
 
     public $pat;
 
