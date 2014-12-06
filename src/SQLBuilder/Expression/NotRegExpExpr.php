@@ -4,9 +4,10 @@ use SQLBuilder\Expression\Expr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Criteria;
+use SQLBuilder\ToSqlInterface;
 use LogicException;
 
-class NotRegExpExpr extends RegExpExpr 
+class NotRegExpExpr extends RegExpExpr implements ToSqlInterface
 {
     public function toSql(BaseDriver $driver) {
         return $this->exprStr . ' NOT REGEXP ' . $driver->deflate($this->pat);

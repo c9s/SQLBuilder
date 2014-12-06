@@ -4,12 +4,13 @@ namespace SQLBuilder\Expression;
 use SQLBuilder\Expression\Expr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ParamMarker;
+use SQLBuilder\ToSqlInterface;
 use LogicException;
 
 /**
  * This class is used for handling function parameters
  */
-class ParamsExpr extends Expr { 
+class ParamsExpr extends Expr implements ToSqlInterface { 
 
     public $params;
 

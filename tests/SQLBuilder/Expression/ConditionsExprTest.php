@@ -10,7 +10,7 @@ class ConditionsExprTest extends PHPUnit_Framework_TestCase
         ok($driver);
 
         $exprBuilder = new ConditionsExpr;
-        $exprBuilder->appendExpr('a', '=', 123);
+        $exprBuilder->appendBinExpr('a', '=', 123);
         $sql = $exprBuilder->toSql($driver);
         is("a = 123",$sql);
     }

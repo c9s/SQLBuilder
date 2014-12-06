@@ -3,7 +3,7 @@ namespace SQLBuilder\Expression;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Expression\Expr;
 use SQLBuilder\Expression\BetweenExpr;
-use SQLBuilder\Expression\StringExpr;
+use SQLBuilder\Expression\RawExpr;
 use SQLBuilder\Expression\UnaryExpr;
 use SQLBuilder\Expression\BinaryExpr;
 use SQLBuilder\Expression\InExpr;
@@ -13,6 +13,7 @@ use SQLBuilder\Expression\RegExpExpr;
 use SQLBuilder\Expression\NotRegExpExpr;
 use SQLBuilder\Expression\IsExpr;
 use SQLBuilder\Criteria;
+use SQLBuilder\ToSqlInterface;
 
 class Op { }
 
@@ -41,7 +42,7 @@ class NotOp extends Op {
 }
 
 
-class ConditionsExpr
+class ConditionsExpr implements ToSqlInterface
 {
     public $exprs = array();
 
@@ -60,7 +61,11 @@ class ConditionsExpr
         $this->exprs[] = $expr;
     }
 
-    public function appendExpr($a1, $op, $a2) {
+    public function appendExpr($raw, array $args = array()) {
+        return $this->appendExprObject(new RawExpr($raw, $args));
+    }
+
+    public function appendBinExpr($a1, $op, $a2) {
         return $this->appendExprObject(new BinaryExpr($a1, $op, $a2));
     }
 

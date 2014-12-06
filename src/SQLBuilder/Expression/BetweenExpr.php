@@ -2,11 +2,12 @@
 namespace SQLBuilder\Expression;
 use SQLBuilder\Expression\Expr;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\ToSqlInterface;
 
 /**
  * http://dev.mysql.com/doc/refman/5.0/en/comparison-operators.html#operator_between
  */
-class BetweenExpr extends Expr { 
+class BetweenExpr extends Expr implements ToSqlInterface { 
 
     public $exprStr;
 

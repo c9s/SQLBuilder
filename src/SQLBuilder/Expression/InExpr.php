@@ -3,8 +3,9 @@ namespace SQLBuilder\Expression;
 use SQLBuilder\Expression\Expr;
 use SQLBuilder\Expression\ListExpr;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\ToSqlInterface;
 
-class InExpr extends Expr { 
+class InExpr extends Expr implements ToSqlInterface { 
 
     public $exprStr;
 
