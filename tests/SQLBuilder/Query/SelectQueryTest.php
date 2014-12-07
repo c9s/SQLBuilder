@@ -98,7 +98,7 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         ok($query);
         $query->select(array('id', 'name', 'phone', 'address'))
             ->from('users', 'u')
-            ->indexHint('users')->useIndex('idx_users')->forOrderBy();
+            ->indexHintOn('users')->useIndex('idx_users')->forOrderBy();
             ;
 
         $sql = $query->toSql($driver, $args);
