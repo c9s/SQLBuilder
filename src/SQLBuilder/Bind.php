@@ -3,11 +3,11 @@ namespace SQLBuilder;
 
 class Bind { 
 
-    public $name;
+    protected $name;
 
-    public $variable;
+    protected $value;
 
-    public function __construct($name, $value = NULL)
+    public function __construct($name = NULL, $value = NULL)
     {
         $this->name = $name;
         $this->value = $value;
@@ -18,7 +18,7 @@ class Bind {
         $this->value = $value;
     }
 
-    public function getValue($value)
+    public function getValue()
     {
         return $this->value;
     }
@@ -28,7 +28,10 @@ class Bind {
     }
 
     public function getMark() {
-        return ':' . $this->name;
+        if (is_string($this->name)) {
+            return ':' . $this->name;
+        }
+        return '?';
     }
 }
 

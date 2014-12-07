@@ -17,7 +17,7 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
 
     public function add(Bind $bind) { 
         $this->vars[] = $bind;
-        $this->args[$bind->getMark()] = $bind->value;
+        $this->args[$bind->getMark()] = $bind->getValue();
     }
 
     public function offsetSet($name,$value)
