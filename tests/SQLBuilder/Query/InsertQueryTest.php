@@ -14,7 +14,7 @@ class InsertQueryTest extends PHPUnit_Framework_TestCase
         $driver = new MySQLDriver;
         $args = new ArgumentArray;
         $query = new InsertQuery;
-        $query->addInsertOption('LOW_PRIORITY', 'IGNORE');
+        $query->option('LOW_PRIORITY', 'IGNORE');
         $query->insert([ 'name' => 'John', 'confirmed' => true ])->into('users');
         $query->returning('id');
         $sql = $query->toSql($driver, $args);

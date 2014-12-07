@@ -41,7 +41,7 @@ class SelectQuery implements ToSqlInterface
 {
     protected $select = array();
 
-    protected $selectOptions = array();
+    protected $options = array();
 
     protected $from = array();
 
@@ -76,15 +76,15 @@ class SelectQuery implements ToSqlInterface
      **********************************************************/
 
     public function all() {
-        return $this->addSelectOption('ALL');
+        return $this->option('ALL');
     }
 
     public function distinct() {
-        return $this->addSelectOption('DISTINCT');
+        return $this->option('DISTINCT');
     }
 
     public function distinctrow() {
-        return $this->addSelectOption('DISTINCTROW');
+        return $this->option('DISTINCTROW');
     }
 
     /********************************************************
@@ -93,23 +93,23 @@ class SelectQuery implements ToSqlInterface
      * @see http://dev.mysql.com/doc/refman/5.7/en/select.html
      *******************************************************/
     public function useSqlCache() {
-        return $this->addSelectOption('SQL_CACHE');
+        return $this->option('SQL_CACHE');
     }
 
     public function useSqlNoCache() {
-        return $this->addSelectOption('SQL_NO_CACHE');
+        return $this->option('SQL_NO_CACHE');
     }
 
     public function useSmallResult() {
-        return $this->addSelectOption('SQL_SMALL_RESULT');
+        return $this->option('SQL_SMALL_RESULT');
     }
 
     public function useBigResult() {
-        return $this->addSelectOption('SQL_BIG_RESULT');
+        return $this->option('SQL_BIG_RESULT');
     }
 
     public function useBufferResult() {
-        return $this->addSelectOption('SQL_BUFFER_RESULT');
+        return $this->option('SQL_BUFFER_RESULT');
     }
 
     /**
@@ -122,14 +122,14 @@ class SelectQuery implements ToSqlInterface
      *   [SQL_SMALL_RESULT] [SQL_BIG_RESULT] [SQL_BUFFER_RESULT]
      *   [SQL_CACHE | SQL_NO_CACHE] [SQL_CALC_FOUND_ROWS]
      *
-     * $this->addSelectOption([ 'SQL_SMALL_RESULT', 'SQL_CALC_FOUND_ROWS', 'MAX_STATEMENT_TIME = N']);
+     * $this->option([ 'SQL_SMALL_RESULT', 'SQL_CALC_FOUND_ROWS', 'MAX_STATEMENT_TIME = N']);
      */
-    public function addSelectOption($selectOption) 
+    public function option($selectOption) 
     {
         if (is_array($selectOption)) {
-            $this->selectOptions = $this->selectOptions + $selectOption;
+            $this->options = $this->options + $selectOption;
         } else {
-            $this->selectOptions = $this->selectOptions + func_get_args();
+            $this->options = $this->options + func_get_args();
         }
         return $this;
     }
@@ -333,12 +333,12 @@ class SelectQuery implements ToSqlInterface
     /****************************************************************
      * Builders
      ***************************************************************/
-    public function buildSelectOptionClause() 
+    public function buildOptionClause() 
     {
-        if (empty($this->selectOptions)) {
+        if (empty($this->options)) {
             return '';
         }
-        return join(' ', $this->selectOptions) . ' ';
+        return join(' ', $this->options) . ' ';
     }
 
     public function buildSelectClause(BaseDriver $driver, ArgumentArray $args) {
@@ -476,7 +476,7 @@ class SelectQuery implements ToSqlInterface
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'SELECT '
-            . $this->buildSelectOptionClause()
+            . $this->buildOptionClause()
             . $this->buildSelectClause($driver, $args)
             . $this->buildFromClause($driver)
             . $this->buildIndexHintClause($driver, $args)

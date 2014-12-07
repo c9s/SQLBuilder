@@ -37,7 +37,7 @@ class InsertQuery
 
     protected $values = array();
 
-    protected $insertOptions = array();
+    protected $options = array();
 
     static public $BindValues = TRUE;
 
@@ -60,12 +60,12 @@ class InsertQuery
     /*
     [LOW_PRIORITY | DELAYED | HIGH_PRIORITY]
      */
-    public function addInsertOption($opt)
+    public function option($opt)
     {
         if (is_array($opt)) {
-            $this->insertOptions = $this->insertOptions + $opt;
+            $this->options = $this->options + $opt;
         } else {
-            $this->insertOptions = $this->insertOptions + func_get_args();
+            $this->options = $this->options + func_get_args();
         }
         return $this;
     }
@@ -92,8 +92,8 @@ class InsertQuery
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'INSERT';
 
-        if (!empty($this->insertOptions)) {
-            $sql .= ' ' . join(' ', $this->insertOptions);
+        if (!empty($this->options)) {
+            $sql .= ' ' . join(' ', $this->options);
         }
 
         $sql .= ' INTO ' . $driver->quoteTableName($this->intoTable);

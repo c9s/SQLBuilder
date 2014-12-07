@@ -71,7 +71,7 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         $query = new SelectQuery;
         $query->select(array('id', 'country', 'code'))
             ->distinct()
-            ->addSelectOption('SQL_SMALL_RESULT')
+            ->option('SQL_SMALL_RESULT')
             ->from('counties', 'c')
             ;
         $sql = $query->toSql($driver, $args);
