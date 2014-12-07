@@ -249,7 +249,7 @@ class SelectQuery implements ToSqlInterface
         if (empty($this->selectOptions)) {
             return '';
         }
-        return ' ' . join(' ', $this->selectOptions);
+        return join(' ', $this->selectOptions) . ' ';
     }
 
     public function buildSelectClause(BaseDriver $driver, ArgumentArray $args) {
@@ -367,7 +367,7 @@ class SelectQuery implements ToSqlInterface
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        $sql = 'SELECT ' 
+        $sql = 'SELECT '
             . $this->buildSelectOptionClause()
             . $this->buildSelectClause($driver, $args)
             . $this->buildFromClause($driver)

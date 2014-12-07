@@ -64,6 +64,20 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         is('SELECT id, country, code FROM counties AS c GROUP BY c.code', $sql);
     }
 
+    public function testSelectOptions() 
+    {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $query = new SelectQuery;
+        $query->select(array('id', 'country', 'code'))
+            ->distinct()
+            ->addSelectOption('SQL_SMALL_RESULT')
+            ->from(array('counties' => 'c'))
+            ;
+        $sql = $query->toSql($driver, $args);
+        is('SELECT DISTINCT id, country, code FROM counties AS c', $sql);
+    }
+
     public function testGroupByWithRollUp()
     {
         $args = new ArgumentArray;
