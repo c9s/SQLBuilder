@@ -355,7 +355,7 @@ class SelectQuery implements ToSqlInterface
         return ' ' . join(', ',$cols);
     }
 
-    public function buildIndexHintClause(BaseDriver $driver, ArgumentArray $args)
+    public function buildJoinIndexHintClause(BaseDriver $driver, ArgumentArray $args)
     {
         if (empty($this->indexHintOn)) {
             return '';
@@ -380,7 +380,7 @@ class SelectQuery implements ToSqlInterface
             } elseif ( is_integer($k) || is_numeric($k) ) {
                 $sql = $driver->quoteTableName($v);
                 if ($driver instanceof MySQLDriver && isset($this->indexHintOn[$v])) {
-                    $sql .= $this->indexHintOn[$v]->toSql($driver, NULL);
+                    $sql .= $this->indexHintOn[$v]->toSql($driver, new ArgumentArray);
                 }
                 $tableRefs[] = $sql;
             }
@@ -474,8 +474,8 @@ class SelectQuery implements ToSqlInterface
             . $this->buildOptionClause()
             . $this->buildSelectClause($driver, $args)
             . $this->buildFromClause($driver)
-            . $this->buildIndexHintClause($driver, $args)
             . $this->buildJoinClause($driver, $args)
+            . $this->buildJoinIndexHintClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
             . $this->buildGroupByClause($driver, $args)
             . $this->buildHavingClause($driver, $args)
