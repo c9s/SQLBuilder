@@ -1,7 +1,7 @@
 <?php
-namespace SQLBuilder\Expression;
+namespace SQLBuilder\Expr;
 
-use SQLBuilder\Expression\Expr;
+use SQLBuilder\Expr\Expr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\ToSqlInterface;
