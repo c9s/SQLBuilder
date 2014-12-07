@@ -81,6 +81,31 @@ class SelectQuery implements ToSqlInterface
         return $this->addSelectOption('DISTINCTROW');
     }
 
+    /********************************************************
+     * MySQL Only Options
+     *
+     * @see http://dev.mysql.com/doc/refman/5.7/en/select.html
+     *******************************************************/
+    public function useSqlCache() {
+        return $this->addSelectOption('SQL_CACHE');
+    }
+
+    public function useSqlNoCache() {
+        return $this->addSelectOption('SQL_NO_CACHE');
+    }
+
+    public function useSmallResult() {
+        return $this->addSelectOption('SQL_SMALL_RESULT');
+    }
+
+    public function useBigResult() {
+        return $this->addSelectOption('SQL_BIG_RESULT');
+    }
+
+    public function useBufferResult() {
+        return $this->addSelectOption('SQL_BUFFER_RESULT');
+    }
+
     /**
      * MySQL Select Options:
      *
