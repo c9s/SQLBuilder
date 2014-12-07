@@ -233,6 +233,10 @@ abstract class BaseDriver
                 }
                 return $value->getMark();
 
+            } elseif ($value instanceof ToSqlInterface) {
+
+                return $value->toSql($this, $args);
+
             } else {
                 throw new LogicException('Unsupported class: ' . get_class($value));
             }
