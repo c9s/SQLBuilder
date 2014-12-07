@@ -95,6 +95,11 @@ class UpdateQuery implements ToSqlInterface
         return $this;
     }
 
+    public function options() {
+        $this->options = func_get_args();
+        return $this;
+    }
+
     /**
      * ->update('posts', 'p')
      * ->update('users', 'u')
