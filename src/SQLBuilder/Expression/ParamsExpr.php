@@ -5,6 +5,7 @@ use SQLBuilder\Expression\Expr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\ToSqlInterface;
+use SQLBuilder\ArgumentArray;
 use LogicException;
 
 /**
@@ -29,7 +30,7 @@ class ParamsExpr extends Expr implements ToSqlInterface {
         }, $set);
     }
 
-    public function toSql(BaseDriver $driver) 
+    public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         return join(',', $this->renderSet($driver, $this->params));
     }

@@ -6,6 +6,7 @@ use SQLBuilder\ParamMarker;
 use SQLBuilder\Criteria;
 use LogicException;
 use SQLBuilder\ToSqlInterface;
+use SQLBuilder\ArgumentArray;
 
 class RegExpExpr extends Expr implements ToSqlInterface { 
 
@@ -17,7 +18,7 @@ class RegExpExpr extends Expr implements ToSqlInterface {
         $this->pat = $pat;
     }
 
-    public function toSql(BaseDriver $driver) {
+    public function toSql(BaseDriver $driver, ArgumentArray $args) {
         return $this->exprStr . ' REGEXP ' . $driver->deflate($this->pat);
     }
 }

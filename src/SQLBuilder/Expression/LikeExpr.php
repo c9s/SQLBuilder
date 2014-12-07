@@ -4,6 +4,7 @@ use SQLBuilder\Expression\Expr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Criteria;
+use SQLBuilder\ArgumentArray;
 use LogicException;
 
 class LikeExpr extends Expr { 
@@ -19,7 +20,7 @@ class LikeExpr extends Expr {
         $this->criteria = $criteria;
     }
 
-    public function toSql(BaseDriver $driver) {
+    public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $pat = $this->pat;
 
         switch ($this->criteria) {
