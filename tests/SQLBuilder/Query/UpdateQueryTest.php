@@ -31,7 +31,7 @@ class UpdateQueryTest extends PHPUnit_Framework_TestCase
         $driver = new MySQLDriver;
         $args = new ArgumentArray;
         $query = new UpdateQuery;
-        $query->option('LOW_PRIORITY', 'IGNORE')->update('users')->set([ 
+        $query->options('LOW_PRIORITY', 'IGNORE')->update('users')->set([ 
             'name' => new Bind('name','Mary'),
         ]);
         $query->where()
