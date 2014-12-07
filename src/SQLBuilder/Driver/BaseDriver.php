@@ -246,6 +246,10 @@ abstract class BaseDriver
 
                 return $value->toSql($this, $args);
 
+            } elseif ($value instanceof RawValue) {
+
+                return $value->__toString();
+
             } else {
                 throw new LogicException('Unsupported class: ' . get_class($value));
             }
@@ -253,10 +257,6 @@ abstract class BaseDriver
         } elseif (is_array($value) && count($value) == 1) { // raw value
 
             return $value[0];
-
-        } elseif ($value instanceof RawValue) {
-
-            return $value[0]->__toString();
 
         } else {
             throw new LogicException('Unsupported type');
