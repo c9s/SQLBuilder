@@ -22,7 +22,7 @@ class Join implements ToSqlInterface
     }
 
     public function left() {
-        $this->joinType = ' LEFT ';
+        $this->joinType = 'LEFT';
         return $this;
     }
 
@@ -50,13 +50,13 @@ class Join implements ToSqlInterface
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        $sql = ' ';
+        $sql = '';
 
         if ($this->joinType) {
-            $sql .= $this->joinType;
+            $sql .= ' ' . $this->joinType;
         }
 
-        $sql .= 'JOIN ' . $this->table;
+        $sql .= ' JOIN ' . $this->table;
         if ($this->alias) {
             $sql .= ' AS ' . $this->alias;
         }

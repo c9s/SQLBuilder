@@ -47,16 +47,18 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
 
         $query->join('posts')
                 ->as('p')
+                ->left()
                 ->on('p.user_id = u.id')
                 ;
 
         $query->join('ratings')
                 ->as('r')
+                ->left()
                 ->on('r.user_id = u.id')
                 ;
 
         $sql = $query->toSql($driver, $args);
-        is('SELECT id, name, phone, address FROM users AS u JOIN posts AS p ON (p.user_id = u.id) JOIN ratings AS r ON (r.user_id = u.id)', $sql);
+        is('SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p ON (p.user_id = u.id) LEFT JOIN ratings AS r ON (r.user_id = u.id)', $sql);
     }
 }
 
