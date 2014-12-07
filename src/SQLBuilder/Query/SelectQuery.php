@@ -15,6 +15,7 @@ use SQLBuilder\Syntax\Conditions;
 use SQLBuilder\Syntax\Join;
 use SQLBuilder\Syntax\IndexHint;
 use SQLBuilder\Syntax\Paging;
+use SQLBuilder\Traits\OrderByTrait;
 
 /**
  * SQL Builder for generating CRUD SQL
