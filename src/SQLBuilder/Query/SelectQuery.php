@@ -10,6 +10,7 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
+use SQLBuilder\Expr\SelectExpr;
 use SQLBuilder\Syntax\Conditions;
 use SQLBuilder\Syntax\Join;
 
@@ -130,13 +131,19 @@ class SelectQuery implements ToSqlInterface
      ***************************************************************/
 
 
-    public function buildSelectClause(BaseDriver $driver) {
+    public function buildSelectClause(BaseDriver $driver, ArgumentArray $args) {
         $cols = array();
         foreach($this->select as $k => $v) {
+            if ($v instanceof SelectExpr) {
+                $cols[] = $v->toSql($driver, $args);
+            }
             /* "column AS alias" OR just "column" */
-            if (is_string($k)) {
+            elseif (is_string($k))
+            {
                 $cols[] = $driver->quoteColumn($k) . ' AS ' . $v;
-            } elseif ( is_integer($k) || is_numeric($k) ) {
+            }
+            elseif (is_integer($k) || is_numeric($k)) 
+            {
                 $cols[] = $driver->quoteColumn($v);
             }
         }
@@ -204,7 +211,7 @@ class SelectQuery implements ToSqlInterface
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'SELECT ' 
-            . $this->buildSelectClause($driver)
+            . $this->buildSelectClause($driver, $args)
             . $this->buildFromClause($driver)
             . $this->buildJoinClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
