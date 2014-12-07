@@ -14,10 +14,11 @@ class InsertQueryTest extends PHPUnit_Framework_TestCase
         $driver = new MySQLDriver;
         $args = new ArgumentArray;
         $query = new InsertQuery;
+        $query->addInsertOption('LOW_PRIORITY', 'IGNORE');
         $query->insert([ 'name' => 'John', 'confirmed' => true ])->into('users');
         $query->returning('id');
         $sql = $query->toSql($driver, $args);
-        is('INSERT INTO users (name,confirmed) VALUES (:p1,:p2)', $sql);
+        is('INSERT LOW_PRIORITY IGNORE INTO users (name,confirmed) VALUES (:p1,:p2)', $sql);
         is('John', $args[':p1'] ); 
         is(true, $args[':p2'] ); 
     }
