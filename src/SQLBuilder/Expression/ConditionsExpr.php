@@ -16,6 +16,7 @@ use SQLBuilder\Criteria;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use Countable;
+use Exception;
 
 class Op { }
 
@@ -121,7 +122,8 @@ class ConditionsExpr implements ToSqlInterface, Countable
             $this->exprs[] = new XorOp;
             return $this;
         }
-        // return call_user_func_array( array($this->parent,$method) , $args );
+        throw new Exception("Invalid method call: $method");
+        // return call_user_func_array(array($this->parent,$method) , $args );
     }
 
     public function is($exprStr, $boolean) {
