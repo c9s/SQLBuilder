@@ -31,14 +31,14 @@ class UpdateQueryTest extends PHPUnit_Framework_TestCase
         $driver = new MySQLDriver;
         $args = new ArgumentArray;
         $query = new UpdateQuery;
-        $query->option('IGNORE')->update('users')->set([ 
+        $query->option('LOW_PRIORITY', 'IGNORE')->update('users')->set([ 
             'name' => new Bind('name','Mary'),
         ]);
         $query->where()
             ->equal('id', new Bind('id', 3));
         ok($query);
         $sql = $query->toSql($driver, $args);
-        is('UPDATE IGNORE users SET name = :name WHERE id = :id', $sql);
+        is('UPDATE LOW_PRIORITY IGNORE users SET name = :name WHERE id = :id', $sql);
     }
 
 }

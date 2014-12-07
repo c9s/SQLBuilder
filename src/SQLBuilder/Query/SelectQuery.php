@@ -134,6 +134,13 @@ class SelectQuery implements ToSqlInterface
         return $this;
     }
 
+    public function options() {
+        $this->options = func_get_args();
+        return $this;
+    }
+
+
+
     public function select($select) {
         if (is_array($select)) {
             $this->select = $this->select + $select;
