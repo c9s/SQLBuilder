@@ -34,9 +34,12 @@ class SelectQuery implements ToSqlInterface
 
     protected $where;
 
+    protected $having;
+
     public function __construct()
     {
         $this->where = new ConditionsExpr;
+        $this->having = new ConditionsExpr;
     }
 
     public function select($select) {
@@ -82,6 +85,7 @@ class SelectQuery implements ToSqlInterface
     }
 
     public function where($expr = NULL , array $args = array()) {
+
         if (is_string($expr)) {
             $this->where->appendExpr($expr, $args);
         } else {
@@ -89,6 +93,20 @@ class SelectQuery implements ToSqlInterface
         }
         return $this->where;
     }
+
+
+    public function having($expr = NULL , array $args = array()) {
+
+        if (is_string($expr)) {
+            $this->having->appendExpr($expr, $args);
+        } else {
+            throw new LogicException("Unsupported argument type of 'where' method.");
+        }
+        return $this->having;
+    }
+
+
+
 
     /****************************************************************
      * Builders
@@ -132,11 +150,6 @@ class SelectQuery implements ToSqlInterface
     public function build()
     {
         /*
-        $sql = 'SELECT ' 
-            . $this->buildSelectColumnSql()
-            . ' FROM ' 
-            . $this->driver->quoteTableName($this->table)
-            . $this->buildTableAliasSql() 
             . $this->buildJoinSql()
             . $this->buildConditionSql()
             . $this->buildGroupBySql()
@@ -155,11 +168,19 @@ class SelectQuery implements ToSqlInterface
         return '';
     }
 
+    public function buildHavingClause(BaseDriver $driver, ArgumentArray $args) {
+        if ($this->having->hasExprs()) {
+            return ' HAVING ' . $this->having->toSql($driver, $args);
+        }
+        return '';
+    }
+
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'SELECT ' 
             . $this->buildSelectClause($driver)
             . $this->buildFromClause($driver)
             . $this->buildWhereClause($driver, $args)
+            . $this->buildHavingClause($driver, $args)
             ;
         return $sql;
     }
