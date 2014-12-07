@@ -1,8 +1,7 @@
 <?php
 namespace SQLBuilder\Syntax;
-use SQLBuilder\Syntax\Conditions;
-use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\ArgumentArray;
 use SQLBuilder\ToSqlInterface;
 use LogicException;
 
