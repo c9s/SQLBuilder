@@ -52,7 +52,7 @@ use LogicException;
         SET col_name1={expr1|DEFAULT} [, col_name2={expr2|DEFAULT}] ...
         [WHERE where_condition]
 
-
+ * @see http://dev.mysql.com/doc/refman/5.7/en/update.html for reference
  */
 class UpdateQuery implements ToSqlInterface
 {
