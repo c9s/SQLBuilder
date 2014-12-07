@@ -8,7 +8,7 @@ use LogicException;
 
 class Join implements ToSqlInterface
 {
-    public $condition;
+    public $conditions;
 
     public $alias;
 
@@ -18,7 +18,7 @@ class Join implements ToSqlInterface
     {
         $this->table = $table;
         $this->alias = $alias;
-        $this->condition = new ConditionsExpr;
+        $this->conditions = new ConditionsExpr;
     }
 
     public function left() {
@@ -41,12 +41,12 @@ class Join implements ToSqlInterface
         return $this;
     }
 
-    public function on($conditionExpr = NULL, array $args = NULL)
+    public function on($conditionExpr = NULL, array $args = array())
     {
         if (is_string($conditionExpr)){
-            $this->condition->appendRawExpr($conditionExpr, $args);
+            $this->conditions->appendExpr($conditionExpr, $args);
         }
-        return $this->condition;
+        return $this->conditions;
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
@@ -60,8 +60,8 @@ class Join implements ToSqlInterface
         if ($this->alias) {
             $sql .= ' AS ' . $this->alias;
         }
-        if ($this->condition->hasExprs()) {
-            $sql .= ' ON (' . $this->condition->toSql($driver, $args) . ')';
+        if ($this->conditions->hasExprs()) {
+            $sql .= ' ON (' . $this->conditions->toSql($driver, $args) . ')';
         }
         return $sql;
     }

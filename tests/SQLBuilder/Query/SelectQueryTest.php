@@ -20,7 +20,7 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         is('SELECT name, phone, address FROM contacts WHERE name LIKE :name', $sql);
     }
 
-    public function testJoin() {
+    public function testSimpleJoin() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $query = new SelectQuery;
@@ -33,8 +33,30 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
             ;
         $query->where('u.name LIKE :name', [ ':name' => '%John%' ]);
         $sql = $query->toSql($driver, $args);
-        is('SELECT id, name, phone, address FROM users AS u JOIN posts AS p WHERE u.name LIKE :name', $sql);
+        is('SELECT id, name, phone, address FROM users AS u JOIN posts AS p ON (p.user_id = u.id) WHERE u.name LIKE :name', $sql);
+    }
 
+    public function testMultipleJoin() {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $query = new SelectQuery;
+        ok($query);
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from(array('users' => 'u'))
+            ;
+
+        $query->join('posts')
+                ->as('p')
+                ->on('p.user_id = u.id')
+                ;
+
+        $query->join('ratings')
+                ->as('r')
+                ->on('r.user_id = u.id')
+                ;
+
+        $sql = $query->toSql($driver, $args);
+        is('SELECT id, name, phone, address FROM users AS u JOIN posts AS p ON (p.user_id = u.id) JOIN ratings AS r ON (r.user_id = u.id)', $sql);
     }
 }
 
