@@ -77,6 +77,8 @@ class UpdateQuery implements ToSqlInterface
 
     protected $limit;
 
+    protected $partitions;
+
 
     static public $BindValues = TRUE;
 
@@ -148,6 +150,16 @@ class UpdateQuery implements ToSqlInterface
         return $hint;
     }
 
+    public function partitions($partitions)
+    {
+        if (is_array($partitions)) {
+            $this->partitions = new Partition($partitions);
+        } else {
+            $this->partitions = new Partition(func_get_args());
+        }
+        return $this;
+    }
+
     public function where($expr = NULL , array $args = array()) {
         if (is_string($expr)) {
             $this->where->appendExpr($expr, $args);
@@ -216,6 +228,15 @@ class UpdateQuery implements ToSqlInterface
         }
         return ' ' . join(' ', $this->options);
     }
+
+    public function buildPartitionClause(BaseDriver $driver, ArgumentArray $args)
+    {
+        if ($this->partitions) {
+            return $this->partitions->toSql($driver, $args);
+        }
+        return '';
+    }
+
 
     public function buildSetClause(BaseDriver $driver, ArgumentArray $args) {
         $varCnt = 1;
@@ -314,6 +335,7 @@ class UpdateQuery implements ToSqlInterface
         $sql = 'UPDATE'
             . $this->buildOptionClause()
             . $this->buildUpdateTableClause($driver)
+            . $this->buildPartitionClause($driver, $args)
             . $this->buildSetClause($driver, $args)
             . $this->buildJoinIndexHintClause($driver, $args)
             . $this->buildJoinClause($driver, $args)

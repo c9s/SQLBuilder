@@ -15,6 +15,7 @@ use SQLBuilder\Syntax\Conditions;
 use SQLBuilder\Syntax\Join;
 use SQLBuilder\Syntax\IndexHint;
 use SQLBuilder\Syntax\Paging;
+use SQLBuilder\Syntax\Partition;
 use SQLBuilder\Traits\OrderByTrait;
 
 /**
@@ -45,6 +46,8 @@ class SelectQuery implements ToSqlInterface
     protected $options = array();
 
     protected $from = array();
+
+    protected $partitions;
 
     protected $where;
 
@@ -188,6 +191,16 @@ class SelectQuery implements ToSqlInterface
 
     public function getFrom() {
         return $this->from;
+    }
+
+    public function partitions($partitions)
+    {
+        if (is_array($partitions)) {
+            $this->partitions = new Partition($partitions);
+        } else {
+            $this->partitions = new Partition(func_get_args());
+        }
+        return $this;
     }
 
     public function join($table, $alias = NULL) {
@@ -391,6 +404,16 @@ class SelectQuery implements ToSqlInterface
         return '';
     }
 
+    public function buildPartitionClause(BaseDriver $driver, ArgumentArray $args)
+    {
+        if ($this->partitions) {
+            return $this->partitions->toSql($driver, $args);
+        }
+        return '';
+    }
+
+
+
     public function buildJoinClause(BaseDriver $driver, ArgumentArray $args) {
         $sql = '';
         if (!empty($this->joins)) {
@@ -474,6 +497,7 @@ class SelectQuery implements ToSqlInterface
             . $this->buildOptionClause()
             . $this->buildSelectClause($driver, $args)
             . $this->buildFromClause($driver)
+            . $this->buildPartitionClause($driver, $args)
             . $this->buildJoinClause($driver, $args)
             . $this->buildJoinIndexHintClause($driver, $args)
             . $this->buildWhereClause($driver, $args)

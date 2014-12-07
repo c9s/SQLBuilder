@@ -63,6 +63,8 @@ class DeleteQuery implements ToSqlInterface
 
     protected $limit;
 
+    protected $partitions;
+
     public function __construct()
     {
         $this->where = new Conditions;
@@ -119,6 +121,16 @@ class DeleteQuery implements ToSqlInterface
         $hint = new IndexHint;
         $this->indexHintOn[$tableRef] = $hint;
         return $hint;
+    }
+
+    public function partitions($partitions)
+    {
+        if (is_array($partitions)) {
+            $this->partitions = new Partition($partitions);
+        } else {
+            $this->partitions = new Partition(func_get_args());
+        }
+        return $this;
     }
 
     public function where($expr = NULL , array $args = array()) {
@@ -214,6 +226,15 @@ class DeleteQuery implements ToSqlInterface
         return '';
     }
 
+    public function buildPartitionClause(BaseDriver $driver, ArgumentArray $args)
+    {
+        if ($this->partitions) {
+            return $this->partitions->toSql($driver, $args);
+        }
+        return '';
+    }
+
+
     public function buildOrderByClause(BaseDriver $driver, ArgumentArray $args) {
         if (empty($this->orderByList)) {
             return '';
@@ -273,6 +294,7 @@ class DeleteQuery implements ToSqlInterface
         $sql = 'DELETE'
             . $this->buildOptionClause()
             . $this->buildDeleteTableClause($driver)
+            . $this->buildPartitionClause($driver, $args)
             . $this->buildJoinClause($driver, $args)
             . $this->buildJoinIndexHintClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
