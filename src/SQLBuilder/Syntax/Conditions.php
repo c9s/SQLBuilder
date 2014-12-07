@@ -55,10 +55,18 @@ class Conditions implements ToSqlInterface, Countable
     }
 
 
+    public function append($expr) {
+        if (count($this->exprs) > 0 && ! end($this->exprs) instanceof Op) {
+            $this->exprs[] = new AndOp;
+        }
+        $this->exprs[] = $expr;
+    }
+
     /**
      * http://dev.mysql.com/doc/refman/5.0/en/expressions.html
      */
     public function appendExprObject(Expr $expr) {
+        // We duplicate the code of checking op object to avoid the extra function call.
         if (count($this->exprs) > 0 && ! end($this->exprs) instanceof Op) {
             $this->exprs[] = new AndOp;
         }
@@ -170,6 +178,12 @@ class Conditions implements ToSqlInterface, Countable
 
     public function notRegExp($exprStr, $pat) {
         $this->appendExprObject(new NotRegExpExpr($exprStr, $pat));
+    }
+
+    public function group() {
+        $conds = new GroupConditions($this);
+        $this->append($conds);
+        return $conds;
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
