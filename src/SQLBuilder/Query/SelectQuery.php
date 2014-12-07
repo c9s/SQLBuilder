@@ -10,7 +10,7 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
-use SQLBuilder\Expression\ConditionsExpr;
+use SQLBuilder\Syntax\Conditions;
 use SQLBuilder\Syntax\Join;
 
 /**
@@ -41,8 +41,8 @@ class SelectQuery implements ToSqlInterface
 
     public function __construct()
     {
-        $this->where = new ConditionsExpr;
-        $this->having = new ConditionsExpr;
+        $this->where = new Conditions;
+        $this->having = new Conditions;
     }
 
     public function select($select) {

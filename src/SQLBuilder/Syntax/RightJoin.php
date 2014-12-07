@@ -3,9 +3,9 @@ namespace SQLBuilder\Syntax;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 
-class LeftJoin extends Join implements ToSqlInterface
+class RightJoin extends Join implements ToSqlInterface
 {
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return ' LEFT' . parent::toSql($driver, $args);
+        return ' RIGHT' . parent::toSql($driver, $args);
     }
 }

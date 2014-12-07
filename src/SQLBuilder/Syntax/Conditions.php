@@ -1,5 +1,5 @@
 <?php
-namespace SQLBuilder\Expression;
+namespace SQLBuilder\Syntax;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Expression\Expr;
 use SQLBuilder\Expression\BetweenExpr;
@@ -12,6 +12,7 @@ use SQLBuilder\Expression\LikeExpr;
 use SQLBuilder\Expression\RegExpExpr;
 use SQLBuilder\Expression\NotRegExpExpr;
 use SQLBuilder\Expression\IsExpr;
+use SQLBuilder\Expression\IsNotExpr;
 use SQLBuilder\Criteria;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
@@ -45,7 +46,7 @@ class NotOp extends Op {
 }
 
 
-class ConditionsExpr implements ToSqlInterface, Countable
+class Conditions implements ToSqlInterface, Countable
 {
     protected $exprs = array();
 
