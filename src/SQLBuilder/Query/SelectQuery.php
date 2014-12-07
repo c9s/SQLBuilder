@@ -317,6 +317,16 @@ class SelectQuery implements ToSqlInterface
     }
 
 
+    /**
+     * RETURNING is only supported on PostgreSQL.
+     *
+     * @param string $column
+     */
+    public function returning($column) {
+        $this->returning = $column;
+        return $this;
+    }
+
 
 
 
@@ -450,20 +460,6 @@ class SelectQuery implements ToSqlInterface
         return ' ' . join(' ', $this->modifiers);
     }
 
-    /** 
-     * build select sql
-     */
-    public function build()
-    {
-        /*
-            . $this->buildHavingSql()
-            . $this->buildOrderSql()
-            . $this->buildLimitSql()
-            ;
-        return $sql;
-         */
-    }
-
     public function buildWhereClause(BaseDriver $driver, ArgumentArray $args) {
         if ($this->where->hasExprs()) {
             return ' WHERE ' . $this->where->toSql($driver, $args);
@@ -532,14 +528,6 @@ class QueryBuilder
 
     public $joinExpr = array();
 
-    /**
-     * Should return result when updating or inserting?
-     *
-     * when this flag is set, the primary key will be returned.
-     *
-     * @var boolean
-     */
-    public $returning;
 
     /* sql driver */
     public $driver;
@@ -640,27 +628,6 @@ class QueryBuilder
         return $this;
     }
 
-    /**
-     * Select behavior
-     *
-     * @param array|string
-     *
-     *    ->select('column1','column2')
-     *    ->select(array('column1','column2'))
-     *    ->select(array('column1' => 'new_name'))
-     */
-    public function select($columns)
-    {
-        $args = func_get_args();
-        $columns = $args[0];
-        if ( is_array($columns) ) {
-            $this->selected = $columns;
-        } else {
-            $this->selected = $args;
-        }
-        $this->behavior = static::SELECT;
-        return $this;
-    }
 
 
     /**
@@ -675,93 +642,6 @@ class QueryBuilder
 
 
     /**
-     * delete behavior
-     *
-     */
-    public function delete()
-    {
-        $this->behavior = static::DELETE;
-        return $this;
-    }
-
-
-    /*** limit , offset methods ***/
-    public function limit($limit)
-    {
-        $this->limit = $limit;
-        return $this;
-    }
-
-
-    /**
-     * setup offset syntax
-     *
-     * @param integer $offset
-     */
-    public function offset($offset)
-    {
-        $this->offset = $offset;
-        return $this;
-    }
-
-
-
-    /**
-     * setup table alias
-     *
-     * @param string $alias table alias
-     */
-    public function alias($alias)
-    {
-        $this->alias = $alias;
-        return $this;
-    }
-
-
-    /**
-     * join table
-     *
-     * @param string $table table name
-     * @param string $type  join type, valid types are: 'left', 'right', 'inner' ..
-     *
-     * @return SQLBuilder\JoinExpression
-     */
-    public function join($table,$type = 'LEFT')
-    {
-        $this->joinExpr[] = $expr = new JoinExpression($table,$type);
-        $expr->driver = $this->driver;
-        $expr->parent = $this;
-        $expr->builder = $this;
-        return $expr;
-    }
-
-    /*** condition methods ***/
-
-
-    /**
-     * setup where condition
-     *
-     * @return SQLBuilder\Expression
-     */
-    public function where( $args = null )
-    {
-        if ( $args && is_array($args) ) {
-            return $this->whereFromArgs( $args );
-        }
-
-        if ( $this->where ) {
-            return $this->where;
-        }
-
-        $this->where = $expr = new Expression;
-        $expr->driver = $this->driver;
-        $expr->parent = $this;
-        $expr->builder = $this;
-        return $expr;
-    }
-
-
-    /**
      * build expressions from arguments for simple usage.
      *
      * @param array $args
@@ -770,8 +650,9 @@ class QueryBuilder
      */
     public function whereFromArgs($args)
     {
-        if ( null === $args || empty($args) )
+        if (null === $args || empty($args)) {
             return $this;
+        }
 
         $expr = $this->where();
         foreach( $args as $k => $v ) {
@@ -973,55 +854,6 @@ class QueryBuilder
 
 
 
-    public function buildInsertSql()
-    {
-        /* check required arguments */
-        $columns = array();
-        $values = array();
-
-        /* build sql arguments */
-
-        if ( $this->driver->paramMarker ) {
-            foreach( $this->insert as $k => $v ) {
-                if (is_integer($k))
-                    $k = $v;
-                if (is_array($v)) {
-                    // just interpolate the raw value
-                    $columns[] = $this->driver->quoteColumn($k);
-                    $values[] = $v[0];
-                } elseif ($v instanceof RawValue) {
-                    $columns[] = $this->driver->quoteColumn($k);
-                    $values[] = $v;
-                } else {
-                    $columns[] = $this->driver->quoteColumn($k);
-                    $newK = $this->setPlaceHolderVar( $k , $v );
-                    $values[] = $this->driver->getParamMarker($newK);
-                }
-            }
-
-        } else {
-            foreach( $this->insert as $k => $v ) {
-                if (is_integer($k)) {
-                    $k = $v;
-                }
-                $columns[] = $this->driver->quoteColumn( $k );
-                $values[]  = $this->driver->deflate($v);
-            }
-        }
-
-        $sql = 'INSERT INTO ' . $this->driver->quoteTableName($this->table)
-            . ' ('
-            . join(',',$columns) 
-            . ') VALUES (' 
-            . join(',', $values ) 
-            . ')';
-            ;
-
-        if ($this->returning && ($this->driver instanceof PgSQLDriver) ) {
-            $sql .= ' RETURNING ' . $this->driver->quoteColumn($this->returning);
-        }
-        return $sql;
-    }
 
     public function buildJoinSql()
     {
