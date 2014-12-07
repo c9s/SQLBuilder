@@ -1,6 +1,6 @@
 <?php
 namespace SQLBuilder\Syntax;
-use SQLBuilder\Expression\ConditionsExpr;
+use SQLBuilder\Syntax\Conditions;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ToSqlInterface;
@@ -18,7 +18,7 @@ class Join implements ToSqlInterface
     {
         $this->table = $table;
         $this->alias = $alias;
-        $this->conditions = new ConditionsExpr;
+        $this->conditions = new Conditions;
     }
 
     public function left() {
@@ -57,6 +57,7 @@ class Join implements ToSqlInterface
         }
 
         $sql .= ' JOIN ' . $this->table;
+
         if ($this->alias) {
             $sql .= ' AS ' . $this->alias;
         }

@@ -1,17 +1,17 @@
 <?php
-use SQLBuilder\Expression\ConditionsExpr;
+use SQLBuilder\Syntax\Conditions;
 use SQLBuilder\Criteria;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\DataType\Unknown;
 
-class ConditionsExprTest extends PHPUnit_Framework_TestCase
+class ConditionsTest extends PHPUnit_Framework_TestCase
 {
     public function testAppendExpr() {
         $args = new ArgumentArray;
         $driver = new SQLBuilder\Driver\MySQLDriver;
         ok($driver);
 
-        $exprBuilder = new ConditionsExpr;
+        $exprBuilder = new Conditions;
         $exprBuilder->appendBinExpr('a', '=', 123);
         $sql = $exprBuilder->toSql($driver, $args);
         is("a = 123",$sql);
@@ -20,7 +20,7 @@ class ConditionsExprTest extends PHPUnit_Framework_TestCase
     public function testInExpr() {
         $args = new ArgumentArray;
         $driver = new SQLBuilder\Driver\MySQLDriver;
-        $expr = new ConditionsExpr;
+        $expr = new Conditions;
         $expr->in('b', [ 'a', 'b', 'c' ]);
         $sql = $expr->toSql($driver, $args);
         is("b IN ('a','b','c')", $sql);
@@ -29,7 +29,7 @@ class ConditionsExprTest extends PHPUnit_Framework_TestCase
     public function testNotInExpr() {
         $args = new ArgumentArray;
         $driver = new SQLBuilder\Driver\MySQLDriver;
-        $expr = new ConditionsExpr;
+        $expr = new Conditions;
         $expr->notIn('z', [ 'a', 'b', 'c' ]);
         $sql = $expr->toSql($driver, $args);
         is("z NOT IN ('a','b','c')", $sql);
@@ -38,7 +38,7 @@ class ConditionsExprTest extends PHPUnit_Framework_TestCase
     public function testEqual() {
         $args = new ArgumentArray;
         $driver = new SQLBuilder\Driver\MySQLDriver;
-        $expr = new ConditionsExpr;
+        $expr = new Conditions;
         $expr->equal('a', 1);
         $sql = $expr->toSql($driver, $args);
         is("a = 1", $sql);
@@ -47,7 +47,7 @@ class ConditionsExprTest extends PHPUnit_Framework_TestCase
     public function testNotEqual() {
         $args = new ArgumentArray;
         $driver = new SQLBuilder\Driver\MySQLDriver;
-        $expr = new ConditionsExpr;
+        $expr = new Conditions;
         $expr->notEqual('a', 1);
         $sql = $expr->toSql($driver, $args);
         is("a <> 1", $sql);
@@ -57,20 +57,20 @@ class ConditionsExprTest extends PHPUnit_Framework_TestCase
         $args = new ArgumentArray;
         $driver = new SQLBuilder\Driver\MySQLDriver;
 
-        $expr = new ConditionsExpr;
+        $expr = new Conditions;
         $expr->isNot('is_book', TRUE);
         $sql = $expr->toSql($driver, $args);
         is("is_book IS NOT TRUE", $sql);
 
 
         $args = new ArgumentArray;
-        $expr = new ConditionsExpr;
+        $expr = new Conditions;
         $expr->isNot('is_book', FALSE);
         $sql = $expr->toSql($driver, $args);
         is("is_book IS NOT FALSE", $sql);
 
         $args = new ArgumentArray;
-        $expr = new ConditionsExpr;
+        $expr = new Conditions;
         $expr->isNot('is_book', new Unknown);
         $sql = $expr->toSql($driver, $args);
         is("is_book IS NOT UNKNOWN", $sql);
@@ -80,19 +80,19 @@ class ConditionsExprTest extends PHPUnit_Framework_TestCase
         $args = new ArgumentArray;
         $driver = new SQLBuilder\Driver\MySQLDriver;
 
-        $expr = new ConditionsExpr;
+        $expr = new Conditions;
         $expr->is('is_book', TRUE);
         $sql = $expr->toSql($driver, $args);
         is("is_book IS TRUE", $sql);
 
         $args = new ArgumentArray;
-        $expr = new ConditionsExpr;
+        $expr = new Conditions;
         $expr->is('is_book', FALSE);
         $sql = $expr->toSql($driver, $args);
         is("is_book IS FALSE", $sql);
 
         $args = new ArgumentArray;
-        $expr = new ConditionsExpr;
+        $expr = new Conditions;
         $expr->is('is_book', new Unknown);
         $sql = $expr->toSql($driver, $args);
         is("is_book IS UNKNOWN", $sql);
@@ -116,7 +116,7 @@ class ConditionsExprTest extends PHPUnit_Framework_TestCase
     public function testLikeExpr($criteria, $pat, $expectedSql) {
         $args = new ArgumentArray;
         $driver = new SQLBuilder\Driver\MySQLDriver;
-        $expr = new ConditionsExpr;
+        $expr = new Conditions;
         $expr->like('name', $pat, $criteria);
         $sql = $expr->toSql($driver, $args);
         is($expectedSql, $sql);
@@ -126,7 +126,7 @@ class ConditionsExprTest extends PHPUnit_Framework_TestCase
     {
         $args = new ArgumentArray;
         $driver = new SQLBuilder\Driver\MySQLDriver;
-        $expr = new ConditionsExpr;
+        $expr = new Conditions;
         $expr->between('created_at', date('c') , date('c', time() + 3600));
         $sql = $expr->toSql($driver, $args);
         // is("", $sql);
