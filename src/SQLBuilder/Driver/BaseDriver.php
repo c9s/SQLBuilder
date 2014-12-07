@@ -179,10 +179,6 @@ abstract class BaseDriver
      */
     public function deflate($value, ArgumentArray $args = NULL)
     {
-        if (!$args) {
-            $args = new ArgumentArray;
-        }
-
         if ($value instanceof Closure) {
             return call_user_func($value);
         }
@@ -224,14 +220,16 @@ abstract class BaseDriver
 
             } elseif ($value instanceof ParamMarker) {
 
-                $args->add(new Bind( $value->getMark(), NULL));
-
+                if ($args) {
+                    $args->add(new Bind( $value->getMark(), NULL));
+                }
                 return $value->getMark();
 
             } elseif ($value instanceof Bind) {
-                $args->add($value);
 
-                // TODO: push value to the argument pool
+                if ($args) {
+                    $args->add($value);
+                }
                 return $value->getMark();
 
             } else {
