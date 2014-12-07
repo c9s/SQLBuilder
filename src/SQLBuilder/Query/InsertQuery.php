@@ -39,6 +39,8 @@ class InsertQuery
 
     protected $options = array();
 
+    protected $partitions;
+
     static public $BindValues = TRUE;
 
     /**
@@ -73,7 +75,7 @@ class InsertQuery
     public function options()
     {
         $this->options = func_get_args();
-        return $This;
+        return $this;
     }
 
 
@@ -96,6 +98,25 @@ class InsertQuery
         return $this;
     }
 
+    public function partitions($partitions)
+    {
+        if (is_array($partitions)) {
+            $this->partitions = new Partition($partitions);
+        } else {
+            $this->partitions = new Partition(func_get_args());
+        }
+        return $this;
+    }
+
+    public function buildPartitionClause(BaseDriver $driver, ArgumentArray $args)
+    {
+        if ($this->partitions) {
+            return $this->partitions->toSql($driver, $args);
+        }
+        return '';
+    }
+
+
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'INSERT';
 
@@ -104,6 +125,9 @@ class InsertQuery
         }
 
         $sql .= ' INTO ' . $driver->quoteTableName($this->intoTable);
+
+        // append partition clause if needed.
+        $sql .= $this->buildPartitionClause($driver, $args);
 
         $valuesClauses = array();
         $varCnt = 1;
