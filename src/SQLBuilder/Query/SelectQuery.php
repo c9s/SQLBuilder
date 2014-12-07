@@ -14,6 +14,7 @@ use SQLBuilder\Expr\SelectExpr;
 use SQLBuilder\Syntax\Conditions;
 use SQLBuilder\Syntax\Join;
 use SQLBuilder\Syntax\IndexHint;
+use SQLBuilder\Syntax\Paging;
 
 /**
  * SQL Builder for generating CRUD SQL
@@ -58,10 +59,15 @@ class SelectQuery implements ToSqlInterface
 
     protected $indexHintOn = array();
 
+    protected $paging;
+
+    protected $modifiers = array();
+
     public function __construct()
     {
         $this->where = new Conditions;
         $this->having = new Conditions;
+        $this->paging = new Paging;
     }
 
 
@@ -257,6 +263,31 @@ class SelectQuery implements ToSqlInterface
     }
 
 
+
+
+    /********************************************************
+     * LIMIT and OFFSET clauses
+     *
+     *******************************************************/
+    public function limit($limit)
+    {
+        $this->paging->limit($limit);
+        return $this;
+    }
+
+    public function offset($offset)
+    {
+        $this->paging->offset($offset);
+        return $this;
+    }
+
+    public function page($page, $pageSize = 10)
+    {
+        $this->paging->page($page, $pageSize);
+        return $this;
+    }
+
+
     /**
      * Functions support GROUP BY
      *
@@ -276,6 +307,16 @@ class SelectQuery implements ToSqlInterface
         }
         return $this;
     }
+
+    /**
+     * Note: SELECT FOR UPDATE does not work when used in select statement with a subquery.
+     */
+    public function forUpdate() {
+        $this->modifiers[] = 'FOR UPDATE';
+        return $this;
+    }
+
+
 
 
 
@@ -395,6 +436,19 @@ class SelectQuery implements ToSqlInterface
         return ' ORDER BY ' . join(', ', $clauses);
     }
 
+    public function buildLimitClause(BaseDriver $driver, ArgumentArray $args)
+    {
+        return $this->paging->toSql($driver, $args);
+    }
+
+
+    public function buildModifierClause()
+    {
+        if (empty($this->modifiers)) {
+            return '';
+        }
+        return ' ' . join(' ', $this->modifiers);
+    }
 
     /** 
      * build select sql
@@ -435,6 +489,8 @@ class SelectQuery implements ToSqlInterface
             . $this->buildGroupByClause($driver, $args)
             . $this->buildHavingClause($driver, $args)
             . $this->buildOrderByClause($driver, $args)
+            . $this->buildLimitClause($driver, $args)
+            . $this->buildModifierClause()
             ;
         return $sql;
     }
