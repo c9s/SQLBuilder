@@ -232,7 +232,7 @@ class UpdateQuery implements ToSqlInterface
         return ' SET ' . join(', ', $setClauses);
     }
 
-    public function buildIndexHintClause(BaseDriver $driver, ArgumentArray $args)
+    public function buildJoinIndexHintClause(BaseDriver $driver, ArgumentArray $args)
     {
         if (empty($this->indexHintOn)) {
             return '';
@@ -315,7 +315,7 @@ class UpdateQuery implements ToSqlInterface
             . $this->buildOptionClause()
             . $this->buildUpdateTableClause($driver)
             . $this->buildSetClause($driver, $args)
-            . $this->buildIndexHintClause($driver, $args)
+            . $this->buildJoinIndexHintClause($driver, $args)
             . $this->buildJoinClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
             . $this->buildOrderByClause($driver, $args)
