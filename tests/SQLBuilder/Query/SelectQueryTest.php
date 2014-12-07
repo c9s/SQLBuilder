@@ -50,6 +50,34 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         is('SELECT id, name, phone, address FROM users AS u ORDER BY rand(), id DESC', $sql);
     }
 
+
+    public function testGroupBy()
+    {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $query = new SelectQuery;
+        $query->select(array('id', 'country', 'code'))
+            ->from(array('counties' => 'c'))
+            ->groupBy('c.code')
+            ;
+        $sql = $query->toSql($driver, $args);
+        is('SELECT id, country, code FROM counties AS c GROUP BY c.code', $sql);
+    }
+
+    public function testGroupByWithRollUp()
+    {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $query = new SelectQuery;
+        $query->select(array('id', 'country', 'code'))
+            ->from(array('counties' => 'c'))
+            ->groupBy('c.code', [ 'WITH ROLLUP' ])
+            ;
+        $sql = $query->toSql($driver, $args);
+        is('SELECT id, country, code FROM counties AS c GROUP BY c.code WITH ROLLUP', $sql);
+    }
+
+
     public function testMultipleJoin() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
