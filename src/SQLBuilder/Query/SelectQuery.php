@@ -66,6 +66,17 @@ class SelectQuery implements ToSqlInterface
      * Accessors
      **********************************************************/
 
+    public function all() {
+        return $this->addSelectOption('ALL');
+    }
+
+    public function distinct() {
+        return $this->addSelectOption('DISTINCT');
+    }
+
+    public function distinctrow() {
+        return $this->addSelectOption('DISTINCTROW');
+    }
 
     /**
      * MySQL Select Options:
