@@ -70,6 +70,13 @@ class InsertQuery
         return $this;
     }
 
+    public function options()
+    {
+        $this->options = func_get_args();
+        return $This;
+    }
+
+
     public function into($table) {
         $this->intoTable = $table;
         return $this;
