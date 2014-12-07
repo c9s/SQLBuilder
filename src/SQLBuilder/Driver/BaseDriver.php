@@ -8,6 +8,7 @@ use SQLBuilder\RawValue;
 use SQLBuilder\DataType\Unknown;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\ParamMarker;
+use SQLBuilder\Bind;
 
 abstract class BaseDriver
 {
@@ -107,6 +108,14 @@ abstract class BaseDriver
     }
 
 
+    public function quoteColumns(array $columns)
+    {
+        $quotedColumns = array();
+        foreach($columns as $col) {
+            $quotedColumns[] = $this->quoteColumn($col);
+        }
+        return $quotedColumns;
+    }
 
     /**
      * Check driver option to quote column name
