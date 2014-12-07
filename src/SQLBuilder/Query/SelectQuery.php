@@ -39,6 +39,8 @@ class SelectQuery implements ToSqlInterface
 {
     protected $select = array();
 
+    protected $selectOptions = array();
+
     protected $from = array();
 
     protected $where;
@@ -64,6 +66,28 @@ class SelectQuery implements ToSqlInterface
      * Accessors
      **********************************************************/
 
+
+    /**
+     * MySQL Select Options:
+     *
+     *   [ALL | DISTINCT | DISTINCTROW ]
+     *   [HIGH_PRIORITY]
+     *   [MAX_STATEMENT_TIME = N]
+     *   [STRAIGHT_JOIN]
+     *   [SQL_SMALL_RESULT] [SQL_BIG_RESULT] [SQL_BUFFER_RESULT]
+     *   [SQL_CACHE | SQL_NO_CACHE] [SQL_CALC_FOUND_ROWS]
+     *
+     * $this->addSelectOption([ 'SQL_SMALL_RESULT', 'SQL_CALC_FOUND_ROWS', 'MAX_STATEMENT_TIME = N']);
+     */
+    public function addSelectOption($selectOption) 
+    {
+        if (is_array($selectOption)) {
+            $this->selectOptions = $this->selectOptions + $selectOption;
+        } else {
+            $this->selectOptions = $this->selectOptions + func_get_args();
+        }
+        return $this;
+    }
 
     public function select($select) {
         if (is_array($select)) {
@@ -209,7 +233,13 @@ class SelectQuery implements ToSqlInterface
     /****************************************************************
      * Builders
      ***************************************************************/
-
+    public function buildSelectOptionClause() 
+    {
+        if (empty($this->selectOptions)) {
+            return '';
+        }
+        return ' ' . join(' ', $this->selectOptions);
+    }
 
     public function buildSelectClause(BaseDriver $driver, ArgumentArray $args) {
         $cols = array();
@@ -327,6 +357,7 @@ class SelectQuery implements ToSqlInterface
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'SELECT ' 
+            . $this->buildSelectOptionClause()
             . $this->buildSelectClause($driver, $args)
             . $this->buildFromClause($driver)
             . $this->buildJoinClause($driver, $args)
