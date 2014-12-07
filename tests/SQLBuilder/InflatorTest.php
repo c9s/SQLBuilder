@@ -5,9 +5,10 @@ class InflatorTest extends PHPUnit_Framework_TestCase
 {
     function testBool()
     {
+        $args = new SQLBuilder\ArgumentArray;
         $driver = new SQLBuilder\Driver\MySQLDriver;
-        is( 'TRUE', $driver->deflate( true ) );
-        is( 'FALSE', $driver->deflate( false ) );
+        is( 'TRUE', $driver->deflate( true , $args) );
+        is( 'FALSE', $driver->deflate( false , $args) );
     }
 
     function testNumber()

@@ -19,6 +19,6 @@ class RegExpExpr extends Expr implements ToSqlInterface {
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return $this->exprStr . ' REGEXP ' . $driver->deflate($this->pat);
+        return $this->exprStr . ' REGEXP ' . $driver->deflate($this->pat, $args);
     }
 }

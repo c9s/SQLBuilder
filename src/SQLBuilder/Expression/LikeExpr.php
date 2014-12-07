@@ -21,7 +21,10 @@ class LikeExpr extends Expr {
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        $pat = $this->pat;
+        // XXX: $pat can be a Bind object
+        $isBind = $this->pat instanceof Bind;
+
+        $pat = $isBind ? $this->pat->value : $this->pat;
 
         switch ($this->criteria) {
         case Criteria::CONTAINS:
@@ -43,7 +46,13 @@ class LikeExpr extends Expr {
             $pat = '%' . $this->pat . '%';
             break;
         }
-        return $this->exprStr . ' LIKE ' . $driver->deflate($pat);
+
+        if ($isBind) {
+            $this->pat->setValue($pat);
+        } else {
+            $this->pat = $pat;
+        }
+        return $this->exprStr . ' LIKE ' . $driver->deflate($this->pat, $args);
     }
 
 }

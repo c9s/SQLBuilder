@@ -6,6 +6,7 @@ use RuntimeException;
 use LogicException;
 use SQLBuilder\RawValue;
 use SQLBuilder\DataType\Unknown;
+use SQLBuilder\ArgumentArray;
 
 abstract class BaseDriver
 {
@@ -176,8 +177,12 @@ abstract class BaseDriver
      * FOr sqlite sql statement:
      * we use 1 or 0 for boolean type.
      */
-    public function deflate($value)
+    public function deflate($value, ArgumentArray $args = NULL)
     {
+        if (!$args) {
+            $args = new ArgumentArray;
+        }
+
         if ($value instanceof Closure) {
             return call_user_func($value);
         }
@@ -219,9 +224,12 @@ abstract class BaseDriver
 
             } elseif ($value instanceof ParamMarker) {
 
+                $args->add(new Bind( $value->getMark(), NULL));
+
                 return $value->getMark();
 
             } elseif ($value instanceof Bind) {
+                $args->add($value);
 
                 // TODO: push value to the argument pool
                 return $value->getMark();

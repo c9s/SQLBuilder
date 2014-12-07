@@ -18,6 +18,9 @@ class RawExpr extends Expr implements ToSqlInterface
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
+        foreach($this->args as $a) {
+            $args->add($a);
+        }
         return $this->str;
     }
 }
