@@ -13,6 +13,7 @@ use SQLBuilder\ParamMarker;
 use SQLBuilder\Expr\SelectExpr;
 use SQLBuilder\Syntax\Conditions;
 use SQLBuilder\Syntax\Join;
+use SQLBuilder\Syntax\IndexHint;
 
 /**
  * SQL Builder for generating CRUD SQL
@@ -54,6 +55,8 @@ class SelectQuery implements ToSqlInterface
     protected $groupByList = array();
 
     protected $groupByModifiers = array();
+
+    protected $indexHints = array();
 
     public function __construct()
     {
@@ -122,11 +125,15 @@ class SelectQuery implements ToSqlInterface
         return $this->select;
     }
 
-    public function from($table) {
-        if (is_array($table)) {
-            $this->from = $this->from + $table;
+    /**
+     * ->from('posts', 'p')
+     * ->from('users', 'u')
+     */
+    public function from($table, $alias = NULL) {
+        if ($alias) {
+            $this->from[$table] = $alias;
         } else {
-            $this->from = $this->from + func_get_args();
+            $this->from[] = $table;
         }
         return $this;
     }
@@ -156,6 +163,12 @@ class SelectQuery implements ToSqlInterface
 
     public function getLastJoin() {
         return end($this->joins);
+    }
+
+    public function indexHint($tableRef) {
+        $hint = new IndexHint;
+        $this->indexHints[$tableRef] = $hint;
+        return $hint;
     }
 
     public function where($expr = NULL , array $args = array()) {
@@ -271,14 +284,34 @@ class SelectQuery implements ToSqlInterface
         return join(', ',$cols);
     }
 
+    public function buildIndexHintClause(BaseDriver $driver, ArgumentArray $args)
+    {
+        if (empty($this->indexHints)) {
+            return '';
+        }
+        $clauses = array();
+        foreach($this->indexHints as $hint) {
+            $clauses[] = $hint->toSql($driver, $args);
+        }
+        return ' ' . join(' ', $clauses);
+    }
+
     public function buildFromClause(BaseDriver $driver) {
         $tableRefs = array();
         foreach($this->from as $k => $v) {
             /* "column AS alias" OR just "column" */
             if (is_string($k)) {
-                $tableRefs[] = $driver->quoteTableName($k) . ' AS ' . $v;
+                $sql = $driver->quoteTableName($k) . ' AS ' . $v;
+                if (isset($this->indexHints[$k])) {
+                    $sql .= $this->indexHints[$k]->toSql($driver, new ArgumentArray);
+                }
+                $tableRefs[] = $sql;
             } elseif ( is_integer($k) || is_numeric($k) ) {
-                $tableRefs[] = $driver->quoteTableName($v);
+                $sql = $driver->quoteTableName($v);
+                if (isset($this->indexHints[$v])) {
+                    $sql .= $this->indexHints[$v]->toSql($driver, NULL);
+                }
+                $tableRefs[] = $sql;
             }
         }
         if (!empty($tableRefs)) {
@@ -371,6 +404,7 @@ class SelectQuery implements ToSqlInterface
             . $this->buildSelectOptionClause()
             . $this->buildSelectClause($driver, $args)
             . $this->buildFromClause($driver)
+            . $this->buildIndexHintClause($driver, $args)
             . $this->buildJoinClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
             . $this->buildGroupByClause($driver, $args)
