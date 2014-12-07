@@ -5,9 +5,10 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Criteria;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\ToSqlInterface;
 use LogicException;
 
-class LikeExpr extends Expr { 
+class LikeExpr extends Expr implements ToSqlInterface { 
 
     public $pat;
 

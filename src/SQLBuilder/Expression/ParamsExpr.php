@@ -10,6 +10,8 @@ use LogicException;
 
 /**
  * This class is used for handling function parameters
+ *
+ * SELECT FUNC(param1, param2, param3)...
  */
 class ParamsExpr extends Expr implements ToSqlInterface { 
 
