@@ -7,6 +7,7 @@ use LogicException;
 use SQLBuilder\RawValue;
 use SQLBuilder\DataType\Unknown;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\ParamMarker;
 
 abstract class BaseDriver
 {
