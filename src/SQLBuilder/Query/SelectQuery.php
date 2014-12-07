@@ -206,7 +206,7 @@ class SelectQuery implements ToSqlInterface
 
         if (is_string($expr)) {
             $this->where->appendExpr($expr, $args);
-        } else {
+        } elseif (!is_null($expr)) {
             throw new LogicException("Unsupported argument type of 'where' method.");
         }
         return $this->where;
@@ -317,19 +317,6 @@ class SelectQuery implements ToSqlInterface
     }
 
 
-    /**
-     * RETURNING is only supported on PostgreSQL.
-     *
-     * @param string $column
-     */
-    public function returning($column) {
-        $this->returning = $column;
-        return $this;
-    }
-
-
-
-
     /****************************************************************
      * Builders
      ***************************************************************/
@@ -338,7 +325,7 @@ class SelectQuery implements ToSqlInterface
         if (empty($this->options)) {
             return '';
         }
-        return join(' ', $this->options) . ' ';
+        return ' ' . join(' ', $this->options);
     }
 
     public function buildSelectClause(BaseDriver $driver, ArgumentArray $args) {
@@ -357,7 +344,7 @@ class SelectQuery implements ToSqlInterface
                 $cols[] = $driver->quoteColumn($v);
             }
         }
-        return join(', ',$cols);
+        return ' ' . join(', ',$cols);
     }
 
     public function buildIndexHintClause(BaseDriver $driver, ArgumentArray $args)
@@ -475,7 +462,7 @@ class SelectQuery implements ToSqlInterface
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        $sql = 'SELECT '
+        $sql = 'SELECT'
             . $this->buildOptionClause()
             . $this->buildSelectClause($driver, $args)
             . $this->buildFromClause($driver)
@@ -661,19 +648,6 @@ class QueryBuilder
         return $this;
     }
 
-
-    /**
-     * set returning column data when inserting data
-     *
-     * postgresql-only 
-     *
-     * @param string $column column name
-     * */
-    public function returning($column)
-    {
-        $this->returning = $column;
-        return $this;
-    }
 
 
     /**
