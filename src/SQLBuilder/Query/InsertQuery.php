@@ -1,25 +1,40 @@
 <?php
 namespace SQLBuilder\Query;
-use Exception;
-use SQLBuilder\RawValue;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
-use SQLBuilder\ToSqlInterface;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Bind;
-use SQLBuilder\ParamMarker;
 use SQLBuilder\Expr\SelectExpr;
+
 use SQLBuilder\Syntax\Conditions;
 use SQLBuilder\Syntax\Join;
 use SQLBuilder\Syntax\IndexHint;
 use SQLBuilder\Syntax\Paging;
 
+use SQLBuilder\RawValue;
+use SQLBuilder\ToSqlInterface;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\Bind;
+use SQLBuilder\ParamMarker;
+use Exception;
+use InvalidArgumentException;
+
+/**
+ * > INSERT INTO tbl_name (a,b,c) VALUES (1,2,3),(4,5,6),(7,8,9);
+ */
 class InsertQuery
 {
 
+    /**
+     * insert into table
+     *
+     * @param string table name.
+     */
+    protected $intoTable;
+
     protected $values = array();
+
+    static public $BindValues = TRUE;
 
     /**
      * Should return result when updating or inserting?
@@ -37,66 +52,64 @@ class InsertQuery
         return $this;
     }
 
-    public function buildValuesClause(BaseDriver $driver, ArgumentArray $args)
-    {
-        $sql = '';
-        $clauses = array();
-        $columns = array();
-        foreach($this->values as $values) {
-            $values = array();
-            foreach($values as $k => $v ) {
-                if (is_integer($k)) {
-                    $k = $v;
-                }
-
-                $columns[] = $driver->quoteColumn($k);
-                $values[] = $v[0];
-
-                if (is_array($v)) {
-                    // Just interpolate the raw value
-                } elseif ($v instanceof RawValue) {
-                    $columns[] = $driver->quoteColumn($k);
-                    $values[] = $v;
-                } else {
-                    $columns[] = $driver->quoteColumn($k);
-                    $newK = $this->setPlaceHolderVar( $k , $v );
-                    $values[] = $driver->getParamMarker($newK);
-                }
-
-                /*
-                foreach( $this->insert as $k => $v ) {
-                    if (is_integer($k)) {
-                        $k = $v;
-                    }
-                    $columns[] = $this->driver->quoteColumn( $k );
-                    $values[]  = $this->driver->deflate($v);
-                }
-                */
-            }
-            $clause = join(',', $columns);
-            $clauses[] = $clause;
-        }
-
-        $sql = 'INSERT INTO ' . $this->driver->quoteTableName($this->table)
-            . ' ('
-            . join(',',$columns) 
-            . ') VALUES (' 
-            . join(',', $values ) 
-            . ')';
-            ;
-
-        if ($this->returning && ($this->driver instanceof PgSQLDriver) ) {
-            $sql .= ' RETURNING ' . $this->driver->quoteColumn($this->returning);
-        }
-        return $sql;
+    public function into($table) {
+        $this->intoTable = $table;
+        return $this;
     }
 
-    public function buildReturningClause(BaseDriver $driver)
-    {
-        if ($driver instanceof PgSQLDriver) {
-            return 'RETURNING ' . $this->returning;
+    public function getColumnNames(BaseDriver $driver) {
+        return array_map(function($col) use($driver) { 
+            if (is_numeric($col)) {
+                throw new InvalidArgumentException("Invalid column name: $col");
+            }
+            return $driver->quoteColumn($col);
+        }, array_keys($this->values[0]));
+    }
+
+    public function returning($returningColumns) {
+        $this->returning = $returningColumns;
+        return $this;
+    }
+
+    public function toSql(BaseDriver $driver, ArgumentArray $args) {
+        $sql = '';
+        $valuesClauses = array();
+
+        $varCnt = 1;
+
+        // build columns
+        $columns = $this->getColumnNames($driver);
+
+        foreach ($this->values as $values) {
+            $deflatedValues = array();
+            foreach ($values as $value) {
+                if ($value instanceof RawValue) {
+                    $deflatedValues[] = $value->getRawValue();
+                } elseif (static::$BindValues && (!$value instanceof Bind && !$value instanceof ParamMarker)) {
+                    $deflatedValues[] = $driver->deflate(new Bind("p" . ($varCnt++), $value), $args);
+                } else {
+                    $deflatedValues[] = $driver->deflate($value, $args);
+                }
+            }
+            $valuesClauses[] = '(' . join(',', $deflatedValues) . ')';
         }
-        return '';
+
+        $sql = 'INSERT INTO ' . $driver->quoteTableName($this->intoTable)
+            . ' (' . join(',',$columns) . ')'
+            . ' VALUES '
+            . join(', ', $valuesClauses);
+            ;
+
+        // Check if RETURNING is supported
+        if ($this->returning && ($driver instanceof PgSQLDriver) ) {
+            // The "RETURNING" can be an array.
+            if (is_array($this->returning)) {
+                $sql .= ' RETURNING ' . join(',', $driver->quoteColumns($this->returning));
+            } else {
+                $sql .= ' RETURNING ' . $driver->quoteColumn($this->returning);
+            }
+        }
+        return $sql;
     }
 }
 
