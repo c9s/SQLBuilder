@@ -21,6 +21,9 @@ use InvalidArgumentException;
 
 /**
  * > INSERT INTO tbl_name (a,b,c) VALUES (1,2,3),(4,5,6),(7,8,9);
+ *
+ *
+ * @see MySQL Insert Statement http://dev.mysql.com/doc/refman/5.7/en/insert.html
  */
 class InsertQuery
 {
@@ -33,6 +36,8 @@ class InsertQuery
     protected $intoTable;
 
     protected $values = array();
+
+    protected $insertOptions = array();
 
     static public $BindValues = TRUE;
 
@@ -49,6 +54,19 @@ class InsertQuery
     public function insert(array $values)
     {
         $this->values[] = $values;
+        return $this;
+    }
+
+    /*
+    [LOW_PRIORITY | DELAYED | HIGH_PRIORITY]
+     */
+    public function addInsertOption($opt)
+    {
+        if (is_array($opt)) {
+            $this->insertOptions = $this->insertOptions + $opt;
+        } else {
+            $this->insertOptions = $this->insertOptions + func_get_args();
+        }
         return $this;
     }
 
@@ -72,9 +90,15 @@ class InsertQuery
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        $sql = '';
-        $valuesClauses = array();
+        $sql = 'INSERT';
 
+        if (!empty($this->insertOptions)) {
+            $sql .= ' ' . join(' ', $this->insertOptions);
+        }
+
+        $sql .= ' INTO ' . $driver->quoteTableName($this->intoTable);
+
+        $valuesClauses = array();
         $varCnt = 1;
 
         // build columns
@@ -94,11 +118,8 @@ class InsertQuery
             $valuesClauses[] = '(' . join(',', $deflatedValues) . ')';
         }
 
-        $sql = 'INSERT INTO ' . $driver->quoteTableName($this->intoTable)
-            . ' (' . join(',',$columns) . ')'
-            . ' VALUES '
-            . join(', ', $valuesClauses);
-            ;
+        $sql .= ' (' . join(',',$columns) . ')'
+                . ' VALUES ' . join(', ', $valuesClauses) ;
 
         // Check if RETURNING is supported
         if ($this->returning && ($driver instanceof PgSQLDriver) ) {
