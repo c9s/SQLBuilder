@@ -15,6 +15,7 @@ use SQLBuilder\Expression\IsExpr;
 use SQLBuilder\Criteria;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
+use Countable;
 
 class Op { }
 
@@ -43,9 +44,9 @@ class NotOp extends Op {
 }
 
 
-class ConditionsExpr implements ToSqlInterface
+class ConditionsExpr implements ToSqlInterface, Countable
 {
-    public $exprs = array();
+    protected $exprs = array();
 
     public function __construct()
     {
@@ -174,6 +175,18 @@ class ConditionsExpr implements ToSqlInterface
             $clauses[] = $expr->toSql($driver, $args);
         }
         return join(' ',$clauses);
+    }
+
+    public function hasExprs() {
+        return count($this->exprs) > 0;
+    }
+
+    public function notEmpty() {
+        return count($this->exprs) > 0;
+    }
+
+    public function count() {
+        return count($this->exprs);
     }
 }
 
