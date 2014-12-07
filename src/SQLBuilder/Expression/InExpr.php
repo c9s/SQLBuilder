@@ -4,6 +4,7 @@ use SQLBuilder\Expression\Expr;
 use SQLBuilder\Expression\ListExpr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ToSqlInterface;
+use SQLBuilder\ArgumentArray;
 
 class InExpr extends Expr implements ToSqlInterface { 
 
@@ -17,7 +18,7 @@ class InExpr extends Expr implements ToSqlInterface {
         $this->listExpr = new ListExpr($set);
     }
 
-    public function toSql(BaseDriver $driver) {
-        return $this->exprStr . ' IN ' . $this->listExpr->toSql($driver);
+    public function toSql(BaseDriver $driver, ArgumentArray $args) {
+        return $this->exprStr . ' IN ' . $this->listExpr->toSql($driver, $args);
     }
 }

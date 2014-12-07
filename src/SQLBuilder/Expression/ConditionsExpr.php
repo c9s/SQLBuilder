@@ -14,6 +14,7 @@ use SQLBuilder\Expression\NotRegExpExpr;
 use SQLBuilder\Expression\IsExpr;
 use SQLBuilder\Criteria;
 use SQLBuilder\ToSqlInterface;
+use SQLBuilder\ArgumentArray;
 
 class Op { }
 
@@ -167,10 +168,10 @@ class ConditionsExpr implements ToSqlInterface
         $this->appendExprObject(new NotRegExpExpr($exprStr, $pat));
     }
 
-    public function toSql(BaseDriver $driver) {
+    public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $clauses = array();
         foreach ($this->exprs as $expr) {
-            $clauses[] = $expr->toSql($driver);
+            $clauses[] = $expr->toSql($driver, $args);
         }
         return join(' ',$clauses);
     }

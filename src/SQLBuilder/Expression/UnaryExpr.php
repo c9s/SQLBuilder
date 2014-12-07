@@ -3,6 +3,7 @@ namespace SQLBuilder\Expression;
 use SQLBuilder\Expression\Expr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ToSqlInterface;
+use SQLBuilder\ArgumentArray;
 
 class UnaryExpr extends Expr implements ToSqlInterface
 {
@@ -15,7 +16,7 @@ class UnaryExpr extends Expr implements ToSqlInterface
         $this->operand = $operand;
     }
 
-    public function toSql(BaseDriver $driver) {
+    public function toSql(BaseDriver $driver, ArgumentArray $args) {
         return $this->op . ' ' . $this->operand;
     }
 }

@@ -5,6 +5,7 @@ use SQLBuilder\Expression\ListExpr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\DataType\Unknown;
 use SQLBuilder\ToSqlInterface;
+use SQLBuilder\ArgumentArray;
 use LogicException;
 
 class IsExpr extends Expr implements ToSqlInterface { 
@@ -25,7 +26,7 @@ class IsExpr extends Expr implements ToSqlInterface {
         $this->boolean = $boolean;
     }
 
-    public function toSql(BaseDriver $driver) {
+    public function toSql(BaseDriver $driver, ArgumentArray $args) {
         return $this->exprStr . ' IS ' . $driver->deflate($this->boolean);
     }
 }

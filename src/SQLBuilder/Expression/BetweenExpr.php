@@ -3,6 +3,7 @@ namespace SQLBuilder\Expression;
 use SQLBuilder\Expression\Expr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ToSqlInterface;
+use SQLBuilder\ArgumentArray;
 
 /**
  * http://dev.mysql.com/doc/refman/5.0/en/comparison-operators.html#operator_between
@@ -21,7 +22,7 @@ class BetweenExpr extends Expr implements ToSqlInterface {
         $this->max = $max;
     }
 
-    public function toSql(BaseDriver $driver) {
-        return $this->exprStr . ' BETWEEN ' . $this->min . ' AND ' . $this->max;
+    public function toSql(BaseDriver $driver, ArgumentArray $args) {
+        return $this->exprStr . ' BETWEEN ' . $driver->deflate($this->min) . ' AND ' . $driver->deflate($this->max);
     }
 }
