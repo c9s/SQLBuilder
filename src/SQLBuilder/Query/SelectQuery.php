@@ -49,6 +49,10 @@ class SelectQuery implements ToSqlInterface
 
     protected $orderByList = array();
 
+    protected $groupByList = array();
+
+    protected $groupByModifiers = array();
+
     public function __construct()
     {
         $this->where = new Conditions;
@@ -180,6 +184,25 @@ class SelectQuery implements ToSqlInterface
     }
 
 
+    /**
+     * Functions support GROUP BY
+     *
+     *  > SELECT FROM_DAYS(SUM(TO_DAYS(date_col))) FROM tbl_name;
+     *
+     * @see http://dev.mysql.com/doc/refman/5.7/en/group-by-functions.html
+     *
+     *
+     *
+     * @see http://dev.mysql.com/doc/refman/5.7/en/group-by-functions-and-modifiers.html
+     */
+    public function groupBy($expr, array $modifiers = array())
+    {
+        $this->groupByList[] = $expr;
+        if (!empty($modifiers)) {
+            $this->groupByModifiers = $modifiers;
+        }
+        return $this;
+    }
 
 
 
@@ -233,6 +256,29 @@ class SelectQuery implements ToSqlInterface
         return $sql;
     }
 
+    public function buildGroupByClause(BaseDriver $driver, ArgumentArray $args) {
+        if (empty($this->groupByList)) {
+            return '';
+        }
+        $clauses = array();
+        foreach($this->groupByList as $groupBy) {
+            if (is_string($groupBy)) {
+                $clauses[] = $groupBy;
+            } elseif ($groupBy instanceof ToSqlInterface) {
+                $clauses[] = $groupBy->toSql($driver, $args);
+            } else {
+                throw new InvalidArgumentException('Unsupported variable type for GROUP BY clause');
+            }
+        }
+        // TODO: group by modifiers, currently only support for syntax like "GROUP BY a WITH ROLLUP".
+        // @see http://dev.mysql.com/doc/refman/5.7/en/group-by-modifiers.html
+        $sql = ' GROUP BY ' . join(', ', $clauses);
+        if ($this->groupByModifiers) {
+            $sql .= ' ' . join(' ', $this->groupByModifiers);
+        }
+        return $sql;
+    }
+
     public function buildOrderByClause(BaseDriver $driver, ArgumentArray $args) {
         if (empty($this->orderByList)) {
             return '';
@@ -257,9 +303,6 @@ class SelectQuery implements ToSqlInterface
     public function build()
     {
         /*
-            . $this->buildJoinSql()
-            . $this->buildConditionSql()
-            . $this->buildGroupBySql()
             . $this->buildHavingSql()
             . $this->buildOrderSql()
             . $this->buildLimitSql()
@@ -288,6 +331,7 @@ class SelectQuery implements ToSqlInterface
             . $this->buildFromClause($driver)
             . $this->buildJoinClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
+            . $this->buildGroupByClause($driver, $args)
             . $this->buildHavingClause($driver, $args)
             . $this->buildOrderByClause($driver, $args)
             ;
