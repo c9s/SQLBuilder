@@ -56,7 +56,7 @@ class SelectQuery implements ToSqlInterface
 
     protected $groupByModifiers = array();
 
-    protected $indexHints = array();
+    protected $indexHintOn = array();
 
     public function __construct()
     {
@@ -165,9 +165,9 @@ class SelectQuery implements ToSqlInterface
         return end($this->joins);
     }
 
-    public function indexHint($tableRef) {
+    public function indexHintOn($tableRef) {
         $hint = new IndexHint;
-        $this->indexHints[$tableRef] = $hint;
+        $this->indexHintOn[$tableRef] = $hint;
         return $hint;
     }
 
@@ -286,11 +286,11 @@ class SelectQuery implements ToSqlInterface
 
     public function buildIndexHintClause(BaseDriver $driver, ArgumentArray $args)
     {
-        if (empty($this->indexHints)) {
+        if (empty($this->indexHintOn)) {
             return '';
         }
         $clauses = array();
-        foreach($this->indexHints as $hint) {
+        foreach($this->indexHintOn as $hint) {
             $clauses[] = $hint->toSql($driver, $args);
         }
         return ' ' . join(' ', $clauses);
@@ -302,14 +302,14 @@ class SelectQuery implements ToSqlInterface
             /* "column AS alias" OR just "column" */
             if (is_string($k)) {
                 $sql = $driver->quoteTableName($k) . ' AS ' . $v;
-                if (isset($this->indexHints[$k])) {
-                    $sql .= $this->indexHints[$k]->toSql($driver, new ArgumentArray);
+                if ($driver instanceof MySQLDriver && isset($this->indexHintOn[$k])) {
+                    $sql .= $this->indexHintOn[$k]->toSql($driver, new ArgumentArray);
                 }
                 $tableRefs[] = $sql;
             } elseif ( is_integer($k) || is_numeric($k) ) {
                 $sql = $driver->quoteTableName($v);
-                if (isset($this->indexHints[$v])) {
-                    $sql .= $this->indexHints[$v]->toSql($driver, NULL);
+                if ($driver instanceof MySQLDriver && isset($this->indexHintOn[$v])) {
+                    $sql .= $this->indexHintOn[$v]->toSql($driver, NULL);
                 }
                 $tableRefs[] = $sql;
             }
