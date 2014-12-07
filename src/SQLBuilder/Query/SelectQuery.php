@@ -10,6 +10,7 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
+use SQLBuilder\Expression\ConditionsExpr;
 
 /**
  * SQL Builder for generating CRUD SQL
@@ -31,8 +32,11 @@ class SelectQuery implements ToSqlInterface
 
     protected $from = array();
 
+    protected $where;
+
     public function __construct()
     {
+        $this->where = new ConditionsExpr;
     }
 
     public function select($select) {
@@ -41,6 +45,7 @@ class SelectQuery implements ToSqlInterface
         } else {
             $this->select = $this->select + func_get_args();
         }
+        return $this;
     }
 
     public function setSelect($selecct) {
@@ -61,6 +66,7 @@ class SelectQuery implements ToSqlInterface
         } else {
             $this->from = $this->from + func_get_args();
         }
+        return $this;
     }
 
     public function setFrom($table) {
@@ -75,7 +81,14 @@ class SelectQuery implements ToSqlInterface
         return $this->from;
     }
 
-
+    public function where($expr = NULL , array $args = array()) {
+        if (is_string($expr)) {
+            $this->where->appendExpr($expr, $args);
+        } else {
+            throw new LogicException("Unsupported argument type of 'where' method.");
+        }
+        return $this->where;
+    }
 
     /****************************************************************
      * Builders
@@ -105,8 +118,12 @@ class SelectQuery implements ToSqlInterface
                 $tableRefs[] = $driver->quoteTableName($v);
             }
         }
-        return join(', ', $tableRefs);
+        if (!empty($tableRefs)) {
+            return ' FROM ' . join(', ', $tableRefs);
+        }
+        return '';
     }
+
 
 
     /** 
@@ -131,10 +148,18 @@ class SelectQuery implements ToSqlInterface
          */
     }
 
+    public function buildWhereClause(BaseDriver $driver, ArgumentArray $args) {
+        if ($this->where->hasExprs()) {
+            return ' WHERE ' . $this->where->toSql($driver, $args);
+        }
+        return '';
+    }
+
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'SELECT ' 
             . $this->buildSelectClause($driver)
             . $this->buildFromClause($driver)
+            . $this->buildWhereClause($driver, $args)
             ;
         return $sql;
     }
