@@ -36,6 +36,20 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         is('SELECT id, name, phone, address FROM users AS u JOIN posts AS p ON (p.user_id = u.id) WHERE u.name LIKE :name', $sql);
     }
 
+    public function testOrderBy()
+    {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from(array('users' => 'u'))
+            ->orderBy('rand()')
+            ->orderBy('id', 'DESC')
+            ;
+        $sql = $query->toSql($driver, $args);
+        is('SELECT id, name, phone, address FROM users AS u ORDER BY rand(), id DESC', $sql);
+    }
+
     public function testMultipleJoin() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
