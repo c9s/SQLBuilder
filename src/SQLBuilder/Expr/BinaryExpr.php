@@ -21,6 +21,6 @@ class BinaryExpr extends Expr implements ToSqlInterface
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return $this->operand . ' ' . $this->op . ' ' . $this->operand2;
+        return $this->operand . ' ' . $this->op . ' ' . $driver->deflate($this->operand2);
     }
 }
