@@ -23,6 +23,6 @@ class BetweenExpr extends Expr implements ToSqlInterface {
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return $this->exprStr . ' BETWEEN ' . $driver->deflate($this->min) . ' AND ' . $driver->deflate($this->max);
+        return $this->exprStr . ' BETWEEN ' . $driver->deflate($this->min, $args) . ' AND ' . $driver->deflate($this->max, $args);
     }
 }

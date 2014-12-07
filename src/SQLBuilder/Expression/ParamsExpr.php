@@ -23,16 +23,16 @@ class ParamsExpr extends Expr implements ToSqlInterface {
         $this->params[] = $val;
     }
 
-    public function renderSet(BaseDriver $driver, array $set) 
+    public function renderSet(BaseDriver $driver, ArgumentArray $args, array $set) 
     {
-        return array_map(function($val) use($driver) {
-            return $driver->deflate($val);
+        return array_map(function($val) use($driver, $args) {
+            return $driver->deflate($val, $args);
         }, $set);
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
-        return join(',', $this->renderSet($driver, $this->params));
+        return join(',', $this->renderSet($driver, $args, $this->params));
     }
 
 }

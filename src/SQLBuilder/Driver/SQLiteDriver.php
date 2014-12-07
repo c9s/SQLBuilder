@@ -3,7 +3,7 @@ namespace SQLBuilder\Driver;
 use DateTime;
 use Exception;
 use RuntimeException;
-
+use SQLBuilder\ArgumentArray;
 
 class SQLiteDriver extends BaseDriver
 {
@@ -34,45 +34,20 @@ class SQLiteDriver extends BaseDriver
      * FOr sqlite sql statement:
      * we use 1 or 0 for boolean type.
      */
-    public function deflate($value)
+    public function deflate($value, ArgumentArray $args = NULL)
     {
-        if ($value instanceof Closure) {
-            return call_user_func($value);
-        }
-
-        if ($value === NULL ) {
-            return 'NULL';
-        }
-        elseif ($value === true ) {
+        // Special cases for SQLite
+        if ($value === true )
+        {
             return 1;
         }
-        elseif ($value === false ) {
+        elseif ($value === false ) 
+        {
             return 0;
         }
-        elseif (is_integer($value) ) {
-            return intval($value);
-        }
-        elseif (is_float($value) ) {
-            return floatval($value);
-        }
-        elseif (is_string($value) ) {
-            return $this->quote($value);
-        }
-        elseif (is_object($value)) {
-            // convert DateTime object into string
-            if ($value instanceof DateTime) {
-                return $value->format(DateTime::ISO8601);
-            } elseif (method_exists($value,'__toString')) {
-                return $value->__toString();
-            } else {
-                throw new RuntimeException('Unsupported object type: ' . get_class($value));
-            }
-        }
-        elseif (is_array($value) ) { // raw value
-            return $value[0];
-        }
-        elseif ($value instanceof RawValue) {
-            return $value[0]->__toString();
+        else
+        {
+            return parent::deflate($value, $args);
         }
         return $value;
     }

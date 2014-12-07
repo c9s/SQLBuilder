@@ -27,6 +27,6 @@ class IsExpr extends Expr implements ToSqlInterface {
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return $this->exprStr . ' IS ' . $driver->deflate($this->boolean);
+        return $this->exprStr . ' IS ' . $driver->deflate($this->boolean, $args);
     }
 }
