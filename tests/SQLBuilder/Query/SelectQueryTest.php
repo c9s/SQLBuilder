@@ -26,7 +26,7 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         $query = new SelectQuery;
         ok($query);
         $query->select(array('id', 'name', 'phone', 'address'))
-            ->from(array('users' => 'u'))
+            ->from('users', 'u')
             ->join('posts')
                 ->as('p')
                 ->on('p.user_id = u.id')
@@ -42,7 +42,7 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         $driver = new MySQLDriver;
         $query = new SelectQuery;
         $query->select(array('id', 'name', 'phone', 'address'))
-            ->from(array('users' => 'u'))
+            ->from('users', 'u')
             ->orderBy('rand()')
             ->orderBy('id', 'DESC')
             ;
@@ -57,7 +57,7 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         $driver = new MySQLDriver;
         $query = new SelectQuery;
         $query->select(array('id', 'country', 'code'))
-            ->from(array('counties' => 'c'))
+            ->from('counties', 'c')
             ->groupBy('c.code')
             ;
         $sql = $query->toSql($driver, $args);
@@ -72,7 +72,7 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         $query->select(array('id', 'country', 'code'))
             ->distinct()
             ->addSelectOption('SQL_SMALL_RESULT')
-            ->from(array('counties' => 'c'))
+            ->from('counties', 'c')
             ;
         $sql = $query->toSql($driver, $args);
         is('SELECT DISTINCT id, country, code FROM counties AS c', $sql);
@@ -84,13 +84,26 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         $driver = new MySQLDriver;
         $query = new SelectQuery;
         $query->select(array('id', 'country', 'code'))
-            ->from(array('counties' => 'c'))
+            ->from('counties', 'c')
             ->groupBy('c.code', [ 'WITH ROLLUP' ])
             ;
         $sql = $query->toSql($driver, $args);
         is('SELECT id, country, code FROM counties AS c GROUP BY c.code WITH ROLLUP', $sql);
     }
 
+    public function testSelectIndexHint() {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $query = new SelectQuery;
+        ok($query);
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users', 'u')
+            ->indexHint('users')->useIndex('idx_users')->forOrderBy();
+            ;
+
+        $sql = $query->toSql($driver, $args);
+        is('SELECT id, name, phone, address FROM users AS u USE INDEX FOR ORDER BY (idx_users)  USE INDEX FOR ORDER BY (idx_users)', $sql);
+    }
 
     public function testMultipleJoin() {
         $args = new ArgumentArray;
@@ -98,7 +111,7 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         $query = new SelectQuery;
         ok($query);
         $query->select(array('id', 'name', 'phone', 'address'))
-            ->from(array('users' => 'u'))
+            ->from('users' ,'u')
             ;
 
         $query->join('posts')
