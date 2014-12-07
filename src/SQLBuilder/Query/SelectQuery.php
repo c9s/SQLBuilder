@@ -11,6 +11,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Expression\ConditionsExpr;
+use SQLBuilder\Syntax\Join;
 
 /**
  * SQL Builder for generating CRUD SQL
@@ -35,6 +36,8 @@ class SelectQuery implements ToSqlInterface
     protected $where;
 
     protected $having;
+
+    protected $joins;
 
     public function __construct()
     {
@@ -82,6 +85,20 @@ class SelectQuery implements ToSqlInterface
 
     public function getFrom() {
         return $this->from;
+    }
+
+    public function join($table, $alias = NULL) {
+        $join = new Join($table, $alias);
+        $this->joins[] = $join;
+        return $join;
+    }
+
+    public function getJoins() {
+        return $this->joins;
+    }
+
+    public function getLastJoin() {
+        return end($this->joins);
     }
 
     public function where($expr = NULL , array $args = array()) {
@@ -142,6 +159,16 @@ class SelectQuery implements ToSqlInterface
         return '';
     }
 
+    public function buildJoinClause(BaseDriver $driver, ArgumentArray $args) {
+        $sql = '';
+        if (!empty($this->joins)) {
+            foreach($this->joins as $join) {
+                $sql .= $join->toSql($driver, $args);
+            }
+        }
+        return $sql;
+    }
+
 
 
     /** 
@@ -179,6 +206,7 @@ class SelectQuery implements ToSqlInterface
         $sql = 'SELECT ' 
             . $this->buildSelectClause($driver)
             . $this->buildFromClause($driver)
+            . $this->buildJoinClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
             . $this->buildHavingClause($driver, $args)
             ;
