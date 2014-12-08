@@ -236,22 +236,28 @@ class SelectQuery implements ToSqlInterface
      * Builders
      ***************************************************************/
     public function buildSelectClause(BaseDriver $driver, ArgumentArray $args) {
+        $sql = ' ';
         $cols = array();
+        $first = true;
         foreach($this->select as $k => $v) {
-            if ($v instanceof SelectExpr) {
-                $cols[] = $v->toSql($driver, $args);
+            if ($first) {
+                $first = false;
+            } else {
+                $sql .= ',';
             }
-            /* "column AS alias" OR just "column" */
-            elseif (is_string($k))
-            {
-                $cols[] = $driver->quoteColumn($k) . ' AS ' . $v;
-            }
-            elseif (is_integer($k) || is_numeric($k)) 
-            {
-                $cols[] = $driver->quoteColumn($v);
+
+            if (is_integer($k)) {
+                if ($v instanceof SelectExpr) {
+                    $sql .= $v->toSql($driver, $args);
+                } else {
+                    $sql .= $driver->quoteColumn($v);
+                }
+            } else {
+                /* "column AS alias" OR just "column" */
+                $sql .= $driver->quoteColumn($k) . ' AS ' . $v;
             }
         }
-        return ' ' . join(', ',$cols);
+        return $sql;
     }
 
 
