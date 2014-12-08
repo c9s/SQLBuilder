@@ -9,6 +9,7 @@ use SQLBuilder\DataType\Unknown;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Bind;
+use Closure;
 
 abstract class BaseDriver
 {
@@ -189,10 +190,6 @@ abstract class BaseDriver
      */
     public function deflate($value, ArgumentArray $args = NULL)
     {
-        if ($value instanceof Closure) {
-            return call_user_func($value);
-        }
-
         if ($value === NULL ) {
 
             return 'NULL';
@@ -217,16 +214,19 @@ abstract class BaseDriver
 
             return $this->quote($value);
 
+        } elseif (is_callable($value)) {
+
+            return call_user_func($value);
+
         } elseif (is_object($value) ) {
 
-            if ($value instanceof Unknown) {
+            if ($value instanceof Bind) {
 
-                return 'UNKNOWN';
+                if ($args) {
+                    $args->add($value);
+                }
+                return $value->getMark();
 
-            } elseif ($value instanceof DateTime ) {
-
-                // convert DateTime object into string
-                return $value->format(DateTime::ISO8601);
 
             } elseif ($value instanceof ParamMarker) {
 
@@ -235,12 +235,15 @@ abstract class BaseDriver
                 }
                 return $value->getMark();
 
-            } elseif ($value instanceof Bind) {
+            } elseif ($value instanceof Unknown) {
 
-                if ($args) {
-                    $args->add($value);
-                }
-                return $value->getMark();
+                return 'UNKNOWN';
+
+            } elseif ($value instanceof DateTime ) {
+
+                // convert DateTime object into string
+                return $value->format(DateTime::ISO8601);
+
 
             } elseif ($value instanceof ToSqlInterface) {
 
