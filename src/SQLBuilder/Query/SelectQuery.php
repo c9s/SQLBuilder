@@ -243,7 +243,7 @@ class SelectQuery implements ToSqlInterface
             if ($first) {
                 $first = false;
             } else {
-                $sql .= ',';
+                $sql .= ', ';
             }
 
             if (is_integer($k)) {
