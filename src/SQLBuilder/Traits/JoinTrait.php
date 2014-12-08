@@ -10,6 +10,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Syntax\Join;
+use SQLBuilder\Syntax\IndexHint;
 
 
 trait JoinTrait {
