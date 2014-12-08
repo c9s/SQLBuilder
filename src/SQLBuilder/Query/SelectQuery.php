@@ -69,7 +69,6 @@ class SelectQuery implements ToSqlInterface
 
     public function __construct()
     {
-        $this->where = new Conditions;
         $this->having = new Conditions;
         $this->paging = new Paging;
     }
@@ -224,7 +223,9 @@ class SelectQuery implements ToSqlInterface
     }
 
     public function where($expr = NULL , array $args = array()) {
-
+        if (!$this->where) {
+            $this->where = new Conditions;
+        }
         if (is_string($expr)) {
             $this->where->appendExpr($expr, $args);
         } elseif (!is_null($expr)) {
@@ -479,7 +480,7 @@ class SelectQuery implements ToSqlInterface
     }
 
     public function buildWhereClause(BaseDriver $driver, ArgumentArray $args) {
-        if ($this->where->hasExprs()) {
+        if ($this->where && $this->where->hasExprs()) {
             return ' WHERE ' . $this->where->toSql($driver, $args);
         }
         return '';

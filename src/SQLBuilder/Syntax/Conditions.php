@@ -137,10 +137,12 @@ class Conditions implements ToSqlInterface, Countable
 
     public function is($exprStr, $boolean) {
         $this->appendExprObject(new IsExpr($exprStr, $boolean));
+        return $this;
     }
 
     public function isNot($exprStr, $boolean) {
         $this->appendExprObject(new IsNotExpr($exprStr, $boolean));
+        return $this;
     }
 
 
@@ -157,6 +159,7 @@ class Conditions implements ToSqlInterface, Countable
     public function in($exprStr, array $set)
     {
         $this->appendExprObject(new InExpr($exprStr, $set));
+        return $this;
     }
 
     /**
@@ -165,19 +168,23 @@ class Conditions implements ToSqlInterface, Countable
     public function notIn($exprStr, array $set)
     {
         $this->appendExprObject(new NotInExpr($exprStr, $set));
+        return $this;
     }
 
     public function like($exprStr, $pat, $criteria = Criteria::CONTAINS)
     {
         $this->appendExprObject(new LikeExpr($exprStr, $pat, $criteria));
+        return $this;
     }
 
     public function regExp($exprStr, $pat) {
         $this->appendExprObject(new RegExpExpr($exprStr, $pat));
+        return $this;
     }
 
     public function notRegExp($exprStr, $pat) {
         $this->appendExprObject(new NotRegExpExpr($exprStr, $pat));
+        return $this;
     }
 
     public function group() {
