@@ -1,6 +1,10 @@
 <?php
 namespace SQLBuilder;
-use SQLBuilder\Driver;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\SQLiteDriver;
+use Exception;
 
 /**
  * @link http://blog.gtuhl.com/2009/08/07/postgresql-tips-and-tricks/
@@ -31,7 +35,7 @@ class IndexBuilder extends QueryBuilder
     public $where;
     public $using;
 
-    public function __construct(Driver $driver)
+    public function __construct(BaseDriver $driver)
     {
         $this->driver = $driver;
     }
@@ -85,14 +89,14 @@ class IndexBuilder extends QueryBuilder
 
         $sql .= 'INDEX ';
 
-        if ($this->concurrently && $this->driver->type == 'pgsql' ) {
+        if ($this->concurrently && $this->driver instanceof PgSQLDriver) {
             $sql .= 'CONCURRENTLY ';
         }
 
-        $sql .= $this->driver->getQuoteTableName($this->name) . ' ';
-        $sql .= 'ON ' . $this->driver->getQuoteTableName($this->on) . ' ';
+        $sql .= $this->driver->quoteTableName($this->name) . ' ';
+        $sql .= 'ON ' . $this->driver->quoteTableName($this->on) . ' ';
 
-        if ( $this->using && $this->driver->type == 'pgsql' ) {
+        if ( $this->using && $this->driver instanceof PgSQLDriver) {
             $sql .= 'USING ' . strtoupper($this->using) . ' ';
         }
 
@@ -101,13 +105,13 @@ class IndexBuilder extends QueryBuilder
                     if ( is_array($n) ) {
                         if ( count($n) == 2 ) {
                             // column name and appended attributes
-                            return $self->driver->getQuoteColumn( $n[0] ) . ' ' . $n[1];
+                            return $self->driver->quoteColumn( $n[0] ) . ' ' . $n[1];
                         } elseif ( count($n) == 1 ) {
                             // with raw format
                             return $n[0];
                         }
                     } else {
-                        return $self->driver->getQuoteColumn( $n );
+                        return $self->driver->quoteColumn( $n );
                     }
                 }, $this->columns ) ) 
                 . ')';
@@ -130,16 +134,16 @@ class IndexBuilder extends QueryBuilder
     public function createIndex($table, $indexName, $columnNames)
     {
         $self = $this;
-        $sql = 'CREATE INDEX ' . $this->driver->getQuoteTableName($indexName) 
-            . ' ON ' . $this->driver->getQuoteTableName($table);
+        $sql = 'CREATE INDEX ' . $this->driver->quoteTableName($indexName) 
+            . ' ON ' . $this->driver->quoteTableName($table);
         if( is_array($columnNames) ) {
             $sql .= ' (' . join(',' , array_map( function($name) use ($self) { 
-                                        return $self->driver->getQuoteColumn( $name );
+                                        return $self->driver->quoteColumn( $name );
                                     }, $columnNames ) )
                 . ')';
         }
         else {
-            $sql .= ' (' . $this->driver->getQuoteColumn( $columnNames ) . ')';
+            $sql .= ' (' . $this->driver->quoteColumn( $columnNames ) . ')';
         }
         return $sql;
     }
@@ -190,18 +194,18 @@ class IndexBuilder extends QueryBuilder
         $onDelete = null )
     {
         // SQLite doesn't support ADD CONSTRAINT
-        if( 'sqlite' === $this->driver->type ) {
+        if ($this->driver instanceof SQLiteDriver) {
             return '';
         }
 
         // ALTER TABLE employee ADD FOREIGN KEY (group_id) REFERENCES product_groups;
         $sql = 'ALTER TABLE ' ;
-        $sql .= $this->driver->getQuoteTableName($table);
+        $sql .= $this->driver->quoteTableName($table);
         $sql .= ' ADD FOREIGN KEY ';
-        $sql .= '(' . $this->driver->getQuoteTableName($columnName) . ')';
+        $sql .= '(' . $this->driver->quoteTableName($columnName) . ')';
         $sql .= ' REFERENCES ';
-        $sql .= $this->driver->getQuoteTableName($referenceTable);
-        $sql .= ( $referenceColumn ? '(' . $this->driver->getQuoteColumn($referenceColumn) . ')' : '' );
+        $sql .= $this->driver->quoteTableName($referenceTable);
+        $sql .= ( $referenceColumn ? '(' . $this->driver->quoteColumn($referenceColumn) . ')' : '' );
 
         if ( $onDelete ) {
             // ON DELETE CASCADE
@@ -221,27 +225,30 @@ class IndexBuilder extends QueryBuilder
      */
     public function dropIndex($table, $indexName, $ifExists = true)
     {
-        $sql = '';
-        switch( $this->driver->type )
-        {
-            case 'mysql':
-                $sql = 'DROP INDEX ' ;
-                if ($ifExists) {
-                    $sql .= 'IF EXISTS ';
-                }
-                $sql .= $this->driver->getQuoteTableName($indexName) 
-                    . ' ON ' . $this->driver->getQuoteTableName($table);
-            break;
-            case 'sqlite':
-            case 'pgsql':
-                $sql = 'DROP INDEX ';
-                if ($ifExists) {
-                    $sql .= 'IF EXISTS ';
-                }
-                $sql .= $this->driver->getQuoteTableName($indexName);
-            break;
+        if ($this->driver instanceof MySQLDriver) {
+            $sql = 'DROP INDEX ' ;
+            if ($ifExists) {
+                $sql .= 'IF EXISTS ';
+            }
+            $sql .= $this->driver->quoteTableName($indexName) 
+                . ' ON ' . $this->driver->quoteTableName($table);
+            return $sql;
+
+        } elseif ($this->driver instanceof PgSQLDriver) {
+            $sql = 'DROP INDEX ';
+            if ($ifExists) {
+                $sql .= 'IF EXISTS ';
+            }
+            $sql .= $this->driver->quoteTableName($indexName);
+            return $sql;
+        } else {
+            $sql = 'DROP INDEX ';
+            if ($ifExists) {
+                $sql .= 'IF EXISTS ';
+            }
+            $sql .= $this->driver->quoteTableName($indexName);
+            return $sql;
         }
-        return $sql;
     }
 }
 

@@ -31,7 +31,7 @@ class MigrationBuilder
     public function addColumnClause($column) 
     {
         $column = is_array($column) ? $this->_convertArrayToColumn($column) : $column;
-        $sql = ' ADD COLUMN ' . $this->driver->getQuoteColumn( $column->name );
+        $sql = ' ADD COLUMN ' . $this->driver->quoteColumn( $column->name );
 
         // build attributes
         if( isset($column->type) ) {
@@ -48,7 +48,7 @@ class MigrationBuilder
             if( is_callable($default) ) {
                 $default = call_user_func($default);
             }
-            $sql .= ' DEFAULT ' . $this->driver->inflate($default);
+            $sql .= ' DEFAULT ' . $this->driver->deflate($default);
         }
 
         if( $column->unique ) {
@@ -66,7 +66,7 @@ class MigrationBuilder
 
     public function addColumns($table,$columns) 
     {
-        $sql  = 'ALTER TABLE ' . $this->driver->getQuoteTableName( $table );
+        $sql  = 'ALTER TABLE ' . $this->driver->quoteTableName( $table );
         $columns = is_object($columns) || !isset($columns[0])
                     ? array($columns)
                     : $columns;
@@ -79,19 +79,19 @@ class MigrationBuilder
 
     public function addColumn($table, $column)
     {
-        $sql  = 'ALTER TABLE ' . $this->driver->getQuoteTableName( $table );
+        $sql  = 'ALTER TABLE ' . $this->driver->quoteTableName( $table );
         return $sql . $this->addColumnClause($column);
     }
 
     public function dropTable($table)
     {
-        return 'DROP TABLE ' . $this->driver->getQuoteTableName($table);
+        return 'DROP TABLE ' . $this->driver->quoteTableName($table);
     }
 
     public function dropColumn($table,$columnName)
     {
-        $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName($table)
-               . ' DROP COLUMN ' . $this->driver->getQuoteColumn($columnName);
+        $sql = 'ALTER TABLE ' . $this->driver->quoteTableName($table)
+               . ' DROP COLUMN ' . $this->driver->quoteColumn($columnName);
         return $sql;
     }
 
@@ -124,11 +124,11 @@ class MigrationBuilder
             break;
         case 'mysql':
         case 'pgsql':
-            $sql = 'ALTER TABLE ' . $this->driver->getQuoteTableName($table)
+            $sql = 'ALTER TABLE ' . $this->driver->quoteTableName($table)
                 . ' RENAME COLUMN '
-                . $this->driver->getQuoteColumn( $columnName )
+                . $this->driver->quoteColumn( $columnName )
                 . ' TO '
-                . $this->driver->getQuoteColumn( $newColumnName );
+                . $this->driver->quoteColumn( $newColumnName );
             break;
         }
         return $sql;

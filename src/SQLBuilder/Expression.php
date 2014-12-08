@@ -153,25 +153,25 @@ class Expression
             if ( is_array( $this->op ) ) {
 
                 list($k,$op,$v) = $this->op;
-                if ( $this->driver->placeholder ) {
+                if ( $this->driver->paramMarker ) {
 
                     // we should not escape the value
                     // if the value is wrapped with an array
                     if( is_array($v) ) {
-                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
+                        $sql .= $this->driver->quoteColumn($k) . ' ' . $op . ' ' . $v[0];
                     }
                     else {
                         // escape as usuall
                         $newK = $this->builder->setPlaceHolderVar( $k , $v );
-                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' '  . $this->driver->getPlaceHolder($newK);
+                        $sql .= $this->driver->quoteColumn($k) . ' ' . $op . ' '  . $this->driver->getParamMarker($newK);
                     }
                 }
                 else {
                     if ( is_array($v) ) {
-                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' . $v[0];
+                        $sql .= $this->driver->quoteColumn($k) . ' ' . $op . ' ' . $v[0];
                     } else {
-                        $sql .= $this->driver->getQuoteColumn($k) . ' ' . $op . ' ' 
-                            . $this->driver->inflate($v);
+                        $sql .= $this->driver->quoteColumn($k) . ' ' . $op . ' ' 
+                            . $this->driver->deflate($v);
 
                         /*
                         if( $this->builder )

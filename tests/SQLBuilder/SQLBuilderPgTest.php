@@ -1,6 +1,6 @@
 <?php
 use SQLBuilder\QueryBuilder;
-use SQLBuilder\Driver;
+use SQLBuilder\Driver\PgSQLDriver;
 
 // class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
 class SQLBuilderPgTest extends PHPUnit_PDO_TestCase
@@ -42,12 +42,10 @@ EOS;
 
     public function getPgDriver()
     {
-        $driver = new SQLBuilder\Driver;
-        $driver->configure('driver','pgsql');
-        $driver->configure('quote_table',true);
-        $driver->configure('quote_column',true);
-        $driver->configure('trim',true);
-        $driver->configure('placeholder','named');
+        $driver = new PgSQLDriver;
+        $driver->setQuoteTable(true);
+        $driver->setQuoteColumn(true);
+        $driver->setNamedParamMarker();
         return $driver;
     }
 
@@ -55,14 +53,13 @@ EOS;
     {
         $driver = $this->getPgDriver();
 
-        $sb = new QueryBuilder;
-        $sb->driver = $driver;
+        $sb = new QueryBuilder($driver);
         $sb->table('Member')->insert(array(
             'MemberName' => 'insert',
             'MemberConfirm' => true,
         ));
         $sql = $sb->build();
-        is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (:MemberName,:MemberConfirm)' , $sql );
+        is( 'INSERT INTO "Member" ("MemberName","MemberConfirm") VALUES (:MemberName,:MemberConfirm)' , $sql );
 
         $this->executeOk( $sql , array( 
             ':MemberName' => 'insert',
@@ -73,24 +70,22 @@ EOS;
         ok( $record['MemberConfirm'] );
 
 
-
-        $driver->configure('placeholder',false);
+        $driver->setNoParamMarker();
         $sb->insert(array(
             'MemberName' => 'insert2',
             'MemberConfirm' => true,
         ));
         $sql = $sb->build();
-        is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (\'insert2\',TRUE)' , $sql );
+        is( 'INSERT INTO "Member" ("MemberName","MemberConfirm") VALUES (\'insert2\',TRUE)' , $sql );
         $this->queryOk( $sql );
 
         $record = $this->recordOk( 'select * from "Member" where "MemberName" = \'insert2\' ' );
         ok( $record['MemberConfirm'] );
 
 
-
-        $driver->configure('placeholder',true);
+        $driver->setQMarkParamMarker();
         $sql = $sb->build();
-        is( 'INSERT INTO "Member" ( "MemberName","MemberConfirm") VALUES (?,?)' , $sql );
+        is( 'INSERT INTO "Member" ("MemberName","MemberConfirm") VALUES (?,?)' , $sql );
 
         $this->executeOk( $sql , array( 'insert3' , 1 ) );
 
@@ -101,33 +96,29 @@ EOS;
     public function testDelete()
     {
         $driver = $this->getPgDriver();
-        $driver->configure('placeholder',null); // inflate values
+        $driver->setNoParamMarker();
 
-        $sb = new QueryBuilder;
-        $sb->driver = $driver;
+        $sb = new QueryBuilder($driver);
         $sb->table('Member')->delete();
         $sb->whereFromArgs(array( 'foo' => '123' ));
 
         $sql = $sb->build();
-        is( 'DELETE FROM "Member"  WHERE "foo" = \'123\'' , $sql );
+        is( 'DELETE FROM "Member" WHERE "foo" = \'123\'' , $sql );
 
-        $driver->configure('placeholder','named');
+        $driver->setNamedParamMarker();
         $sql = $sb->build();
-        is( 'DELETE FROM "Member"  WHERE "foo" = :foo' , $sql );
+        is( 'DELETE FROM "Member" WHERE "foo" = :foo' , $sql );
     }
 
     public function testUpdate()
     {
-        $d = new Driver;
-        $d->configure('driver','pgsql');
-        $d->configure('quote_table',true);
-        $d->configure('quote_column',true);
-        $d->configure('trim',true);
-        $d->configure('placeholder','named');
+        $d = new PgSQLDriver;
+        $d->setQuoteTable(true);
+        $d->setQuoteColumn(true);
+        $d->setNamedParamMarker();
 
-        $sb = new QueryBuilder;
+        $sb = new QueryBuilder($d);
         $sb->table('Member');
-        $sb->driver = $d;
         $sb->whereFromArgs(array( 
             'cond1' => ':blah',
         ));
@@ -135,21 +126,18 @@ EOS;
         $sql = $sb->build();
         is( 'UPDATE "Member" SET "set1" = :set1 WHERE "cond1" = :cond1' , $sql );
 
-        $d->configure('placeholder',false);
+        $d->setNoParamMarker();
         $sql = $sb->build();
         is( 'UPDATE "Member" SET "set1" = \'value1\' WHERE "cond1" = \':blah\'' , $sql );
     }
 
     public function testSelect()
     {
-        $d = new Driver;
-        $d->configure('driver','pgsql');
-        $d->configure('quote_table',true);
-        $d->configure('quote_column',true);
-        $d->configure('trim',true);
+        $d = new PgSQLDriver;
+        $d->setQuoteTable(true);
+        $d->setQuoteColumn(true);
 
-        $sb = new QueryBuilder();
-        $sb->driver = $d;
+        $sb = new QueryBuilder($d);
         $sb->table('Member');
         $sb->select('*');
 
@@ -160,28 +148,28 @@ EOS;
 
         is( 'SELECT * FROM "Member"' , trim($sql));
 
-        $d->configure('placeholder','named');
+        $d->setNamedParamMarker();
         $sb->whereFromArgs(array(
             'foo' => ':foo',
         ));
 
         $sql = $sb->build();
-        is( 'SELECT * FROM "Member"  WHERE "foo" = :foo' , $sql );
+        is( 'SELECT * FROM "Member" WHERE "foo" = :foo' , $sql );
 
         $sb->select(array('COUNT(*)'));  // override current select query
 
         $sql = $sb->build();
-        is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo' , $sql );
+        is( 'SELECT COUNT(*) FROM "Member" WHERE "foo" = :foo' , $sql );
 
         $sb->limit(10);
 
         $sql = $sb->build();
-        is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10' ,$sql );
+        is( 'SELECT COUNT(*) FROM "Member" WHERE "foo" = :foo LIMIT 10' ,$sql );
 
         $sb->offset(20);
 
         $sql = $sb->build();
-        is( 'SELECT COUNT(*) FROM "Member"  WHERE "foo" = :foo LIMIT 10 OFFSET 20' ,$sql );
+        is( 'SELECT COUNT(*) FROM "Member" WHERE "foo" = :foo LIMIT 10 OFFSET 20' ,$sql );
     }
 
 

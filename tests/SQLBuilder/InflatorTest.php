@@ -5,30 +5,26 @@ class InflatorTest extends PHPUnit_Framework_TestCase
 {
     function testBool()
     {
-        $driver = new SQLBuilder\Driver;
-        $inf = new Inflator;
-        $inf->driver = $driver;
-        is( 'TRUE', $inf->inflate( true ) );
-        is( 'FALSE', $inf->inflate( false ) );
+        $args = new SQLBuilder\ArgumentArray;
+        $driver = new SQLBuilder\Driver\MySQLDriver;
+        is( 'TRUE', $driver->deflate( true , $args) );
+        is( 'FALSE', $driver->deflate( false , $args) );
     }
 
     function testNumber()
     {
-        $driver = new SQLBuilder\Driver;
-        $inf = new Inflator;
-        $inf->driver = $driver;
-
-        is( 1 , $inf->inflate( 1 ) );
-        is( 1.2 , $inf->inflate( 1.2 ) );
-        is( '\'1\'' , $inf->inflate( '1' ) );
-        is( 'NULL' , $inf->inflate( null ) );
+        $driver = new SQLBuilder\Driver\MySQLDriver;
+        is( 1 , $driver->deflate( 1 ) );
+        is( 1.2 , $driver->deflate( 1.2 ) );
+        is( '\'1\'' , $driver->deflate( '1' ) );
+        is( 'NULL' , $driver->deflate( null ) );
 
         $d = new DateTime;
         $d->setDate( 2000, 01, 01);
         $d->setTime( 0,0,0 );
         # var_dump( $d->format(DateTime::ISO8601) . '' ); 
 
-        like( '/2000-01-01T00:00:00/' , $inf->inflate( $d ) );
+        like( '/2000-01-01T00:00:00/' , $driver->deflate($d));
     }
 
 }
