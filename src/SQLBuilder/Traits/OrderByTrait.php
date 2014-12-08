@@ -53,15 +53,16 @@ trait OrderByTrait {
         if (empty($this->orderByList)) {
             return '';
         }
-        $clauses = array();
+
+        $sql = '';
         foreach($this->orderByList as $orderBy) {
             if (is_array($orderBy)) {
-                $clauses[] = $orderBy[0] . ($orderBy[1] ? ' ' . strtoupper($orderBy[1]) : '');
+                $sql .= ', ' . $orderBy[0] . ($orderBy[1] ? ' ' . strtoupper($orderBy[1]) : '');
             } elseif ($orderBy instanceof ToSqlInterface) {
-                $clauses[] = $orderBy->toSql($driver, $args);
+                $sql .= ', ' . $orderBy->toSql($driver, $args);
             }
         }
-        return ' ORDER BY ' . join(', ', $clauses);
+        return ' ORDER BY' . ltrim($sql, ',');
     }
 }
 
