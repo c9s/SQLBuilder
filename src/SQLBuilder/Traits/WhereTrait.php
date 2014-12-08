@@ -20,10 +20,12 @@ trait WhereTrait {
         if (!$this->where) {
             $this->where = new Conditions;
         }
-        if (is_string($expr)) {
-            $this->where->appendExpr($expr, $args);
-        } elseif (!is_null($expr)) {
-            throw new LogicException("Unsupported argument type of 'where' method.");
+        if ($expr) {
+            if (is_string($expr)) {
+                $this->where->appendExpr($expr, $args);
+            } else {
+                throw new LogicException("Unsupported argument type of 'where' method.");
+            }
         }
         return $this->where;
     }

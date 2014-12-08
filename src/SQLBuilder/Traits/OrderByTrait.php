@@ -35,11 +35,7 @@ trait OrderByTrait {
     @see http://dev.mysql.com/doc/refman/5.1/en/sorting-rows.html
     */
     public function orderBy($byExpr, $sorting = NULL) {
-        if ($sorting) {
-            $this->orderByList[] = array($byExpr, $sorting);
-        } else {
-            $this->orderByList[] = array($byExpr);
-        }
+        $this->orderByList[] = array($byExpr, $sorting);
         return $this;
     }
 
@@ -59,10 +55,8 @@ trait OrderByTrait {
         }
         $clauses = array();
         foreach($this->orderByList as $orderBy) {
-            if (count($orderBy) === 1) {
-                $clauses[] = $orderBy[0];
-            } elseif (count($orderBy) === 2) {
-                $clauses[] = $orderBy[0] . ' ' . strtoupper($orderBy[1]);
+            if (is_array($orderBy)) {
+                $clauses[] = $orderBy[0] . ($orderBy[1] ? ' ' . strtoupper($orderBy[1]) : '');
             } elseif ($orderBy instanceof ToSqlInterface) {
                 $clauses[] = $orderBy->toSql($driver, $args);
             }

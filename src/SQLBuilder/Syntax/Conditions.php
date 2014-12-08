@@ -50,16 +50,12 @@ class Conditions implements ToSqlInterface, Countable
 {
     protected $exprs = array();
 
-    public function __construct()
-    {
-    }
-
-
     public function append($expr) {
-        if (count($this->exprs) > 0 && ! end($this->exprs) instanceof Op) {
+        if (!empty($this->exprs) && ! end($this->exprs) instanceof Op) {
             $this->exprs[] = new AndOp;
         }
         $this->exprs[] = $expr;
+        return $this;
     }
 
     /**
@@ -67,10 +63,11 @@ class Conditions implements ToSqlInterface, Countable
      */
     public function appendExprObject(Expr $expr) {
         // We duplicate the code of checking op object to avoid the extra function call.
-        if (count($this->exprs) > 0 && ! end($this->exprs) instanceof Op) {
+        if (!empty($this->exprs) && ! end($this->exprs) instanceof Op) {
             $this->exprs[] = new AndOp;
         }
         $this->exprs[] = $expr;
+        return $this;
     }
 
     public function appendExpr($raw, array $args = array()) {
@@ -117,7 +114,7 @@ class Conditions implements ToSqlInterface, Countable
         return $this;
     }
 
-    public function __call($method,$args)
+    public function __call($method, $args)
     {
         switch( $method )
         {
