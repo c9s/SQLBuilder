@@ -1,4 +1,4 @@
-# SQLBuilder for PHP5.3
+# SQLBuilder for PHP
 
 [![Build Status](https://secure.travis-ci.org/c9s/php-SQLBuilder.png)](http://travis-ci.org/c9s/php-SQLBuilder)
 
@@ -306,7 +306,7 @@ $sb->whereFromArgs(array( 'foo' => '123' ));
 
 $sb->where()->equal('foo',123);
 
-$sql = $sb->build();  // DELETE FROM member  WHERE foo = 123
+$sql = $sb->build();  // DELETE FROM member WHERE foo = 123
 ```
 
 ## Index Builder

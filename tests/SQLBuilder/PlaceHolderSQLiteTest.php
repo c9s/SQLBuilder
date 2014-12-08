@@ -11,18 +11,18 @@ class PlaceHolderSQLiteTest extends PHPUnit_PDO_TestCase
 
     public function getDriver()
     {
-        $d = new SQLBuilder\Driver;
-        $d->configure('driver','sqlite');
-        $d->configure('placeholder','named');
-        $d->quoter = array( $this->pdo, 'quote' );
+        $d = new SQLBuilder\Driver\SQLiteDriver;
+        $d->setNamedParamMarker();
+        $d->setQuoter(array($this->pdo, 'quote'));
         return $d;
     }
 
     public function testCasting()
     {
-        $sb = new SQLBuilder\QueryBuilder;
+        $driver = $this->getDriver();
+
+        $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member');
-        $sb->driver = $this->getDriver();
         $sb->select('*');
         $sb->where()
             ->equal('confirmed' , true);

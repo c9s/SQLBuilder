@@ -10,6 +10,10 @@ class RawValue
         $this->value = $rawValue;
     }
 
+    public function getRawValue() {
+        return $this->value;
+    }
+
     public function __toString() {
         return $this->value;
     }

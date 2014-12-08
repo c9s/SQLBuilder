@@ -23,14 +23,15 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
 
     public $dsn = 'sqlite::memory:';
 
-    function getDriver()
+    public function getDriver()
     {
         return DriverFactory::create_sqlite_driver();
     }
 
-    function testWrapper()
+    public function testWrapper()
     {
-        $test = new TestQueryWrapper;
+        $driver = $this->getDriver();
+        $test = new TestQueryWrapper($driver);
         $ret = $test->delete()
                 ->where()
                     ->equal('id',1)
@@ -38,11 +39,12 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         is( 99, $ret );
     }
 
-    function testCloneWithNamedParameter()
+    public function testCloneWithNamedParameter()
     {
-        $b1 = new SQLBuilder\QueryBuilder;
-        $b1->driver = $this->getDriver();
-        $b1->driver->configure('placeholder','named');
+        $driver = $this->getDriver();
+        $driver->setNamedParamMarker();
+
+        $b1 = new SQLBuilder\QueryBuilder($driver);
         $b1->table('member');
         $b1->where()
                 ->equal('name','Cindy');
@@ -70,11 +72,12 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         is($b1->build() , $b2->build() );
     }
 
-    function testCloneWithAliasArguments() 
+    public function testCloneWithAliasArguments() 
     {
-        $b1 = new SQLBuilder\QueryBuilder;
-        $b1->driver = $this->getDriver();
-        $b1->driver->configure('placeholder','named');
+        $driver = $this->getDriver();
+        $driver->setNamedParamMarker();
+
+        $b1 = new SQLBuilder\QueryBuilder($driver);
         $b1->table('member');
         $b1->alias('m');
         $b1->where()
@@ -109,10 +112,11 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         ok($b1->build() != $b2->build() );
     }
 
-    function testCloneWithJoinExpression() {
-        $b1 = new SQLBuilder\QueryBuilder;
-        $b1->driver = $this->getDriver();
-        $b1->driver->configure('placeholder','named');
+    public function testCloneWithJoinExpression() {
+        $driver = $this->getDriver();
+        $driver->setNamedParamMarker();
+
+        $b1 = new SQLBuilder\QueryBuilder($driver);
         $b1->table('member');
         $b1->alias('m');
         $b1->join('member_picture')
@@ -138,12 +142,12 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         ok($sql);
     }
 
-
-    function testCloneWithBasicArguments() 
+    public function testCloneWithBasicArguments() 
     {
-        $b1 = new SQLBuilder\QueryBuilder;
-        $b1->driver = $this->getDriver();
-        $b1->driver->configure('placeholder','named');
+        $driver = $this->getDriver();
+        $driver->setNamedParamMarker();
+
+        $b1 = new SQLBuilder\QueryBuilder($driver);
         $b1->table('member');
         $b1->where()
             ->equal('name','Cindy')
@@ -169,28 +173,30 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         ok($b1->build() != $b2->build() );
     }
 
-    function testInsert()
+    public function testInsert()
     {
-        $sb = new SQLBuilder\QueryBuilder;
+        $driver = $this->getDriver();
+        $driver->setNoParamMarker();
+        $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member');
-        $sb->driver = $this->getDriver();
         $sb->insert(array(
             'name' => 'foo',
             'phone' => 'bar',
         ));
         $sql = $sb->build();
         ok( $sql );
-        is("INSERT INTO member ( name,phone) VALUES ('foo','bar')",$sql);
+        is("INSERT INTO member (name,phone) VALUES ('foo','bar')", $sql);
     }
 
     function testParameterConflict()
     {
-        $sb = new SQLBuilder\QueryBuilder;
+        $driver = $this->getDriver();
+        $driver->setQuoteColumn(true);
+        $driver->setNamedParamMarker();
+        $driver->setQuoter(array( $this->pdo, 'quote' ));
+
+        $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member');
-        $sb->driver = $this->getDriver();
-        $sb->driver->configure('quote_column',true);
-        $sb->driver->configure('placeholder','named');
-        $sb->driver->quoter = array( $this->pdo, 'quote' );
         $sb->update(array(
             'name' => 'foo',
             'phone' => 'bar',
@@ -213,14 +219,15 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         $this->noPDOError();
     }
 
-    function testUpdateVars() 
+    public function testUpdateVars() 
     {
-        $sb = new SQLBuilder\QueryBuilder;
+        $driver = $this->getDriver();
+        $driver->setQuoteColumn();
+        $driver->setNamedParamMarker();
+        $driver->setQuoter(array( $this->pdo, 'quote' ));
+
+        $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member');
-        $sb->driver = $this->getDriver();
-        $sb->driver->configure('quote_column',true);
-        $sb->driver->configure('placeholder','named');
-        $sb->driver->quoter = array( $this->pdo, 'quote' );
         $sb->update(array(
             'name' => 'foo',
             'phone' => 'bar',
@@ -241,21 +248,22 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         ok( $stm );
     }
 
-    function testInsertVars() 
+    public function testInsertVars() 
     {
-        $sb = new SQLBuilder\QueryBuilder;
+        $driver = $this->getDriver();
+        $driver->setQuoteColumn(true);
+        $driver->setNamedParamMarker();
+        $driver->setQuoter(array( $this->pdo, 'quote' ));
+
+        $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member');
-        $sb->driver = $this->getDriver();
-        $sb->driver->configure('quote_column',true);
-        $sb->driver->configure('placeholder','named');
-        $sb->driver->quoter = array( $this->pdo, 'quote' );
         $sb->insert(array(
             'name' => 'foo',
             'phone' => 'bar',
         ));
         $sql = $sb->build();
         ok( $sql );
-        is("INSERT INTO member ( `name`,`phone`) VALUES (:name,:phone)",$sql);
+        is("INSERT INTO member (`name`,`phone`) VALUES (:name,:phone)",$sql);
 
         $vars = $sb->getVars();
         is( 'foo' , $vars[':name'] );
@@ -266,39 +274,42 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         ok( $stm );
     }
 
-    function testQuoteInsert() 
+    public function testQuoteInsert() 
     {
-        $sb = new SQLBuilder\QueryBuilder;
+        $driver = $this->getDriver();
+        $driver->setQuoteColumn(true);
+        $driver->setNoParamMarker();
+        $driver->setQuoter(array( $this->pdo, 'quote' ));
+
+        $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member');
-        $sb->driver = $this->getDriver();
-        $sb->driver->configure('quote_column',true);
-        $sb->driver->quoter = array( $this->pdo, 'quote' );
         $sb->insert(array(
             'name' => 'foo',
             'phone' => 'bar',
         ));
         $sql = $sb->build();
         ok( $sql );
-        is("INSERT INTO member ( `name`,`phone`) VALUES ('foo','bar')",$sql);
+        is("INSERT INTO member (`name`,`phone`) VALUES ('foo','bar')",$sql);
         $stm = $this->pdo->query($sql);
         ok( $stm );
     }
 
-
-    function testQuoteInsert2()
+    public function testQuoteInsert2()
     {
-        $sb = new SQLBuilder\QueryBuilder;
+        $driver = $this->getDriver();
+        $driver->setQuoteColumn(true);
+        $driver->setNoParamMarker();
+        $driver->setQuoter(array( $this->pdo, 'quote' ));
+
+        $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member');
-        $sb->driver = $this->getDriver();
-        $sb->driver->configure('quote_column',true);
-        $sb->driver->quoter = array( $this->pdo, 'quote' );
         $sb->insert(array(
             'name' => 'fo\'o',
             'phone' => 'bar',
         ));
         $sql = $sb->build();
         ok( $sql );
-        is("INSERT INTO member ( `name`,`phone`) VALUES ('fo''o','bar')",$sql);
+        is("INSERT INTO member (`name`,`phone`) VALUES ('fo''o','bar')",$sql);
         $stm = $this->pdo->query($sql);
         ok( $stm );
     }
@@ -313,15 +324,17 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
             }
         }
 
-        $sb = new SQLBuilder\QueryBuilder;
-        $sb->driver = $this->getDriver();
-        $sb->driver->quoter = array($this->pdo,'quote');
+        $driver = $this->getDriver();
+        $driver->setQuoter(array( $this->pdo, 'quote' ));
+        $driver->setNoParamMarker();
+
+        $sb = new SQLBuilder\QueryBuilder($driver);
         $sb->table('member')->select('name')
             ->groupBy('country','name')
             ->order('name');
         $sql = $sb->build();
 
-        is('SELECT name FROM member  GROUP BY country,name ORDER BY name desc', $sql );
+        is('SELECT name FROM member GROUP BY country,name ORDER BY name desc', $sql );
         
         $stm = $this->pdo->query( $sql );
 
@@ -333,7 +346,7 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         $sb->having()->equal('name','Taiwan');
         $sql = $sb->build();
 
-        is( "SELECT name FROM member  GROUP BY country,name HAVING name = 'Taiwan' ORDER BY name desc", $sql );
+        is( "SELECT name FROM member GROUP BY country,name HAVING name = 'Taiwan' ORDER BY name desc", $sql );
         $this->pdo->query( $sql );
 
         $sb->table('member')->select('name')

@@ -18,10 +18,10 @@ class BetweenExpression
     // xxx: process for placeholder
     public function toSql()
     {
-        return $this->driver->getQuoteColumn($this->column) . ' BETWEEN ' 
-            . $this->driver->inflate( $this->from )
+        return $this->driver->quoteColumn($this->column) . ' BETWEEN ' 
+            . $this->driver->deflate( $this->from )
             .  ' AND ' 
-            . $this->driver->inflate( $this->to );
+            . $this->driver->deflate( $this->to );
     }
 
 }
