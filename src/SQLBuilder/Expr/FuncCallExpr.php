@@ -8,6 +8,12 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\ToSqlInterface;
 use LogicException;
 
+
+/**
+ * MySQL Function Name Parsing and Resolution
+ *
+ * @see http://dev.mysql.com/doc/refman/5.0/en/function-resolution.html
+ */
 class FuncCallExpr implements ToSqlInterface
 {
 
