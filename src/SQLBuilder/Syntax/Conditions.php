@@ -191,11 +191,11 @@ class Conditions implements ToSqlInterface, Countable
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        $clauses = array();
+        $sql = '';
         foreach ($this->exprs as $expr) {
-            $clauses[] = $expr->toSql($driver, $args);
+            $sql .= ' ' . $expr->toSql($driver, $args);
         }
-        return join(' ',$clauses);
+        return ltrim($sql);
     }
 
     public function hasExprs() {

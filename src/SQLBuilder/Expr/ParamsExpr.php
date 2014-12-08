@@ -35,13 +35,10 @@ class ParamsExpr extends Expr implements ToSqlInterface {
     public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         $sql = '';
-        foreach($this->params as $idx => $val) {
-            if ($idx > 0) {
-                $sql .= ',';
-            }
-            $sql .= $driver->deflate($val, $args);
+        foreach($this->params as $val) {
+            $sql .= ',' . $driver->deflate($val, $args);
         }
-        return $sql;
+        return ltrim($sql, ',');
     }
 
 }
