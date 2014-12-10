@@ -49,6 +49,7 @@ EOS;
         return $driver;
     }
 
+    /*
     public function testInsert()
     {
         $driver = $this->getPgDriver();
@@ -171,6 +172,7 @@ EOS;
         $sql = $sb->build();
         is( 'SELECT COUNT(*) FROM "Member" WHERE "foo" = :foo LIMIT 10 OFFSET 20' ,$sql );
     }
+     */
 
 
 }
