@@ -2,7 +2,7 @@
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\Query\MySQLQuery\CreateUserQuery;
+use SQLBuilder\MySQL\Query\CreateUserQuery;
 
 class CreateUserQueryTest extends PHPUnit_Framework_TestCase
 {
