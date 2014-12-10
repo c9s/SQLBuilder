@@ -36,6 +36,8 @@ class UserSpecification {
 
     public $parent;
 
+    public $authPlugin;
+
     public function __construct($parent, $account) {
         $this->parent = $parent;
         $this->account = $account;
@@ -51,6 +53,11 @@ class UserSpecification {
         return $this;
     }
 
+    public function identifiedWith($authPlugin) {
+        $this->authPlugin = $authPlugin;
+        return $this;
+    }
+
     public function getAccount() {
         return $this->account;
     }
@@ -61,6 +68,10 @@ class UserSpecification {
 
     public function getHost() {
         return $this->host;
+    }
+
+    public function getAuthPlugin() {
+        return $this->authPlugin;
     }
 
     public function __call($m , $args) {
@@ -84,6 +95,9 @@ class CreateUserQuery implements ToSqlInterface
             $sql = $driver->quoteIdentifier($spec->getAccount()) . '@' . $driver->quoteIdentifier($spec->getHost());
             if ($pass = $spec->getPassword()) {
                 $sql .= ' IDENTIFIED BY ' . $driver->quote($pass);
+            }
+            elseif ($authPlugin = $spec->getAuthPlugin()) {
+                $sql .= ' IDENTIFIED WITH ' . $driver->quoteIdentifier($authPlugin);
             }
             $specSql[] = $sql;
         }

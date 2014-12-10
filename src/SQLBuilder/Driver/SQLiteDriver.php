@@ -8,7 +8,7 @@ use SQLBuilder\ArgumentArray;
 class SQLiteDriver extends BaseDriver
 {
     public function quoteIdentifier($id) {
-        return '`' . $id . '`';
+        return '`' . addcslashes($id,'`') . '`';
     }
     
     /**

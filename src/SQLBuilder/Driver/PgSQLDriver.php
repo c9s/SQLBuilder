@@ -7,7 +7,7 @@ use RuntimeException;
 class PgSQLDriver extends BaseDriver
 {
     public function quoteIdentifier($id) {
-        return '"' . $id . '"';
+        return '"' . addcslashes($id,'"') . '"';
     }
 }
 

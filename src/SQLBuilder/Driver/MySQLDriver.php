@@ -8,7 +8,7 @@ class MySQLDriver extends BaseDriver
     public $quoteTable = false;
 
     public function quoteIdentifier($id) {
-        return '`' . $id . '`';
+        return '`' . addcslashes($id,'`') . '`';
     }
 }
 
