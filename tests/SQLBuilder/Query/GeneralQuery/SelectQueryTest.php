@@ -2,7 +2,7 @@
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\Query\SelectQuery;
+use SQLBuilder\Query\GeneralQuery\SelectQuery;
 
 class SelectQueryTest extends PHPUnit_Framework_TestCase
 {
