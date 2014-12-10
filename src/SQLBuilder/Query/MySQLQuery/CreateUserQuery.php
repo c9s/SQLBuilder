@@ -41,66 +41,7 @@ SET PASSWORD FOR 'jeffrey'@'localhost' = PASSWORD('mypass');
 
 @see http://dev.mysql.com/doc/refman/5.5/en/create-user.html
 @see http://dev.mysql.com/doc/refman/5.5/en/server-system-variables.html#sysvar_old_passwords
-
 */
-class UserSpecification { 
-
-    public $account;
-
-    public $host = 'localhost';
-
-    public $password;
-
-    public $parent;
-
-    public $authPlugin;
-
-    public function __construct($parent) {
-        $this->parent = $parent;
-    }
-
-    public function account($account)
-    {
-        $this->account = $account;
-        return $this;
-    }
-
-    public function host($host) {
-        $this->host = $host;
-        return $this;
-    }
-
-    public function identifiedBy($pass) {
-        $this->password = $pass;
-        return $this;
-    }
-
-    public function identifiedWith($authPlugin) {
-        $this->authPlugin = $authPlugin;
-        return $this;
-    }
-
-    public function getAccount() {
-        return $this->account;
-    }
-
-    public function getPassword() {
-        return $this->password;
-    }
-
-    public function getHost() {
-        return $this->host;
-    }
-
-    public function getAuthPlugin() {
-        return $this->authPlugin;
-    }
-
-    public function __call($m , $args) {
-        return call_user_func_array(array($this->parent, $m), $args);
-    }
-}
-
 class CreateUserQuery implements ToSqlInterface
 {
     public $userSpecifications = array();
