@@ -8,9 +8,6 @@ class CreateUserQueryTest extends PHPUnit_Framework_TestCase
 {
     public function testCreateSingleUser()
     {
-        /**
-         * CREATE USER 'monty'@'localhost' IDENTIFIED BY 'some_pass';
-         */
         $driver = new MySQLDriver;
         $args = new ArgumentArray;
         $q = new CreateUserQuery;
@@ -19,6 +16,24 @@ class CreateUserQueryTest extends PHPUnit_Framework_TestCase
         is("CREATE USER `monty`@`localhost` IDENTIFIED BY 'some_pass'", $sql);
     }
 
+    public function testCreateUserWithSpecString() {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+        $q = new CreateUserQuery;
+        $q->user('monty@localhost')->identifiedBy('some_pass');
+        $sql = $q->toSql($driver, $args);
+        is("CREATE USER `monty`@`localhost` IDENTIFIED BY 'some_pass'", $sql);
+    }
+
+
+    public function testCreateUserWithSpecString2() {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+        $q = new CreateUserQuery;
+        $q->user('`monty`@`localhost`')->identifiedBy('some_pass');
+        $sql = $q->toSql($driver, $args);
+        is("CREATE USER `monty`@`localhost` IDENTIFIED BY 'some_pass'", $sql);
+    }
 
 
     public function testCreateSingleUserWithAuthPlugin()

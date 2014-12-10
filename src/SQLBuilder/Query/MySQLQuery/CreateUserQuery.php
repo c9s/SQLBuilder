@@ -105,9 +105,15 @@ class CreateUserQuery implements ToSqlInterface
 {
     public $userSpecifications = array();
 
-    public function user() {
+    public function user($spec = NULL) {
         $user = new UserSpecification($this);
         $this->userSpecifications[] = $user;
+
+        if (is_string($spec)) {
+            list($account, $host) = explode('@', $spec);
+            $user->account(trim($account, "`'"));
+            $user->host(trim($host, "`'"));
+        }
         return $user;
     }
 
