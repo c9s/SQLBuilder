@@ -125,6 +125,8 @@ abstract class BaseDriver
         return $quotedColumns;
     }
 
+    abstract public function quoteIdentifier($id);
+
     /**
      * Check driver option to quote column name
      *
@@ -133,7 +135,19 @@ abstract class BaseDriver
      * @param string $name column name
      * @return string column name with/without quotes.
      */
-    abstract public function quoteColumn($name);
+    public function quoteColumn($name)
+    {
+        // TODO: quote for DB.TABLE.COLNAME 
+        if ($this->quoteColumn) {
+            if (preg_match('/\W/',$name)) {
+                return $name;
+            }
+            return $this->quoteIdentifier($name);
+        }
+        return $name;
+    }
+
+
 
     /**
      * Check driver optino to quote table name
@@ -143,7 +157,14 @@ abstract class BaseDriver
      * @param string $name table name
      * @return string table name with/without quotes.
      */
-    abstract public function quoteTableName($name);
+    public function quoteTableName($name) 
+    {
+        if ($this->quoteTable) {
+            // TODO: Split DB.Table
+            return $this->quoteIdentifier($name);
+        }
+        return $name;
+    }
 
 
     /**

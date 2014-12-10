@@ -7,24 +7,10 @@ use SQLBuilder\ArgumentArray;
 
 class SQLiteDriver extends BaseDriver
 {
-
-    public function quoteColumn($name)
-    {
-        if ($this->quoteColumn) {
-            // return raw value if column name contains (non-word chars), eg: min( ), max( )
-            if ( preg_match('/\W/',$name) ) {
-                return $name;
-            }
-            return '`' . $name . '`';
-        }
-        return $name;
+    public function quoteIdentifier($id) {
+        return '`' . $id . '`';
     }
-
-    public function quoteTableName($name)
-    {
-        return $name;
-    }
-
+    
     /**
      * For variable placeholder like PDO, we need 1 or 0 for boolean type,
      *
@@ -51,6 +37,5 @@ class SQLiteDriver extends BaseDriver
         }
         return $value;
     }
-
 }
 
