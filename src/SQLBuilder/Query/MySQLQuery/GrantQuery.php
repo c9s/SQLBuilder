@@ -13,24 +13,14 @@ use SQLBuilder\ParamMarker;
 use SQLBuilder\Syntax\UserSpecification;
 use SQLBuilder\Traits\UserSpecTrait;
 
-/**
- *
- * @see http://dev.mysql.com/doc/refman/5.5/en/drop-user.html
- */
-class DropUserQuery
+class GrantQuery implements ToSqlInterface
 {
     use UserSpecTrait;
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        $specSql = array();
-        foreach($this->userSpecifications as $spec) {
-            $sql = $driver->quoteIdentifier($spec->getAccount()) . '@' . $driver->quoteIdentifier($spec->getHost());
-            $specSql[] = $sql;
-        }
-        return 'DROP USER ' . join(', ', $specSql);
+        return '';
     }
 }
-
 
 
 

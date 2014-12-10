@@ -1,5 +1,5 @@
 <?php
-namespace SQLBuilder\Query\MySQLQuery;
+namespace SQLBuilder\Syntax;
 
 class UserSpecification { 
 

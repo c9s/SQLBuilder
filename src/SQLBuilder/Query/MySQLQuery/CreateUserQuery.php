@@ -10,6 +10,8 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
+use SQLBuilder\Syntax\UserSpecification;
+use SQLBuilder\Traits\UserSpecTrait;
 
 /**
 
@@ -44,19 +46,7 @@ SET PASSWORD FOR 'jeffrey'@'localhost' = PASSWORD('mypass');
 */
 class CreateUserQuery implements ToSqlInterface
 {
-    public $userSpecifications = array();
-
-    public function user($spec = NULL) {
-        $user = new UserSpecification($this);
-        $this->userSpecifications[] = $user;
-
-        if (is_string($spec)) {
-            list($account, $host) = explode('@', $spec);
-            $user->account(trim($account, "`'"));
-            $user->host(trim($host, "`'"));
-        }
-        return $user;
-    }
+    use UserSpecTrait;
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $specSql = array();
