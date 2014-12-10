@@ -9,6 +9,8 @@ class UserSpecification {
 
     public $password;
 
+    public $passwordByHash;
+
     public $parent;
 
     public $authPlugin;
@@ -28,8 +30,9 @@ class UserSpecification {
         return $this;
     }
 
-    public function identifiedBy($pass) {
+    public function identifiedBy($pass, $byHash = false) {
         $this->password = $pass;
+        $this->passwordByHash = $byHash;
         return $this;
     }
 

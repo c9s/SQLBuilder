@@ -63,7 +63,11 @@ class CreateUserQuery implements ToSqlInterface
         foreach($this->userSpecifications as $spec) {
             $sql = $driver->quoteIdentifier($spec->getAccount()) . '@' . $driver->quoteIdentifier($spec->getHost());
             if ($pass = $spec->getPassword()) {
-                $sql .= ' IDENTIFIED BY ' . $driver->quote($pass);
+                $sql .= ' IDENTIFIED BY';
+                if ($spec->passwordByHash) {
+                    $sql .= ' PASSWORD';
+                }
+                $sql .= ' ' . $driver->quote($pass);
             }
             elseif ($authPlugin = $spec->getAuthPlugin()) {
                 $sql .= ' IDENTIFIED WITH ' . $driver->quoteIdentifier($authPlugin);

@@ -11,6 +11,11 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 
+
+/**
+ *
+ * @see http://dev.mysql.com/doc/refman/5.5/en/drop-user.html
+ */
 class DropUserQuery
 {
 
