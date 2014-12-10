@@ -91,6 +91,20 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         is('SELECT id, country, code FROM counties AS c GROUP BY c.code WITH ROLLUP', $sql);
     }
 
+    public function testSelectWithSharedLock() {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $query = new SelectQuery;
+        ok($query);
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users', 'u')
+            ->where('name = :name', [ ':name' => 'Joan' ])
+            ;
+        $query->lockInShareMode();
+        $sql = $query->toSql($driver, $args);
+        is('SELECT id, name, phone, address FROM users AS u WHERE name = :name LOCK IN SHARE MODE', $sql);
+    }
+
     public function testSelectIndexHint() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
