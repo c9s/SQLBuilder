@@ -1,6 +1,6 @@
 <?php
 use SQLBuilder\RawValue;
-use SQLBuilder\Query\UpdateQuery;
+use SQLBuilder\Query\GeneralQuery\UpdateQuery;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;

@@ -1,5 +1,5 @@
 <?php
-namespace SQLBuilder\Query;
+namespace SQLBuilder\Query\GeneralQuery;
 use SQLBuilder\RawValue;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
