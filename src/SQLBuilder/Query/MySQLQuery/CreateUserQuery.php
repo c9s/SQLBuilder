@@ -24,8 +24,21 @@ user_specification:
       | IDENTIFIED WITH auth_plugin [AS 'auth_string']
         IDENTIFIED BY [PASSWORD] 'password'
     ]
- */
 
+
+When using auth plugin, we need to specify the password later.
+
+The 'old_passwords' global variable is for the hash algorithm.
+
+There are two mysql auth plugin:
+    mysql_native_password
+    mysql_old_password
+
+CREATE USER 'jeffrey'@'localhost' IDENTIFIED WITH mysql_native_password;
+SET old_passwords = 0;
+SET PASSWORD FOR 'jeffrey'@'localhost' = PASSWORD('mypass');
+
+*/
 class UserSpecification { 
 
     public $account;
@@ -41,6 +54,12 @@ class UserSpecification {
     public function __construct($parent, $account) {
         $this->parent = $parent;
         $this->account = $account;
+    }
+
+    public function account($account)
+    {
+        $this->account = $account;
+        return $this;
     }
 
     public function host($host) {
@@ -83,7 +102,7 @@ class CreateUserQuery implements ToSqlInterface
 {
     public $userSpecifications = array();
 
-    public function account($account) {
+    public function user($account) {
         $user = new UserSpecification($this, $account);
         $this->userSpecifications[] = $user;
         return $user;
