@@ -10,8 +10,8 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
-use SQLBuilder\Syntax\UserSpecification;
-use SQLBuilder\Traits\UserSpecTrait;
+use SQLBuilder\MySQL\Syntax\UserSpecification;
+use SQLBuilder\MySQL\Traits\UserSpecTrait;
 
 /**
 
