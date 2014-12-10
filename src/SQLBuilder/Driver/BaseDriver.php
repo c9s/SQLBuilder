@@ -1,15 +1,15 @@
 <?php
 namespace SQLBuilder\Driver;
-use DateTime;
-use Exception;
-use RuntimeException;
-use LogicException;
 use SQLBuilder\RawValue;
 use SQLBuilder\DataType\Unknown;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Bind;
 use Closure;
+use DateTime;
+use Exception;
+use RuntimeException;
+use LogicException;
 
 abstract class BaseDriver
 {
@@ -27,6 +27,10 @@ abstract class BaseDriver
      * Named parameter marker
      */
     const NAMED_PARAM_MARKER = 2;
+
+    public $bindAllVariables = false;
+
+    public $paramNameCnt = 1;
 
     public $paramMarker = self::NAMED_PARAM_MARKER;
 
@@ -59,6 +63,9 @@ abstract class BaseDriver
         $this->quoter = $quoter;
     }
 
+    public function bindAllVariables($on = true) {
+        $this->bindAllVariables = $on;
+    }
 
     /**
      * @param boolean $enable 
@@ -178,6 +185,37 @@ abstract class BaseDriver
     }
 
 
+    protected function deflateScalar($value)
+    {
+        if ($value === NULL ) {
+
+            return 'NULL';
+
+        } elseif ($value === true ) {
+
+            return 'TRUE';
+
+        } elseif ($value === false ) {
+
+            return 'FALSE';
+
+        } elseif (is_integer($value) ) {
+
+            return intval($value);
+
+        } elseif (is_float($value) ) {
+
+            return floatval($value);
+
+        } elseif (is_string($value) ) {
+
+            return $this->quote($value);
+
+        } else {
+            throw new Exception("Can't deflate value, unknown type.");
+        }
+    }
+
 
     /**
      * For variable placeholder like PDO, we need 1 or 0 for boolean type,
@@ -190,6 +228,7 @@ abstract class BaseDriver
      */
     public function deflate($value, ArgumentArray $args = NULL)
     {
+
         if ($value === NULL ) {
 
             return 'NULL';
