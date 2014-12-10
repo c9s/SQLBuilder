@@ -2,8 +2,8 @@
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\Query\MySQLQuery\CreateUserQuery;
-use SQLBuilder\Query\MySQLQuery\DropUserQuery;
+use SQLBuilder\MySQL\Query\CreateUserQuery;
+use SQLBuilder\MySQL\Query\DropUserQuery;
 
 class DropUserQueryTest extends PHPUnit_Framework_TestCase
 {
