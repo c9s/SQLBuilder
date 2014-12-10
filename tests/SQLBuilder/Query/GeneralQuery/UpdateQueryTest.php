@@ -1,5 +1,5 @@
 <?php
-use SQLBuilder\RawValue;
+use SQLBuilder\Raw;
 use SQLBuilder\Query\GeneralQuery\UpdateQuery;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;

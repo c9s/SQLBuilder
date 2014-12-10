@@ -1,7 +1,7 @@
 <?php
 namespace SQLBuilder;
 use Exception;
-use SQLBuilder\RawValue;
+use SQLBuilder\Raw;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
@@ -521,7 +521,7 @@ class QueryBuilder
                     // just interpolate the raw value
                     $columns[] = $this->driver->quoteColumn($k);
                     $values[] = $v[0];
-                } elseif ($v instanceof RawValue) {
+                } elseif ($v instanceof Raw) {
                     $columns[] = $this->driver->quoteColumn($k);
                     $values[] = $v;
                 } else {
@@ -619,7 +619,7 @@ class QueryBuilder
             foreach( $this->update as $k => $v ) {
                 if (is_array($v)) {
                     $conds[] =  $this->driver->quoteColumn( $k ) . ' = '. $v[0];
-                } elseif ($v instanceof RawValue) {
+                } elseif ($v instanceof Raw) {
                     $conds[] =  $this->driver->quoteColumn( $k ) . ' = '. $v->__toString();
                 } else {
                     if (is_integer($k))
@@ -633,7 +633,7 @@ class QueryBuilder
             foreach( $this->update as $k => $v ) {
                 if (is_array($v)) {
                     $conds[] = $this->driver->quoteColumn($k) . ' = ' . $v[0];
-                } elseif ($v instanceof RawValue) {
+                } elseif ($v instanceof Raw) {
                     $conds[] = $this->driver->quoteColumn($k) . ' = ' . $v->__toString();
                 } else {
                     $conds[] = $this->driver->quoteColumn($k) . ' = ' . $this->driver->deflate($v);

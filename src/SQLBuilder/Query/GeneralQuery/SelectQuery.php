@@ -1,7 +1,7 @@
 <?php
 namespace SQLBuilder\Query\GeneralQuery;
 use Exception;
-use SQLBuilder\RawValue;
+use SQLBuilder\Raw;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
