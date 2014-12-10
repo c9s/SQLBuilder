@@ -67,7 +67,7 @@ class SelectQuery implements ToSqlInterface
 
     protected $paging;
 
-    protected $modifiers = array();
+    protected $lockModifier;
 
     public function __construct()
     {
@@ -227,10 +227,13 @@ class SelectQuery implements ToSqlInterface
      * Note: SELECT FOR UPDATE does not work when used in select statement with a subquery.
      */
     public function forUpdate() {
-        $this->modifiers[] = 'FOR UPDATE';
+        $this->lockModifier = 'FOR UPDATE';
         return $this;
     }
 
+    public function lockInShareMode() {
+        $this->lockModifier = 'LOCK IN SHARE MODE';
+    }
 
     /****************************************************************
      * Builders
@@ -318,12 +321,12 @@ class SelectQuery implements ToSqlInterface
     }
 
 
-    public function buildModifierClause()
+    public function buildLockModifierClause()
     {
-        if (empty($this->modifiers)) {
-            return '';
+        if ($this->lockModifier) {
+            return ' ' . $this->lockModifier;
         }
-        return ' ' . join(' ', $this->modifiers);
+        return '';
     }
 
     public function buildHavingClause(BaseDriver $driver, ArgumentArray $args) {
@@ -346,7 +349,7 @@ class SelectQuery implements ToSqlInterface
             . $this->buildHavingClause($driver, $args)
             . $this->buildOrderByClause($driver, $args)
             . $this->buildLimitClause($driver, $args)
-            . $this->buildModifierClause()
+            . $this->buildLockModifierClause()
             ;
         return $sql;
     }
