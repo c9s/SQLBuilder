@@ -103,6 +103,10 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         $query->lockInShareMode();
         $sql = $query->toSql($driver, $args);
         is('SELECT id, name, phone, address FROM users AS u WHERE name = :name LOCK IN SHARE MODE', $sql);
+
+        $query->forUpdate();
+        $sql = $query->toSql($driver, $args);
+        is('SELECT id, name, phone, address FROM users AS u WHERE name = :name FOR UPDATE', $sql);
     }
 
     public function testSelectIndexHint() {
