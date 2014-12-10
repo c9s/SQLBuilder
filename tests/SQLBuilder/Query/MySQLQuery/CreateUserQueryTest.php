@@ -25,7 +25,6 @@ class CreateUserQueryTest extends PHPUnit_Framework_TestCase
         is("CREATE USER `monty`@`localhost` IDENTIFIED BY 'some_pass'", $sql);
     }
 
-
     public function testCreateUserWithSpecString2() {
         $driver = new MySQLDriver;
         $args = new ArgumentArray;
