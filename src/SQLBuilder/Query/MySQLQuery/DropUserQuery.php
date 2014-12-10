@@ -14,6 +14,27 @@ use SQLBuilder\ParamMarker;
 class DropUserQuery
 {
 
+    public $userSpecifications = array();
+
+    public function user($spec = NULL) {
+        $user = new UserSpecification($this);
+        $this->userSpecifications[] = $user;
+        if (is_string($spec)) {
+            list($account, $host) = explode('@', $spec);
+            $user->account(trim($account, "`'"));
+            $user->host(trim($host, "`'"));
+        }
+        return $user;
+    }
+
+    public function toSql(BaseDriver $driver, ArgumentArray $args) {
+        $specSql = array();
+        foreach($this->userSpecifications as $spec) {
+            $sql = $driver->quoteIdentifier($spec->getAccount()) . '@' . $driver->quoteIdentifier($spec->getHost());
+            $specSql[] = $sql;
+        }
+        return 'DROP USER ' . join(', ', $specSql);
+    }
 
 
 }
