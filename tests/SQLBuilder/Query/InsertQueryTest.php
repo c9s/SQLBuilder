@@ -2,7 +2,7 @@
 use SQLBuilder\Raw;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\Query\GeneralQuery\InsertQuery;
+use SQLBuilder\Query\InsertQuery;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;

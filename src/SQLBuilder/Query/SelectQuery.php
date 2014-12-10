@@ -1,5 +1,5 @@
 <?php
-namespace SQLBuilder\Query\GeneralQuery;
+namespace SQLBuilder\Query;
 use Exception;
 use SQLBuilder\Raw;
 use SQLBuilder\Driver\BaseDriver;

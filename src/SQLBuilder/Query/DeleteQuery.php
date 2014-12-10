@@ -1,5 +1,5 @@
 <?php
-namespace SQLBuilder\Query\GeneralQuery;
+namespace SQLBuilder\Query;
 use SQLBuilder\Raw;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
@@ -20,12 +20,12 @@ use Exception;
 use LogicException;
 
 /**
- * update statement builder.
+ * Delete Statement Query
  *
  * @code
  *
- *  $query = new SQLBuilder\Query\UpdateQuery;
- *  $query->update(array(
+ *  $query = new SQLBuilder\Query\DeleteQuery;
+ *  $query->delete(array(
  *      'name' => 'foo',
  *      'values' => 'bar',
  *  ));
@@ -38,49 +38,32 @@ use LogicException;
  *    1. setters should return self, since there is no return value.
  *    2. getters should be just what they are.
  *    3. modifier can set / append data and return self
- *
- *
- * MySQL Update Syntax:
 
-    UPDATE [LOW_PRIORITY] [IGNORE] table_reference
-        SET col_name1={expr1|DEFAULT} [, col_name2={expr2|DEFAULT}] ...
+    DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
+        [PARTITION (partition_name,...)]
         [WHERE where_condition]
         [ORDER BY ...]
         [LIMIT row_count]
 
- * MySQL Update Multi-table syntax:
-
-    UPDATE [LOW_PRIORITY] [IGNORE] table_references
-        SET col_name1={expr1|DEFAULT} [, col_name2={expr2|DEFAULT}] ...
-        [WHERE where_condition]
-
- * @see http://dev.mysql.com/doc/refman/5.7/en/update.html for reference
  */
-class UpdateQuery implements ToSqlInterface
+class DeleteQuery implements ToSqlInterface
 {
     // use OrderByTrait;
-
-
     protected $options = array();
 
-    protected $updateTables = array();
-
-    protected $sets = array();
-
-    protected $where;
+    protected $deleteTables = array();
 
     protected $joins = array();
 
-    protected $orderByList = array();
-
     protected $indexHintOn = array();
+
+    protected $where;
+
+    protected $orderByList = array();
 
     protected $limit;
 
     protected $partitions;
-
-
-    static public $BindValues = TRUE;
 
     public function __construct()
     {
@@ -108,24 +91,14 @@ class UpdateQuery implements ToSqlInterface
     }
 
     /**
-     * ->update('posts', 'p')
-     * ->update('users', 'u')
+     * ->delete('posts', 'p')
+     * ->delete('users', 'u')
      */
-    public function update($table, $alias = NULL) {
+    public function delete($table, $alias = NULL) {
         if ($alias) {
-            $this->updateTables[$table] = $alias;
+            $this->deleteTables[$table] = $alias;
         } else {
-            $this->updateTables[] = $table;
-        }
-        return $this;
-    }
-
-
-    public function set(array $sets) {
-        if (is_array($sets)) {
-            $this->sets = $this->sets + $sets;
-        } else {
-            $this->sets = $this->sets + func_get_args();
+            $this->deleteTables[] = $table;
         }
         return $this;
     }
@@ -229,45 +202,9 @@ class UpdateQuery implements ToSqlInterface
         return ' ' . join(' ', $this->options);
     }
 
-    public function buildPartitionClause(BaseDriver $driver, ArgumentArray $args)
-    {
-        if ($this->partitions) {
-            return $this->partitions->toSql($driver, $args);
-        }
-        return '';
-    }
-
-
-    public function buildSetClause(BaseDriver $driver, ArgumentArray $args) {
-        $varCnt = 1;
-        $setClauses = array();
-        foreach($this->sets as $col => $val) {
-            // use static $BindValues and check variable types
-            if (static::$BindValues && (!$val instanceof Bind && !$val instanceof ParamMarker)) {
-                // XXX: we should prefer column names than by the incremental index.
-                $setClauses[] = $driver->quoteColumn($col) . " = " . $driver->deflate(new Bind("p" . $varCnt++,$val));
-            } else {
-                $setClauses[] = $driver->quoteColumn($col) . " = " . $driver->deflate($val);
-            }
-        }
-        return ' SET ' . join(', ', $setClauses);
-    }
-
-    public function buildJoinIndexHintClause(BaseDriver $driver, ArgumentArray $args)
-    {
-        if (empty($this->indexHintOn)) {
-            return '';
-        }
-        $clauses = array();
-        foreach($this->indexHintOn as $hint) {
-            $clauses[] = $hint->toSql($driver, $args);
-        }
-        return ' ' . join(' ', $clauses);
-    }
-
-    public function buildUpdateTableClause(BaseDriver $driver) {
+    public function buildDeleteTableClause(BaseDriver $driver) {
         $tableRefs = array();
-        foreach($this->updateTables as $k => $v) {
+        foreach($this->deleteTables as $k => $v) {
             /* "column AS alias" OR just "column" */
             if (is_string($k)) {
                 $sql = $driver->quoteTableName($k) . ' AS ' . $v;
@@ -289,15 +226,14 @@ class UpdateQuery implements ToSqlInterface
         return '';
     }
 
-    public function buildJoinClause(BaseDriver $driver, ArgumentArray $args) {
-        $sql = '';
-        if (!empty($this->joins)) {
-            foreach($this->joins as $join) {
-                $sql .= $join->toSql($driver, $args);
-            }
+    public function buildPartitionClause(BaseDriver $driver, ArgumentArray $args)
+    {
+        if ($this->partitions) {
+            return $this->partitions->toSql($driver, $args);
         }
-        return $sql;
+        return '';
     }
+
 
     public function buildOrderByClause(BaseDriver $driver, ArgumentArray $args) {
         if (empty($this->orderByList)) {
@@ -331,14 +267,36 @@ class UpdateQuery implements ToSqlInterface
         return '';
     }
 
+    public function buildJoinClause(BaseDriver $driver, ArgumentArray $args) {
+        $sql = '';
+        if (!empty($this->joins)) {
+            foreach($this->joins as $join) {
+                $sql .= $join->toSql($driver, $args);
+            }
+        }
+        return $sql;
+    }
+
+    public function buildJoinIndexHintClause(BaseDriver $driver, ArgumentArray $args)
+    {
+        if (empty($this->indexHintOn)) {
+            return '';
+        }
+        $clauses = array();
+        foreach($this->indexHintOn as $hint) {
+            $clauses[] = $hint->toSql($driver, $args);
+        }
+        return ' ' . join(' ', $clauses);
+    }
+
+
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        $sql = 'UPDATE'
+        $sql = 'DELETE'
             . $this->buildOptionClause()
-            . $this->buildUpdateTableClause($driver)
+            . $this->buildDeleteTableClause($driver)
             . $this->buildPartitionClause($driver, $args)
-            . $this->buildSetClause($driver, $args)
-            . $this->buildJoinIndexHintClause($driver, $args)
             . $this->buildJoinClause($driver, $args)
+            . $this->buildJoinIndexHintClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
             . $this->buildOrderByClause($driver, $args)
             . $this->buildLimitClause($driver, $args)

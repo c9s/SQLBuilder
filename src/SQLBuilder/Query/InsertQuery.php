@@ -1,5 +1,5 @@
 <?php
-namespace SQLBuilder\Query\GeneralQuery;
+namespace SQLBuilder\Query;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
