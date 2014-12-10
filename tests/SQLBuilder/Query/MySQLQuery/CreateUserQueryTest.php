@@ -35,6 +35,15 @@ class CreateUserQueryTest extends PHPUnit_Framework_TestCase
         is("CREATE USER `monty`@`localhost` IDENTIFIED BY 'some_pass'", $sql);
     }
 
+    public function testCreateUserWithHashPassword() {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+        $q = new CreateUserQuery;
+        $q->user('`monty`@`localhost`')->identifiedBy('*90E462C37378CED12064BB3388827D2BA3A9B689', true);
+        $sql = $q->toSql($driver, $args);
+        is("CREATE USER `monty`@`localhost` IDENTIFIED BY PASSWORD '*90E462C37378CED12064BB3388827D2BA3A9B689'", $sql);
+    }
+
 
     public function testCreateSingleUserWithAuthPlugin()
     {
