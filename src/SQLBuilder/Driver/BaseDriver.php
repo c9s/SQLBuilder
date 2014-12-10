@@ -1,6 +1,6 @@
 <?php
 namespace SQLBuilder\Driver;
-use SQLBuilder\RawValue;
+use SQLBuilder\Raw;
 use SQLBuilder\DataType\Unknown;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\ParamMarker;
@@ -309,7 +309,7 @@ abstract class BaseDriver
 
                 return $value->toSql($this, $args);
 
-            } elseif ($value instanceof RawValue) {
+            } elseif ($value instanceof Raw) {
 
                 return $value->__toString();
 

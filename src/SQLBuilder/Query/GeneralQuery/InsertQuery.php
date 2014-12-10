@@ -11,7 +11,7 @@ use SQLBuilder\Syntax\Join;
 use SQLBuilder\Syntax\IndexHint;
 use SQLBuilder\Syntax\Paging;
 
-use SQLBuilder\RawValue;
+use SQLBuilder\Raw;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
@@ -138,8 +138,8 @@ class InsertQuery
         foreach ($this->values as $values) {
             $deflatedValues = array();
             foreach ($values as $value) {
-                if ($value instanceof RawValue) {
-                    $deflatedValues[] = $value->getRawValue();
+                if ($value instanceof Raw) {
+                    $deflatedValues[] = $value->getRaw();
                 } elseif (static::$BindValues && (!$value instanceof Bind && !$value instanceof ParamMarker)) {
                     $deflatedValues[] = $driver->deflate(new Bind("p" . ($varCnt++), $value), $args);
                 } else {

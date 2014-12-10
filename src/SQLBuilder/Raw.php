@@ -1,7 +1,7 @@
 <?php
 namespace SQLBuilder;
 
-class RawValue
+class Raw
 {
     public $value;
 
@@ -10,7 +10,7 @@ class RawValue
         $this->value = $rawValue;
     }
 
-    public function getRawValue() {
+    public function getRaw() {
         return $this->value;
     }
 

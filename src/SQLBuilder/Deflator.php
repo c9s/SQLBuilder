@@ -64,7 +64,7 @@ class Deflator
         elseif (is_array($value) ) { // raw value
             return $value[0];
         }
-        elseif ($value instanceof RawValue) {
+        elseif ($value instanceof Raw) {
             return $value[0]->__toString();
         }
         return $value;

@@ -1,5 +1,5 @@
 <?php
-use SQLBuilder\RawValue;
+use SQLBuilder\Raw;
 use SQLBuilder\Query\GeneralQuery\UpdateQuery;
 use SQLBuilder\Query\GeneralQuery\DeleteQuery;
 use SQLBuilder\Driver\MySQLDriver;

@@ -1,5 +1,5 @@
 <?php
-use SQLBuilder\RawValue;
+use SQLBuilder\Raw;
 use SQLBuilder\Query\UpdateQuery;
 use SQLBuilder\Query\DeleteQuery;
 use SQLBuilder\Driver\MySQLDriver;
@@ -16,7 +16,7 @@ class FuncCallExprTest extends PHPUnit_Framework_TestCase
     {
         $driver = new MySQLDriver;
         $args = new ArgumentArray;
-        $func = new FuncCallExpr('COUNT', [ new RawValue('*') ]);
+        $func = new FuncCallExpr('COUNT', [ new Raw('*') ]);
         $sql = $func->toSql($driver, $args);
         is('COUNT(*)', $sql);
     }
