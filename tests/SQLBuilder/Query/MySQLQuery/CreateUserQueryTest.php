@@ -19,11 +19,18 @@ class CreateUserQueryTest extends PHPUnit_Framework_TestCase
         is("CREATE USER `monty`@`localhost` IDENTIFIED BY 'some_pass'", $sql);
     }
 
+    public function testCreateSingleUserWithAuthPlugin()
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+        $q = new CreateUserQuery;
+        $q->account('monty')->host('localhost')->identifiedWith('mysql_native_password');
+        $sql = $q->toSql($driver, $args);
+        is("CREATE USER `monty`@`localhost` IDENTIFIED WITH `mysql_native_password`", $sql);
+    }
+
     public function testCreateMultipleUser()
     {
-        /**
-         * CREATE USER 'monty'@'localhost' IDENTIFIED BY 'some_pass';
-         */
         $driver = new MySQLDriver;
         $args = new ArgumentArray;
         $q = new CreateUserQuery;
