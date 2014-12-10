@@ -14,7 +14,7 @@ class CreateUserQueryTest extends PHPUnit_Framework_TestCase
         $driver = new MySQLDriver;
         $args = new ArgumentArray;
         $q = new CreateUserQuery;
-        $q->user('monty')->host('localhost')->identifiedBy('some_pass');
+        $q->user()->account('monty')->host('localhost')->identifiedBy('some_pass');
         $sql = $q->toSql($driver, $args);
         is("CREATE USER `monty`@`localhost` IDENTIFIED BY 'some_pass'", $sql);
     }
@@ -26,7 +26,7 @@ class CreateUserQueryTest extends PHPUnit_Framework_TestCase
         $driver = new MySQLDriver;
         $args = new ArgumentArray;
         $q = new CreateUserQuery;
-        $q->user('monty')->host('localhost')->identifiedWith('mysql_native_password');
+        $q->user()->account('monty')->host('localhost')->identifiedWith('mysql_native_password');
         $sql = $q->toSql($driver, $args);
         is("CREATE USER `monty`@`localhost` IDENTIFIED WITH `mysql_native_password`", $sql);
     }
@@ -36,8 +36,8 @@ class CreateUserQueryTest extends PHPUnit_Framework_TestCase
         $driver = new MySQLDriver;
         $args = new ArgumentArray;
         $q = new CreateUserQuery;
-        $q->user('monty')->host('localhost')->identifiedBy('some_pass');
-        $q->user('john')->host('%')->identifiedBy('some_pass');
+        $q->user()->account('monty')->host('localhost')->identifiedBy('some_pass');
+        $q->user()->account('john')->host('%')->identifiedBy('some_pass');
         $sql = $q->toSql($driver, $args);
         is("CREATE USER `monty`@`localhost` IDENTIFIED BY 'some_pass', `john`@`%` IDENTIFIED BY 'some_pass'", $sql);
     }

@@ -38,6 +38,10 @@ CREATE USER 'jeffrey'@'localhost' IDENTIFIED WITH mysql_native_password;
 SET old_passwords = 0;
 SET PASSWORD FOR 'jeffrey'@'localhost' = PASSWORD('mypass');
 
+
+@see http://dev.mysql.com/doc/refman/5.5/en/create-user.html
+@see http://dev.mysql.com/doc/refman/5.5/en/server-system-variables.html#sysvar_old_passwords
+
 */
 class UserSpecification { 
 
@@ -51,9 +55,8 @@ class UserSpecification {
 
     public $authPlugin;
 
-    public function __construct($parent, $account) {
+    public function __construct($parent) {
         $this->parent = $parent;
-        $this->account = $account;
     }
 
     public function account($account)
@@ -102,8 +105,8 @@ class CreateUserQuery implements ToSqlInterface
 {
     public $userSpecifications = array();
 
-    public function user($account) {
-        $user = new UserSpecification($this, $account);
+    public function user() {
+        $user = new UserSpecification($this);
         $this->userSpecifications[] = $user;
         return $user;
     }
