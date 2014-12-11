@@ -13,11 +13,20 @@ use SQLBuilder\Exception\UnsupportedDriverException;
 use SQLBuilder\PgSQL\Traits\ConcurrentlyTrait;
 use SQLBuilder\Universal\Traits\IfExistsTrait;
 
-/*
+/**
 MySQL Drop Index Syntax
+=======================
 
     DROP INDEX index_name ON tbl_name
     DROP INDEX `PRIMARY` ON t;
+
+
+PostgreSQL Syntax
+=======================
+
+    DROP INDEX [ CONCURRENTLY ] [ IF EXISTS ] name [, ...] [ CASCADE | RESTRICT ]
+
+@see http://www.postgresql.org/docs/9.2/static/sql-dropindex.html
 */
 class DropIndexQuery implements ToSqlInterface
 {
