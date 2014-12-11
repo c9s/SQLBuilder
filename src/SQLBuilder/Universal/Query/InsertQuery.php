@@ -4,7 +4,7 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
-use SQLBuilder\Expr\SelectExpr;
+use SQLBuilder\Universal\Expr\SelectExpr;
 
 use SQLBuilder\Universal\Syntax\Conditions;
 use SQLBuilder\Universal\Syntax\Join;

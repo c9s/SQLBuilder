@@ -1,6 +1,6 @@
 <?php
-namespace SQLBuilder\Expr;
-use SQLBuilder\Expr\Expr;
+namespace SQLBuilder\Universal\Expr;
+use SQLBuilder\Universal\Expr\Expr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Criteria;

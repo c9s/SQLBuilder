@@ -1,20 +1,15 @@
 <?php
-namespace SQLBuilder\Expr;
+namespace SQLBuilder\Universal\Expr;
 
-use SQLBuilder\Expr\Expr;
+use SQLBuilder\Universal\Expr\Expr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use LogicException;
 
-/**
- * This class is used for handling function parameters
- *
- * SELECT FUNC(param1, param2, param3)...
- */
-class ParamsExpr extends Expr implements ToSqlInterface { 
-
+class ListExpr implements ToSqlInterface
+{
     public $params;
 
     public function __construct(array $params) {
@@ -38,8 +33,7 @@ class ParamsExpr extends Expr implements ToSqlInterface {
         foreach($this->params as $val) {
             $sql .= ',' . $driver->deflate($val, $args);
         }
-        return ltrim($sql, ',');
+        return '(' . ltrim($sql, ',') . ')';
     }
-
 }
 

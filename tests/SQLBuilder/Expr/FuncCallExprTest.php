@@ -5,7 +5,7 @@ use SQLBuilder\Query\DeleteQuery;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
-use SQLBuilder\Expr\FuncCallExpr;
+use SQLBuilder\Universal\Expr\FuncCallExpr;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
