@@ -24,8 +24,7 @@ class DropUserQuery
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $specSql = array();
         foreach($this->userSpecifications as $spec) {
-            $sql = $driver->quoteIdentifier($spec->getAccount()) . '@' . $driver->quoteIdentifier($spec->getHost());
-            $specSql[] = $sql;
+            $specSql[] = $spec->identityToSql($driver, $args);
         }
         return 'DROP USER ' . join(', ', $specSql);
     }

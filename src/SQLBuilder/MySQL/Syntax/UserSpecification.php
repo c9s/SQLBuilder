@@ -1,5 +1,7 @@
 <?php
 namespace SQLBuilder\MySQL\Syntax;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\ArgumentArray;
 
 class UserSpecification { 
 
@@ -60,4 +62,26 @@ class UserSpecification {
     public function __call($m , $args) {
         return call_user_func_array(array($this->parent, $m), $args);
     }
+
+    public function identityToSql(BaseDriver $driver, ArgumentArray $args) 
+    {
+        return $driver->quoteIdentifier($this->getAccount()) . '@' . $driver->quoteIdentifier($this->getHost());
+    }
+
+    public function toSql(BaseDriver $driver, ArgumentArray $args) 
+    {
+        $sql = $this->identityToSql($driver, $args);
+        if ($pass = $this->getPassword()) {
+            $sql .= ' IDENTIFIED BY';
+            if ($this->passwordByHash) {
+                $sql .= ' PASSWORD';
+            }
+            $sql .= ' ' . $driver->quote($pass);
+        } elseif ($authPlugin = $this->getAuthPlugin()) {
+            $sql .= ' IDENTIFIED WITH ' . $driver->quoteIdentifier($authPlugin);
+        }
+        return $sql;
+    }
+
+
 }
