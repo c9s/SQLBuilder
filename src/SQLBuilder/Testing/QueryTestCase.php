@@ -8,11 +8,18 @@ use SQLBuilder\ArgumentArray;
 
 abstract class QueryTestCase extends PHPUnit_Framework_TestCase
 {
+    public $currentDriver;
+
+    public $args;
+
+    public function setUp() {
+        $this->currentDriver = new MySQLDriver;
+        $this->args = new ArgumentArray;
+    }
+
     public function assertSql($expectedSql, ToSqlInterface $query) 
     {
-        $driver = new MySQLDriver;
-        $args = new ArgumentArray;
-        $sql = $query->toSql($driver, $args);
+        $sql = $query->toSql($this->currentDriver, $this->args);
         $this->assertSame($expectedSql, $sql);
     }
 }
