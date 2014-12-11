@@ -40,6 +40,10 @@ class DropIndexQuery implements ToSqlInterface
         return $this;
     }
 
+    public function concurrently() {
+
+    }
+
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         return 'DROP INDEX ' . $driver->quoteIdentifier($this->indexName) . ' ON ' . $driver->quoteIdentifier($this->tableName);
