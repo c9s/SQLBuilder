@@ -157,7 +157,7 @@ class GrantQuery implements ToSqlInterface
     public function on($target) {
         // check if it's a user spec
         if (strpos($target,'@') !== false) {
-            $user = UserSpecification::createWithSpec($target, $this);
+            $user = UserSpecification::createWithSpec($this, $target);
             $this->target = $user;
         } else {
             $this->target = $target;
@@ -166,12 +166,47 @@ class GrantQuery implements ToSqlInterface
     }
 
     public function to($spec) {
+        if (strpos($spec,'@') !== false) {
+            $user = UserSpecification::createWithSpec($this, $spec);
+            $this->to[] = $user;
+        } else {
+            $this->to[] = $spec;
+        }
         return $this;
     }
 
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return '';
+        $sql = 'GRANT';
+
+        foreach($this->privTypes as $privType) {
+            list($privType, $columns) = $privType;
+            $sql .= ' ' . $privType;
+            if (!empty($columns)) {
+                $sql .= '(' . join(',', $columns) . ')';
+            }
+            $sql .= ',';
+        }
+        $sql = rtrim($sql, ',') . ' ON ';
+       
+        if ($this->target instanceof UserSpecification) {
+            $sql .= $this->target->getIdentitySql($driver, $args);
+        } else {
+            $sql .= $this->target;
+        }
+        if (!empty($this->to)) {
+            $sql .= ' TO ';
+            $subclause = array();
+            foreach($this->to as $t) {
+                if ($t instanceof UserSpecification) {
+                    $subclause[] = $t->getIdentitySql($driver, $args);
+                } else {
+                    $subclause[] = $t;
+                }
+            }
+            $sql .= join(',', $subclause);
+        }
+        return $sql;
     }
 }
 
