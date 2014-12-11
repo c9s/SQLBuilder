@@ -63,14 +63,14 @@ class UserSpecification {
         return call_user_func_array(array($this->parent, $m), $args);
     }
 
-    public function identityToSql(BaseDriver $driver, ArgumentArray $args) 
+    public function getIdentitySql(BaseDriver $driver, ArgumentArray $args) 
     {
         return $driver->quoteIdentifier($this->getAccount()) . '@' . $driver->quoteIdentifier($this->getHost());
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
-        $sql = $this->identityToSql($driver, $args);
+        $sql = $this->getIdentitySql($driver, $args);
         if ($pass = $this->getPassword()) {
             $sql .= ' IDENTIFIED BY';
             if ($this->passwordByHash) {
