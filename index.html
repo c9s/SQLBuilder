@@ -1,0 +1,412 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>SQLBuilder for PHP by c9s</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/c9s/SQLBuilder">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/c9s/SQLBuilder/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/c9s/SQLBuilder/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>SQLBuilder for PHP</h1>
+          <p>A powerful, fast, cross-platform SQL Builder for PHP. Convert your structured data into SQL queries with a fluent style interface targeting all the mainstream database (MySQL, PostgreSQL, SQLite)</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/c9s">c9s</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a id="sqlbuilder-for-php" class="anchor" href="#sqlbuilder-for-php" aria-hidden="true"><span class="octicon octicon-link"></span></a>SQLBuilder for PHP</h1>
+
+<p><a href="http://travis-ci.org/c9s/php-SQLBuilder"><img src="https://secure.travis-ci.org/c9s/php-SQLBuilder.png" alt="Build Status"></a></p>
+
+<p>SQLBuilder focuses on providing a simple syntax for building SQL statements.</p>
+
+<p>When switching database backend, you can simplely change the driver type of query
+builder, and it will generate the proper SQL for your backend, you don't have
+to modify the code to support different backend.</p>
+
+<p>For example, pgsql support <code>returning</code> statement, this kind of syntax will only
+be built when this feature is supported.</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>Simple.</li>
+<li>Fast &amp; Powerful.</li>
+<li>Ability to change SQL style, question-mark style, named-placeholder style.</li>
+<li>Ability to change quote style, table name quoting, column name quoting..etc.</li>
+<li>Configurable escaper and quoter.</li>
+<li>No package dependency.</li>
+</ul>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<h3>
+<a id="install-through-pear" class="anchor" href="#install-through-pear" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install through PEAR</h3>
+
+<div class="highlight highlight-sh"><pre>$ pear channel-discover pear.corneltek.com
+$ pear install corneltek/SQLBuilder</pre></div>
+
+<h3>
+<a id="install-through-composer" class="anchor" href="#install-through-composer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install through Composer</h3>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s1"><span class="pl-pds">"</span>require<span class="pl-pds">"</span></span>: {
+        <span class="pl-s1"><span class="pl-pds">"</span>c9s/sqlbuilder<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>*<span class="pl-pds">"</span></span>
+    }
+}</pre></div>
+
+<h2>
+<a id="synopsis" class="anchor" href="#synopsis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Synopsis</h2>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$driver</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-s3">Driver</span>(<span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-vo">$b</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-s3">SQLBuilder\</span><span class="pl-s3">QueryBuilder</span>(<span class="pl-vo">$driver</span>,<span class="pl-s1"><span class="pl-pds">'</span>Member<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$b</span><span class="pl-k">-&gt;</span>select(<span class="pl-s1"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$b</span><span class="pl-k">-&gt;</span>where()</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>equal( <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span> , <span class="pl-s1"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span> );</span>
+<span class="pl-s2"><span class="pl-vo">$sql</span> <span class="pl-k">=</span> <span class="pl-vo">$b</span><span class="pl-k">-&gt;</span>build();</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-c">// SELECT * FROM Member where a = 'bar'</span></span></pre></div>
+
+<h2>
+<a id="driver" class="anchor" href="#driver" aria-hidden="true"><span class="octicon octicon-link"></span></a>Driver</h2>
+
+<p>Get your SQL driver</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$driver</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-s3">SQLBuilder\</span><span class="pl-s3">Driver</span>(<span class="pl-s1"><span class="pl-pds">'</span>pgsql<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$driver</span> <span class="pl-k">=</span> <span class="pl-s3">SQLBuilder\</span><span class="pl-s3">Driver</span><span class="pl-k">::</span>getInstance();</span>
+<span class="pl-s2"><span class="pl-vo">$driver</span> <span class="pl-k">=</span> <span class="pl-s3">SQLBuilder\</span><span class="pl-s3">Driver</span><span class="pl-k">::</span>create(<span class="pl-s1"><span class="pl-pds">'</span>pgsql<span class="pl-pds">'</span></span>);</span></pre></div>
+
+<h3>
+<a id="configuring-driver-quoter" class="anchor" href="#configuring-driver-quoter" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuring Driver Quoter</h3>
+
+<p>string quote/escape handler:</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$driver</span><span class="pl-k">-&gt;</span>configure(<span class="pl-s1"><span class="pl-pds">'</span>escape<span class="pl-pds">'</span></span>,<span class="pl-s3">array</span>(<span class="pl-vo">$pg</span>,<span class="pl-s1"><span class="pl-pds">'</span>escape<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s2"><span class="pl-vo">$driver</span><span class="pl-k">-&gt;</span>configure(<span class="pl-s1"><span class="pl-pds">'</span>quoter<span class="pl-pds">'</span></span>,<span class="pl-s3">array</span>(<span class="pl-vo">$pdo</span>,<span class="pl-s1"><span class="pl-pds">'</span>quote<span class="pl-pds">'</span></span>));</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-vo">$driver</span><span class="pl-k">-&gt;</span><span class="pl-vo">escaper</span> <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">'</span>addslashes<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-vo">$driver</span><span class="pl-k">-&gt;</span><span class="pl-vo">quoter</span> <span class="pl-k">=</span> <span class="pl-st">function</span>(<span class="pl-vo">$string</span>) {</span>
+<span class="pl-s2">    <span class="pl-k">return</span> <span class="pl-s1"><span class="pl-pds">'</span><span class="pl-cce">\'</span><span class="pl-pds">'</span></span> <span class="pl-k">.</span> <span class="pl-vo">$string</span> <span class="pl-k">.</span> <span class="pl-s1"><span class="pl-pds">'</span><span class="pl-cce">\'</span><span class="pl-pds">'</span></span>;</span>
+<span class="pl-s2">};</span></pre></div>
+
+<h3>
+<a id="configuring-database-driver-for-pgsql" class="anchor" href="#configuring-database-driver-for-pgsql" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuring Database Driver For pgsql</h3>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$driver</span><span class="pl-k">-&gt;</span>configure(<span class="pl-s1"><span class="pl-pds">'</span>driver<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>pgsql<span class="pl-pds">'</span></span>);</span></pre></div>
+
+<p>Trim spaces for SQL ? </p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$driver</span><span class="pl-k">-&gt;</span>configure(<span class="pl-s1"><span class="pl-pds">'</span>trim<span class="pl-pds">'</span></span>,<span class="pl-c1">true</span>);</span></pre></div>
+
+<h3>
+<a id="changing-placeholder-style" class="anchor" href="#changing-placeholder-style" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changing Placeholder Style</h3>
+
+<p>SQLBuilder supports two placeholder styles:</p>
+
+<ul>
+<li>named parameter by PDO</li>
+<li>question-mark paramter by mysql, PDO.</li>
+</ul>
+
+<h4>
+<a id="named-placeholder" class="anchor" href="#named-placeholder" aria-hidden="true"><span class="octicon octicon-link"></span></a>Named Placeholder:</h4>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$driver</span><span class="pl-k">-&gt;</span>configure(<span class="pl-s1"><span class="pl-pds">'</span>placeholder<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>named<span class="pl-pds">'</span></span>);</span></pre></div>
+
+<p>This generates SQL with named-parameter for PDO:</p>
+
+<pre><code>INSERT INTO table (foo ,bar ) values (:foo, :bar);
+</code></pre>
+
+<h4>
+<a id="question-mark-placeholder" class="anchor" href="#question-mark-placeholder" aria-hidden="true"><span class="octicon octicon-link"></span></a>Question-mark Placeholder</h4>
+
+<p>If you pass variables to build SQL with named parameters, query
+builder converts named parameters for you, to get variables, you
+can use <code>getVars</code> method:</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$vars</span> <span class="pl-k">=</span> <span class="pl-vo">$sb</span><span class="pl-k">-&gt;</span>getVars();</span></pre></div>
+
+<p>Which returns:</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-s3">array</span>(</span>
+<span class="pl-s2">    <span class="pl-s1"><span class="pl-pds">'</span>:name<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s1"><span class="pl-pds">'</span>Foo<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s2">    <span class="pl-s1"><span class="pl-pds">'</span>:phone<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s1"><span class="pl-pds">'</span>Bar<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s2">);</span></pre></div>
+
+<p>Or to use question-mark style:</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$driver</span><span class="pl-k">-&gt;</span>configure(<span class="pl-s1"><span class="pl-pds">'</span>placeholder<span class="pl-pds">'</span></span>,<span class="pl-c1">true</span>);</span></pre></div>
+
+<p>This generates:</p>
+
+<div class="highlight highlight-sql"><pre><span class="pl-k">INSERT INTO</span> table (foo ,bar ) <span class="pl-k">values</span> (?,?);</pre></div>
+
+<h2>
+<a id="query-sql-generation" class="anchor" href="#query-sql-generation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Query SQL Generation</h2>
+
+<h3>
+<a id="select" class="anchor" href="#select" aria-hidden="true"><span class="octicon octicon-link"></span></a>Select</h3>
+
+<p>Build SQL query for table 'Member':</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$builder</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-s3">SQLBuilder\</span><span class="pl-s3">QueryBuilder</span>(<span class="pl-vo">$driver</span>);</span>
+<span class="pl-s2"><span class="pl-vo">$builder</span><span class="pl-k">-&gt;</span>table(<span class="pl-s1"><span class="pl-pds">'</span>Member<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$builder</span><span class="pl-k">-&gt;</span>select(<span class="pl-s1"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>column1<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>column2<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$builder</span><span class="pl-k">-&gt;</span>select(<span class="pl-s3">array</span>( </span>
+<span class="pl-s2">    <span class="pl-s1"><span class="pl-pds">'</span>column1<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s1"><span class="pl-pds">'</span>as1<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s2">    <span class="pl-s1"><span class="pl-pds">'</span>column2<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s1"><span class="pl-pds">'</span>as2<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s2">));</span></pre></div>
+
+<p>Build Select SQL</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$sql</span> <span class="pl-k">=</span> <span class="pl-vo">$builder</span><span class="pl-k">-&gt;</span>table(<span class="pl-s1"><span class="pl-pds">'</span>Member<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>select(<span class="pl-s1"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>where()</span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>equal( <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span> , <span class="pl-s1"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span> )   <span class="pl-c">// a = 'bar'</span></span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>notEqual( <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span> , <span class="pl-s1"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span> )   <span class="pl-c">// a != 'bar'</span></span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>is( <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span> , <span class="pl-s1"><span class="pl-pds">'</span>null<span class="pl-pds">'</span></span> )       <span class="pl-c">// a is null</span></span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>isNot( <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span> , <span class="pl-s1"><span class="pl-pds">'</span>null<span class="pl-pds">'</span></span> )    <span class="pl-c">// a is not equal</span></span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>greater( <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span> , <span class="pl-s1"><span class="pl-pds">'</span>2011-01-01<span class="pl-pds">'</span></span> );</span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>in( <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s3">array</span>(<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>,<span class="pl-c1">5</span>) )</span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>greater( <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span> , <span class="pl-s3">array</span>(<span class="pl-s1"><span class="pl-pds">'</span>date(2011-01-01)<span class="pl-pds">'</span></span>) );  <span class="pl-c">// do not escape</span></span>
+<span class="pl-s2">            <span class="pl-k">-&gt;</span>or()<span class="pl-k">-&gt;</span>less( <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span> , <span class="pl-c1">123</span> )</span>
+<span class="pl-s2">            <span class="pl-k">-&gt;</span>and()<span class="pl-k">-&gt;</span>like( <span class="pl-s1"><span class="pl-pds">'</span>content<span class="pl-pds">'</span></span> , <span class="pl-s1"><span class="pl-pds">'</span>%content%<span class="pl-pds">'</span></span> );</span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>group()                  <span class="pl-c">// AND ( a = 123 AND b != 123 )</span></span>
+<span class="pl-s2">            <span class="pl-k">-&gt;</span>is( <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span> , <span class="pl-c1">123</span> )</span>
+<span class="pl-s2">            <span class="pl-k">-&gt;</span>isNot( <span class="pl-s1"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, <span class="pl-c1">123</span> )             </span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>ungroup()</span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>back()                  <span class="pl-c">// back to sql builder</span></span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>build();</span></pre></div>
+
+<p>The <code>where()</code> returns <code>SQLBuilder\Expression</code> object.</p>
+
+<p><code>Condition-&gt;back()</code> returns QueryBuilder object</p>
+
+<h3>
+<a id="limit-and-offset" class="anchor" href="#limit-and-offset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Limit And Offset</h3>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$builder</span><span class="pl-k">-&gt;</span>select(<span class="pl-s1"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>table(<span class="pl-s1"><span class="pl-pds">'</span>items<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>groupBy(<span class="pl-s1"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>limit(<span class="pl-c1">10</span>)<span class="pl-k">-&gt;</span>offset(<span class="pl-c1">100</span>);</span>
+<span class="pl-s2"></span><span class="pl-pse"><span class="pl-s2">?</span>&gt;</span></pre></div>
+
+<p>For PostgreSQL, which generates:</p>
+
+<div class="highlight highlight-sql"><pre><span class="pl-k">SELECT</span> <span class="pl-k">*</span> <span class="pl-k">FROM</span> items OFFSET <span class="pl-c1">100</span> <span class="pl-k">LIMIT</span> <span class="pl-c1">10</span>;</pre></div>
+
+<p>For MySql, which generates:</p>
+
+<div class="highlight highlight-sql"><pre><span class="pl-k">SELECT</span> <span class="pl-k">*</span> <span class="pl-k">FROM</span> items <span class="pl-k">LIMIT</span> <span class="pl-c1">100</span>,<span class="pl-c1">10</span>;</pre></div>
+
+<h3>
+<a id="between" class="anchor" href="#between" aria-hidden="true"><span class="octicon octicon-link"></span></a>Between</h3>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$query</span><span class="pl-k">-&gt;</span>select(<span class="pl-s1"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>table(<span class="pl-s1"><span class="pl-pds">'</span>items<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>where()</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>between(<span class="pl-s1"><span class="pl-pds">'</span>created_on<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>2011-01-01<span class="pl-pds">'</span></span> , <span class="pl-s1"><span class="pl-pds">'</span>2011-02-01<span class="pl-pds">'</span></span> );</span></pre></div>
+
+<div class="highlight highlight-sql"><pre><span class="pl-k">SELECT</span> <span class="pl-k">*</span> <span class="pl-k">FROM</span> items <span class="pl-k">WHERE</span> created_on BETWEEN <span class="pl-s1"><span class="pl-pds">'</span>2011-01-01<span class="pl-pds">'</span></span> <span class="pl-k">AND</span> <span class="pl-s1"><span class="pl-pds">'</span>2011-02-01<span class="pl-pds">'</span></span></pre></div>
+
+<h3>
+<a id="in" class="anchor" href="#in" aria-hidden="true"><span class="octicon octicon-link"></span></a>In</h3>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$query</span><span class="pl-k">-&gt;</span>select(<span class="pl-s1"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>table(<span class="pl-s1"><span class="pl-pds">'</span>items<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>where()</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>in(<span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s3">array</span>(<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>));</span></pre></div>
+
+<div class="highlight highlight-sql"><pre><span class="pl-k">SELECT</span> <span class="pl-k">*</span> <span class="pl-k">FROM</span> items <span class="pl-k">WHERE</span> a <span class="pl-k">IN</span> (<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>);</pre></div>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$query</span><span class="pl-k">-&gt;</span>select(<span class="pl-s1"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>)<span class="pl-k">-&gt;</span>table(<span class="pl-s1"><span class="pl-pds">'</span>City<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>where()</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>in(<span class="pl-s1"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>, <span class="pl-s3">array</span>(<span class="pl-s1"><span class="pl-pds">'</span>Taipei<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>France<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>Japan<span class="pl-pds">'</span></span>));</span></pre></div>
+
+<div class="highlight highlight-sql"><pre><span class="pl-k">SELECT</span> <span class="pl-k">*</span> <span class="pl-k">FROM</span> City <span class="pl-k">WHERE</span> name <span class="pl-k">IN</span> (<span class="pl-s1"><span class="pl-pds">'</span>Taipei<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>France<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>Japan<span class="pl-pds">'</span></span>);</pre></div>
+
+<h3>
+<a id="insert" class="anchor" href="#insert" aria-hidden="true"><span class="octicon octicon-link"></span></a>Insert</h3>
+
+<p>Insertion:</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$builder</span><span class="pl-k">-&gt;</span>insert(<span class="pl-s3">array</span>(</span>
+<span class="pl-s2">    <span class="pl-c">// placeholder =&gt; 'value'</span></span>
+<span class="pl-s2">    <span class="pl-s1"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s1"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s2">    <span class="pl-s1"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s1"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s2">));</span></pre></div>
+
+<p>For question-mark style SQL, you might need this:</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$builder</span><span class="pl-k">-&gt;</span>insert(<span class="pl-s3">array</span>(</span>
+<span class="pl-s2">    <span class="pl-s1"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s2">    <span class="pl-s1"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s2">));</span></pre></div>
+
+<p>The last thing, build the SQL statement:</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$sql</span> <span class="pl-k">=</span> <span class="pl-vo">$builder</span><span class="pl-k">-&gt;</span>build();</span></pre></div>
+
+<h3>
+<a id="update" class="anchor" href="#update" aria-hidden="true"><span class="octicon octicon-link"></span></a>Update</h3>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$driver</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-s3">Driver</span>;</span>
+<span class="pl-s2"><span class="pl-vo">$driver</span><span class="pl-k">-&gt;</span>configure(<span class="pl-s1"><span class="pl-pds">'</span>driver<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$driver</span><span class="pl-k">-&gt;</span>configure(<span class="pl-s1"><span class="pl-pds">'</span>placeholder<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>named<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-vo">$sb</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-s3">QueryBuilder</span>(<span class="pl-s1"><span class="pl-pds">'</span>member<span class="pl-pds">'</span></span>,<span class="pl-vo">$driver</span>);</span>
+<span class="pl-s2"><span class="pl-vo">$sb</span><span class="pl-k">-&gt;</span>update( <span class="pl-s3">array</span>( <span class="pl-s1"><span class="pl-pds">'</span>set1<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s1"><span class="pl-pds">'</span>value1<span class="pl-pds">'</span></span>) );</span>
+<span class="pl-s2"><span class="pl-vo">$sb</span><span class="pl-k">-&gt;</span>whereFromArgs(<span class="pl-s3">array</span>( </span>
+<span class="pl-s2">    <span class="pl-s1"><span class="pl-pds">'</span>cond1<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s1"><span class="pl-pds">'</span>:blah<span class="pl-pds">'</span></span>,       <span class="pl-c">// is equal to    where()-&gt;equal('cond1',':blah')</span></span>
+<span class="pl-s2">));</span>
+<span class="pl-s2"><span class="pl-vo">$sql</span> <span class="pl-k">=</span> <span class="pl-vo">$sb</span><span class="pl-k">-&gt;</span>build();   <span class="pl-c">// UPDATE member SET set1 = 'value1' WHERE cond1 = :cond1</span></span></pre></div>
+
+<h3>
+<a id="join" class="anchor" href="#join" aria-hidden="true"><span class="octicon octicon-link"></span></a>Join</h3>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$sb</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-s3">QueryBuilder</span>(<span class="pl-vo">$driver</span>,<span class="pl-s1"><span class="pl-pds">'</span>Member<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$sb</span><span class="pl-k">-&gt;</span>alias(<span class="pl-s1"><span class="pl-pds">'</span>m<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>join(<span class="pl-s1"><span class="pl-pds">'</span>table_name<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>alias(<span class="pl-s1"><span class="pl-pds">'</span>t<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>on()<span class="pl-k">-&gt;</span>equal( <span class="pl-s1"><span class="pl-pds">'</span>t.zzz<span class="pl-pds">'</span></span>, <span class="pl-s3">array</span>(<span class="pl-s1"><span class="pl-pds">'</span>m.ccc<span class="pl-pds">'</span></span>) )        <span class="pl-c">// not to escape string (with array())</span></span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>back()                                        <span class="pl-c">// return to join expression object</span></span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>on()<span class="pl-k">-&gt;</span>equal( <span class="pl-s1"><span class="pl-pds">'</span>a.foo<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>string<span class="pl-pds">'</span></span> )              <span class="pl-c">// treat as string, escape string</span></span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>back()          <span class="pl-c">// go back to SqlBuilder object.</span></span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>toSql();</span></pre></div>
+
+<h3>
+<a id="delete" class="anchor" href="#delete" aria-hidden="true"><span class="octicon octicon-link"></span></a>Delete</h3>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$driver</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-s3">Driver</span>;</span>
+<span class="pl-s2"><span class="pl-vo">$driver</span><span class="pl-k">-&gt;</span>configure(<span class="pl-s1"><span class="pl-pds">'</span>driver<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>mysql<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$driver</span><span class="pl-k">-&gt;</span>configure(<span class="pl-s1"><span class="pl-pds">'</span>trim<span class="pl-pds">'</span></span>,<span class="pl-c1">true</span>);</span>
+<span class="pl-s2"><span class="pl-vo">$sb</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-s3">QueryBuilder</span>(<span class="pl-vo">$driver</span>,<span class="pl-s1"><span class="pl-pds">'</span>member<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$sb</span><span class="pl-k">-&gt;</span>delete();</span>
+<span class="pl-s2"><span class="pl-vo">$sb</span><span class="pl-k">-&gt;</span>whereFromArgs(<span class="pl-s3">array</span>( <span class="pl-s1"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s1"><span class="pl-pds">'</span>123<span class="pl-pds">'</span></span> ));</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-vo">$sb</span><span class="pl-k">-&gt;</span>where()<span class="pl-k">-&gt;</span>equal(<span class="pl-s1"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>,<span class="pl-c1">123</span>);</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-vo">$sql</span> <span class="pl-k">=</span> <span class="pl-vo">$sb</span><span class="pl-k">-&gt;</span>build();  <span class="pl-c">// DELETE FROM member WHERE foo = 123</span></span></pre></div>
+
+<h2>
+<a id="index-builder" class="anchor" href="#index-builder" aria-hidden="true"><span class="octicon octicon-link"></span></a>Index Builder</h2>
+
+<p>To generate something like:</p>
+
+<div class="highlight highlight-sql"><pre><span class="pl-k">CREATE</span> <span class="pl-k">INDEX</span> <span class="pl-en">CONCURRENTLY</span> <span class="pl-k">on</span> tags (name text_pattern_ops) <span class="pl-k">WHERE</span> media_count <span class="pl-k">&gt;=</span> <span class="pl-c1">100</span></pre></div>
+
+<p>Simply do this:</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$b</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-s3">IndexBuilder</span>(<span class="pl-vo">$driver</span>);</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-vo">$b</span><span class="pl-k">-&gt;</span>create(<span class="pl-s1"><span class="pl-pds">'</span>index_name<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>on( <span class="pl-s1"><span class="pl-pds">'</span>table_name<span class="pl-pds">'</span></span> )</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>concurrently()</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>columns(<span class="pl-s1"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span>,<span class="pl-s3">array</span>(<span class="pl-s1"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>,<span class="pl-s1"><span class="pl-pds">'</span>text_pattern_ops<span class="pl-pds">'</span></span>))</span>
+<span class="pl-s2">    <span class="pl-k">-&gt;</span>where()</span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>greater(<span class="pl-s1"><span class="pl-pds">'</span>media_count<span class="pl-pds">'</span></span>, <span class="pl-c1">500</span>)</span>
+<span class="pl-s2">    ;</span></pre></div>
+
+<h2>
+<a id="migration-builder" class="anchor" href="#migration-builder" aria-hidden="true"><span class="octicon octicon-link"></span></a>Migration Builder</h2>
+
+<div class="highlight highlight-php"><pre><span class="pl-s2"><span class="pl-vo">$builder</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-s3">SQLBuilder\</span><span class="pl-s3">MigrationBuilder</span>( <span class="pl-vo">$driver</span> );</span>
+<span class="pl-s2"><span class="pl-vo">$sql</span> <span class="pl-k">=</span> <span class="pl-vo">$builder</span><span class="pl-k">-&gt;</span>addColumn( <span class="pl-s1"><span class="pl-pds">'</span>members<span class="pl-pds">'</span></span> , </span>
+<span class="pl-s2">    <span class="pl-s3">SQLBuilder\</span><span class="pl-s3">Column</span><span class="pl-k">::</span>create(<span class="pl-s1"><span class="pl-pds">'</span>price<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>integer()</span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>notNull()</span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>default(<span class="pl-c1">100</span>)</span>
+<span class="pl-s2">);</span>
+<span class="pl-s2"><span class="pl-c">// ALTER TABLE members ADD COLUMN price integer DEFAULT 100 NOT NULL</span></span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-vo">$sql</span> <span class="pl-k">=</span> <span class="pl-vo">$builder</span><span class="pl-k">-&gt;</span>addColumn( <span class="pl-s1"><span class="pl-pds">'</span>members<span class="pl-pds">'</span></span> , </span>
+<span class="pl-s2">    <span class="pl-s3">SQLBuilder\</span><span class="pl-s3">Column</span><span class="pl-k">::</span>create(<span class="pl-s1"><span class="pl-pds">'</span>email<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s2">        <span class="pl-k">-&gt;</span>varchar(<span class="pl-c1">64</span>)</span>
+<span class="pl-s2">);</span>
+<span class="pl-s2"><span class="pl-c">// ALTER TABLE members ADD COLUMN email varchar(64)</span></span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-vo">$sql</span> <span class="pl-k">=</span> <span class="pl-vo">$builder</span><span class="pl-k">-&gt;</span>createIndex( <span class="pl-s1"><span class="pl-pds">'</span>members<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>email_index<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>email<span class="pl-pds">'</span></span> ); <span class="pl-c">// create index email_index on members (email);</span></span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-vo">$sql</span> <span class="pl-k">=</span> <span class="pl-vo">$builder</span><span class="pl-k">-&gt;</span>dropIndex( <span class="pl-s1"><span class="pl-pds">'</span>members<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>email_index<span class="pl-pds">'</span></span> );</span></pre></div>
+
+<h2>
+<a id="development" class="anchor" href="#development" aria-hidden="true"><span class="octicon octicon-link"></span></a>Development</h2>
+
+<p><code>PHPUnit_TestMore</code> is needed.</p>
+
+<div class="highlight highlight-sh"><pre>$ pear channel-discover pear.corneltek.com
+$ pear install corneltek/PHPUnit_TestMore</pre></div>
+
+<p>Install Universal package for the classloader:</p>
+
+<div class="highlight highlight-sh"><pre>curl -s http://install.onionphp.org/ <span class="pl-k">|</span> sh
+onion -d install</pre></div>
+
+<p>Copy the <code>phpunit.xml</code> file for your local configuration:</p>
+
+<div class="highlight highlight-sh"><pre>phpunit -c your-phpunit.xml tests</pre></div>
+
+<h2>
+<a id="contribution" class="anchor" href="#contribution" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contribution</h2>
+
+<p>To test with mysql database:</p>
+
+<pre><code>$ mysql -uroot -p
+create database sqlbuilder charset utf8;
+grant all privileges on sqlbuilder.* to 'testing'@'localhost' identified by '';
+
+--- or use this to remove password for testing account
+SET PASSWORD FOR testing@localhost=PASSWORD('');
+</code></pre>
+
+<p>To test with pgsql database:</p>
+
+<pre><code>$ sudo -u postgres createdb sqlbuilder
+</code></pre>
+
+<h2>
+<a id="reference" class="anchor" href="#reference" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reference</h2>
+
+<ul>
+<li><a href="http://dev.mysql.com/doc/refman/5.0/en/sql-syntax.html">http://dev.mysql.com/doc/refman/5.0/en/sql-syntax.html</a></li>
+<li><a href="http://www.postgresql.org/docs/8.2/static/sql-syntax.html">http://www.postgresql.org/docs/8.2/static/sql-syntax.html</a></li>
+<li><a href="http://www.sqlite.org/optoverview.html">http://www.sqlite.org/optoverview.html</a></li>
+</ul>
+
+<h2>
+<a id="author" class="anchor" href="#author" aria-hidden="true"><span class="octicon octicon-link"></span></a>Author</h2>
+
+<p>Yo-An Lin (c9s) <a href="mailto:cornelius.howl@gmail.com">cornelius.howl@gmail.com</a></p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
