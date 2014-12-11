@@ -216,7 +216,7 @@ class GrantQuery implements ToSqlInterface
             }
 
             if ($this->on instanceof UserSpecification) {
-                $sql .= ' ' . $this->on->getIdentitySql($driver, $args);
+                $sql .= ' ' . $this->on->toSql($driver, $args);
             } elseif( is_string($this->on) ) {
                 $sql .= ' ' . $this->on;
             } else {
