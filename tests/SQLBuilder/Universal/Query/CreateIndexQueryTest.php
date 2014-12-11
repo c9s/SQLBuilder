@@ -1,10 +1,14 @@
 <?php
 use SQLBuilder\Testing\QueryTestCase;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
-
+use SQLBuilder\Driver\MySQLDriver;
 
 class CreateIndexQueryTest extends QueryTestCase
 {
+    public function createDriver() {
+        return new MySQLDriver;
+    }
+
     public function testCreateIndex()
     {
         // CREATE INDEX CONCURRENTLY idx_salary ON employees(last_name, salary);

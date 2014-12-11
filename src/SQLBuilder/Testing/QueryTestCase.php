@@ -12,8 +12,10 @@ abstract class QueryTestCase extends PHPUnit_Framework_TestCase
 
     public $args;
 
+    abstract public function createDriver();
+
     public function setUp() {
-        $this->currentDriver = new MySQLDriver;
+        $this->currentDriver = $this->createDriver();
         $this->args = new ArgumentArray;
     }
 
