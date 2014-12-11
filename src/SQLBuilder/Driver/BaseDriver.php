@@ -216,17 +216,13 @@ abstract class BaseDriver
 
             return 'TRUE';
 
-        } elseif ($value === false ) {
+        } elseif ($value === false) {
 
             return 'FALSE';
 
-        } elseif (is_integer($value) ) {
+        } elseif (is_integer($value) || is_float($value)) {
 
-            return intval($value);
-
-        } elseif (is_float($value) ) {
-
-            return floatval($value);
+            return $value;
 
         } elseif (is_string($value) ) {
 
