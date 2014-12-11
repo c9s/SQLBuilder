@@ -7,7 +7,7 @@ use SQLBuilder\MySQL\Query\GrantQuery;
 
 class GrantQueryTest extends PHPUnit_Framework_TestCase
 {
-    public function testGrantQuery()
+    public function testBasicGrantQuery()
     {
         $driver = new MySQLDriver;
         $args = new ArgumentArray;
@@ -17,11 +17,12 @@ class GrantQueryTest extends PHPUnit_Framework_TestCase
         $q->grant('ALL')->on('db1.*')
             ->to('jeffrey@localhost');
         is('GRANT ALL ON db1.* TO `jeffrey`@`localhost`', $q->toSql($driver, $args));
-        return;
+    }
 
-        // GRANT ALL ON db1.* TO 'jeffrey'@'localhost';
-        $q = new GrantQuery;
-        $q->grant('ALL')->on('db1.*')->to('jeffrey@localhost');
+    public function testGrantPrivWithColumns() 
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
 
         // GRANT SELECT (col1), INSERT (col1,col2) ON mydb.mytbl TO 'someuser'@'somehost';
         $q = new GrantQuery;
@@ -30,6 +31,8 @@ class GrantQueryTest extends PHPUnit_Framework_TestCase
             ->on('mydb.mytbl')
             ->to('someuser@somehost');
 
+        is('GRANT SELECT (col1), INSERT (col1,col2) ON mydb.mytbl TO `someuser`@`somehost`', $q->toSql($driver, $args));
+        return;
         // GRANT EXECUTE ON PROCEDURE mydb.myproc TO 'someuser'@'somehost';
         $q = new GrantQuery;
         $q->grant('EXECUTE')

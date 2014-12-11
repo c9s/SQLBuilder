@@ -141,7 +141,7 @@ class GrantQuery implements ToSqlInterface
 
     protected $privTypes = array();
 
-    protected $target;
+    protected $on;
 
     protected $to = array();
 
@@ -154,13 +154,13 @@ class GrantQuery implements ToSqlInterface
     /**
      * $target can be a string "*.*" or a user spec string
      */
-    public function on($target) {
+    public function on($target, $objectType = NULL) {
         // check if it's a user spec
         if (strpos($target,'@') !== false) {
             $user = UserSpecification::createWithSpec($this, $target);
-            $this->target = $user;
+            $this->on = array($user, $objectType);
         } else {
-            $this->target = $target;
+            $this->on = array($target, $objectType);
         }
         return $this;
     }
@@ -183,17 +183,26 @@ class GrantQuery implements ToSqlInterface
             list($privType, $columns) = $privType;
             $sql .= ' ' . $privType;
             if (!empty($columns)) {
-                $sql .= '(' . join(',', $columns) . ')';
+                $sql .= ' (' . join(',', $columns) . ')';
             }
             $sql .= ',';
         }
-        $sql = rtrim($sql, ',') . ' ON ';
-       
-        if ($this->target instanceof UserSpecification) {
-            $sql .= $this->target->getIdentitySql($driver, $args);
-        } else {
-            $sql .= $this->target;
+        $sql = rtrim($sql, ',') . ' ON';
+
+        if ($this->on) {
+            list($target, $objectType) = $this->on;
+
+            if ($objectType) {
+                $sql .= ' ' . strtoupper($objectType);
+            }
+
+            if ($target instanceof UserSpecification) {
+                $sql .= ' ' . $target->getIdentitySql($driver, $args);
+            } else {
+                $sql .= ' ' . $target;
+            }
         }
+       
         if (!empty($this->to)) {
             $sql .= ' TO ';
             $subclause = array();
