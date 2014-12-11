@@ -9,7 +9,9 @@ use SQLBuilder\Testing\QueryTestCase;
 class DropIndexQueryTest extends QueryTestCase
 {
 
-    public function createDriver() { return new MySQLDriver; }
+    public function createDriver() {
+        return new MySQLDriver; 
+    }
 
     public function testDropIndex()
     {
