@@ -1,7 +1,7 @@
 <?php
-namespace SQLBuilder\Expr;
-use SQLBuilder\Expr\Expr;
-use SQLBuilder\Expr\ListExpr;
+namespace SQLBuilder\Universal\Expr;
+use SQLBuilder\Universal\Expr\Expr;
+use SQLBuilder\Universal\Expr\ListExpr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;

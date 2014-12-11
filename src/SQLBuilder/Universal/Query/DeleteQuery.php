@@ -9,7 +9,7 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
-use SQLBuilder\Expr\SelectExpr;
+use SQLBuilder\Universal\Expr\SelectExpr;
 use SQLBuilder\Universal\Syntax\Conditions;
 use SQLBuilder\Universal\Syntax\Join;
 use SQLBuilder\Universal\Syntax\IndexHint;
