@@ -145,22 +145,36 @@ class GrantQuery implements ToSqlInterface
 
     protected $to = array();
 
+    protected $objectType;
+
+    protected $options = array();
+
     public function grant($privType, array $columns = array()) 
     {
         $this->privTypes[] = array($privType, $columns);
         return $this;
     }
 
+    public function of($objectType) {
+        $this->objectType = $objectType;
+        return $this;
+    }
+
     /**
      * $target can be a string "*.*" or a user spec string
+     *
+     * user specification is only supported in GRANT PROXY statement.
      */
     public function on($target, $objectType = NULL) {
         // check if it's a user spec
         if (strpos($target,'@') !== false) {
             $user = UserSpecification::createWithSpec($this, $target);
-            $this->on = array($user, $objectType);
+            $this->objectType = $objectType;
+            $this->on = $user;
+        } elseif(is_string($target)) {
+            $this->on = $target;
         } else {
-            $this->on = array($target, $objectType);
+            throw new InvalidArgumentException('The "ON" clause only supports UserSpecification class or string type');
         }
         return $this;
     }
@@ -175,6 +189,11 @@ class GrantQuery implements ToSqlInterface
         return $this;
     }
 
+    public function with($option, $value = NULL)
+    {
+        $this->options[] = array($option, $value);
+        return $this;
+    }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'GRANT';
@@ -187,19 +206,21 @@ class GrantQuery implements ToSqlInterface
             }
             $sql .= ',';
         }
-        $sql = rtrim($sql, ',') . ' ON';
+        $sql = rtrim($sql, ',');
 
         if ($this->on) {
-            list($target, $objectType) = $this->on;
+            $sql .= ' ON';
 
-            if ($objectType) {
-                $sql .= ' ' . strtoupper($objectType);
+            if ($this->objectType) {
+                $sql .= ' ' . strtoupper($this->objectType);
             }
 
-            if ($target instanceof UserSpecification) {
-                $sql .= ' ' . $target->getIdentitySql($driver, $args);
+            if ($this->on instanceof UserSpecification) {
+                $sql .= ' ' . $this->on->getIdentitySql($driver, $args);
+            } elseif( is_string($this->on) ) {
+                $sql .= ' ' . $this->on;
             } else {
-                $sql .= ' ' . $target;
+                throw new InvalidArgumentException('The "ON" clause only supports UserSpecification class or string type');
             }
         }
        
@@ -215,8 +236,23 @@ class GrantQuery implements ToSqlInterface
             }
             $sql .= join(',', $subclause);
         }
+
+        // WITH MAX_QUERIES_PER_HOUR 500 MAX_UPDATES_PER_HOUR 100;
+        if ($this->options) {
+            $sql .= ' WITH';
+            foreach($this->options as $option) {
+                list($n, $val) = $option;
+                $sql .= ' ' . $n;
+                if ($val) {
+                    $sql .= ' ' . $driver->deflate($val);
+                }
+            }
+        }
         return $sql;
+
     }
+
+
 }
 
 
