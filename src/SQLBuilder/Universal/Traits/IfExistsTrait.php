@@ -12,7 +12,7 @@ trait IfExistsTrait
         return $this;
     }
 
-    public function buildIfExistsClause(BaseDriver $driver, ArgumentArray $args) {
+    public function buildIfExistsClause() {
         if ($this->ifExists) {
             return ' IF EXISTS';
         }
