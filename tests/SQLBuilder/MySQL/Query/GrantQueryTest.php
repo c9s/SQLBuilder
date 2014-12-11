@@ -32,29 +32,37 @@ class GrantQueryTest extends PHPUnit_Framework_TestCase
             ->to('someuser@somehost');
 
         is('GRANT SELECT (col1), INSERT (col1,col2) ON mydb.mytbl TO `someuser`@`somehost`', $q->toSql($driver, $args));
-        return;
+    }
+
+    public function testGrantExecuteOnProcedure() 
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+
         // GRANT EXECUTE ON PROCEDURE mydb.myproc TO 'someuser'@'somehost';
         $q = new GrantQuery;
         $q->grant('EXECUTE')
             ->of('PROCEDURE')
             ->on('mydb.mytbl')
             ->to('someuser@somehost');
+        is('GRANT EXECUTE ON PROCEDURE mydb.mytbl TO `someuser`@`somehost`', $q->toSql($driver, $args));
+    }
 
-        $q = new GrantQuery;
-        $q->grant('EXECUTE')
-            ->on('mydb.mytbl', 'PROCEDURE')
-            ->to('someuser@somehost');
+    public function testGrantWithGrantOptions() {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
 
-        // GRANT OPTION
         // GRANT USAGE ON *.* TO ...  WITH MAX_QUERIES_PER_HOUR 500 MAX_UPDATES_PER_HOUR 100;
         $q = new GrantQuery;
         $q->grant('USAGE')
             ->on('*.*')
             ->to('someuser@somehost')
-            ->with('GRANT OPTION')
             ->with('MAX_QUERIES_PER_HOUR', 100)
             ->with('MAX_CONNECTIONS_PER_HOUR', 100)
             ;
+        is('GRANT USAGE ON *.* TO `someuser`@`somehost` WITH MAX_QUERIES_PER_HOUR 100 MAX_CONNECTIONS_PER_HOUR 100', $q->toSql($driver, $args));
     }
+
+
 }
 
