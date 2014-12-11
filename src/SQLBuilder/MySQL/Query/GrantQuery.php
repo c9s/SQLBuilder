@@ -10,8 +10,8 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
-use SQLBuilder\Syntax\UserSpecification;
-use SQLBuilder\Traits\UserSpecTrait;
+use SQLBuilder\MySQL\Syntax\UserSpecification;
+use SQLBuilder\MySQL\Traits\UserSpecTrait;
 
 /**
 
@@ -141,11 +141,34 @@ class GrantQuery implements ToSqlInterface
 
     protected $privTypes = array();
 
+    protected $target;
+
+    protected $to = array();
+
     public function grant($privType, array $columns = array()) 
     {
         $this->privTypes[] = array($privType, $columns);
         return $this;
     }
+
+    /**
+     * $target can be a string "*.*" or a user spec string
+     */
+    public function on($target) {
+        // check if it's a user spec
+        if (strpos($target,'@') !== false) {
+            $user = UserSpecification::createWithSpec($target, $this);
+            $this->target = $user;
+        } else {
+            $this->target = $target;
+        }
+        return $this;
+    }
+
+    public function to($spec) {
+        return $this;
+    }
+
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         return '';

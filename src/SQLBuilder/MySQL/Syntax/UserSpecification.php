@@ -63,6 +63,20 @@ class UserSpecification {
         return call_user_func_array(array($this->parent, $m), $args);
     }
 
+
+    static public function createWithSpec($parent, $spec) 
+    {
+        if (is_string($spec) && strpos($spec,'@') !== false) {
+            list($account, $host) = explode('@', $spec);
+            $user = new self($parent);
+            $user->account(trim($account, "`'"));
+            $user->host(trim($host, "`'"));
+            return $user;
+        }
+        return NULL;
+    }
+
+
     public function getIdentitySql(BaseDriver $driver, ArgumentArray $args) 
     {
         return $driver->quoteIdentifier($this->getAccount()) . '@' . $driver->quoteIdentifier($this->getHost());
