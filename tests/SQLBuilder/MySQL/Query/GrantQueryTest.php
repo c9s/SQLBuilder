@@ -9,6 +9,12 @@ use SQLBuilder\Testing\QueryTestCase;
 
 class GrantQueryTest extends QueryTestCase
 {
+
+    public function createDriver() {
+        return new MySQLDriver;
+    }
+
+
     public function testBasicGrantQuery()
     {
         // GRANT ALL ON db1.* TO 'jeffrey'@'localhost';
