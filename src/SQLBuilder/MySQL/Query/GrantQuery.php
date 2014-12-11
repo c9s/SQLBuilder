@@ -139,6 +139,14 @@ class GrantQuery implements ToSqlInterface
 {
     use UserSpecTrait;
 
+    protected $privTypes = array();
+
+    public function grant($privType, array $columns = array()) 
+    {
+        $this->privTypes[] = array($privType, $columns);
+        return $this;
+    }
+
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         return '';
     }
