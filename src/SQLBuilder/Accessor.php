@@ -24,15 +24,28 @@ trait Accessor {
             return $this;
         }
 
-        if (preg_match('/^build(\w+?)Clause$/', $method, $regs)) {
-            $name = strtolower($regs[0]);
+        if (preg_match('/^build(\w+?)Clause$/i', $method, $regs)) {
+            $driver = $args[0];
+            $args = $args[1];
+            $name = lcfirst($regs[1]);
+            
             if (isset($this->accessorHandlers[$name])) {
                 $val = isset($this->properties[$name]) ? $this->properties[$name] : NULL;
                 if (is_callable($this->accessorHandlers[$name])) {
-                    return call_user_func($this->accessorHandlers[$name], array($args[0], $args[1], $val));
+                    return call_user_func($this->accessorHandlers[$name], array($driver, $args, $val));
                 } elseif (is_string($this->accessorHandlers[$name])) {
+                    $sql = $this->accessorHandlers[$name];
                     if (isset($this->properties[$name])) {
-                        return ' ' . $this->accessorHandlers[$name];
+                        if ($val === TRUE) {
+                            return ' ' . $sql;
+                        } elseif (is_string($val) || is_integer($val)) {
+                            return ' ' . $sql . ' ' . $driver->deflate($val);
+                        } elseif ($val instanceof Raw) {
+                            return ' ' . $sql . ' ' . $val;
+                        } else {
+                            throw new Exception('Unsupported property type');
+                        }
+                        return ' ' . $sql;
                     } else {
                         return '';
                     }
