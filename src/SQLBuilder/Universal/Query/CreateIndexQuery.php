@@ -2,7 +2,6 @@
 namespace SQLBuilder\Universal\Query;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\RawValue;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\Driver\MySQLDriver;
