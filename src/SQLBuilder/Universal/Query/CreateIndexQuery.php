@@ -10,6 +10,7 @@ use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Exception\CriticalIncompatibleUsageException;
 use SQLBuilder\Exception\IncompleteSettingsException;
 use SQLBuilder\Exception\UnsupportedDriverException;
+use SQLBuilder\PgSQL\Traits\ConcurrentlyTrait;
 
 /**
 MySQL Create Index Query
@@ -69,6 +70,8 @@ Example Queries
 
 class CreateIndexQuery implements ToSqlInterface
 {
+    use ConcurrentlyTrait;
+
     protected $type;
 
     protected $options = array();
@@ -80,8 +83,6 @@ class CreateIndexQuery implements ToSqlInterface
     protected $tableName;
 
     protected $columns;
-
-    protected $concurrently;
 
     protected $storageParameters = array();
 
@@ -151,11 +152,6 @@ class CreateIndexQuery implements ToSqlInterface
         return $this;
     }
 
-    public function concurrently() {
-        $this->concurrently = true;
-        return $this;
-    }
-
     protected function buildMySQLQuery(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'CREATE';
 
@@ -188,9 +184,7 @@ class CreateIndexQuery implements ToSqlInterface
             
         $sql .= ' INDEX';
 
-        if ($this->concurrently) {
-            $sql .= ' CONCURRENTLY';
-        }
+        $sql .= $this->buildConcurrentlyClause($driver, $args);
 
         $sql .= ' ' . $driver->quoteIdentifier($this->name) . ' ON ' . $this->tableName;
 
