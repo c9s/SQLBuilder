@@ -51,18 +51,7 @@ class CreateUserQuery implements ToSqlInterface
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $specSql = array();
         foreach($this->userSpecifications as $spec) {
-            $sql = $driver->quoteIdentifier($spec->getAccount()) . '@' . $driver->quoteIdentifier($spec->getHost());
-            if ($pass = $spec->getPassword()) {
-                $sql .= ' IDENTIFIED BY';
-                if ($spec->passwordByHash) {
-                    $sql .= ' PASSWORD';
-                }
-                $sql .= ' ' . $driver->quote($pass);
-            }
-            elseif ($authPlugin = $spec->getAuthPlugin()) {
-                $sql .= ' IDENTIFIED WITH ' . $driver->quoteIdentifier($authPlugin);
-            }
-            $specSql[] = $sql;
+            $specSql[] = $spec->toSql($driver, $args);
         }
         return 'CREATE USER ' . join(', ', $specSql);
     }
