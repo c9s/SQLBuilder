@@ -11,6 +11,7 @@ use SQLBuilder\Exception\CriticalIncompatibleUsageException;
 use SQLBuilder\Exception\IncompleteSettingsException;
 use SQLBuilder\Exception\UnsupportedDriverException;
 use SQLBuilder\PgSQL\Traits\ConcurrentlyTrait;
+use SQLBuilder\Universal\Traits\IfExistsTrait;
 
 /*
 MySQL Drop Index Syntax
@@ -21,10 +22,15 @@ MySQL Drop Index Syntax
 class DropIndexQuery implements ToSqlInterface
 {
     use ConcurrentlyTrait;
+    use IfExistsTrait;
 
     protected $indexName;
 
     protected $tableName;
+
+    protected $cascade;
+
+    protected $restrict;
 
     /**
      * MySQL
@@ -72,6 +78,21 @@ class DropIndexQuery implements ToSqlInterface
         return $this;
     }
 
+
+    /**
+     * PostgreSQL
+     */
+    public function cascade() {
+        $this->cascade = true;
+        return $this;
+    }
+
+    public function restrict() {
+        $this->restrict = true;
+        return $this;
+    }
+
+
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         $sql = 'DROP INDEX';
@@ -81,6 +102,8 @@ class DropIndexQuery implements ToSqlInterface
         }
 
         $sql .= ' ' . $driver->quoteIdentifier($this->indexName);
+
+        $sql .= $this->buildIfExistsClause($driver, $args);
 
         if ($driver instanceof MySQLDriver) {
             if (!$this->tableName) {
@@ -94,7 +117,15 @@ class DropIndexQuery implements ToSqlInterface
             if ($this->algorithm) {
                 $sql .= ' ALGORITHM = ' . $this->algorithm;
             }
+        }
 
+        if ($driver instanceof PgSQLDriver) {
+            if ($this->cascade) {
+                $sql .= ' CASCADE';
+            }
+            if ($this->restrict) {
+                $sql .= ' RESTRICT';
+            }
         }
 
         return $sql;
