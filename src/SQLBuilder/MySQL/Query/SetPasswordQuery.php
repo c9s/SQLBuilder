@@ -24,6 +24,10 @@ use SQLBuilder\MySQL\Traits\UserSpecTrait;
         | 'encrypted password'
         }
 
+
+@see http://dev.mysql.com/doc/refman/5.5/en/set-password.html
+@see http://dev.mysql.com/doc/refman/5.0/en/assigning-passwords.html
+
  */
 class SetPasswordQuery implements ToSqlInterface
 {
@@ -31,8 +35,11 @@ class SetPasswordQuery implements ToSqlInterface
 
     public $for;
 
-    public function password($password) {
+    public $encrypted;
+
+    public function password($password, $encrypted = false) {
         $this->password = $password;
+        $this->encrypted = $encrypted;
         return $this;
     }
 
@@ -56,7 +63,11 @@ class SetPasswordQuery implements ToSqlInterface
         }
 
         if ($this->password) {
-            $sql .= ' = PASSWORD(' . $driver->quote($this->password) . ')';
+            if ($this->encrypted) {
+                $sql .= ' = ' . $driver->quote($this->password);
+            } else {
+                $sql .= ' = PASSWORD(' . $driver->quote($this->password) . ')';
+            }
         }
         $sql .= ';';
         return $sql;
