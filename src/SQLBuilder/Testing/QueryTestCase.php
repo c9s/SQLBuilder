@@ -19,9 +19,9 @@ abstract class QueryTestCase extends PHPUnit_Framework_TestCase
         $this->args = new ArgumentArray;
     }
 
-    public function assertSql($expectedSql, ToSqlInterface $query) 
+    public function assertSql($expectedSql, ToSqlInterface $query, $driver = NULL) 
     {
-        $sql = $query->toSql($this->currentDriver, $this->args);
+        $sql = $query->toSql($driver ?: $this->currentDriver, $this->args);
         $this->assertSame($expectedSql, $sql);
     }
 }
