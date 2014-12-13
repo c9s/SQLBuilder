@@ -80,7 +80,7 @@ query (currently): **Universal**, **MySQL**, **PgSQL**.  The **Universal** queri
 cross-platform queries, you can use them to create a cross-platform PHP API to
 your database system, and the supported platforms are: MySQL, PgSQL, SQLite.
 
-Universql Query:
+Universql Queries:
 
 - CreateDatabaseQuery
 - DropDatabaseQuery
@@ -95,6 +95,16 @@ Universql Query:
 To see the implementation details, you can check the source code inside **Universal** namespace:
 <https://github.com/c9s/SQLBuilder/tree/master/src/SQLBuilder/Universal/Query>
 
+MySQL Queries:
+
+- CreateUserQuery
+- DropUserQuery
+- GrantQuery
+- SetPasswordQuery
+
+For MySQL platform, the implementation is according to the specification of MySQL 5.6.
+
+For PostgreSQL platform, the implementation is according to the specification of PostgreSQL 9.2.
 
 
 ## Installation
