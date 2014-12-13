@@ -174,12 +174,12 @@ class Conditions implements ToSqlInterface, Countable
         return $this;
     }
 
-    public function regExp($exprStr, $pat) {
+    public function regexp($exprStr, $pat) {
         $this->appendExprObject(new RegExpExpr($exprStr, $pat));
         return $this;
     }
 
-    public function notRegExp($exprStr, $pat) {
+    public function notRegexp($exprStr, $pat) {
         $this->appendExprObject(new NotRegExpExpr($exprStr, $pat));
         return $this;
     }
