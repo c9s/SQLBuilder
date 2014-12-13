@@ -96,7 +96,7 @@ class Conditions implements ToSqlInterface, Countable
         return $this;
     }
 
-    public function greaterOrEqual($a1, $a2)
+    public function greaterThanOrEqual($a1, $a2)
     {
         $this->appendExprObject(new BinaryExpr($a1, '>=', $a2));
         return $this;
@@ -108,7 +108,7 @@ class Conditions implements ToSqlInterface, Countable
         return $this;
     }
 
-    public function lessOrEqual($a1, $a2)
+    public function lessThanOrEqual($a1, $a2)
     {
         $this->appendExprObject(new BinaryExpr($a1, '<=', $a2));
         return $this;
