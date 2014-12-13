@@ -77,7 +77,7 @@ your targettting platform.
 
 It also supports cross-platform query generation, there are three types of
 query (currently): **Universal**, **MySQL**, **PgSQL**.  The **Universal** queries are
-cross-platform queries, you can use them to create a cross-platform PHP API to
+cross-platform, you can use them to create a cross-platform PHP API to
 your database system, and the supported platforms are: MySQL, PgSQL, SQLite.
 
 Universql Queries:
