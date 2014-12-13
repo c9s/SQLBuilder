@@ -65,8 +65,8 @@ var_dump($args);
 Unlike other SQL utilities, SQLBuilder let you define the quote style and the
 parameter marker type. there are 2 parameter marker type you can choose:
 
-1. Question mark parameter marker.
-2. Named parameter.
+1. Question mark parameter marker (`?`)
+2. Named parameter. (`:id`, `:name`, `:address`, `:p1`)
 
 The above two are supported by PDO directly, and the first one is also
 supported by `mysqli`, `pgsql` extension.
@@ -77,8 +77,8 @@ your targettting platform.
 
 It also supports cross-platform query generation, there are three types of
 query (currently): **Universal**, **MySQL**, **PgSQL**.  The **Universal** queries are
-cross-platform, you can use them to create a cross-platform PHP API to
-your database system, and the supported platforms are: MySQL, PgSQL, SQLite.
+cross-platform, you can use them to create a cross-platform PHP API of 
+your database system, and the supported platforms are: **MySQL**, **PgSQL** and **SQLite**.
 
 Universql Queries:
 
