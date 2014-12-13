@@ -10,7 +10,7 @@ SQLBuilder is not an ORM (Object relational mapping) system, but a toolset that 
 cross-platform SQL queries in PHP.
 
 SQLBuilder is a stand-alone library, you can simply install it through composer
-or just require them (the class files) by your autoloader, and it has no
+or just require them (the class files) with your autoloader, and it has no
 dependencies.
 
 Unlike other SQL utility, SQLBuilder let you define the quote style and the
