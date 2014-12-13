@@ -111,7 +111,7 @@ To see the implementation details, you can check the source code inside **Univer
 
 ## Getting Started
 
-[[https://github.com/c9s/SQLBuilder/wiki|Documentation]]
+[https://github.com/c9s/SQLBuilder/wiki](Documentation)
 
 ## Development
 
