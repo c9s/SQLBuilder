@@ -114,7 +114,7 @@ For PostgreSQL platform, the implementation is according to the specification of
 ```json
 {
     "require": {
-        "c9s/sqlbuilder": "2~"
+        "corneltek/sqlbuilder": "2~"
     }
 }
 ```
