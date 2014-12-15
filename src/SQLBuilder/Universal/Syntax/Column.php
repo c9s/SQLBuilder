@@ -61,6 +61,20 @@ class Column implements ToSqlInterface {
     protected $isa = 'str';
 
 
+
+    /**
+     * @var array is only used when isa = enum
+     */
+    protected $enum;
+
+
+    /**
+     * @var array is only used when isa = set
+     */
+    protected $set;
+
+
+
     /**
      * @var array $supportedAttributes
      */
@@ -92,7 +106,6 @@ class Column implements ToSqlInterface {
             'notNull'       => self::ATTR_FLAG,
             'required'      => self::ATTR_FLAG,
             'timezone'      => self::ATTR_FLAG,
-            'enum'          => self::ATTR_ARRAY,
 
             'comment'  => self::ATTR_STRING,
 
@@ -286,6 +299,15 @@ class Column implements ToSqlInterface {
     }
 
 
+    public function binary($length = NULL)
+    {
+        $this->type = 'binary';
+        $this->isa = 'str';
+        if ($length) {
+            $this->length = $length;
+        }
+        return $this;
+    }
 
     public function text()
     {
@@ -293,6 +315,53 @@ class Column implements ToSqlInterface {
         $this->isa = 'str';
         return $this;
     }
+
+    public function mediumtext()
+    {
+        $this->type = 'MEDIUMTEXT';
+        $this->isa = 'str';
+        return $this;
+    }
+
+    public function longtext()
+    {
+        $this->type = 'LONGTEXT';
+        $this->isa = 'str';
+        return $this;
+    }
+
+
+
+    public function blob()
+    {
+        $this->type = 'blob';
+        $this->isa = 'str';
+        return $this;
+    }
+
+    public function tinyblob()
+    {
+        $this->type = 'tinyblob';
+        $this->isa = 'str';
+        return $this;
+    }
+
+    public function mediumblob()
+    {
+        $this->type = 'mediumblob';
+        $this->isa = 'str';
+        return $this;
+    }
+
+
+    public function longblob()
+    {
+        $this->type = 'longblob';
+        $this->isa = 'str';
+        return $this;
+    }
+
+
 
     public function bool()
     {
@@ -306,27 +375,39 @@ class Column implements ToSqlInterface {
         return $this;
     }
 
-    public function blob()
-    {
-        $this->type = 'blob';
-        $this->isa = 'str';
-        return $this;
-    }
 
-    public function binary()
-    {
-        $this->type = 'binary';
-        $this->isa = 'str';
-        return $this;
-    }
-
-    public function enum()
+    public function enum($a)
     {
         $this->type = 'enum';
         $this->isa = 'enum';
-        $this->enum = func_get_args();
+        $this->enum = is_array($a) ? $a : func_get_args();
         return $this;
     }
+
+    public function set($a)
+    {
+        $this->type = 'set';
+        $this->isa = 'set';
+        $this->set = is_array($a) ? $a : func_get_args();
+        return $this;
+    }
+
+    public function autoIncrement()
+    {
+        $this->autoIncrement = true;
+        $this->type = 'integer';
+        $this->isa = 'int';
+        return $this;
+    }
+
+
+    public function year() 
+    {
+        $this->type = 'year';
+        $this->isa = 'int';
+        return $this;
+    }
+
 
     /**
      * serial type
@@ -348,20 +429,7 @@ class Column implements ToSqlInterface {
     public function date()
     {
         $this->type = 'date';
-        $this->isa = 'DateTime';
-        return $this;
-    }
-
-    public function time() 
-    {
-        $this->type = 'time';
-        $this->isa = 'str';
-        $this->set('timezone', $bool);
-        return $this;
-    }
-
-    public function timezone($bool = true) {
-        $this->set('timezone', $bool);
+        $this->isa = 'DateTime'; // DateTime object
         return $this;
     }
 
@@ -369,7 +437,7 @@ class Column implements ToSqlInterface {
     {
         $this->type = 'datetime';
         $this->isa = 'DateTime';
-        $this->set('timezone', true);
+        $this->setAttribute('timezone', true);
         return $this;
     }
 
@@ -377,20 +445,25 @@ class Column implements ToSqlInterface {
     {
         $this->type = 'timestamp';
         $this->isa = 'DateTime';
-        $this->set('timezone', true);
+        $this->setAttribute('timezone', true);
         return $this;
     }
 
-    public function autoIncrement()
+    public function time() 
     {
-        $this->autoIncrement = true;
-        $this->type = 'integer';
-        $this->isa = 'int';
+        $this->type = 'time';
+        $this->isa = 'str';
+        $this->setAttribute('timezone', $bool);
+        return $this;
+    }
+
+    public function timezone($bool = true) {
+        $this->setAttribute('timezone', $bool);
         return $this;
     }
 
     public function index($indexName = null) {
-        $this->set('index', $indexName ?: true);
+        $this->setAttribute('index', $indexName ?: true);
         return $this;
     }
 
@@ -401,14 +474,14 @@ class Column implements ToSqlInterface {
 
     public function __get($name)
     {
-        if ( isset( $this->attributes[ $name ] ) ) {
+        if ( isset($this->attributes[ $name ] ) ) {
             return $this->attributes[ $name ];
         }
     }
 
     public function __set($name,$value)
     {
-        $this->attributes[ $name ] = $value;
+        $this->attributes[$name] = $value;
     }
 
     public function __call($method,$args)
@@ -472,7 +545,7 @@ class Column implements ToSqlInterface {
                     break;
 
                 case self::ATTR_FLAG:
-                    if( isset($args[0]) ) {
+                    if (isset($args[0])) {
                         $this->attributes[ $method ] = $args[0];
                     } else {
                         $this->attributes[ $method ] = true;
@@ -496,14 +569,14 @@ class Column implements ToSqlInterface {
      *
      * @param string $name attribute name
      */
-    public function get($name) 
+    public function getAttribute($name) 
     {
         if (isset($this->attributes[$name])) {
             return $this->attributes[$name];
         }
     }
 
-    public function set($name, $value) {
+    public function setAttribute($name, $value) {
         $this->attributes[ $name ] = $value;
         return $this;
     }
@@ -581,6 +654,14 @@ class Column implements ToSqlInterface {
                 $enum[] = $driver->deflate($val);
             }
             $sql .= '(' . join(', ', $enum) . ')';
+        } elseif ($isa === 'set' && !empty($this->set)) {
+
+            $set = array();
+            foreach ($this->set as $val) {
+                $set[] = $driver->deflate($val);
+            }
+            $sql .= '(' . join(', ', $set) . ')';
+
         }
 
 
