@@ -1,16 +1,16 @@
 <?php
 use SQLBuilder\Universal\Query\CreateTableQuery;
-use SQLBuilder\Testing\QueryTestCase;
+use SQLBuilder\Testing\PDOQueryTestCase;
 use SQLBuilder\Driver\MySQLDriver;
 
-class CreateTableQueryTest extends QueryTestCase
+class MySQLCreateTableQueryTest extends PDOQueryTestCase
 {
+    public $driverType = 'MySQL';
+    // public $schema = array( 'tests/schema/member_mysql.sql' );
 
-    public function createDriver()
-    {
+    public function createDriver() {
         return new MySQLDriver;
     }
-
 
     public function testCreateTableQuery()
     {
@@ -28,6 +28,9 @@ class CreateTableQueryTest extends QueryTestCase
 
         ok($q);
 
+        $this->query('DROP TABLE IF EXISTS `authors`');
+        $this->assertQuery($q);
+
         $this->assertSql('CREATE TABLE `authors`(
 `id` integer PRIMARY KEY AUTO_INCREMENT,
 `first_name` varchar(32),
@@ -35,7 +38,6 @@ class CreateTableQueryTest extends QueryTestCase
 `age` tinyint(3),
 `remark` text
 )', $q);
-
 
     }
 }

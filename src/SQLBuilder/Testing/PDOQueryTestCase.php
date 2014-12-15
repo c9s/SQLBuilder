@@ -1,9 +1,19 @@
 <?php
+namespace SQLBuilder\Testing;
+use SQLBuilder\Testing\QueryTestCase;
+use SQLBuilder\ToSqlInterface;
+use SQLBuilder\ArgumentArray;
+use PHPUnit_Framework_TestCase;
+use PDO;
 
 /**
+ * @package SQLBuilder
+ *
  * @class PHPUnit_PDO_TestCase
  *
- * Usage
+ * @author Yo-An Lin <yoanlin93@gmail.com>
+ *
+ * @code
  *
  *   class YourTest extends PHPUnit_PDO_TestCase
  *   {
@@ -34,7 +44,7 @@
  *
  *   }
  */
-abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
+abstract class PDOQueryTestCase extends QueryTestCase
 {
 
     /**
@@ -88,7 +98,7 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
      */
     public $fixtureDir = 'tests/fixture';
 
-    public $envVariablePrefix = 'Test_';
+    public $driverType = 'MySQL';
 
 
     public function noPDOError()
@@ -99,17 +109,17 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
 
     public function getDSN()
     {
-        return $this->dsn ?: getenv( $this->envVariablePrefix . 'DSN' );
+        return $this->dsn ?: getenv( strtoupper($this->driverType) . '_DSN' );
     }
 
     public function getUser()
     {
-        return $this->user ?: getenv( $this->envVariablePrefix . 'USER');
+        return $this->user ?: getenv( strtoupper($this->driverType) . '_USER');
     }
 
     public function getPass()
     {
-        return $this->pass ?: getenv( $this->envVariablePrefix . 'PASS');
+        return $this->pass ?: getenv( strtoupper($this->driverType) . '_PASS');
     }
 
     public function getOptions()
@@ -124,8 +134,9 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        if( ! extension_loaded('pdo') )
-            return skip('pdo required');
+        if (! extension_loaded('pdo')) {
+            return skip('pdo extension is required');
+        }
 
         // XXX: check pdo driver
 #          if( ! extension_loaded('pdo_pgsql') ) 
@@ -226,6 +237,25 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
         return;
     }
 
+    public function assertQuery(ToSqlInterface $query, $message = '') {
+        $driver = $this->createDriver();
+        $args = new ArgumentArray;
+        $sql = $query->toSql($driver, $args);
+        $this->queryOk($sql, $args->toArray());
+        return $args;
+    }
+
+
+    public function query($sql, array $args = array())
+    {
+        if ($args) {
+            $stm = $this->pdo->prepare( $sql )->execute( $args );
+        } else {
+            $stm = $this->pdo->query( $sql );
+        }
+        $this->noPDOError();
+        return $stm;
+    }
 
     /**
      * Test Query
@@ -233,16 +263,11 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
      * @param string $sql SQL statement.
      * @param array $args Arguments for executing SQL statement.
      */
-    public function queryOk($sql, $args = null)
+    public function queryOk($sql, array $args = array())
     {
-        if ( ! $sql )
-            return;
-
-        if ( $args ) {
+        if ($args) {
             $stm = $this->pdo->prepare( $sql )->execute( $args );
-        }
-        else {
-            // echo "Query: " , $sql, "\n";
+        } else {
             $stm = $this->pdo->query( $sql );
         }
         $this->noPDOError();
@@ -265,7 +290,7 @@ abstract class PHPUnit_PDO_TestCase extends PHPUnit_Framework_TestCase
 
     }
 
-    function recordOk($sql)
+    public function recordOk($sql)
     {
         $stm = $this->queryOk($sql);
         $row = $stm->fetch();

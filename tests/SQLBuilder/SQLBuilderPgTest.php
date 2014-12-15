@@ -3,6 +3,9 @@ use SQLBuilder\QueryBuilder;
 use SQLBuilder\Driver\PgSQLDriver;
 
 // class SQLBuilderPgTest extends PHPUnit_Framework_TestCase
+
+
+/*
 class SQLBuilderPgTest extends PHPUnit_PDO_TestCase
 {
     public $envVariablePrefix = 'PGSQL_';
@@ -49,7 +52,6 @@ EOS;
         return $driver;
     }
 
-    /*
     public function testInsert()
     {
         $driver = $this->getPgDriver();
@@ -172,7 +174,5 @@ EOS;
         $sql = $sb->build();
         is( 'SELECT COUNT(*) FROM "Member" WHERE "foo" = :foo LIMIT 10 OFFSET 20' ,$sql );
     }
-     */
-
-
 }
+*/
