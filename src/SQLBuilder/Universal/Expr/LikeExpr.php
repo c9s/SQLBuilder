@@ -8,7 +8,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\ToSqlInterface;
 use LogicException;
 
-class LikeExpr extends Expr implements ToSqlInterface { 
+class LikeExpr implements ToSqlInterface { 
 
     public $pat;
 
