@@ -8,7 +8,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\ToSqlInterface;
 use LogicException;
 
-class SelectExpr extends Expr implements ToSqlInterface { 
+class SelectExpr implements ToSqlInterface { 
 
     public $expr;
 

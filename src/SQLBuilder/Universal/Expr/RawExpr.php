@@ -7,7 +7,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use InvalidArgumentException;
 
-class RawExpr extends Expr implements ToSqlInterface
+class RawExpr implements ToSqlInterface
 {
     public $str;
 
