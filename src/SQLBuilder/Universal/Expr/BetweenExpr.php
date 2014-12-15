@@ -8,7 +8,7 @@ use SQLBuilder\ArgumentArray;
 /**
  * http://dev.mysql.com/doc/refman/5.0/en/comparison-operators.html#operator_between
  */
-class BetweenExpr extends Expr implements ToSqlInterface { 
+class BetweenExpr implements ToSqlInterface { 
 
     public $exprStr;
 
