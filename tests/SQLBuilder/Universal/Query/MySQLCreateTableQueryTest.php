@@ -28,6 +28,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->column('phone')->varchar(24)->null();
         $q->column('email')->varchar(128)->notNull();
         $q->column('confirmed')->boolean()->default(false);
+        $q->column('types')->set('student', 'teacher');
         $q->column('remark')->text();
 
         ok($q);
@@ -46,6 +47,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 `phone` varchar(24) NULL,
 `email` varchar(128) NOT NULL,
 `confirmed` boolean DEFAULT FALSE,
+`types` set(\'student\', \'teacher\'),
 `remark` text
 )', $q);
 
