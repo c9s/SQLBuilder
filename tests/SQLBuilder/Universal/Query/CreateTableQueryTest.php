@@ -1,5 +1,6 @@
 <?php
 use SQLBuilder\Universal\Query\CreateTableQuery;
+use SQLBuilder\Universal\Query\DropTableQuery;
 use SQLBuilder\Testing\PDOQueryTestCase;
 use SQLBuilder\Driver\MySQLDriver;
 
@@ -38,6 +39,12 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 `age` tinyint(3),
 `remark` text
 )', $q);
+
+
+        $dropQuery = new DropTableQuery('authors');
+        $dropQuery->IfExists();
+        $this->assertSql('DROP TABLE IF EXISTS `authors`', $dropQuery);
+        $this->assertQuery($dropQuery);
 
     }
 }
