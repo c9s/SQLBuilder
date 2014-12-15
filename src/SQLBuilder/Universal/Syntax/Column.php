@@ -47,6 +47,10 @@ class Column implements ToSqlInterface {
     public $name;
 
 
+    /**
+     * @var boolean primary
+     */
+    protected $primary;
 
     /**
      * @var bool unsigned
@@ -102,17 +106,12 @@ class Column implements ToSqlInterface {
     protected $attributes = array();
 
 
-
-
-
     /**
      * @var string $name column name (id)
      */
     public function __construct($name)
     {
         $this->supportedAttributes = array(
-            'primary'       => self::ATTR_FLAG,
-            'size'          => self::ATTR_INTEGER,
             'autoIncrement' => self::ATTR_FLAG,
             'immutable'     => self::ATTR_FLAG,
             'unique'        => self::ATTR_FLAG, /* unique, should support by SQL syntax */
@@ -133,18 +132,17 @@ class Column implements ToSqlInterface {
     }
 
 
-
-
     public function name($name) 
     {
         $this->name = $name;
         return $this;
     }
 
-
-
-
-
+    public function primary($primary = true)
+    {
+        $this->primary = $primary;
+        return $this;
+    }
 
     public function bit($length = NULL)
     {
