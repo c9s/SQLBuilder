@@ -1,8 +1,14 @@
 <?php
 namespace SQLBuilder\Universal\Syntax;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\ToSqlInterface;
+use SQLBuilder\Exception\CriticalIncompatibleUsageException;
+use SQLBuilder\Exception\IncompleteSettingsException;
+use SQLBuilder\Exception\UnsupportedDriverException;
+
 
 
 /**
@@ -50,14 +56,18 @@ class Column implements ToSqlInterface {
     /**
      * @var array $supportedAttributes
      */
-    public $supportedAttributes = array();
+    protected $supportedAttributes = array();
 
     /**
      * @var array $attributes
      *
      * The default attributes for a column.
      */
-    public $attributes = array();
+    protected $attributes = array();
+
+
+
+
 
     /**
      * @var string $name column name (id)
@@ -248,7 +258,7 @@ class Column implements ToSqlInterface {
 
     public function varchar($length)
     {
-        $this->type = "varchar($length)";
+        $this->type = "varchar";
         $this->isa  = 'str';
         $this->length = $length;
         return $this;
@@ -256,7 +266,7 @@ class Column implements ToSqlInterface {
 
     public function char($length)
     {
-        $this->type = "char($length)";
+        $this->type = "char";
         $this->isa = 'str';
         $this->length  = $length;
         return $this;
@@ -491,8 +501,146 @@ class Column implements ToSqlInterface {
     }
 
 
+
+
+    /**
+    Build reference
+
+    track(
+        FOREIGN KEY(trackartist) REFERENCES artist(artistid)
+        artist_id INTEGER REFERENCES artist
+    )
+
+    MySQL Syntax:
+    
+        reference_definition:
+
+        REFERENCES tbl_name (index_col_name,...)
+            [MATCH FULL | MATCH PARTIAL | MATCH SIMPLE]
+            [ON DELETE reference_option]
+            [ON UPDATE reference_option]
+
+        reference_option:
+            RESTRICT | CASCADE | SET NULL | NO ACTION
+
+    A reference example:
+
+    PRIMARY KEY (`idEmployee`) ,
+    CONSTRAINT `fkEmployee_Addresses`
+    FOREIGN KEY `fkEmployee_Addresses` (`idAddresses`)
+    REFERENCES `schema`.`Addresses` (`idAddresses`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+
+    */
+    public function buildSqlMySQl(BaseDriver $driver, ArgumentArray $args)
+    {
+
+        $isa  = $this->isa ?: 'str';
+        $type = $this->type;
+        if ( ! $type && $isa == 'str' ) {
+            $type = 'text'; // set the default type to text.
+        }
+
+        // format length to SQL
+        if ($this->length && $this->decimals) {
+            $type .= '(' . $this->length . ',' . $this->decimals . ')';
+        } elseif ($this->length) {
+            $type .= '(' . $this->length . ')';
+        }
+
+        $sql = '';
+        $sql .= $driver->quoteIdentifier($this->name);
+
+
+        $sql .= ' ' . $type;
+
+
+
+        if ($isa === 'enum' && !empty($this->enum)) {
+            $enum = array();
+            foreach ($this->enum as $val) {
+                $enum[] = $driver->deflate($val);
+            }
+            $sql .= '(' . join(', ', $enum) . ')';
+        }
+
+
+        if ($this->required || $this->notNull ) {
+            $sql .= ' NOT NULL';
+        } elseif ($this->null) {
+            $sql .= ' NULL';
+        }
+
+        // Build default value
+        if (($default = $this->default) !== null && ! is_callable($this->default )) { 
+            // raw sql default value
+
+            if ($default instanceof Raw) {
+
+                $sql .= ' DEFAULT ' . $default[0];
+
+            } elseif (is_callable($default)) {
+
+                $sql .= ' DEFAULT ' . call_user_func($this->default, $this);
+
+            } elseif (is_array($default)) {
+
+                // TODO: remove raw value by array type here to support 'set' and 'enum'
+                $sql .= ' DEFAULT ' . $default;
+
+            } else {
+                $sql .= ' DEFAULT ' . $driver->deflate($default);
+            }
+        }
+
+        if ($this->primary) {
+            $sql .= ' PRIMARY KEY';
+
+        }
+
+        if ($this->autoIncrement) {
+            $sql .= ' AUTO_INCREMENT';
+        }
+
+        if ($this->unique) {
+            $sql .= ' UNIQUE';
+        }
+
+
+
+        if ($this->comment) {
+            $sql .= ' COMMENT ' . $driver->defalte($this->comment);
+        }
+
+        /*
+        foreach( $schema->relations as $rel ) {
+            switch( $rel['type'] ) {
+            case SchemaDeclare::belongs_to:
+            case SchemaDeclare::has_many:
+            case SchemaDeclare::has_one:
+                if( $name != 'id' && $rel['self_column'] == $name ) 
+                {
+                    $fSchema = new $rel['foreign_schema'];
+                    $fColumn = $rel['foreign_column'];
+                    $fc = $fSchema->columns[$fColumn];
+                    $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
+                }
+                break;
+            }
+        }
+         */
+        return $sql;
+    }
+
+
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
+        if ($driver instanceof MySQLDriver) {
+            return $this->buildSqlMySQl($driver, $args);
+        } else {
+            throw new UnsupportedDriverException;
+        }
         return '';
     }
 

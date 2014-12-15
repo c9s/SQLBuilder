@@ -33,15 +33,15 @@ class CreateTableQuery implements ToSqlInterface
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
-        $sql = 'CREATE TABLE ' . $driver->quoteIdentifier($this->tableName);
-        $sql .= '(';
+        $sql = "CREATE TABLE " . $driver->quoteIdentifier($this->tableName);
+        $sql .= "(\n";
         $columnClauses = array();
         foreach($this->columns as $col) {
             $columnClauses[] = $col->toSql($driver, $args);
         }
-        $sql .= join(",", $columnClauses);
-        $sql .= ')';
-        return '';
+        $sql .= join(",\n", $columnClauses);
+        $sql .= "\n)";
+        return $sql;
     }
 }
 
