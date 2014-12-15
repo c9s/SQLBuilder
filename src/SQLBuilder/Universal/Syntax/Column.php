@@ -79,10 +79,6 @@ class Column implements ToSqlInterface {
             'comment'  => self::ATTR_STRING,
 
             /* data type: string, integer, DateTime, classname */
-            'isa' => self::ATTR_STRING,
-
-            'type' => self::ATTR_STRING,
-
             'default' => self::ATTR_ANY,
 
             /* primary field for CMS */
@@ -337,20 +333,20 @@ class Column implements ToSqlInterface {
     {
         $this->type = 'time';
         $this->isa = 'str';
-        $this->attributes['timezone'] = true;
+        $this->set('timezone', $bool);
         return $this;
     }
 
     public function timezone($bool = true) {
-        $this->attributes['timezone'] = $bool;
+        $this->set('timezone', $bool);
         return $this;
     }
 
     public function datetime()
     {
         $this->type = 'datetime';
-        $this->attributes['isa'] = 'DateTime';
-        $this->attributes['timezone'] = true;
+        $this->isa = 'DateTime';
+        $this->set('timezone', true);
         return $this;
     }
 
@@ -358,7 +354,7 @@ class Column implements ToSqlInterface {
     {
         $this->type = 'timestamp';
         $this->isa = 'DateTime';
-        $this->attributes['timezone'] = true;
+        $this->set('timezone', true);
         return $this;
     }
 
@@ -371,7 +367,7 @@ class Column implements ToSqlInterface {
     }
 
     public function index($indexName = null) {
-        $this->attributes['index'] = $indexName ?: true;
+        $this->set('index', $indexName ?: true);
         return $this;
     }
 
@@ -382,8 +378,9 @@ class Column implements ToSqlInterface {
 
     public function __get($name)
     {
-        if( isset( $this->attributes[ $name ] ) )
+        if ( isset( $this->attributes[ $name ] ) ) {
             return $this->attributes[ $name ];
+        }
     }
 
     public function __set($name,$value)
@@ -393,11 +390,11 @@ class Column implements ToSqlInterface {
 
     public function __call($method,$args)
     {
-        if( isset($this->supportedAttributes[ $method ] ) ) {
+        if (isset($this->supportedAttributes[ $method ])) {
             $c = count($args);
             $t = $this->supportedAttributes[ $method ];
 
-            if( $t != self::ATTR_FLAG && $c == 0 ) {
+            if ($t != self::ATTR_FLAG && $c == 0) {
                 throw new InvalidArgumentException( 'Attribute value is required.' );
             }
 
@@ -478,21 +475,19 @@ class Column implements ToSqlInterface {
      */
     public function get($name) 
     {
-        if ( isset($this->attributes[$name]) ) {
+        if (isset($this->attributes[$name])) {
             return $this->attributes[$name];
         }
     }
 
-    public function getName() {
-        return $this->name;
+    public function set($name, $value) {
+        $this->attributes[ $name ] = $value;
+        return $this;
     }
 
-    public function getDefaultValue( $record = null, $args = null )
-    {
-        // XXX: might contains array() which is a raw sql statement.
-        if ($val = $this->get('default') ) {
-            return Utils::evaluate( $val , array($record, $args));
-        }
+
+    public function getName() {
+        return $this->name;
     }
 
 
