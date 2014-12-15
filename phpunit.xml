@@ -20,7 +20,7 @@
   </php>
 
   <testsuites>
-    <testsuite name="PHPUnit">
+    <testsuite name="SQLBuilder">
       <directory suffix="Test.php">tests</directory>
     </testsuite>
   </testsuites>
