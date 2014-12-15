@@ -2,6 +2,8 @@
 
 [![Build Status](https://secure.travis-ci.org/c9s/SQLBuilder.png)](http://travis-ci.org/c9s/SQLBuilder)
 
+[![Coverage Status](https://img.shields.io/coveralls/c9s/SQLBuilder.svg)](https://coveralls.io/r/c9s/SQLBuilder)
+
 If you're looking for something that is not an ORM but can generate SQL for
 you, you just found the right one.
 
