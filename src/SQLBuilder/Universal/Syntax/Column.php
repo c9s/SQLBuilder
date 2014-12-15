@@ -17,7 +17,21 @@ use SQLBuilder\Exception\UnsupportedDriverException;
  *
  * MySQL Data Types:
  * @see http://dev.mysql.com/doc/refman/5.6/en/data-types.html
+ *
+ *
+ * MySQL Reference
+
+        reference_definition:
+            REFERENCES tbl_name (index_col_name,...)
+            [MATCH FULL | MATCH PARTIAL | MATCH SIMPLE]
+            [ON DELETE reference_option]
+            [ON UPDATE reference_option]
+
+        reference_option:
+            RESTRICT | CASCADE | SET NULL | NO ACTION
+
  */
+
 class Column implements ToSqlInterface {
     const  ATTR_ANY = 0;
     const  ATTR_ARRAY = 1;
