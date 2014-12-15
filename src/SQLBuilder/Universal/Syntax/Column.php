@@ -100,22 +100,83 @@ class Column implements ToSqlInterface {
         return $this;
     }
 
-    public function varchar($length)
+
+
+
+
+
+    public function bit($length = NULL)
     {
-        $this->type = "varchar($length)";
-        $this->isa  = 'str';
-        $this->length = $length;
+
         return $this;
     }
 
-    public function char($length)
+
+
+    public function tinyInt($length = NULL) 
     {
-        $this->type = "char($length)";
-        $this->isa = 'str';
-        $this->length  = $length;
+        $this->type = 'tinyint';
+        $this->isa = 'int';
+        if ($length) {
+            $this->length = $length;
+        }
         return $this;
     }
 
+    public function smallInt($length = NULL)
+    {
+        $this->type = 'smallint';
+        $this->isa = 'int';
+        if ($length) {
+            $this->length = $length;
+        }
+        return $this;
+    }
+
+    public function mediumInt($length = NULL)
+    {
+        $this->type = 'mediumint';
+        $this->isa = 'int';
+        if ($length) {
+            $this->length = $length;
+        }
+        return $this;
+    }
+
+    public function int($length = NULL)
+    {
+        $this->type = 'mediumint';
+        $this->isa = 'int';
+        if ($length) {
+            $this->length = $length;
+        }
+        return $this;
+    }
+
+    public function bigint($length = NULL)
+    {
+        $this->type = 'bigint';
+        $this->isa = 'int';
+        if ($length) {
+            $this->length = $length;
+        }
+        return $this;
+    }
+
+    public function integer($length = NULL)
+    {
+        return $this->int($length);
+    }
+
+
+    public function real($length = NULL, $decimals = NULL) {
+        $this->type = 'real';
+        $this->isa = 'int'; // XXX: correct type?
+        if ($length) {
+            $this->setLengthInfo($length, $decimals);
+        }
+        return $this;
+    }
 
 
     /**
@@ -163,66 +224,54 @@ class Column implements ToSqlInterface {
         return $this;
     }
 
-    public function tinyInt($length = NULL) 
-    {
-        $this->attributes['type'] = 'tinyint';
-        $this->attributes['isa'] = 'int';
-        if ($length) {
-            $this->length = $length;
-        }
-        return $this;
-    }
 
-    public function smallInt($length = NULL)
+    public function decimal($length = NULL, $decimals = NULL)
     {
-        $this->attributes['type'] = 'smallint';
-        $this->attributes['isa'] = 'int';
-        if ($length) {
-            $this->length = $length;
-        }
-        return $this;
-    }
-
-    public function mediumInt($length = NULL)
-    {
-        $this->attributes['type'] = 'mediumint';
-        $this->attributes['isa'] = 'int';
-        if ($length) {
-            $this->length = $length;
-        }
-        return $this;
-    }
-
-    public function int($length = NULL)
-    {
-        $this->attributes['type'] = 'mediumint';
-        $this->attributes['isa'] = 'int';
-        if ($length) {
-            $this->length = $length;
-        }
-        return $this;
-    }
-
-    public function bigint($length = NULL)
-    {
-        $this->type = 'bigint';
+        $this->type = 'decimal';
         $this->isa = 'int';
         if ($length) {
-            $this->length = $length;
+            $this->setLengthInfo($length, $decimals);
         }
         return $this;
     }
 
-    public function integer($length = NULL)
+
+    public function numeric($length = NULL, $decimals = NULL)
     {
-        return $this->int($length);
+        $this->type = 'numeric';
+        $this->isa = 'int';
+        if ($length) {
+            $this->setLengthInfo($length, $decimals);
+        }
+        return $this;
     }
+
+
+
+
+
+    public function varchar($length)
+    {
+        $this->type = "varchar($length)";
+        $this->isa  = 'str';
+        $this->length = $length;
+        return $this;
+    }
+
+    public function char($length)
+    {
+        $this->type = "char($length)";
+        $this->isa = 'str';
+        $this->length  = $length;
+        return $this;
+    }
+
 
 
     public function text()
     {
-        $this->attributes['type'] = 'text';
-        $this->attributes['isa'] = 'str';
+        $this->type = 'text';
+        $this->isa = 'str';
         return $this;
     }
 
@@ -233,30 +282,30 @@ class Column implements ToSqlInterface {
 
     public function boolean()
     {
-        $this->attributes['type'] = 'boolean';
-        $this->attributes['isa'] = 'bool';
+        $this->type = 'boolean';
+        $this->isa = 'bool';
         return $this;
     }
 
     public function blob()
     {
-        $this->attributes['type'] = 'blob';
-        $this->attributes['isa'] = 'str';
+        $this->type = 'blob';
+        $this->isa = 'str';
         return $this;
     }
 
     public function binary()
     {
-        $this->attributes['type'] = 'binary';
-        $this->attributes['isa'] = 'str';
+        $this->type = 'binary';
+        $this->isa = 'str';
         return $this;
     }
 
     public function enum()
     {
-        $this->attributes['type'] = 'enum';
-        $this->attributes['isa'] = 'enum';
-        $this->attributes['enum'] = func_get_args();
+        $this->type = 'enum';
+        $this->isa = 'enum';
+        $this->enum = func_get_args();
         return $this;
     }
 
@@ -267,8 +316,8 @@ class Column implements ToSqlInterface {
      */
     public function serial()
     {
-        $this->attributes['type'] = 'serial';
-        $this->attributes['isa'] = 'int';
+        $this->type = 'serial';
+        $this->isa = 'int';
         return $this;
     }
 
@@ -279,15 +328,15 @@ class Column implements ToSqlInterface {
 
     public function date()
     {
-        $this->attributes['type'] = 'date';
-        $this->attributes['isa'] = 'DateTime';
+        $this->type = 'date';
+        $this->isa = 'DateTime';
         return $this;
     }
 
     public function time() 
     {
-        $this->attributes['type'] = 'time';
-        $this->attributes['isa'] = 'str';
+        $this->type = 'time';
+        $this->isa = 'str';
         $this->attributes['timezone'] = true;
         return $this;
     }
@@ -299,7 +348,7 @@ class Column implements ToSqlInterface {
 
     public function datetime()
     {
-        $this->attributes['type'] = 'datetime';
+        $this->type = 'datetime';
         $this->attributes['isa'] = 'DateTime';
         $this->attributes['timezone'] = true;
         return $this;
@@ -307,8 +356,8 @@ class Column implements ToSqlInterface {
 
     public function timestamp()
     {
-        $this->attributes['type'] = 'timestamp';
-        $this->attributes['isa'] = 'DateTime';
+        $this->type = 'timestamp';
+        $this->isa = 'DateTime';
         $this->attributes['timezone'] = true;
         return $this;
     }
@@ -324,26 +373,6 @@ class Column implements ToSqlInterface {
     public function index($indexName = null) {
         $this->attributes['index'] = $indexName ?: true;
         return $this;
-    }
-
-    public function export()
-    {
-        return array(
-            'name' => $this->name,
-            'attributes' => $this->attributes,
-        );
-    }
-
-    public function toArray()
-    {
-        $attrs = $this->attributes;
-        $attrs['name'] = $this->name;
-        return $attrs;
-    }
-
-    public function dump()
-    {
-        return var_export( $this->export() , true );
     }
 
     public function __isset($name)
