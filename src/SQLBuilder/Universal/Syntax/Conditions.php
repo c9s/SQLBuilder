@@ -19,28 +19,28 @@ use SQLBuilder\ArgumentArray;
 use Countable;
 use Exception;
 
-class Op { }
+class Op {  }
 
 class AndOp extends Op {
-    public function toSql(BaseDriver $driver) {
+    public function __toString() {
         return 'AND';
     }
 }
 
 class OrOp extends Op { 
-    public function toSql(BaseDriver $driver) {
+    public function __toString() {
         return 'OR';
     }
 }
 
-class XorOp extends Op { 
-    public function toSql(BaseDriver $driver) {
+class XorOp extends Op {
+    public function __toString() {
         return 'XOR';
     }
 }
 
 class NotOp extends Op { 
-    public function toSql(BaseDriver $driver) {
+    public function __toString() {
         return '!';
     }
 }
@@ -61,7 +61,7 @@ class Conditions implements ToSqlInterface, Countable
     /**
      * http://dev.mysql.com/doc/refman/5.0/en/expressions.html
      */
-    public function appendExprObject(Expr $expr) {
+    public function appendExprObject($expr) {
         // We duplicate the code of checking op object to avoid the extra function call.
         if (!empty($this->exprs) && ! end($this->exprs) instanceof Op) {
             $this->exprs[] = new AndOp;
@@ -193,7 +193,15 @@ class Conditions implements ToSqlInterface, Countable
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = '';
         foreach ($this->exprs as $expr) {
-            $sql .= ' ' . $expr->toSql($driver, $args);
+            if ($expr instanceof ToSqlInterface) {
+                $sql .= ' ' . $expr->toSql($driver, $args);
+            } elseif ($expr instanceof Op) { 
+                $sql .= ' ' . $expr->__toString();
+            } elseif (is_object($expr)) {
+                $sql .= ' ' . $expr->__toString();
+            } else {
+                $sql .= ' ' . $expr;
+            }
         }
         return ltrim($sql);
     }

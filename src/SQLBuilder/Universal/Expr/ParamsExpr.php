@@ -13,7 +13,7 @@ use LogicException;
  *
  * SELECT FUNC(param1, param2, param3)...
  */
-class ParamsExpr extends Expr implements ToSqlInterface { 
+class ParamsExpr implements ToSqlInterface { 
 
     public $params;
 

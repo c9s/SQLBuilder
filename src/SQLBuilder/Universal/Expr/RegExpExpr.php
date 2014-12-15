@@ -11,7 +11,7 @@ use SQLBuilder\ArgumentArray;
 /**
  * @see http://dev.mysql.com/doc/refman/5.6/en/regexp.html
  */
-class RegExpExpr extends Expr implements ToSqlInterface { 
+class RegExpExpr implements ToSqlInterface { 
 
     public $pat;
 
