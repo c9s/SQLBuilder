@@ -16,6 +16,16 @@ use SQLBuilder\Universal\Traits\RestrictTrait;
 use SQLBuilder\Universal\Traits\CascadeTrait;
 use SQLBuilder\Accessor;
 
+
+/**
+ * MySQL Drop table syntax
+ *
+    DROP [TEMPORARY] TABLE [IF EXISTS]
+        tbl_name [, tbl_name] ...
+        [RESTRICT | CASCADE]
+
+ */
+
 class DropTableQuery implements ToSqlInterface
 {
     use ConcurrentlyTrait;
@@ -23,20 +33,38 @@ class DropTableQuery implements ToSqlInterface
     use CascadeTrait;
     use RestrictTrait;
 
-    protected $tableName;
+    protected $tableNames = array();
 
-    public function __construct($tableName) {
-        $this->tableName = $tableName;
+    protected $temporary;
+
+    public function __construct($tableNames = NULL) {
+        if ($tableNames && is_array($tableNames)) {
+            $this->tableNames = $tableNames;
+        } elseif (is_string($tableNames)) {
+            $this->tableNames = array($tableNames);
+        }
     }
 
     public function table($tableName) {
-        $this->tableName = $tableName;
+        $this->tableNames[] = $tableName;
+        return $this;
+    }
+
+    public function temporary() {
+        $this->temporary = true;
         return $this;
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
-        $sql = 'DROP TABLE';
+        $sql = 'DROP';
+
+        // only for mysql
+        if ($driver instanceof MySQLDriver && $this->temporary) {
+            $sql .= ' TEMPORARY';
+        }
+
+        $sql .= ' TABLE';
 
         if ($driver instanceof PgSQLDriver) {
             $sql .= $this->buildConcurrentlyClause();
@@ -44,7 +72,10 @@ class DropTableQuery implements ToSqlInterface
 
         $sql .= $this->buildIfExistsClause($driver, $args);
 
-        $sql .= ' ' . $driver->quoteIdentifier($this->tableName);
+        foreach($this->tableNames as $tableName) {
+            $sql .= ' ' . $driver->quoteIdentifier($tableName) . ',';
+        }
+        $sql = rtrim($sql, ',');
 
 
         if ($driver instanceof PgSQLDriver) {
