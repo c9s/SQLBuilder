@@ -1,6 +1,7 @@
 <?php
 use SQLBuilder\Column;
 
+/*
 class MigrationBuilderTest extends PHPUnit_PDO_TestCase
 {
 
@@ -14,7 +15,6 @@ class MigrationBuilderTest extends PHPUnit_PDO_TestCase
         return $sqls;
     }
 
-    /*
     function test()
     {
         $driver = DriverFactory::create_sqlite_driver();
@@ -70,8 +70,5 @@ class MigrationBuilderTest extends PHPUnit_PDO_TestCase
         // $this->queryOk( $sql );
         is( 'ALTER TABLE members DROP COLUMN views' , $sql );
     }
-     */
-
 }
-
-
+*/

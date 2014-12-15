@@ -40,6 +40,10 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
         unset($this->args[$name]);
     }
     
+
+    public function toArray() {
+        return $this->args;
+    }
 }
 
 

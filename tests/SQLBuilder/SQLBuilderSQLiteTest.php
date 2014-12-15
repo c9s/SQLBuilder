@@ -1,4 +1,6 @@
 <?php
+/*
+
 class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
 {
     public $schema = array( 'tests/schema/member_sqlite.sql' );
@@ -10,7 +12,6 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         return DriverFactory::create_sqlite_driver();
     }
 
-    /*
     public function testWrapper()
     {
         $driver = $this->getDriver();
@@ -340,6 +341,6 @@ class SQLBuilderSQLiteTest extends PHPUnit_PDO_TestCase
         $sql = $sb->build();
         ok( $sql );
     }
-     */
 }
+*/
 
