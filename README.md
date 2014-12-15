@@ -1,6 +1,6 @@
 # SQLBuilder for PHP
 
-[![Build Status](https://secure.travis-ci.org/c9s/SQLBuilder.png)](http://travis-ci.org/c9s/SQLBuilder)
+[![Build Status](https://travis-ci.org/c9s/SQLBuilder.svg?branch=master)](http://travis-ci.org/c9s/SQLBuilder)
 
 [![Coverage Status](https://img.shields.io/coveralls/c9s/SQLBuilder.svg)](https://coveralls.io/r/c9s/SQLBuilder)
 
