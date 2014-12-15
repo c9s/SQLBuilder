@@ -6,7 +6,7 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 
-class InExpr extends Expr implements ToSqlInterface { 
+class InExpr implements ToSqlInterface { 
 
     public $exprStr;
 
