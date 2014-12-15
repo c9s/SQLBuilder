@@ -11,6 +11,14 @@ before_script:
   - psql -c 'create database sqlbuilder;' -U postgres
   - mysql -e 'create database sqlbuilder;'
   - phpenv rehash
+  - composer self-update
+  - composer require satooshi/php-coveralls:dev-master --no-update --dev
   - composer install --dev
 
 script: "phpunit -c phpunit.travis-ci.xml"
+
+after_script:
+  - php vendor/bin/coveralls -v
+
+cache:
+  - vendor
