@@ -29,7 +29,10 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 
         ok($q);
 
-        $this->query('DROP TABLE IF EXISTS `authors`');
+        $dropQuery = new DropTableQuery('authors');
+        $dropQuery->IfExists();
+        $this->assertSql('DROP TABLE IF EXISTS `authors`', $dropQuery);
+        $this->assertQuery($dropQuery);
         $this->assertQuery($q);
 
         $this->assertSql('CREATE TABLE `authors`(
@@ -41,9 +44,6 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 )', $q);
 
 
-        $dropQuery = new DropTableQuery('authors');
-        $dropQuery->IfExists();
-        $this->assertSql('DROP TABLE IF EXISTS `authors`', $dropQuery);
         $this->assertQuery($dropQuery);
 
     }
