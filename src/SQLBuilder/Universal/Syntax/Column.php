@@ -32,6 +32,14 @@ class Column implements ToSqlInterface {
      */
     public $name;
 
+
+
+    /**
+     * @var bool unsigned
+     */
+    protected $unsigned;
+
+
     /**
      * When using numeric types, this property is used to save the length 
      * information, which is optional
@@ -252,6 +260,11 @@ class Column implements ToSqlInterface {
         return $this;
     }
 
+    public function unsigned($unsigned = true) 
+    {
+        $this->unsigned = $unsigned;
+        return $this;
+    }
 
 
 
@@ -542,6 +555,7 @@ class Column implements ToSqlInterface {
             $type = 'text'; // set the default type to text.
         }
 
+
         // format length to SQL
         if ($this->length && $this->decimals) {
             $type .= '(' . $this->length . ',' . $this->decimals . ')';
@@ -554,6 +568,10 @@ class Column implements ToSqlInterface {
 
 
         $sql .= ' ' . $type;
+
+        if ($this->unsigned) {
+            $sql .= ' UNSIGNED';
+        }
 
 
 
