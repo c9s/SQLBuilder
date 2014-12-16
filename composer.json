@@ -1,6 +1,7 @@
 {
     "name": "corneltek/sqlbuilder",
     "description": "Fast and Powerful SQLBuilder for PHP5.3",
+    "license": 'MIT',
     "authors": [
         {
             "name": "c9s",
