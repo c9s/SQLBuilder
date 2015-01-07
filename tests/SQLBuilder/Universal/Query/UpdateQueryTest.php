@@ -22,7 +22,7 @@ class UpdateQueryTest extends PHPUnit_Framework_TestCase
             ->equal('id', 3);
         ok($query);
         $sql = $query->toSql($driver, $args);
-        is('UPDATE users SET name = :p1 WHERE id = 3', $sql);
+        is('UPDATE users SET name = :name WHERE id = 3', $sql);
     }
 
 
@@ -32,13 +32,13 @@ class UpdateQueryTest extends PHPUnit_Framework_TestCase
         $args = new ArgumentArray;
         $query = new UpdateQuery;
         $query->options('LOW_PRIORITY', 'IGNORE')->update('users')->set([ 
-            'name' => new Bind('name','Mary'),
+            'name' => new Bind('nameA','Mary'),
         ]);
         $query->where()
             ->equal('id', new Bind('id', 3));
         ok($query);
         $sql = $query->toSql($driver, $args);
-        is('UPDATE LOW_PRIORITY IGNORE users SET name = :name WHERE id = :id', $sql);
+        is('UPDATE LOW_PRIORITY IGNORE users SET name = :nameA WHERE id = :id', $sql);
     }
 
 }

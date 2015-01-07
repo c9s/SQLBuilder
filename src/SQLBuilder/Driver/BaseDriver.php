@@ -29,7 +29,7 @@ abstract class BaseDriver
      */
     const NAMED_PARAM_MARKER = 2;
 
-    public $bindAllVariables = false;
+    public $alwaysBindValues = false;
 
     public $paramNameCnt = 1;
 
@@ -64,8 +64,8 @@ abstract class BaseDriver
         $this->quoter = $quoter;
     }
 
-    public function bindAllVariables($on = true) {
-        $this->bindAllVariables = $on;
+    public function alwaysBindValues($on = true) {
+        $this->alwaysBindValues = $on;
     }
 
     /**
@@ -206,6 +206,9 @@ abstract class BaseDriver
         return $new;
     }
 
+    public function allocateBind($value) {
+        return new Bind('p' . $this->paramNameCnt++, $value);
+    }
 
     protected function deflateScalar($value)
     {
@@ -246,6 +249,23 @@ abstract class BaseDriver
      */
     public function deflate($value, ArgumentArray $args = NULL)
     {
+        if ($this->alwaysBindValues) {
+            if ($value instanceof Raw) {
+                return $value->__toString();
+            } elseif ($value instanceof Bind) {
+                if ($args) {
+                    $args->add($value);
+                }
+                return $value->getMark();
+            } elseif ($value instanceof ParamMarker) {
+                if ($args) {
+                    $args->add(new Bind($value->getMark(), NULL));
+                }
+                return $value->getMark();
+            } else {
+                $bind = new Bind('?', $value);
+            }
+        }
 
         if ($value === NULL ) {
 

@@ -41,8 +41,6 @@ class InsertQuery
 
     protected $partitions;
 
-    static public $BindValues = TRUE;
-
     /**
      * Should return result when updating or inserting?
      *
@@ -137,11 +135,19 @@ class InsertQuery
 
         foreach ($this->values as $values) {
             $deflatedValues = array();
-            foreach ($values as $value) {
+            foreach ($values as $key => $value) {
                 if ($value instanceof Raw) {
+
                     $deflatedValues[] = $value->getRaw();
-                } elseif (static::$BindValues && (!$value instanceof Bind && !$value instanceof ParamMarker)) {
-                    $deflatedValues[] = $driver->deflate(new Bind("p" . ($varCnt++), $value), $args);
+
+                } elseif (!$value instanceof Bind && !$value instanceof ParamMarker) {
+
+                    if (is_numeric($key)) {
+                        $deflatedValues[] = $driver->deflate($driver->allocateBind($value), $args);
+                    } else {
+                        $deflatedValues[] = $driver->deflate(new Bind($key, $value), $args);
+                    }
+
                 } else {
                     $deflatedValues[] = $driver->deflate($value, $args);
                 }
