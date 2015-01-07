@@ -184,7 +184,7 @@ class Column implements ToSqlInterface {
 
     public function int($length = NULL)
     {
-        $this->type = 'mediumint';
+        $this->type = 'integer';
         $this->isa = 'int';
         if ($length) {
             $this->length = $length;

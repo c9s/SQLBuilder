@@ -7,11 +7,15 @@ use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Universal\Syntax\Column;
+use SQLBuilder\Universal\Syntax\Constraint;
 
 class CreateTableQuery implements ToSqlInterface
 {
-
     protected $tableName;
+
+    protected $engine;
+
+    protected $constraints = array();
 
     protected $columns = array();
 
@@ -25,22 +29,43 @@ class CreateTableQuery implements ToSqlInterface
         return $this;
     }
 
+    public function engine($engine)
+    {
+        $this->engine = $engine;
+        return $this;
+    }
+
     public function column($name) {
         $col = new Column($name);
         $this->columns[] = $col;
         return $col;
     }
 
+    public function constraint($name) {
+        $this->constraints[] = $constraint = new Constraint($name, $this);
+        return $constraint;
+    }
+
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         $sql = "CREATE TABLE " . $driver->quoteIdentifier($this->tableName);
-        $sql .= "(\n";
+        $sql .= "(";
         $columnClauses = array();
         foreach($this->columns as $col) {
-            $columnClauses[] = $col->toSql($driver, $args);
+            $sql .= "\n" . $col->toSql($driver, $args) . ",";
         }
-        $sql .= join(",\n", $columnClauses);
-        $sql .= "\n)";
+
+        if ($this->constraints) {
+            foreach($this->constraints as $constraint) {
+                $sql .= "\n" . $constraint->toSql($driver, $args) . ",";
+            }
+        }
+
+        $sql = rtrim($sql,',') . "\n)";
+
+        if ($this->engine && $driver instanceof MySQLDriver) {
+            $sql .= ' ENGINE=' . $this->engine;
+        }
         return $sql;
     }
 }
