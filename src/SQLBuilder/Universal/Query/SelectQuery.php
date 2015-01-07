@@ -353,5 +353,11 @@ class SelectQuery implements ToSqlInterface
             ;
         return $sql;
     }
+
+    public function __clone() {
+        $this->having = $this->having;
+        $this->paging = $this->paging;
+        $this->where = $this->where;
+    }
 }
 
