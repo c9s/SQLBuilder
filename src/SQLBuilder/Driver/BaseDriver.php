@@ -190,22 +190,6 @@ abstract class BaseDriver
         return "'" . addslashes($string) . "'";
     }
 
-    /**
-     * Convert a normal associative array to 
-     * named parameter array.
-     *
-     * @param array $args
-     * @return array
-     */
-    public function convertToNamedParameters($args)
-    {
-        $new = array();
-        foreach( $args as $k => $v ) {
-            $new[ ':'. $k ] = $v;
-        }
-        return $new;
-    }
-
     public function allocateBind($value) {
         return new Bind('p' . $this->paramNameCnt++, $value);
     }
