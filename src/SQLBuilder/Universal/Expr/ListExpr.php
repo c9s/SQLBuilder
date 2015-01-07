@@ -7,17 +7,14 @@ use SQLBuilder\ParamMarker;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use LogicException;
+use InvalidArgumentException;
 
 class ListExpr implements ToSqlInterface
 {
-    public $params;
+    protected $expr;
 
-    public function __construct(array $params) {
-        $this->params = $params;
-    }
-
-    public function append($val) {
-        $this->params[] = $val;
+    public function __construct($expr) {
+        $this->expr = $expr;
     }
 
     public function renderSet(BaseDriver $driver, ArgumentArray $args, array $set) 
@@ -30,10 +27,17 @@ class ListExpr implements ToSqlInterface
     public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         $sql = '';
-        foreach($this->params as $val) {
-            $sql .= ',' . $driver->deflate($val, $args);
+        if (is_array($this->expr)) {
+            foreach($this->expr as $val) {
+                $sql .= ',' . $driver->deflate($val, $args);
+            }
+            $sql = ltrim($sql, ',');
+        } elseif ($this->expr instanceof ToSqlInterface ) {
+            $sql = $driver->deflate($this->expr, $args);
+        } else {
+            throw new InvalidArgumentException('Invalid expr type');
         }
-        return '(' . ltrim($sql, ',') . ')';
+        return '(' . $sql . ')';
     }
 }
 

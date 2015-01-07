@@ -109,6 +109,27 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         is('SELECT id, name, phone, address FROM users AS u WHERE name = :name FOR UPDATE', $sql);
     }
 
+    public function testInExprWithQuery() {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+
+        $subquery = new SelectQuery;
+        $subquery->select(array('product_id'))
+            ->from('product_category_junction')
+            ->where()
+                ->equal('category_id', 2);
+
+        $productQuery = new SelectQuery;
+        ok($productQuery);
+        $productQuery->select(array('id', 'name'))
+            ->from('products', 'p')
+            ->where()
+                ->in('id', $subquery)
+            ;
+        $sql = $productQuery->toSql($driver, $args);
+        is('SELECT id, name FROM products AS p WHERE id IN (SELECT product_id FROM product_category_junction WHERE category_id = 2)', $sql);
+    }
+
     public function testSelectIndexHint() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
