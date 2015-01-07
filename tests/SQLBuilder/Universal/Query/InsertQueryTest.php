@@ -18,9 +18,9 @@ class InsertQueryTest extends PHPUnit_Framework_TestCase
         $query->insert([ 'name' => 'John', 'confirmed' => true ])->into('users');
         $query->returning('id');
         $sql = $query->toSql($driver, $args);
-        is('INSERT LOW_PRIORITY IGNORE INTO users (name,confirmed) VALUES (:p1,:p2)', $sql);
-        is('John', $args[':p1'] ); 
-        is(true, $args[':p2'] ); 
+        is('INSERT LOW_PRIORITY IGNORE INTO users (name,confirmed) VALUES (:name,:confirmed)', $sql);
+        is('John', $args[':name'] ); 
+        is(true, $args[':confirmed'] ); 
     }
 }
 

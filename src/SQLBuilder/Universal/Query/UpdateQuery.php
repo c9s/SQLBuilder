@@ -79,9 +79,6 @@ class UpdateQuery implements ToSqlInterface
 
     protected $partitions;
 
-
-    static public $BindValues = TRUE;
-
     public function __construct()
     {
         $this->where = new Conditions;
@@ -239,13 +236,10 @@ class UpdateQuery implements ToSqlInterface
 
 
     public function buildSetClause(BaseDriver $driver, ArgumentArray $args) {
-        $varCnt = 1;
         $setClauses = array();
         foreach($this->sets as $col => $val) {
-            // use static $BindValues and check variable types
-            if (static::$BindValues && (!$val instanceof Bind && !$val instanceof ParamMarker)) {
-                // XXX: we should prefer column names than by the incremental index.
-                $setClauses[] = $driver->quoteColumn($col) . " = " . $driver->deflate(new Bind("p" . $varCnt++,$val));
+            if (!$val instanceof Bind && !$val instanceof ParamMarker) {
+                $setClauses[] = $driver->quoteColumn($col) . " = " . $driver->deflate(new Bind($col, $val));
             } else {
                 $setClauses[] = $driver->quoteColumn($col) . " = " . $driver->deflate($val);
             }
