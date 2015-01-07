@@ -5,6 +5,7 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\Universal\Syntax\ColumnNames;
 
 class Constraint implements ToSqlInterface
 {
@@ -12,7 +13,7 @@ class Constraint implements ToSqlInterface
 
     protected $type;
 
-    protected $columns = array();
+    protected $columns;
 
     protected $indexName;
 
@@ -29,7 +30,7 @@ class Constraint implements ToSqlInterface
     public function primaryKey($columns) 
     {
         $this->type = 'PRIMARY KEY';
-        $this->columns = (array) $columns;
+        $this->columns = new ColumnNames($columns);
         return $this;
     }
 
@@ -40,7 +41,7 @@ class Constraint implements ToSqlInterface
     public function foreignKey($columns) 
     {
         $this->type = 'FOREIGN KEY';
-        $this->columns = (array) $columns;
+        $this->columns = new ColumnNames($columns);
         return $this;
     }
 
@@ -51,7 +52,7 @@ class Constraint implements ToSqlInterface
     public function unique($columns)
     {
         $this->type = 'UNIQUE';
-        $this->columns = $columns;
+        $this->columns = new ColumnNames($columns);
         return $this;
     }
 
@@ -108,11 +109,7 @@ class Constraint implements ToSqlInterface
             }
         }
 
-        $sql .= ' (';
-        foreach($this->columns as $col) {
-            $sql .= $driver->quoteIdentifier($col) . ',';
-        }
-        $sql = rtrim($sql,',') . ')';
+        $sql .= ' (' . $this->columns->toSql($driver, $args) . ')';
 
         if ($this->references) {
             $sql .= ' ' . $this->references->toSql($driver, $args);

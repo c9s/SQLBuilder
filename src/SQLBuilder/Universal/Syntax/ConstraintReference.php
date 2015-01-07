@@ -5,6 +5,7 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\Universal\Syntax\ColumnNames;
 
 /**
 
@@ -34,7 +35,7 @@ class ConstraintReference implements ToSqlInterface
     {
         $this->tableName = $tableName;
         if ($columns) {
-            $this->columns = $columns;
+            $this->columns = new ColumnNames($columns);
         }
     }
 
@@ -63,11 +64,7 @@ class ConstraintReference implements ToSqlInterface
     {
         $sql = 'REFERENCES ' . $driver->quoteIdentifier($this->tableName);
 
-        $sql .= ' (';
-        foreach($this->columns as $col) {
-            $sql .= $driver->quoteIdentifier($col) . ',';
-        }
-        $sql = rtrim($sql,',') . ')';
+        $sql .= ' (' . $this->columns->toSql($driver, $args) . ')';
 
         if ($this->onUpdateAction) {
             $sql .= ' ON UPDATE ' . $this->onUpdateAction;
