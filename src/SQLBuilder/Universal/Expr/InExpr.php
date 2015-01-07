@@ -12,10 +12,10 @@ class InExpr implements ToSqlInterface {
 
     public $listExpr;
 
-    public function __construct($exprStr, array $set)
+    public function __construct($exprStr, $expr)
     {
         $this->exprStr = $exprStr;
-        $this->listExpr = new ListExpr($set);
+        $this->listExpr = new ListExpr($expr);
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {

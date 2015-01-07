@@ -153,9 +153,9 @@ class Conditions implements ToSqlInterface, Countable
     /**
      * http://dev.mysql.com/doc/refman/5.7/en/comparison-operators.html#function_in
      */
-    public function in($exprStr, array $set)
+    public function in($exprStr, $expr)
     {
-        $this->appendExprObject(new InExpr($exprStr, $set));
+        $this->appendExprObject(new InExpr($exprStr, $expr));
         return $this;
     }
 

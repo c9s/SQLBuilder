@@ -5,6 +5,7 @@ use SQLBuilder\DataType\Unknown;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Bind;
+use SQLBuilder\ToSqlInterface;
 use Closure;
 use DateTime;
 use Exception;
