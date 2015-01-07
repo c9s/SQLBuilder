@@ -13,8 +13,36 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         return new MySQLDriver;
     }
 
+    public function setUp()
+    {
+        parent::setUp();
+
+        // Clean up
+        foreach(array('groups','authors') as $table) {
+            $dropQuery = new DropTableQuery($table);
+            $dropQuery->IfExists();
+            $this->assertQuery($dropQuery);
+        }
+    }
+
+    public function tearDown()
+    {
+        foreach(array('groups','authors') as $table) {
+            $dropQuery = new DropTableQuery($table);
+            $dropQuery->IfExists();
+            $this->assertQuery($dropQuery);
+        }
+    }
+
     public function testCreateTableQuery()
     {
+        $q = new CreateTableQuery('groups');
+        $q->column('id')->integer()
+            ->primary()
+            ->autoIncrement();
+        $q->engine('InnoDB');
+        $this->assertQuery($q);
+
         $q = new CreateTableQuery('users');
         $q->table('authors');
 
@@ -31,13 +59,24 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->column('types')->set('student', 'teacher');
         $q->column('remark')->text();
 
+        $q->column('group_id')->integer();
+
+        // create table t1 (
+        //      id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+        //      product_id integer unsigned,  constraint `fk_product_id` 
+        //      FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) );
+        $q->constraint('fk_group_id')
+            ->foreignKey('group_id')
+                ->references('groups', 'id');
+
+        $q->engine('InnoDB');
+
         ok($q);
 
         $dropQuery = new DropTableQuery('authors');
         $dropQuery->IfExists();
         $this->assertSql('DROP TABLE IF EXISTS `authors`', $dropQuery);
         $this->assertQuery($dropQuery);
-        $this->assertQuery($q);
 
         $this->assertSql('CREATE TABLE `authors`(
 `id` integer PRIMARY KEY AUTO_INCREMENT,
@@ -48,11 +87,12 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 `email` varchar(128) NOT NULL,
 `confirmed` boolean DEFAULT FALSE,
 `types` set(\'student\', \'teacher\'),
-`remark` text
-)', $q);
-
-
-        $this->assertQuery($dropQuery);
+`remark` text,
+`group_id` integer,
+CONSTRAINT `fk_group_id` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`)
+) ENGINE=InnoDB', $q);
+        $this->assertQuery($q);
+        $this->assertQuery($dropQuery); // drop again to test the if exists.
 
     }
 }
