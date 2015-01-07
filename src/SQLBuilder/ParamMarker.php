@@ -9,18 +9,18 @@ namespace SQLBuilder;
  */
 class ParamMarker
 {
-    public $name;
+    public $value;
 
-    public function __construct($name) {
-        $this->name = $name;
+    public function __construct($value = NULL) {
+        $this->value = $value;
     }
 
     public function getName() {
-        return $this->name;
+        return '?';
     }
 
     public function getMark() {
-        return ':' . $this->name;
+        return '?';
     }
 }
 
