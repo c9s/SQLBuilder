@@ -167,6 +167,24 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
 
         $sql = $query->toSql($driver, $args);
         is('SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p ON (p.user_id = u.id) LEFT JOIN ratings AS r ON (r.user_id = u.id)', $sql);
+        return $query;
     }
+
+
+    /**
+     * @depends testMultipleJoin
+     */
+    public function testClone($query)
+    {
+        $newQuery = clone $query;
+        ok($newQuery);
+
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $sql = $query->toSql($driver, $args);
+        is('SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p ON (p.user_id = u.id) LEFT JOIN ratings AS r ON (r.user_id = u.id)', $sql);
+    }
+
+
 }
 
