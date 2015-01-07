@@ -7,6 +7,7 @@ use SQLBuilder\Driver\MySQLDriver;
 class MySQLCreateTableQueryTest extends PDOQueryTestCase
 {
     public $driverType = 'MySQL';
+
     // public $schema = array( 'tests/schema/member_mysql.sql' );
 
     public function createDriver() {
@@ -67,7 +68,10 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         //      FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) );
         $q->constraint('fk_group_id')
             ->foreignKey('group_id')
-                ->references('groups', 'id');
+                ->references('groups', 'id')
+                ->onDelete('CASCADE')
+                ->onUpdate('CASCADE')
+                ;
 
         $q->engine('InnoDB');
 
@@ -89,7 +93,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 `types` set(\'student\', \'teacher\'),
 `remark` text,
 `group_id` integer,
-CONSTRAINT `fk_group_id` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`)
+CONSTRAINT `fk_group_id` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB', $q);
         $this->assertQuery($q);
         $this->assertQuery($dropQuery); // drop again to test the if exists.
