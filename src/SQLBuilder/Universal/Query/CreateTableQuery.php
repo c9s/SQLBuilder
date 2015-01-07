@@ -9,6 +9,12 @@ use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\Universal\Syntax\Constraint;
 
+
+/**
+ * MySQL Create Table Syntax
+ *
+ * @see http://dev.mysql.com/doc/refman/5.0/en/create-table.html
+ */
 class CreateTableQuery implements ToSqlInterface
 {
     protected $tableName;

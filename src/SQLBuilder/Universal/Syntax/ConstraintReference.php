@@ -17,6 +17,8 @@ MySQL Constraint Syntax
     [ON UPDATE reference_option]
     reference_option:
         RESTRICT | CASCADE | SET NULL | NO ACTION
+
+  @see http://dev.mysql.com/doc/refman/5.0/en/create-table-foreign-keys.html
  */
 class ConstraintReference implements ToSqlInterface
 {
