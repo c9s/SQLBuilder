@@ -21,7 +21,7 @@ class Constraint implements ToSqlInterface
     protected $references;
 
 
-    public function __construct($name)
+    public function __construct($name = NULL)
     {
         $this->name = $name;
     }
@@ -89,7 +89,14 @@ class Constraint implements ToSqlInterface
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
-        $sql = 'CONSTRAINT ' . $driver->quoteIdentifier($this->name) . ' ' . $this->type;
+        $sql = 'CONSTRAINT';
+        
+        // constrain symbol is optional but only supported by MySQL
+        if ($driver instanceof MySQLDriver && $this->name) {
+            $sql .= ' ' . $driver->quoteIdentifier($this->name);
+        }
+
+        $sql .= ' ' . $this->type;
 
         // MySQL supports custom index name and index type
         if ($driver instanceof MySQLDriver) {
