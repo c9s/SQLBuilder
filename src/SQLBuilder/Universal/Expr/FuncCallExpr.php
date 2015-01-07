@@ -16,7 +16,6 @@ use LogicException;
  */
 class FuncCallExpr implements ToSqlInterface
 {
-
     public $funcName;
 
     public function __construct($funcName, array $args = array())
