@@ -11,8 +11,6 @@ class AlterTableAddConstraint implements ToSqlInterface
 {
     use KeyTrait;
 
-    protected $action;
-
     protected $constraint;
 
     public function constraint($symbol)
