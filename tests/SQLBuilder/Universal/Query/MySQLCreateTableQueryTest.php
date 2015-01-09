@@ -73,6 +73,8 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
                 ->onUpdate('CASCADE')
                 ;
 
+        $q->uniqueKey('email');
+
         $q->engine('InnoDB');
 
         ok($q);
@@ -93,7 +95,8 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 `types` set(\'student\', \'teacher\'),
 `remark` text,
 `group_id` integer,
-CONSTRAINT `fk_group_id` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+CONSTRAINT `fk_group_id` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+UNIQUE KEY (`email`)
 ) ENGINE=InnoDB', $q);
         $this->assertQuery($q);
         $this->assertQuery($dropQuery); // drop again to test the if exists.

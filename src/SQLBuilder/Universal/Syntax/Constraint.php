@@ -23,13 +23,12 @@ class Constraint implements ToSqlInterface
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
-        $sql = 'CONSTRAINT';
-        
+        $sql = '';
         // constrain symbol is optional but only supported by MySQL
         if ($this->symbol) {
-            $sql .= ' ' . $driver->quoteIdentifier($this->symbol);
+            $sql .= 'CONSTRAINT ' . $driver->quoteIdentifier($this->symbol) . ' ';
         }
-        $sql .= ' ' . $this->buildKeyClause($driver, $args);
+        $sql .= $this->buildKeyClause($driver, $args);
         return $sql;
     }
 }

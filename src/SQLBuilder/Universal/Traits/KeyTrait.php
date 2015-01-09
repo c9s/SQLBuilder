@@ -45,7 +45,7 @@ trait KeyTrait {
      */
     public function uniqueKey($columns)
     {
-        $this->keyType = 'UNIQUE';
+        $this->keyType = 'UNIQUE KEY';
         $this->keyColumns = new ColumnNames($columns);
         return $this;
     }

@@ -47,8 +47,30 @@ class CreateTableQuery implements ToSqlInterface
         return $col;
     }
 
-    public function constraint($name) {
+    public function constraint($name)
+    {
         $this->constraints[] = $constraint = new Constraint($name, $this);
+        return $constraint;
+    }
+
+    public function foreignKey($name)
+    {
+        $this->constraints[] = $constraint = new Constraint(NULL, $this);
+        $constraint->foreignKey($name);
+        return $constraint;
+    }
+
+    public function primaryKey($name)
+    {
+        $this->constraints[] = $constraint = new Constraint(NULL, $this);
+        $constraint->primaryKey($name);
+        return $constraint;
+    }
+
+    public function uniqueKey($name)
+    {
+        $this->constraints[] = $constraint = new Constraint(NULL, $this);
+        $constraint->uniqueKey($name);
         return $constraint;
     }
 
