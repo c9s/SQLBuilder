@@ -101,6 +101,10 @@ abstract class PDOQueryTestCase extends QueryTestCase
     public $driverType = 'MySQL';
 
 
+    public function getConnection() {
+        return $this->pdo;
+    }
+
     public function noPDOError()
     {
         $err = $this->pdo->errorInfo();
