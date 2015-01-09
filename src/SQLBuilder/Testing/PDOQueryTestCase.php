@@ -8,9 +8,13 @@ use PDO;
 use Exception;
 
 /**
+ * @codeCoverageIgnore
+ *
  * @package SQLBuilder
  *
  * @class PHPUnit_PDO_TestCase
+ *
+ * @cover
  *
  * @author Yo-An Lin <yoanlin93@gmail.com>
  *

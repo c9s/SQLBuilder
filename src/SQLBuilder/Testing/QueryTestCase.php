@@ -6,6 +6,9 @@ use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
 
+/**
+ * @codeCoverageIgnore
+ */
 abstract class QueryTestCase extends PHPUnit_Framework_TestCase
 {
     public $currentDriver;
