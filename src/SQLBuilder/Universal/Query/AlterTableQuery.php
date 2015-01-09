@@ -10,7 +10,9 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
+use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\Universal\Syntax\AlterTableAddConstraint;
+use SQLBuilder\Universal\Syntax\AlterTableRenameColumn;
 
 class AlterTableQuery implements ToSqlInterface
 {
@@ -29,13 +31,15 @@ class AlterTableQuery implements ToSqlInterface
         return $spec;
     }
 
-    public function changeColumn() {
-
+    public function renameColumn($fromColumn, $toColumn)
+    {
+        $this->specs[] = $spec = new AlterTableRenameColumn($fromColumn, $toColumn);
+        return $spec;
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
-        $sql = 'ALTER TABLE ' . $driver->quoteIdentifier($this->table);
+        $sql = 'ALTER TABLE ' . $driver->quoteIdentifier($this->table) . ' ';
         $alterSpecSqls = array();
 
         foreach($this->specs as $spec) {
@@ -44,6 +48,4 @@ class AlterTableQuery implements ToSqlInterface
         $sql .= join(', ', $alterSpecSqls);
         return $sql;
     }
-
-
 }

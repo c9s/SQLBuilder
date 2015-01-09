@@ -109,7 +109,7 @@ class Column implements ToSqlInterface {
     /**
      * @var string $name column name (id)
      */
-    public function __construct($name)
+    public function __construct($name, $type = NULL)
     {
         $this->supportedAttributes = array(
             'autoIncrement' => self::ATTR_FLAG,
@@ -129,6 +129,9 @@ class Column implements ToSqlInterface {
             'primaryField' => self::ATTR_FLAG,
         );
         $this->name = $name;
+        if ($type) {
+            $this->type = $type;
+        }
     }
 
 
@@ -593,6 +596,10 @@ class Column implements ToSqlInterface {
         return $this;
     }
 
+
+    public function getType() {
+        return $this->type;
+    }
 
     public function getName() {
         return $this->name;

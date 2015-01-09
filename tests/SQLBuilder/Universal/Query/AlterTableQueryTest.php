@@ -5,6 +5,7 @@ use SQLBuilder\Universal\Query\AlterTableQuery;
 use SQLBuilder\Testing\PDOQueryTestCase;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\Universal\Syntax\Column;
 
 class AlterTableQueryTest extends PDOQueryTestCase
 {
@@ -46,8 +47,6 @@ class AlterTableQueryTest extends PDOQueryTestCase
         }
     }
 
-
-
     public function testAddForeignKey()
     {
         $driver = new MySQLDriver;
@@ -64,7 +63,37 @@ class AlterTableQueryTest extends PDOQueryTestCase
 
         $sql = $q->toSql($driver, $args);
         $this->assertQuery($q);
-        // is('', $sql);
+        is('ALTER TABLE `products` ADD FOREIGN KEY (`created_by`) REFERENCES `users` (`id`), ADD FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`)', $sql);
     }
+
+
+    public function testRenameColumn()
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+        $q = new AlterTableQuery('products');
+        $q->renameColumn('name', new Column('title', 'varchar(30)'));
+
+        $sql = $q->toSql($driver, $args);
+        $this->assertQuery($q);
+        is('ALTER TABLE `products` CHANGE COLUMN `name` `title` varchar(30)', $sql);
+    }
+
+
+    public function testRenameColumnFromColumnClass()
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+        $q = new AlterTableQuery('products');
+        $q->renameColumn(new Column('name'), new Column('title', 'varchar(30)'));
+
+        $sql = $q->toSql($driver, $args);
+        $this->assertQuery($q);
+        is('ALTER TABLE `products` CHANGE COLUMN `name` `title` varchar(30)', $sql);
+    }
+
+
+
+
 }
 
