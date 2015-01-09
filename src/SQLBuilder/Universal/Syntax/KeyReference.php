@@ -21,7 +21,7 @@ MySQL Constraint Syntax
 
   @see http://dev.mysql.com/doc/refman/5.0/en/create-table-foreign-keys.html
  */
-class ConstraintReference implements ToSqlInterface
+class KeyReference implements ToSqlInterface
 {
     protected $tableName;
 
