@@ -2,7 +2,7 @@
 namespace SQLBuilder\Driver;
 use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Driver\PDOPgSQLDriver;
-use SQLBuilder\Driver\PDOSqliteDriver;
+use SQLBuilder\Driver\PDOSQLiteDriver;
 use PDO;
 
 class PDODriverFactory
@@ -18,7 +18,7 @@ class PDODriverFactory
                 return new PDOPgSQLDriver($pdo);
                 break;
             case "sqlite":
-                return new PDOSqliteDriver($pdo);
+                return new PDOSQLiteDriver($pdo);
                 break;
         }
     }
