@@ -20,15 +20,12 @@ class AlterTableRenameTable implements ToSqlInterface
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
-        $sql = 'RENAME ';
-
         if ($driver instanceof SQLiteDriver) {
             throw new UnsupportedDriverException('sqlite driver is not supported.');
         }
 
         // the 'toTable' must be a type of Column, we need at least column type to rename.
-        $sql .= ' TO ' . $driver->quoteIdentifier($this->toTable);
-        return $sql;
+        return 'RENAME TO ' . $driver->quoteIdentifier($this->toTable);
     }
 }
 

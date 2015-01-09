@@ -74,7 +74,7 @@ class Column implements ToSqlInterface {
      */
     protected $decimals;
 
-    protected $type = 'text'; 
+    protected $type;
 
     protected $isa = 'str';
 
@@ -631,26 +631,21 @@ class Column implements ToSqlInterface {
 
     public function buildSqlMySQL(BaseDriver $driver, ArgumentArray $args)
     {
-
         $isa  = $this->isa ?: 'str';
-        $type = $this->type;
-        if ( ! $type && $isa == 'str' ) {
-            $type = 'text'; // set the default type to text.
-        }
-
-
-        // format length to SQL
-        if ($this->length && $this->decimals) {
-            $type .= '(' . $this->length . ',' . $this->decimals . ')';
-        } elseif ($this->length) {
-            $type .= '(' . $this->length . ')';
-        }
 
         $sql = '';
         $sql .= $driver->quoteIdentifier($this->name);
 
+        // format length to SQL
+        if ($this->type) {
+            $sql .= ' ' . $this->type;
+            if ($this->length && $this->decimals) {
+                $sql .= '(' . $this->length . ',' . $this->decimals . ')';
+            } elseif ($this->length) {
+                $sql .= '(' . $this->length . ')';
+            }
+        }
 
-        $sql .= ' ' . $type;
 
         if ($this->unsigned) {
             $sql .= ' UNSIGNED';

@@ -21,11 +21,17 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $this->tearDown();
 
         $createProductTable = new CreateTableQuery('products');
+
         $createProductTable->column('id')->integer()
             ->primary()
             ->autoIncrement();
+
         $createProductTable->column('name')->varchar(32);
+
+        $createProductTable->column('description')->text();
+
         $createProductTable->column('created_by')->int();
+
         $createProductTable->column('updated_by')->int();
 
         $this->assertQuery($createProductTable);
@@ -47,6 +53,40 @@ class AlterTableQueryTest extends PDOQueryTestCase
         }
     }
 
+    public function testModifyColumnNullAttribute()
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+
+        $column = new Column('name', 'text');
+        $column->null();
+
+        $q = new AlterTableQuery('products');
+        $q->modifyColumn($column);
+
+        $sql = $q->toSql($driver, $args);
+        $this->assertQuery($q);
+        is('ALTER TABLE `products` MODIFY COLUMN `name` text NULL', $sql);
+    }
+
+    public function testModifyColumnDefaultAttribute()
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+
+        $column = new Column('name', 'varchar(30)');
+        $column->default('John');
+        $column->null();
+
+        $q = new AlterTableQuery('products');
+        $q->modifyColumn($column);
+
+        $sql = $q->toSql($driver, $args);
+        $this->assertQuery($q);
+        is('ALTER TABLE `products` MODIFY COLUMN `name` varchar(30) NULL DEFAULT \'John\'', $sql);
+    }
+
+
 
     public function testRenameTable()
     {
@@ -56,14 +96,14 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $q->rename('products_new');
         $sql = $q->toSql($driver, $args);
         $this->assertQuery($q);
-        is('ALTER TABLE `products` RENAME  TO `products_new`', $sql);
+        is('ALTER TABLE `products` RENAME TO `products_new`', $sql);
 
 
         $q = new AlterTableQuery('products_new');
         $q->rename('products');
         $sql = $q->toSql($driver, $args);
         $this->assertQuery($q);
-        is('ALTER TABLE `products_new` RENAME  TO `products`', $sql);
+        is('ALTER TABLE `products_new` RENAME TO `products`', $sql);
     }
 
 
