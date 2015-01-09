@@ -48,6 +48,37 @@ class CreateTableQuery implements ToSqlInterface
         return $col;
     }
 
+
+    /**
+    Build reference
+
+    track(
+        FOREIGN KEY(trackartist) REFERENCES artist(artistid)
+        artist_id INTEGER REFERENCES artist
+    )
+
+    MySQL Syntax:
+    
+        reference_definition:
+
+        REFERENCES tbl_name (index_col_name,...)
+            [MATCH FULL | MATCH PARTIAL | MATCH SIMPLE]
+            [ON DELETE reference_option]
+            [ON UPDATE reference_option]
+
+        reference_option:
+            RESTRICT | CASCADE | SET NULL | NO ACTION
+
+    A reference example:
+
+    PRIMARY KEY (`idEmployee`) ,
+    CONSTRAINT `fkEmployee_Addresses`
+    FOREIGN KEY `fkEmployee_Addresses` (`idAddresses`)
+    REFERENCES `schema`.`Addresses` (`idAddresses`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+
+    */
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         $sql = "CREATE TABLE " . $driver->quoteIdentifier($this->tableName);

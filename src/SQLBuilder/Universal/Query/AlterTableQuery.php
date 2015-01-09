@@ -14,6 +14,7 @@ use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\Universal\Syntax\AlterTableAddConstraint;
 use SQLBuilder\Universal\Syntax\AlterTableRenameColumn;
 use SQLBuilder\Universal\Syntax\AlterTableRenameTable;
+use SQLBuilder\Universal\Syntax\AlterTableModifyColumn;
 
 class AlterTableQuery implements ToSqlInterface
 {
@@ -32,7 +33,12 @@ class AlterTableQuery implements ToSqlInterface
         return $spec;
     }
 
-    public function renameColumn($fromColumn, $toColumn)
+    public function modifyColumn(Column $column) {
+        $this->specs[] = $spec = new AlterTableModifyColumn($column);
+        return $spec;
+    }
+
+    public function renameColumn($fromColumn, Column $toColumn)
     {
         $this->specs[] = $spec = new AlterTableRenameColumn($fromColumn, $toColumn);
         return $spec;

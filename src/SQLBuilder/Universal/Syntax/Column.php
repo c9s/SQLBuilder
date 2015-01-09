@@ -78,7 +78,7 @@ class Column implements ToSqlInterface {
 
     protected $isa = 'str';
 
-
+    protected $null = NULL;
 
     /**
      * @var array is only used when isa = enum
@@ -115,9 +115,6 @@ class Column implements ToSqlInterface {
             'autoIncrement' => self::ATTR_FLAG,
             'immutable'     => self::ATTR_FLAG,
             'unique'        => self::ATTR_FLAG, /* unique, should support by SQL syntax */
-            'null'          => self::ATTR_FLAG,
-            'notNull'       => self::ATTR_FLAG,
-            'required'      => self::ATTR_FLAG,
             'timezone'      => self::ATTR_FLAG,
 
             'comment'  => self::ATTR_STRING,
@@ -133,6 +130,32 @@ class Column implements ToSqlInterface {
             $this->type = $type;
         }
     }
+
+    public function null()
+    {
+        $this->null = TRUE;
+        return $this;
+    }
+
+    public function isNull()
+    {
+        $this->null = TRUE;
+        return $this;
+    }
+
+    public function isNotNull()
+    {
+        $this->null = FALSE;
+        return $this;
+    }
+
+    public function notNull()
+    {
+        $this->null = FALSE;
+        return $this;
+    }
+
+
 
 
     public function name($name) 
@@ -246,7 +269,7 @@ class Column implements ToSqlInterface {
      * we should handle exceptions when number is out-of-range:
      * @link http://dev.mysql.com/doc/refman/5.0/en/out-of-range-and-overflow.html
      */
-    public function double($length = null, $decimals = null)
+    public function double($length = NULL, $decimals = NULL)
     {
         $this->type = 'double';
         $this->isa = 'double';
@@ -256,7 +279,7 @@ class Column implements ToSqlInterface {
         return $this;
     }
 
-    public function float($length = null ,$decimals = null)
+    public function float($length = NULL ,$decimals = NULL)
     {
         $this->type = 'float';
         $this->isa  = 'float';
@@ -477,7 +500,7 @@ class Column implements ToSqlInterface {
         return $this;
     }
 
-    public function index($indexName = null) {
+    public function index($indexName = NULL) {
         $this->setAttribute('index', $indexName ?: true);
         return $this;
     }
@@ -574,7 +597,7 @@ class Column implements ToSqlInterface {
         }
 
         // save unknown attribute by default
-        $this->attributes[ $method ] = ! empty($args) ? $args[0] : null;
+        $this->attributes[ $method ] = ! empty($args) ? $args[0] : NULL;
         return $this;
     }
 
@@ -606,39 +629,7 @@ class Column implements ToSqlInterface {
     }
 
 
-
-
-    /**
-    Build reference
-
-    track(
-        FOREIGN KEY(trackartist) REFERENCES artist(artistid)
-        artist_id INTEGER REFERENCES artist
-    )
-
-    MySQL Syntax:
-    
-        reference_definition:
-
-        REFERENCES tbl_name (index_col_name,...)
-            [MATCH FULL | MATCH PARTIAL | MATCH SIMPLE]
-            [ON DELETE reference_option]
-            [ON UPDATE reference_option]
-
-        reference_option:
-            RESTRICT | CASCADE | SET NULL | NO ACTION
-
-    A reference example:
-
-    PRIMARY KEY (`idEmployee`) ,
-    CONSTRAINT `fkEmployee_Addresses`
-    FOREIGN KEY `fkEmployee_Addresses` (`idAddresses`)
-    REFERENCES `schema`.`Addresses` (`idAddresses`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-
-    */
-    public function buildSqlMySQl(BaseDriver $driver, ArgumentArray $args)
+    public function buildSqlMySQL(BaseDriver $driver, ArgumentArray $args)
     {
 
         $isa  = $this->isa ?: 'str';
@@ -683,15 +674,16 @@ class Column implements ToSqlInterface {
 
         }
 
-
-        if ($this->required || $this->notNull ) {
-            $sql .= ' NOT NULL';
-        } elseif ($this->null) {
-            $sql .= ' NULL';
+        if (!is_null($this->null)) {
+            if ($this->null === FALSE) {
+                $sql .= ' NOT NULL';
+            } elseif ($this->null === TRUE) {
+                $sql .= ' NULL';
+            }
         }
 
         // Build default value
-        if (($default = $this->default) !== null && ! is_callable($this->default )) { 
+        if (($default = $this->default) !== NULL && ! is_callable($this->default )) { 
             // raw sql default value
 
             if ($default instanceof Raw) {
@@ -725,29 +717,9 @@ class Column implements ToSqlInterface {
             $sql .= ' UNIQUE';
         }
 
-
-
         if ($this->comment) {
             $sql .= ' COMMENT ' . $driver->defalte($this->comment);
         }
-
-        /*
-        foreach( $schema->relations as $rel ) {
-            switch( $rel['type'] ) {
-            case SchemaDeclare::belongs_to:
-            case SchemaDeclare::has_many:
-            case SchemaDeclare::has_one:
-                if( $name != 'id' && $rel['self_column'] == $name ) 
-                {
-                    $fSchema = new $rel['foreign_schema'];
-                    $fColumn = $rel['foreign_column'];
-                    $fc = $fSchema->columns[$fColumn];
-                    $sql .= ' REFERENCES ' . $fSchema->getTable() . '(' . $fColumn . ')';
-                }
-                break;
-            }
-        }
-         */
         return $sql;
     }
 
@@ -755,7 +727,7 @@ class Column implements ToSqlInterface {
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         if ($driver instanceof MySQLDriver) {
-            return $this->buildSqlMySQl($driver, $args);
+            return $this->buildSqlMySQL($driver, $args);
         } else {
             throw new UnsupportedDriverException;
         }
