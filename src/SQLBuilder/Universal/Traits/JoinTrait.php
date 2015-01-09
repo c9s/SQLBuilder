@@ -10,6 +10,8 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Universal\Syntax\Join;
+use SQLBuilder\Universal\Syntax\LeftJoin;
+use SQLBuilder\Universal\Syntax\RightJoin;
 use SQLBuilder\Universal\Syntax\IndexHint;
 
 
@@ -18,6 +20,18 @@ trait JoinTrait {
     protected $joins = array();
 
     protected $indexHintOn = array();
+
+    public function rightJoin($table, $alias = NULL) {
+        $join = new RightJoin($table, $alias);
+        $this->joins[] = $join;
+        return $join;
+    }
+
+    public function leftJoin($table, $alias = NULL) {
+        $join = new LeftJoin($table, $alias);
+        $this->joins[] = $join;
+        return $join;
+    }
 
     public function join($table, $alias = NULL) {
         $join = new Join($table, $alias);
