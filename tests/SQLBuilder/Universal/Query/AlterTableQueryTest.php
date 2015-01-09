@@ -40,12 +40,32 @@ class AlterTableQueryTest extends PDOQueryTestCase
     public function tearDown()
     {
         parent::tearDown();
-        foreach(array('products','users') as $table) {
+        foreach(array('products','users','products_new') as $table) {
             $dropQuery = new DropTableQuery($table);
             $dropQuery->IfExists();
             $this->assertQuery($dropQuery);
         }
     }
+
+
+    public function testRenameTable()
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+        $q = new AlterTableQuery('products');
+        $q->rename('products_new');
+        $sql = $q->toSql($driver, $args);
+        $this->assertQuery($q);
+        is('ALTER TABLE `products` RENAME  TO `products_new`', $sql);
+
+
+        $q = new AlterTableQuery('products_new');
+        $q->rename('products');
+        $sql = $q->toSql($driver, $args);
+        $this->assertQuery($q);
+        is('ALTER TABLE `products_new` RENAME  TO `products`', $sql);
+    }
+
 
     public function testAddForeignKey()
     {

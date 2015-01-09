@@ -12,16 +12,9 @@ use SQLBuilder\Exception\UnsupportedDriverException;
 
 class AlterTableRenameTable implements ToSqlInterface
 {
-    protected $fromTable;
-
     protected $toTable;
 
-    public function __construct($fromTable, $toTable) {
-        $this->fromTable = $fromTable;
-        $this->toTable = $toTable;
-    }
-
-    public function changeTo(Column $toTable) {
+    public function __construct($toTable) {
         $this->toTable = $toTable;
     }
 
@@ -33,14 +26,8 @@ class AlterTableRenameTable implements ToSqlInterface
             throw new UnsupportedDriverException('sqlite driver is not supported.');
         }
 
-        if (is_string($this->fromTable)) {
-            $sql .= $driver->quoteIdentifier($this->fromTable);
-        } elseif ($this->fromTable instanceof Column) {
-            $sql .= $driver->quoteIdentifier($this->fromTable->getName());
-        }
-
         // the 'toTable' must be a type of Column, we need at least column type to rename.
-        $sql .= ' TO ' . $driver->quoteIdentifier($this->toTable->getName()) . ' ' . $this->toTable->getType();
+        $sql .= ' TO ' . $driver->quoteIdentifier($this->toTable);
         return $sql;
     }
 }
