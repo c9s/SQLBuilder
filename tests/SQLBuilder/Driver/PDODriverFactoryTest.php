@@ -15,7 +15,7 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         return array(
             array('mysql'),
             array('pgsql'),
-            // array('sqlite'),
+            array('sqlite'),
         );
     }
 

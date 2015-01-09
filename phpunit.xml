@@ -17,6 +17,8 @@
     <!--
     <env name="PGSQL_DB" value="sqlbuilder_test"/>
     -->
+
+    <env name="SQLITE_DSN"   value="sqlite:dbname=sqlbuilder.sqlite"/>
   </php>
 
   <testsuites>
