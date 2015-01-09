@@ -7,9 +7,11 @@ use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Universal\Traits\KeyTrait;
 use SQLBuilder\ArgumentArray;
 
-class AlterSpecification implements ToSqlInterface
+class AlterTableAddConstraint implements ToSqlInterface
 {
     use KeyTrait;
+
+    protected $action;
 
     protected $constraint;
 

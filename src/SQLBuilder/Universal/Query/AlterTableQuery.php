@@ -10,7 +10,7 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
-use SQLBuilder\Universal\Syntax\AlterSpecification;
+use SQLBuilder\Universal\Syntax\AlterTableAddConstraint;
 
 class AlterTableQuery implements ToSqlInterface
 {
@@ -25,8 +25,12 @@ class AlterTableQuery implements ToSqlInterface
 
     public function add()
     {
-        $this->specs[] = $spec = new AlterSpecification;
+        $this->specs[] = $spec = new AlterTableAddConstraint;
         return $spec;
+    }
+
+    public function changeColumn() {
+
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
