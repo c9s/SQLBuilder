@@ -8,6 +8,7 @@ use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\Universal\Syntax\Constraint;
+use SQLBuilder\Universal\Traits\ConstraintTrait;
 
 
 /**
@@ -17,11 +18,11 @@ use SQLBuilder\Universal\Syntax\Constraint;
  */
 class CreateTableQuery implements ToSqlInterface
 {
+    use ConstraintTrait;
+
     protected $tableName;
 
     protected $engine;
-
-    protected $constraints = array();
 
     protected $columns = array();
 
@@ -47,33 +48,6 @@ class CreateTableQuery implements ToSqlInterface
         return $col;
     }
 
-    public function constraint($name)
-    {
-        $this->constraints[] = $constraint = new Constraint($name, $this);
-        return $constraint;
-    }
-
-    public function foreignKey($name)
-    {
-        $this->constraints[] = $constraint = new Constraint(NULL, $this);
-        $constraint->foreignKey($name);
-        return $constraint;
-    }
-
-    public function primaryKey($name)
-    {
-        $this->constraints[] = $constraint = new Constraint(NULL, $this);
-        $constraint->primaryKey($name);
-        return $constraint;
-    }
-
-    public function uniqueKey($name)
-    {
-        $this->constraints[] = $constraint = new Constraint(NULL, $this);
-        $constraint->uniqueKey($name);
-        return $constraint;
-    }
-
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         $sql = "CREATE TABLE " . $driver->quoteIdentifier($this->tableName);
@@ -83,8 +57,8 @@ class CreateTableQuery implements ToSqlInterface
             $sql .= "\n" . $col->toSql($driver, $args) . ",";
         }
 
-        if ($this->constraints) {
-            foreach($this->constraints as $constraint) {
+        if ($constraints = $this->getConstraints()) {
+            foreach($constraints as $constraint) {
                 $sql .= "\n" . $constraint->toSql($driver, $args) . ",";
             }
         }
