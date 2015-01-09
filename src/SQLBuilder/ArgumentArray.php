@@ -7,8 +7,21 @@ use IteratorAggregate;
 
 class ArgumentArray implements ArrayAccess, IteratorAggregate
 {
+
+    /**
+     * @var array
+     *
+     *   {
+     *      :name => 'John',
+     *      :phone => 'Phone',
+     *   }
+     *
+     */
     public $args = array();
 
+    /**
+     * @var Bind[]
+     */
     public $vars = array();
 
     public function getIterator() {
@@ -39,8 +52,12 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
     {
         unset($this->args[$name]);
     }
-    
 
+    public function getArgs()
+    {
+        return $this->args;
+    }
+    
     public function toArray() {
         return $this->args;
     }
