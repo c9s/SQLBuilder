@@ -47,7 +47,7 @@ class UserSpecification {
         return $this->account;
     }
 
-    public function getPassword() {
+    public function getCurrentPassword() {
         return $this->password;
     }
 
@@ -85,7 +85,7 @@ class UserSpecification {
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         $sql = $this->getIdentitySql($driver, $args);
-        if ($pass = $this->getPassword()) {
+        if ($pass = $this->getCurrentPassword()) {
             $sql .= ' IDENTIFIED BY';
             if ($this->passwordByHash) {
                 $sql .= ' PASSWORD';

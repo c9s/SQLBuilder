@@ -5,6 +5,7 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use PHPUnit_Framework_TestCase;
 use PDO;
+use Exception;
 
 /**
  * @package SQLBuilder
@@ -111,20 +112,59 @@ abstract class PDOQueryTestCase extends QueryTestCase
         ok( $err[0] === '00000' );
     }
 
-    public function getDSN()
+    public function getCurrentDriverType() {
+        return strtoupper($this->driverType);
+    }
+
+    public function getCurrentDSN()
     {
         return $this->dsn ?: getenv( strtoupper($this->driverType) . '_DSN' );
     }
 
-    public function getUser()
+    public function getCurrentUser()
     {
         return $this->user ?: getenv( strtoupper($this->driverType) . '_USER');
     }
 
-    public function getPass()
+    public function getCurrentPass()
     {
         return $this->pass ?: getenv( strtoupper($this->driverType) . '_PASS');
     }
+
+
+    public function getDriverDSN($driverType)
+    {
+        return getenv(strtoupper($driverType) . '_DSN');
+    }
+
+    public function getDriverUser($driverType)
+    {
+        return getenv(strtoupper($driverType) . '_USER');
+    }
+
+    public function getDriverPass($driverType)
+    {
+        return getenv(strtoupper($driverType) . '_PASS');
+    }
+
+    public function createConnection($driverType) {
+        $dsn = $this->getDriverDSN($driverType);
+        $user = $this->getDriverUser($driverType);
+        $pass = $this->getDriverPass($driverType);
+        $options = $this->getOptions() ?: NULL;
+
+        if ($dsn && $user && $pass) {
+            return new PDO($dsn, $user, $pass, $options);
+        } elseif ($dsn && $user) {
+            return new PDO($dsn , $user);
+        } elseif ($dsn) {
+            return new PDO($dsn);
+        } else {
+            throw new Exception("Can't create connection for $driverType, missing configurations.");
+        }
+    }
+
+
 
     public function getOptions()
     {
@@ -136,6 +176,9 @@ abstract class PDOQueryTestCase extends QueryTestCase
         return $this->pdo;
     }
 
+
+
+
     public function setUp()
     {
         if (! extension_loaded('pdo')) {
@@ -146,19 +189,10 @@ abstract class PDOQueryTestCase extends QueryTestCase
 #          if( ! extension_loaded('pdo_pgsql') ) 
 #              return skip('pdo pgsql required');
 
-        if ( $this->getDSN() && $this->getUser() && $this->getPass() ) {
-            $this->pdo = new PDO(
-                $this->getDSN(),
-                $this->getUser(),
-                $this->getPass(),
-                $this->getOptions() ?: null
-            );
-        } elseif ( $this->getDSN() && $this->getUser() ) {
-            $this->pdo = new PDO( $this->getDSN(), $this->getUser() );
-        } elseif ( $this->getDSN() ) {
-            $this->pdo = new PDO( $this->getDSN() );
+        if ($driverType = $this->getCurrentDriverType()) {
+            $this->pdo = $this->createConnection($driverType);
         } else {
-            throw new Exception("Please define DSN for class: " . get_class($this) );
+            throw new Exception("Please define driver type for testing.");
         }
 
         if ( ! $this->pdo ) {
