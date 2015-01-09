@@ -9,7 +9,5 @@ use SQLBuilder\Driver\SQLiteDriver;
 
 class RightJoin extends Join implements ToSqlInterface
 {
-    public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return ' RIGHT' . parent::toSql($driver, $args);
-    }
+    protected $joinType = 'RIGHT';
 }
