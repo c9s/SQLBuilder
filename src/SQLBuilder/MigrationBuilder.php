@@ -3,6 +3,11 @@ namespace SQLBuilder;
 use SQLBuilder\Column;
 use RuntimeException;
 
+/**
+ * @codeCoverageIgnore
+ *
+ * DEPRECATED
+ */
 class MigrationBuilder 
 {
     public $driver;
