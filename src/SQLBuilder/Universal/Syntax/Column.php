@@ -82,12 +82,16 @@ class Column implements ToSqlInterface {
 
     /**
      * @var array is only used when isa = enum
+     *
+     * @MySQL
      */
     protected $enum;
 
 
     /**
      * @var array is only used when isa = set
+     *
+     * @MySQL
      */
     protected $set;
 
@@ -97,6 +101,7 @@ class Column implements ToSqlInterface {
      * @var array $supportedAttributes
      */
     protected $supportedAttributes = array();
+
 
     /**
      * @var array $attributes
@@ -121,9 +126,6 @@ class Column implements ToSqlInterface {
 
             /* data type: string, integer, DateTime, classname */
             'default' => self::ATTR_ANY,
-
-            /* primary field for CMS */
-            'primaryField' => self::ATTR_FLAG,
         );
         $this->name = $name;
         if ($type) {
