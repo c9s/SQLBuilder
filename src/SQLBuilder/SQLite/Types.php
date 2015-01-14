@@ -1,5 +1,5 @@
 <?php
-namespace SQLBuilder\MySQL;
+namespace SQLBuilder\SQLite;
 use Exception;
 
 /**
@@ -9,7 +9,7 @@ use Exception;
  */
 class Types
 {
-    static public $typemap = array(
+    public static $typemap = array(
         'tinyint'    => true,
         'smallint'   => true,
         'mediumint'  => true,
@@ -40,5 +40,6 @@ class Types
         'enum'       => true,
         'set'        => true,
     );
+    
 }
 
