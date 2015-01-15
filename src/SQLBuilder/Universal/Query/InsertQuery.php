@@ -11,6 +11,11 @@ use SQLBuilder\Universal\Syntax\Join;
 use SQLBuilder\Universal\Syntax\IndexHint;
 use SQLBuilder\Universal\Syntax\Paging;
 
+use SQLBuilder\Universal\Traits\OrderByTrait;
+use SQLBuilder\Universal\Traits\JoinTrait;
+use SQLBuilder\Universal\Traits\OptionTrait;
+use SQLBuilder\Universal\Traits\WhereTrait;
+
 use SQLBuilder\Raw;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
@@ -27,6 +32,8 @@ use InvalidArgumentException;
  */
 class InsertQuery
 {
+    use OptionTrait;
+
 
     /**
      * insert into table
@@ -36,8 +43,6 @@ class InsertQuery
     protected $intoTable;
 
     protected $values = array();
-
-    protected $options = array();
 
     protected $partitions;
 
@@ -56,26 +61,6 @@ class InsertQuery
         $this->values[] = $values;
         return $this;
     }
-
-    /*
-    [LOW_PRIORITY | DELAYED | HIGH_PRIORITY]
-     */
-    public function option($opt)
-    {
-        if (is_array($opt)) {
-            $this->options = $this->options + $opt;
-        } else {
-            $this->options = $this->options + func_get_args();
-        }
-        return $this;
-    }
-
-    public function options()
-    {
-        $this->options = func_get_args();
-        return $this;
-    }
-
 
     public function into($table) {
         $this->intoTable = $table;
@@ -119,7 +104,7 @@ class InsertQuery
         $sql = 'INSERT';
 
         if (!empty($this->options)) {
-            $sql .= ' ' . join(' ', $this->options);
+            $sql .= $this->buildOptionClause();
         }
 
         $sql .= ' INTO ' . $driver->quoteTable($this->intoTable);
