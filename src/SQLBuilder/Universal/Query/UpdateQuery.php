@@ -62,7 +62,6 @@ use LogicException;
  */
 class UpdateQuery implements ToSqlInterface
 {
-    // use OrderByTrait;
     use WhereTrait;
     use OptionTrait;
     use JoinTrait;
