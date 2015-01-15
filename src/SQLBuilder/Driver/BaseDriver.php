@@ -49,17 +49,6 @@ abstract class BaseDriver
      */
     public $quoter;
 
-    static function create()
-    {
-        return new static;
-    }
-
-    static function getInstance()
-    {
-        static $self;
-        return $self ? $self : $self = new static;
-    }
-
     public function setQuoter(callable $quoter) {
         $this->quoter = $quoter;
     }
