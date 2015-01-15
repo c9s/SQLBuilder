@@ -90,6 +90,15 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         is('str', $bind->getValue());
     }
 
+    public function testSetQuoter()
+    {
+        $conn = $this->createConnection('mysql');
+        $driver = new MySQLDriver;
+        $driver->setQuoter(function($str) use($conn) {
+            return $conn->quote($str);
+        });
+        is("'str'", $driver->quote('str'));
+    }
 
 
 }
