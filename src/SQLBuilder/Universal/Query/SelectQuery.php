@@ -1,6 +1,7 @@
 <?php
 namespace SQLBuilder\Universal\Query;
 use Exception;
+use LogicException;
 use SQLBuilder\Raw;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
@@ -54,12 +55,9 @@ class SelectQuery implements ToSqlInterface
 
     protected $select = array();
 
-    protected $options = array();
-
     protected $from = array();
 
     protected $having;
-
 
     protected $groupByList = array();
 

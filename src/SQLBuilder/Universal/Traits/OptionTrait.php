@@ -13,6 +13,7 @@ use SQLBuilder\Universal\Syntax\Join;
 
 trait OptionTrait
 {
+    protected $options = array();
 
     /**
      * MySQL Select Options:

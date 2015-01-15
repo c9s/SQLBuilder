@@ -1,5 +1,7 @@
 <?php
 namespace SQLBuilder\Universal\Query;
+use Exception;
+use LogicException;
 use SQLBuilder\Raw;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
@@ -15,9 +17,9 @@ use SQLBuilder\Universal\Syntax\Join;
 use SQLBuilder\Universal\Syntax\IndexHint;
 use SQLBuilder\Universal\Syntax\Paging;
 use SQLBuilder\Universal\Traits\OrderByTrait;
-
-use Exception;
-use LogicException;
+use SQLBuilder\Universal\Traits\JoinTrait;
+use SQLBuilder\Universal\Traits\OptionTrait;
+use SQLBuilder\Universal\Traits\WhereTrait;
 
 /**
  * Delete Statement Query
@@ -48,47 +50,15 @@ use LogicException;
  */
 class DeleteQuery implements ToSqlInterface
 {
-    // use OrderByTrait;
-    protected $options = array();
+    use OptionTrait;
+    use JoinTrait;
+    use WhereTrait;
 
     protected $deleteTables = array();
-
-    protected $joins = array();
-
-    protected $indexHintOn = array();
-
-    protected $where;
-
-    protected $orderByList = array();
 
     protected $limit;
 
     protected $partitions;
-
-    public function __construct()
-    {
-        $this->where = new Conditions;
-    }
-
-    /**
-     * MySQL Update Options:
-     *
-     * [LOW_PRIORITY] [IGNORE]
-     */
-    public function option($options) 
-    {
-        if (is_array($options)) {
-            $this->options = $this->options + $options;
-        } else {
-            $this->options = $this->options + func_get_args();
-        }
-        return $this;
-    }
-
-    public function options() {
-        $this->options = func_get_args();
-        return $this;
-    }
 
     /**
      * ->delete('posts', 'p')
@@ -101,20 +71,6 @@ class DeleteQuery implements ToSqlInterface
             $this->deleteTables[] = $table;
         }
         return $this;
-    }
-
-    public function join($table, $alias = NULL) {
-        $join = new Join($table, $alias);
-        $this->joins[] = $join;
-        return $join;
-    }
-
-    public function getJoins() {
-        return $this->joins;
-    }
-
-    public function getLastJoin() {
-        return end($this->joins);
     }
 
     public function indexHintOn($tableRef) {
@@ -133,54 +89,6 @@ class DeleteQuery implements ToSqlInterface
         return $this;
     }
 
-    public function where($expr = NULL , array $args = array()) {
-        if (is_string($expr)) {
-            $this->where->appendExpr($expr, $args);
-        } elseif (!is_null($expr)) {
-            throw new LogicException("Unsupported argument type of 'where' method.");
-        }
-        return $this->where;
-    }
-
-
-    /**
-    The Syntax:
-
-    [ORDER BY {col_name | expr | position}
-        [ASC | DESC], ...]
-
-    > SELECT * FROM foo ORDER BY RAND(NOW()) LIMIT 1;
-    > SELECT * FROM foo ORDER BY 1,2,3;
-
-    > SELECT* FROM mytable ORDER BY
-        LOCATE(CONCAT('.',`group`,'.'),'.9.7.6.10.8.5.');
-
-    > SELECT `names`, `group`
-        FROM my_table
-        WHERE `group` IN (9,7,6,10,8,5)
-        ORDER BY find_in_set(`group`,'9,7,6,10,8,5');
-
-    @see http://dba.stackexchange.com/questions/5422/mysql-conditional-order-by-to-only-one-column
-    @see http://dev.mysql.com/doc/refman/5.1/en/sorting-rows.html
-    */
-    public function orderBy($byExpr, $sorting = NULL) {
-        if ($sorting) {
-            $this->orderByList[] = array($byExpr, $sorting);
-        } else {
-            $this->orderByList[] = array($byExpr);
-        }
-        return $this;
-    }
-
-    public function clearOrderBy() { 
-        $this->orderByList = array();
-    }
-
-    public function setOrderBy(array $orderBy) {
-        $this->orderByList = $orderBy;
-        return $this;
-    }
-
 
     /********************************************************
      * LIMIT clauses
@@ -194,14 +102,6 @@ class DeleteQuery implements ToSqlInterface
     /****************************************************************
      * Builders
      ***************************************************************/
-    public function buildOptionClause() 
-    {
-        if (empty($this->options)) {
-            return '';
-        }
-        return ' ' . join(' ', $this->options);
-    }
-
     public function buildDeleteTableClause(BaseDriver $driver) {
         $tableRefs = array();
         foreach($this->deleteTables as $k => $v) {
@@ -234,24 +134,6 @@ class DeleteQuery implements ToSqlInterface
         return '';
     }
 
-
-    public function buildOrderByClause(BaseDriver $driver, ArgumentArray $args) {
-        if (empty($this->orderByList)) {
-            return '';
-        }
-        $clauses = array();
-        foreach($this->orderByList as $orderBy) {
-            if (count($orderBy) === 1) {
-                $clauses[] = $orderBy[0];
-            } elseif (count($orderBy) === 2) {
-                $clauses[] = $orderBy[0] . ' ' . strtoupper($orderBy[1]);
-            } elseif ($orderBy instanceof ToSqlInterface) {
-                $clauses[] = $orderBy->toSql($driver, $args);
-            }
-        }
-        return ' ORDER BY ' . join(', ', $clauses);
-    }
-
     public function buildLimitClause(BaseDriver $driver, ArgumentArray $args)
     {
         if ($this->limit) {
@@ -259,36 +141,6 @@ class DeleteQuery implements ToSqlInterface
         }
         return '';
     }
-
-    public function buildWhereClause(BaseDriver $driver, ArgumentArray $args) {
-        if ($this->where->hasExprs()) {
-            return ' WHERE ' . $this->where->toSql($driver, $args);
-        }
-        return '';
-    }
-
-    public function buildJoinClause(BaseDriver $driver, ArgumentArray $args) {
-        $sql = '';
-        if (!empty($this->joins)) {
-            foreach($this->joins as $join) {
-                $sql .= $join->toSql($driver, $args);
-            }
-        }
-        return $sql;
-    }
-
-    public function buildJoinIndexHintClause(BaseDriver $driver, ArgumentArray $args)
-    {
-        if (empty($this->indexHintOn)) {
-            return '';
-        }
-        $clauses = array();
-        foreach($this->indexHintOn as $hint) {
-            $clauses[] = $hint->toSql($driver, $args);
-        }
-        return ' ' . join(' ', $clauses);
-    }
-
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'DELETE'
@@ -298,10 +150,13 @@ class DeleteQuery implements ToSqlInterface
             . $this->buildJoinClause($driver, $args)
             . $this->buildJoinIndexHintClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
-            . $this->buildOrderByClause($driver, $args)
             . $this->buildLimitClause($driver, $args)
             ;
         return $sql;
+    }
+
+    public function __clone() {
+        $this->where = $this->where;
     }
 }
 
