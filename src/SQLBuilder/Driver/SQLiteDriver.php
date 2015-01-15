@@ -5,6 +5,11 @@ use Exception;
 use RuntimeException;
 use SQLBuilder\ArgumentArray;
 
+/**
+ * Currently not supporting this SQLiteDriver
+ *
+ * @codeCoverageIgnore
+ */
 class SQLiteDriver extends BaseDriver
 {
     public function quoteIdentifier($id) {
