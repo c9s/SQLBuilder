@@ -18,6 +18,7 @@ use SQLBuilder\Universal\Traits\OrderByTrait;
 use SQLBuilder\Universal\Traits\JoinTrait;
 use SQLBuilder\Universal\Traits\WhereTrait;
 use SQLBuilder\Universal\Traits\OptionTrait;
+use SQLBuilder\Universal\Traits\LimitTrait;
 
 use Exception;
 use LogicException;
@@ -66,13 +67,12 @@ class UpdateQuery implements ToSqlInterface
     use OptionTrait;
     use JoinTrait;
     use OrderByTrait;
+    use LimitTrait;
 
 
     protected $updateTables = array();
 
     protected $sets = array();
-
-    protected $limit;
 
     protected $partitions;
 
@@ -110,17 +110,6 @@ class UpdateQuery implements ToSqlInterface
         } else {
             $this->partitions = new Partition(func_get_args());
         }
-        return $this;
-    }
-
-
-
-    /********************************************************
-     * LIMIT clauses
-     *******************************************************/
-    public function limit($limit)
-    {
-        $this->limit = $limit;
         return $this;
     }
 
@@ -172,13 +161,6 @@ class UpdateQuery implements ToSqlInterface
         return '';
     }
 
-    public function buildLimitClause(BaseDriver $driver, ArgumentArray $args)
-    {
-        if ($this->limit) {
-            return ' LIMIT ' . intval($this->limit);
-        }
-        return '';
-    }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'UPDATE'

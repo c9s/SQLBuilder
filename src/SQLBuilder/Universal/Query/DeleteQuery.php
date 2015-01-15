@@ -20,6 +20,7 @@ use SQLBuilder\Universal\Traits\OrderByTrait;
 use SQLBuilder\Universal\Traits\JoinTrait;
 use SQLBuilder\Universal\Traits\OptionTrait;
 use SQLBuilder\Universal\Traits\WhereTrait;
+use SQLBuilder\Universal\Traits\LimitTrait;
 
 /**
  * Delete Statement Query
@@ -53,10 +54,9 @@ class DeleteQuery implements ToSqlInterface
     use OptionTrait;
     use JoinTrait;
     use WhereTrait;
+    use LimitTrait;
 
     protected $deleteTables = array();
-
-    protected $limit;
 
     protected $partitions;
 
@@ -90,15 +90,6 @@ class DeleteQuery implements ToSqlInterface
     }
 
 
-    /********************************************************
-     * LIMIT clauses
-     *******************************************************/
-    public function limit($limit)
-    {
-        $this->limit = $limit;
-        return $this;
-    }
-
     /****************************************************************
      * Builders
      ***************************************************************/
@@ -130,14 +121,6 @@ class DeleteQuery implements ToSqlInterface
     {
         if ($this->partitions) {
             return $this->partitions->toSql($driver, $args);
-        }
-        return '';
-    }
-
-    public function buildLimitClause(BaseDriver $driver, ArgumentArray $args)
-    {
-        if ($this->limit) {
-            return ' LIMIT ' . intval($this->limit);
         }
         return '';
     }
