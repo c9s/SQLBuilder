@@ -170,9 +170,8 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         return $query;
     }
 
-
-
-    public function testRightJoin() {
+    public function testRightJoin() 
+    {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $query = new SelectQuery;

@@ -19,7 +19,7 @@ class ParamMarker
         return '?';
     }
 
-    public function getMark() {
+    public function getMarker() {
         return '?';
     }
 }

@@ -33,7 +33,7 @@ abstract class BaseDriver
 
     public $paramNameCnt = 1;
 
-    public $paramMarker = self::NAMED_PARAM_MARKER;
+    public $paramMarkerType = self::NAMED_PARAM_MARKER;
 
     public $quoteColumn;
 
@@ -84,38 +84,16 @@ abstract class BaseDriver
 
     // The SQL statement can contain zero or more named (:name) or question mark (?) parameter markers
     public function setNamedParamMarker() { 
-        $this->paramMarker = self::NAMED_PARAM_MARKER;
+        $this->paramMarkerType = self::NAMED_PARAM_MARKER;
     }
 
     public function setQMarkParamMarker() {
-        $this->paramMarker = self::QMARK_PARAM_MARKER;
+        $this->paramMarkerType = self::QMARK_PARAM_MARKER;
     }
 
     public function setNoParamMarker() {
-        $this->paramMarker = self::NO_PARAM_MARKER;
+        $this->paramMarkerType = self::NO_PARAM_MARKER;
     }
-
-    /**
-     * Get param marker
-     *
-     * the returned value is depends on driver.
-     *
-     * for named parameter, this returns a key with a ":" char.
-     * for question-mark parameter, this always returns a "?" char.
-     *
-     * @param string $key column name
-     *
-     * @return string
-     */
-    public function getParamMarker($key)
-    {
-        if( $this->paramMarker && $this->paramMarker === self::NAMED_PARAM_MARKER ) {
-            return ':' . $key;
-        } else {
-            return '?';
-        }
-    }
-
 
     public function quoteColumns(array $columns)
     {
@@ -240,12 +218,12 @@ abstract class BaseDriver
                 if ($args) {
                     $args->add($value);
                 }
-                return $value->getMark();
+                return $value->getMarker();
             } elseif ($value instanceof ParamMarker) {
                 if ($args) {
-                    $args->add(new Bind($value->getMark(), NULL));
+                    $args->add(new Bind($value->getMarker(), NULL));
                 }
-                return $value->getMark();
+                return $value->getMarker();
             } else {
                 $bind = new Bind('?', $value);
             }
@@ -282,19 +260,31 @@ abstract class BaseDriver
         } elseif (is_object($value) ) {
 
             if ($value instanceof Bind) {
-
                 if ($args) {
                     $args->add($value);
                 }
-                return $value->getMark();
 
+                if ($this->paramMarkerType === self::QMARK_PARAM_MARKER) {
+                    return '?';
+                } elseif ($this->paramMarkerType === self::NAMED_PARAM_MARKER) {
+                    return $value->getMarker();
+                } else {
+                    return $value->getMarker();
+                }
 
             } elseif ($value instanceof ParamMarker) {
-
                 if ($args) {
-                    $args->add(new Bind( $value->getMark(), NULL));
+                    $args->add(new Bind( $value->getMarker(), NULL));
                 }
-                return $value->getMark();
+
+                if ($this->paramMarkerType === self::QMARK_PARAM_MARKER) {
+                    return '?';
+                } elseif ($this->paramMarkerType === self::NAMED_PARAM_MARKER) {
+                    return $value->getMarker();
+                } else {
+                    return $value->getMarker();
+                }
+                return $value->getMarker();
 
             } elseif ($value instanceof Unknown) {
 

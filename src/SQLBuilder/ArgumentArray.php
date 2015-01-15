@@ -30,7 +30,7 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
 
     public function add(Bind $bind) { 
         $this->bindings[] = $bind;
-        $this->args[$bind->getMark()] = $bind->getValue();
+        $this->args[$bind->getMarker()] = $bind->getValue();
     }
 
     public function getBindings() {

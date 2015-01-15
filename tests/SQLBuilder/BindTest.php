@@ -11,7 +11,7 @@ class BindTest extends PHPUnit_Framework_TestCase
         is('Hacker', $bind->getValue());
 
         is('name', $bind->getName());
-        is(':name', $bind->getMark());
+        is(':name', $bind->getMarker());
     }
 }
 

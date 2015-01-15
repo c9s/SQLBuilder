@@ -5,6 +5,7 @@ use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\ANSI\AggregateFunction;
 use SQLBuilder\Universal\Syntax\SelectAs;
+use SQLBuilder\Universal\Syntax\Distinct;
 
 class AggregateFunctionTest extends PHPUnit_Framework_TestCase
 {
@@ -13,6 +14,7 @@ class AggregateFunctionTest extends PHPUnit_Framework_TestCase
         $args = array();
         $args[] = [ AggregateFunction::SUM(10) , 'SELECT SUM(10)' ];
         $args[] = [ AggregateFunction::SUM('total_amount') , 'SELECT SUM(total_amount)' ];
+        $args[] = [ AggregateFunction::SUM(new Distinct('total_amount')) , 'SELECT SUM(DISTINCT total_amount)' ];
         $args[] = [ AggregateFunction::MAX('views') , 'SELECT MAX(views)' ];
         $args[] = [ AggregateFunction::MIN('views') , 'SELECT MIN(views)' ];
         $args[] = [ AggregateFunction::AVG('buyPrice') , 'SELECT AVG(buyPrice)' ];
