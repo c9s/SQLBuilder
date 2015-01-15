@@ -14,8 +14,6 @@ use LogicException;
 
 abstract class BaseDriver
 {
-    const NO_PARAM_MARKER = 0;
-
     /**
      * Question mark parameter marker
      *
@@ -78,10 +76,6 @@ abstract class BaseDriver
 
     public function setQMarkParamMarker() {
         $this->paramMarkerType = self::QMARK_PARAM_MARKER;
-    }
-
-    public function setNoParamMarker() {
-        $this->paramMarkerType = self::NO_PARAM_MARKER;
     }
 
     public function quoteColumns(array $columns)
