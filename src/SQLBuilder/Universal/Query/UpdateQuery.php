@@ -73,12 +73,6 @@ class UpdateQuery implements ToSqlInterface
 
     protected $sets = array();
 
-    protected $partitions;
-
-    public function __construct()
-    {
-    }
-
     /**
      * ->update('posts', 'p')
      * ->update('users', 'u')
@@ -102,28 +96,9 @@ class UpdateQuery implements ToSqlInterface
         return $this;
     }
 
-    public function partitions($partitions)
-    {
-        if (is_array($partitions)) {
-            $this->partitions = new Partition($partitions);
-        } else {
-            $this->partitions = new Partition(func_get_args());
-        }
-        return $this;
-    }
-
     /****************************************************************
      * Builders
      ***************************************************************/
-    public function buildPartitionClause(BaseDriver $driver, ArgumentArray $args)
-    {
-        if ($this->partitions) {
-            return $this->partitions->toSql($driver, $args);
-        }
-        return '';
-    }
-
-
     public function buildSetClause(BaseDriver $driver, ArgumentArray $args) {
         $setClauses = array();
         foreach($this->sets as $col => $val) {
@@ -165,7 +140,6 @@ class UpdateQuery implements ToSqlInterface
         $sql = 'UPDATE'
             . $this->buildOptionClause()
             . $this->buildUpdateTableClause($driver)
-            . $this->buildPartitionClause($driver, $args)
             . $this->buildSetClause($driver, $args)
             . $this->buildJoinIndexHintClause($driver, $args)
             . $this->buildJoinClause($driver, $args)
