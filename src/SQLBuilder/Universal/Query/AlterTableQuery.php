@@ -13,6 +13,7 @@ use SQLBuilder\ParamMarker;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\Universal\Syntax\AlterTableAddConstraint;
 use SQLBuilder\Universal\Syntax\AlterTableRenameColumn;
+use SQLBuilder\Universal\Syntax\AlterTableAddColumn;
 use SQLBuilder\Universal\Syntax\AlterTableRenameTable;
 use SQLBuilder\Universal\Syntax\AlterTableModifyColumn;
 

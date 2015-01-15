@@ -87,6 +87,23 @@ class AlterTableQueryTest extends PDOQueryTestCase
     }
 
 
+    public function testAddColumn() 
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+
+        $column = new Column('last_name', 'varchar(30)');
+        $column->default('');
+        $column->notNull();
+
+        $q = new AlterTableQuery('products');
+        $q->addColumn($column);
+
+        $sql = $q->toSql($driver, $args);
+        $this->assertQuery($q);
+        is('ALTER TABLE `products` ADD COLUMN `last_name` varchar(30) NOT NULL DEFAULT \'\'', $sql);
+    }
+
 
     public function testRenameTable()
     {
