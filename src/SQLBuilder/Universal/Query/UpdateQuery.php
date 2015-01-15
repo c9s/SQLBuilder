@@ -144,13 +144,17 @@ class UpdateQuery implements ToSqlInterface
             . $this->buildUpdateTableClause($driver);
 
         if ($driver instanceof MySQLDriver) {
+            $sql .= $this->buildJoinIndexHintClause($driver, $args);
+        }
+
+        $sql .= $this->buildJoinClause($driver, $args);
+
+        if ($driver instanceof MySQLDriver) {
             $sql .= $this->buildPartitionClause($driver, $args);
         }
 
         $sql .=
               $this->buildSetClause($driver, $args)
-            . $this->buildJoinIndexHintClause($driver, $args)
-            . $this->buildJoinClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
             . $this->buildOrderByClause($driver, $args)
             . $this->buildLimitClause($driver, $args)

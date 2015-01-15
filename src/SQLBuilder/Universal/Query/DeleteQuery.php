@@ -74,12 +74,6 @@ class DeleteQuery implements ToSqlInterface
         return $this;
     }
 
-    public function indexHintOn($tableRef) {
-        $hint = new IndexHint;
-        $this->indexHintOn[$tableRef] = $hint;
-        return $hint;
-    }
-
     /****************************************************************
      * Builders
      ***************************************************************/

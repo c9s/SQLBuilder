@@ -17,12 +17,16 @@ class UpdateQueryTest extends PDOQueryTestCase
         $query = new UpdateQuery;
         $query->update('users')
             ->partitions('p1','p2')
-            ->set([ 'name' => 'Mary', 'phone' => '09752222123' ]);
+            ->join('user_votes')->as('uv')
+                ->left()
+                ->on('uv.user_id = u.id');
+
+        $query->set([ 'name' => 'Mary', 'phone' => '09752222123' ]);
         $query->where()->equal('id', 3);
         $this->assertSqlStatements($query, [ 
-            [ new MySQLDriver, 'UPDATE users PARTITION (p1,p2) SET name = :name, phone = :phone WHERE id = 3' ],
-            [ new PgSQLDriver, 'UPDATE users SET name = :name, phone = :phone WHERE id = 3' ],
-            [ new SQLiteDriver, 'UPDATE users SET name = :name, phone = :phone WHERE id = 3' ],
+            [ new MySQLDriver, 'UPDATE users LEFT JOIN user_votes AS uv ON (uv.user_id = u.id) PARTITION (p1,p2) SET name = :name, phone = :phone WHERE id = 3' ],
+            [ new PgSQLDriver, 'UPDATE users LEFT JOIN user_votes AS uv ON (uv.user_id = u.id) SET name = :name, phone = :phone WHERE id = 3' ],
+            [ new SQLiteDriver, 'UPDATE users LEFT JOIN user_votes AS uv ON (uv.user_id = u.id) SET name = :name, phone = :phone WHERE id = 3' ],
         ]);
     }
 
