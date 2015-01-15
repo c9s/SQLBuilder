@@ -114,8 +114,11 @@ class DeleteQuery implements ToSqlInterface
         $sql .= $this->buildJoinClause($driver, $args)
             . $this->buildJoinIndexHintClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
-            . $this->buildLimitClause($driver, $args)
             ;
+
+        if ($driver instanceof MySQLDriver) {
+            $sql .= $this->buildLimitClause($driver, $args);
+        }
         return $sql;
     }
 
