@@ -54,5 +54,22 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         $driver->deflateScalar(new Unknown);
     }
 
+
+    public function testAllocateBind() {
+        $driver = new MySQLDriver;
+
+        $bind = $driver->allocateBind(10);
+        is('p1', $bind->getName());
+        is(':p1', $bind->getMarker());
+        is(10, $bind->getValue());
+
+        $bind = $driver->allocateBind('str');
+        is('p2', $bind->getName());
+        is(':p2', $bind->getMarker());
+        is('str', $bind->getValue());
+    }
+
+
+
 }
 
