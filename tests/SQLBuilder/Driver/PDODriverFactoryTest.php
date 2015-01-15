@@ -45,7 +45,6 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         $this->assertSame("'string'", $driver->deflateScalar('string'));
     }
 
-
     /**
      * @expectedException Exception
      */

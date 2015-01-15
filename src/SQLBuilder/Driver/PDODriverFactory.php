@@ -4,6 +4,7 @@ use SQLBuilder\Driver\PDOMySQLDriver;
 use SQLBuilder\Driver\PDOPgSQLDriver;
 use SQLBuilder\Driver\PDOSQLiteDriver;
 use PDO;
+use Exception;
 
 class PDODriverFactory
 {
@@ -20,6 +21,10 @@ class PDODriverFactory
             case "sqlite":
                 return new PDOSQLiteDriver($pdo);
                 break;
+            default:
+                throw new Exception("Unknown driver type");
+                break;
+
         }
     }
 
