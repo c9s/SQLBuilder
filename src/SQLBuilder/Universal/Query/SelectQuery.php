@@ -250,7 +250,7 @@ class SelectQuery implements ToSqlInterface
             }
 
             if (is_integer($k)) {
-                if ($v instanceof SelectExpr) {
+                if ($v instanceof SelectExpr || $v instanceof ToSqlInterface) {
                     $sql .= $v->toSql($driver, $args);
                 } else {
                     $sql .= $driver->quoteColumn($v);
