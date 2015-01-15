@@ -17,23 +17,27 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
      *   }
      *
      */
-    public $args = array();
+    protected $args = array();
 
     /**
      * @var Bind[]
      */
-    public $vars = array();
+    protected $bindings = array();
 
     public function getIterator() {
         return new ArrayIterator($this->args);
     }
 
     public function add(Bind $bind) { 
-        $this->vars[] = $bind;
+        $this->bindings[] = $bind;
         $this->args[$bind->getMark()] = $bind->getValue();
     }
 
-    public function offsetSet($name,$value)
+    public function getBindings() {
+        return $this->bindings;
+    }
+
+    public function offsetSet($name, $value)
     {
         $this->args[$name] = $value;
     }
