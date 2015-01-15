@@ -631,7 +631,7 @@ class Column implements ToSqlInterface {
     }
 
 
-    public function buildSqlMySQL(BaseDriver $driver, ArgumentArray $args)
+    public function buildMySQLDefinitionSql(BaseDriver $driver, ArgumentArray $args)
     {
         $isa  = $this->isa ?: 'str';
 
@@ -724,7 +724,7 @@ class Column implements ToSqlInterface {
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         if ($driver instanceof MySQLDriver) {
-            return $this->buildSqlMySQL($driver, $args);
+            return $this->buildMySQLDefinitionSql($driver, $args);
         } else {
             throw new UnsupportedDriverException;
         }

@@ -38,12 +38,30 @@ class AlterTableQuery implements ToSqlInterface
         return $spec;
     }
 
+
+    /**
+     * Rename table column
+     *
+     * @param string $fromColumn
+     * @param Column $toColumn
+     */
     public function renameColumn($fromColumn, Column $toColumn)
     {
         $this->specs[] = $spec = new AlterTableRenameColumn($fromColumn, $toColumn);
         return $spec;
     }
 
+    public function addColumn(Column $toColumn)
+    {
+        $this->specs[] = $spec = new AlterTableAddColumn($toColumn);
+    }
+
+    /**
+     * Rename Table
+     *
+     * @param string $toTable table name
+     * @api
+     */
     public function rename($toTable)
     {
         $this->specs[] = $spec = new AlterTableRenameTable($toTable);
