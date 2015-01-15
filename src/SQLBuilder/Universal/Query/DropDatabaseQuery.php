@@ -13,16 +13,14 @@ use SQLBuilder\PgSQL\Traits\ConcurrentlyTrait;
 
 class DropDatabaseQuery implements ToSqlInterface
 {
-
-
     protected $dbName;
 
-    public function name($name) {
+    public function __construct($name)
+    {
         $this->dbName = $name;
-        return $this;
     }
 
-    public function create($name) {
+    public function drop($name) {
         $this->dbName = $name;
         return $this;
     }
