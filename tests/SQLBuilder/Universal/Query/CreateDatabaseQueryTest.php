@@ -20,14 +20,15 @@ class CreateDatabaseQueryTest extends QueryTestCase
         $this->assertSql("CREATE DATABASE `test` CHARACTER SET 'utf8'", $q);
     }
 
-    public function testPgQuery() {
-        $driver = new PgSQLDriver;
+    public function testCreateDatabaseQuery() {
         $q = new CreateDatabaseQuery;
-        ok($q);
         $q->create('test')
-            ->characterSet('utf8');
-        $q->collate('en_US.UTF-8');
-        $this->assertSql('CREATE DATABASE "test" LC_COLLATE \'en_US.UTF-8\'', $q, $driver);
+            ->characterSet('utf8')
+            ->collate('en_US.UTF-8');
+        $this->assertSqlStatements($q, [ 
+            [ new PgSQLDriver, 'CREATE DATABASE "test" LC_COLLATE \'en_US.UTF-8\''],
+            [ new MySQLDriver, "CREATE DATABASE `test` CHARACTER SET 'utf8' COLLATE 'en_US.UTF-8'"],
+        ]);
     }
 
 

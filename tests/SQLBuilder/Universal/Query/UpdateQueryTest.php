@@ -17,7 +17,7 @@ class UpdateQueryTest extends PDOQueryTestCase
         $query = new UpdateQuery;
         $query->update('users')->set([ 'name' => 'Mary', 'phone' => '09752222123' ]);
         $query->where()->equal('id', 3);
-        $this->assertRequirements($query, [ 
+        $this->assertSqlStatements($query, [ 
             [ new MySQLDriver, 'UPDATE users SET name = :name, phone = :phone WHERE id = 3' ],
             [ new PgSQLDriver, 'UPDATE users SET name = :name, phone = :phone WHERE id = 3' ],
             [ new SQLiteDriver, 'UPDATE users SET name = :name, phone = :phone WHERE id = 3' ],

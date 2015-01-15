@@ -15,7 +15,7 @@ class InsertQueryTest extends PDOQueryTestCase
         $query = new InsertQuery;
         $query->insert([ 'name' => 'John', 'confirmed' => true ])->into('users');
         $query->returning('id');
-        $this->assertRequirements($query, [ 
+        $this->assertSqlStatements($query, [ 
             [ new MySQLDriver, 'INSERT INTO users (name,confirmed) VALUES (:name,:confirmed)' ],
             [ new PgSQLDriver, 'INSERT INTO users (name,confirmed) VALUES (:name,:confirmed) RETURNING id' ],
             [ new SQLiteDriver, 'INSERT INTO users (name,confirmed) VALUES (:name,:confirmed)' ],
