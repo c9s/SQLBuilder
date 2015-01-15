@@ -10,6 +10,9 @@ class Raw
         $this->value = $rawValue;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getRaw() {
         return $this->value;
     }
