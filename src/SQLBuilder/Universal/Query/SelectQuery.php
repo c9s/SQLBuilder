@@ -2,6 +2,7 @@
 namespace SQLBuilder\Universal\Query;
 use Exception;
 use LogicException;
+use InvalidArgumentException;
 use SQLBuilder\Raw;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
