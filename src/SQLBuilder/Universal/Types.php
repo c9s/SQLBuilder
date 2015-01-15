@@ -19,9 +19,10 @@ class Types
     const TIMESTAMP   = 14;
     const BINARY      = 15;
     const VARBINARY   = 16;
-    const BLOB        = 17;
-    const LONGVARCHAR = 18;
-    const TEXT        = 19;
+    const LONGVARBINARY   = 17;
+    const BLOB        = 18;
+    const LONGVARCHAR = 19;
+    const TEXT        = 20;
 }
 
 

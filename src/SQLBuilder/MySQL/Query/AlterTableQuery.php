@@ -11,6 +11,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Universal\Syntax\AlterTableAddConstraint;
+use SQLBuilder\Exception\UnimplementedFunctionException;
 
 class AlterTableQuery implements ToSqlInterface
 {
@@ -30,7 +31,7 @@ class AlterTableQuery implements ToSqlInterface
     }
 
     public function changeColumn() {
-
+        throw new UnimplementedFunctionException;
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
