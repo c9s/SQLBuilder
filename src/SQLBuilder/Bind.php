@@ -28,7 +28,7 @@ class Bind {
     }
 
     public function getMark() {
-        if (is_string($this->name)) {
+        if ($this->name && is_string($this->name)) {
             return ':' . $this->name;
         }
         return '?';
