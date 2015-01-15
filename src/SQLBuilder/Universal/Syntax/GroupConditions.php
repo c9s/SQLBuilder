@@ -15,6 +15,9 @@ class GroupConditions extends Conditions
         return $this->parent;
     }
 
+    public function ungroup() {
+        return $this->parent;
+    }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         return '(' . parent::toSql($driver, $args) . ')';

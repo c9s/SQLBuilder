@@ -128,9 +128,7 @@ class Column implements ToSqlInterface {
             'default' => self::ATTR_ANY,
         );
         $this->name = $name;
-        if ($type) {
-            $this->type = $type;
-        }
+        $this->type = $type;
     }
 
     public function null()

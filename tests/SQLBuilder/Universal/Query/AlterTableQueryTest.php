@@ -69,6 +69,22 @@ class AlterTableQueryTest extends PDOQueryTestCase
         is('ALTER TABLE `products` MODIFY COLUMN `name` text NULL', $sql);
     }
 
+
+
+
+    /**
+     * @expectedException SQLBuilder\Exception\IncompleteSettingsException
+     */
+    public function testModifyColumnWithIncompleteSettings() 
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+        $column = new Column('name');
+        $q = new AlterTableQuery('products');
+        $q->modifyColumn($column);
+        $sql = $q->toSql($driver, $args);
+    }
+
     public function testModifyColumnDefaultAttribute()
     {
         $driver = new MySQLDriver;
