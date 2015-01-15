@@ -30,7 +30,7 @@ use InvalidArgumentException;
  *
  * @see MySQL Insert Statement http://dev.mysql.com/doc/refman/5.7/en/insert.html
  */
-class InsertQuery
+class InsertQuery implements ToSqlInterface
 {
     use OptionTrait;
 

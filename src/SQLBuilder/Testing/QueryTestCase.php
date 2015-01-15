@@ -3,6 +3,8 @@ namespace SQLBuilder\Testing;
 use PHPUnit_Framework_TestCase;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
 
@@ -15,7 +17,9 @@ abstract class QueryTestCase extends PHPUnit_Framework_TestCase
 
     public $args;
 
-    abstract public function createDriver();
+    public function createDriver() { 
+        // XXX:
+    }
 
     public function setUp() {
         $this->currentDriver = $this->createDriver();
@@ -31,6 +35,16 @@ abstract class QueryTestCase extends PHPUnit_Framework_TestCase
         $sql = $query->toSql($driver ?: $this->currentDriver ?: $this->createDriver(), $args ?: $this->args ?: new ArgumentArray);
         $this->assertSame($expectedSql, $sql);
     }
+
+    public function assertRequirements(ToSqlInterface $query, array $defines) {
+        foreach($defines as $define) {
+            list($driver, $expectedSQL) = $define;
+            $args = new ArgumentArray;
+            $sql = $query->toSql($driver, $args);
+            is($expectedSQL, $sql);
+        }
+    }
+
 }
 
 

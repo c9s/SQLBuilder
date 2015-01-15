@@ -3,12 +3,25 @@ use SQLBuilder\Raw;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\InsertQuery;
+use SQLBuilder\Testing\PDOQueryTestCase;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 
-class InsertQueryTest extends PHPUnit_Framework_TestCase
+class InsertQueryTest extends PDOQueryTestCase
 {
+    public function testCrossPlatformInsert()
+    {
+        $query = new InsertQuery;
+        $query->insert([ 'name' => 'John', 'confirmed' => true ])->into('users');
+        $query->returning('id');
+        $this->assertRequirements($query, [ 
+            [ new MySQLDriver, 'INSERT INTO users (name,confirmed) VALUES (:name,:confirmed)' ],
+            [ new PgSQLDriver, 'INSERT INTO users (name,confirmed) VALUES (:name,:confirmed) RETURNING id' ],
+            [ new SQLiteDriver, 'INSERT INTO users (name,confirmed) VALUES (:name,:confirmed)' ],
+        ]);
+    }
+
     public function testInsertBasic()
     {
         $driver = new MySQLDriver;
