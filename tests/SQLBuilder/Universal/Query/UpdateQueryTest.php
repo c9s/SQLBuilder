@@ -15,10 +15,12 @@ class UpdateQueryTest extends PDOQueryTestCase
 
     public function testCrossPlatformBasicUpdate() {
         $query = new UpdateQuery;
-        $query->update('users')->set([ 'name' => 'Mary', 'phone' => '09752222123' ]);
+        $query->update('users')
+            ->partitions('p1','p2')
+            ->set([ 'name' => 'Mary', 'phone' => '09752222123' ]);
         $query->where()->equal('id', 3);
         $this->assertSqlStatements($query, [ 
-            [ new MySQLDriver, 'UPDATE users SET name = :name, phone = :phone WHERE id = 3' ],
+            [ new MySQLDriver, 'UPDATE users PARTITION (p1,p2) SET name = :name, phone = :phone WHERE id = 3' ],
             [ new PgSQLDriver, 'UPDATE users SET name = :name, phone = :phone WHERE id = 3' ],
             [ new SQLiteDriver, 'UPDATE users SET name = :name, phone = :phone WHERE id = 3' ],
         ]);

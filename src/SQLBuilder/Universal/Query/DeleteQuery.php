@@ -15,6 +15,8 @@ use SQLBuilder\Universal\Expr\SelectExpr;
 use SQLBuilder\Universal\Syntax\Conditions;
 use SQLBuilder\Universal\Syntax\Join;
 use SQLBuilder\Universal\Syntax\IndexHint;
+use SQLBuilder\MySQL\Syntax\Partition;
+use SQLBuilder\MySQL\Traits\PartitionTrait;
 use SQLBuilder\Universal\Syntax\Paging;
 use SQLBuilder\Universal\Traits\OrderByTrait;
 use SQLBuilder\Universal\Traits\JoinTrait;
@@ -55,10 +57,9 @@ class DeleteQuery implements ToSqlInterface
     use JoinTrait;
     use WhereTrait;
     use LimitTrait;
+    use PartitionTrait;
 
     protected $deleteTables = array();
-
-    protected $partitions;
 
     /**
      * ->delete('posts', 'p')
@@ -78,17 +79,6 @@ class DeleteQuery implements ToSqlInterface
         $this->indexHintOn[$tableRef] = $hint;
         return $hint;
     }
-
-    public function partitions($partitions)
-    {
-        if (is_array($partitions)) {
-            $this->partitions = new Partition($partitions);
-        } else {
-            $this->partitions = new Partition(func_get_args());
-        }
-        return $this;
-    }
-
 
     /****************************************************************
      * Builders
@@ -117,20 +107,17 @@ class DeleteQuery implements ToSqlInterface
         return '';
     }
 
-    public function buildPartitionClause(BaseDriver $driver, ArgumentArray $args)
-    {
-        if ($this->partitions) {
-            return $this->partitions->toSql($driver, $args);
-        }
-        return '';
-    }
-
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'DELETE'
             . $this->buildOptionClause()
             . $this->buildDeleteTableClause($driver)
-            . $this->buildPartitionClause($driver, $args)
-            . $this->buildJoinClause($driver, $args)
+            ;
+
+        if ($driver instanceof MySQLDriver) {
+            $sql .= $this->buildPartitionClause($driver, $args);
+        }
+
+        $sql .= $this->buildJoinClause($driver, $args)
             . $this->buildJoinIndexHintClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
             . $this->buildLimitClause($driver, $args)
