@@ -27,6 +27,10 @@ class ArgumentArrayTest extends PHPUnit_Framework_TestCase
 
         ok(is_array($args->toArray()));
         ok(is_array($args->getArgs()));
+
+        foreach($args->getBindings() as $binding) {
+            ok($binding instanceof Bind);
+        }
     }
 
     public function testSettter() {
