@@ -2,37 +2,45 @@
 namespace SQLBuilder\ANSI;
 use SQLBuilder\Universal\Expr\FuncCallExpr;
 use SQLBuilder\Raw;
+use SQLBuilder\Utils;
 
 class ScalarFunction
 {
-    static public function ucase($expr) {
-        return new FuncCallExpr('UCASE', array(new Raw($expr)));
+    static public function UCASE($expr) 
+    {
+        return new FuncCallExpr('UCASE', Utils::buildFunctionArguments(array($expr)));
     }
 
-    static public function lcase($expr) {
-        return new FuncCallExpr('LCASE', array(new Raw($expr)));
+    static public function LCASE($expr) 
+    {
+        return new FuncCallExpr('LCASE', Utils::buildFunctionArguments(array($expr)));
     }
 
-    static public function mid($expr) {
-        return new FuncCallExpr('MID', array(new Raw($expr)));
+    static public function MID($expr) 
+    {
+        return new FuncCallExpr('MID', Utils::buildFunctionArguments(array($expr)));
     }
 
-    static public function len($expr) {
-        return new FuncCallExpr('LEN', array(new Raw($expr)));
+    static public function LEN($expr) 
+    {
+        return new FuncCallExpr('LEN', Utils::buildFunctionArguments(array($expr)));
     }
 
-    static public function round($expr) {
-        return new FuncCallExpr('ROUND', array(new Raw($expr)));
+    static public function ROUND($expr) 
+    {
+        return new FuncCallExpr('ROUND', Utils::buildFunctionArguments(array($expr)));
     }
 
-    static public function now($expr) {
-        return new FuncCallExpr('NOW', array(new Raw($expr)));
+    static public function NOW()
+    {
+        return new FuncCallExpr('NOW', array());
     }
 
     // SELECT FORMAT(column_name,format) FROM table_name;
     // TODO: $columnName can be another expr object
-    static public function format($columnName, $format) {
-        return new FuncCallExpr('FORMAT', array(new Raw($columnName), $format));
+    static public function FORMAT($columnName, $format) 
+    {
+        return new FuncCallExpr('FORMAT', Utils::buildFunctionArguments(array($columnName, $format)));
     }
 
 }
