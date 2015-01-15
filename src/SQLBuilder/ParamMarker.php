@@ -15,10 +15,6 @@ class ParamMarker
         $this->value = $value;
     }
 
-    public function getName() {
-        return '?';
-    }
-
     public function getMarker() {
         return '?';
     }
