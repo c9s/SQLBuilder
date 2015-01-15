@@ -35,7 +35,7 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
 
     public function offsetSet($name,$value)
     {
-        $this->args[ $name ] = $value;
+        $this->args[$name] = $value;
     }
     
     public function offsetExists($name)
