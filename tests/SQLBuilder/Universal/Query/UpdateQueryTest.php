@@ -13,6 +13,19 @@ use SQLBuilder\Testing\PDOQueryTestCase;
 class UpdateQueryTest extends PDOQueryTestCase
 {
 
+    public function testUpdateMultipleTables() {
+        $query = new UpdateQuery;
+        $query->update('users', 'u');
+        $query->update('users2', 'u2');
+        $query->set([ 'name' => 'Mary', 'phone' => '09752222123' ]);
+        $query->where()->equal('id', 3);
+        $this->assertSqlStatements($query, [ 
+            [ new MySQLDriver, 'UPDATE users AS u, users2 AS u2 SET name = :name, phone = :phone WHERE id = 3' ],
+        ]);
+    }
+
+
+
     public function testCrossPlatformBasicUpdate() {
         $query = new UpdateQuery;
         $query->update('users')

@@ -15,6 +15,7 @@ use SQLBuilder\Universal\Traits\OrderByTrait;
 use SQLBuilder\Universal\Traits\JoinTrait;
 use SQLBuilder\Universal\Traits\OptionTrait;
 use SQLBuilder\Universal\Traits\WhereTrait;
+use SQLBuilder\MySQL\Traits\PartitionTrait;
 
 use SQLBuilder\Raw;
 use SQLBuilder\ToSqlInterface;
@@ -33,6 +34,7 @@ use InvalidArgumentException;
 class InsertQuery implements ToSqlInterface
 {
     use OptionTrait;
+    use PartitionTrait;
 
 
     /**
@@ -43,8 +45,6 @@ class InsertQuery implements ToSqlInterface
     protected $intoTable;
 
     protected $values = array();
-
-    protected $partitions;
 
     /**
      * Should return result when updating or inserting?
@@ -80,25 +80,6 @@ class InsertQuery implements ToSqlInterface
         $this->returning = $returningColumns;
         return $this;
     }
-
-    public function partitions($partitions)
-    {
-        if (is_array($partitions)) {
-            $this->partitions = new Partition($partitions);
-        } else {
-            $this->partitions = new Partition(func_get_args());
-        }
-        return $this;
-    }
-
-    public function buildPartitionClause(BaseDriver $driver, ArgumentArray $args)
-    {
-        if ($this->partitions) {
-            return $this->partitions->toSql($driver, $args);
-        }
-        return '';
-    }
-
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'INSERT';
