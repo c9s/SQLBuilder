@@ -122,7 +122,7 @@ class InsertQuery
             $sql .= ' ' . join(' ', $this->options);
         }
 
-        $sql .= ' INTO ' . $driver->quoteTableName($this->intoTable);
+        $sql .= ' INTO ' . $driver->quoteTable($this->intoTable);
 
         // append partition clause if needed.
         $sql .= $this->buildPartitionClause($driver, $args);

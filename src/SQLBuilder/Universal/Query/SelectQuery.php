@@ -269,13 +269,13 @@ class SelectQuery implements ToSqlInterface
         foreach($this->from as $k => $v) {
             /* "column AS alias" OR just "column" */
             if (is_string($k)) {
-                $sql = $driver->quoteTableName($k) . ' AS ' . $v;
+                $sql = $driver->quoteTable($k) . ' AS ' . $v;
                 if ($driver instanceof MySQLDriver && isset($this->indexHintOn[$k])) {
                     $sql .= $this->indexHintOn[$k]->toSql($driver, new ArgumentArray);
                 }
                 $tableRefs[] = $sql;
             } elseif ( is_integer($k) || is_numeric($k) ) {
-                $sql = $driver->quoteTableName($v);
+                $sql = $driver->quoteTable($v);
                 if ($driver instanceof MySQLDriver && isset($this->indexHintOn[$v])) {
                     $sql .= $this->indexHintOn[$v]->toSql($driver, new ArgumentArray);
                 }

@@ -119,7 +119,7 @@ abstract class BaseDriver
      * @param string $name table name
      * @return string table name with/without quotes.
      */
-    public function quoteTableName($name) 
+    public function quoteTable($name) 
     {
         if ($this->quoteTable) {
             // TODO: Split DB.Table
@@ -290,11 +290,6 @@ abstract class BaseDriver
             } else {
                 throw new LogicException('Unsupported class: ' . get_class($value));
             }
-
-        } elseif (is_array($value) && count($value) == 1) { // raw value
-
-            return $value[0];
-
         } else {
             throw new LogicException('Unsupported type');
         }
