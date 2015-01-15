@@ -172,7 +172,7 @@ abstract class BaseDriver
         return new Bind('p' . $this->paramNameCnt++, $value);
     }
 
-    protected function deflateScalar($value)
+    public function deflateScalar($value)
     {
         if ($value === NULL ) {
 
@@ -188,7 +188,7 @@ abstract class BaseDriver
 
         } elseif (is_integer($value) || is_float($value)) {
 
-            return $value;
+            return '' . $value;
 
         } elseif (is_string($value) ) {
 

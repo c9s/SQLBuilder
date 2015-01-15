@@ -2,6 +2,7 @@
 use SQLBuilder\Driver\PDODriverFactory;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Testing\PDOQueryTestCase;
+use SQLBuilder\DataType\Unknown;
 
 class PDODriverFactoryTest extends PDOQueryTestCase
 {
@@ -29,6 +30,29 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         ok($conn);
         $driver = PDODriverFactory::create($conn);
         ok($driver);
+
+        $quoted = $driver->quote('foo');
+        is('\'foo\'', $quoted);
     }
+
+    public function testDeflateScalar() {
+        $driver = new MySQLDriver;
+        $this->assertSame('0', $driver->deflateScalar(0));
+        $this->assertSame('1.23', $driver->deflateScalar(1.23));
+        $this->assertSame('TRUE', $driver->deflateScalar(true));
+        $this->assertSame('FALSE', $driver->deflateScalar(false));
+        $this->assertSame('NULL', $driver->deflateScalar(null));
+        $this->assertSame("'string'", $driver->deflateScalar('string'));
+    }
+
+
+    /**
+     * @expectedException Exception
+     */
+    public function testUnknownType() {
+        $driver = new MySQLDriver;
+        $driver->deflateScalar(new Unknown);
+    }
+
 }
 
