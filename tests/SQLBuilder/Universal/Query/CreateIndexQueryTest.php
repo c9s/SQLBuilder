@@ -2,6 +2,7 @@
 use SQLBuilder\Testing\QueryTestCase;
 use SQLBuilder\Universal\Query\CreateIndexQuery;
 use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
 
 class CreateIndexQueryTest extends QueryTestCase
 {
@@ -9,14 +10,43 @@ class CreateIndexQueryTest extends QueryTestCase
         return new MySQLDriver;
     }
 
-    public function testCreateIndex()
+    public function testCreateIndexConstructor()
+    {
+        $q = new CreateIndexQuery('idx_salary');
+        $q->on('employees', [ 'last_name', 'salary' ])
+            ->concurrently()
+            ;
+        $this->assertSqlStatements($q, [ 
+            [ new MySQLDriver, 'CREATE INDEX `idx_salary` ON `employees` (last_name,salary)' ],
+            [ new PgSQLDriver, 'CREATE INDEX CONCURRENTLY "idx_salary" ON "employees" (last_name,salary)' ],
+        ]);
+
+    }
+
+
+    public function testCreateIndexConcurrently()
     {
         // CREATE INDEX CONCURRENTLY idx_salary ON employees(last_name, salary);
         $q = new CreateIndexQuery;
         $q->create('idx_salary')
             ->on('employees', [ 'last_name', 'salary' ])
+            ->concurrently()
             ;
-        $this->assertSql('CREATE INDEX `idx_salary` ON `employees` (last_name,salary)', $q);
+        $this->assertSqlStatements($q, [ 
+            [ new MySQLDriver, 'CREATE INDEX `idx_salary` ON `employees` (last_name,salary)' ],
+            [ new PgSQLDriver, 'CREATE INDEX CONCURRENTLY "idx_salary" ON "employees" (last_name,salary)' ],
+        ]);
+    }
+
+    public function testCreateIndexFulltext()
+    {
+        $q = new CreateIndexQuery;
+        $q->fulltext('idx_salary')
+            ->on('employees', [ 'last_name', 'salary' ])
+            ;
+        $this->assertSqlStatements($q, [ 
+            [ new MySQLDriver, 'CREATE FULLTEXT INDEX `idx_salary` ON `employees` (last_name,salary)' ],
+        ]);
     }
 
     public function testCreateUniqueIndex()

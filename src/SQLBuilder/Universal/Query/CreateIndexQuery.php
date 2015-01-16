@@ -85,6 +85,10 @@ class CreateIndexQuery implements ToSqlInterface
 
     protected $storageParameters = array();
 
+    public function __construct($name = NULL) {
+        $this->name = $name;
+    }
+
     /**
      * MySQL, PostgreSQL
      */
@@ -102,7 +106,7 @@ class CreateIndexQuery implements ToSqlInterface
      * MySQL only
      */
     public function fulltext($name = NULL) {
-        $this->type = 'FULLTExt';
+        $this->type = 'FULLTEXT';
         if ($name) {
             $this->name = $name;
         }
@@ -185,7 +189,7 @@ class CreateIndexQuery implements ToSqlInterface
 
         $sql .= $this->buildConcurrentlyClause($driver, $args);
 
-        $sql .= ' ' . $driver->quoteIdentifier($this->name) . ' ON ' . $this->tableName;
+        $sql .= ' ' . $driver->quoteIdentifier($this->name) . ' ON ' . $driver->quoteIdentifier($this->tableName);
 
         // TODO: validate method 
         if ($this->method) {
