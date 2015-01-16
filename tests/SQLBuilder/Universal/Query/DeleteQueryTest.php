@@ -31,6 +31,7 @@ class DeleteQueryTest extends PDOQueryTestCase
             [ new SQLiteDriver, 'DELETE users AS u WHERE id = 3 OR id = 4' ],
         ]);
 
+        is(3, $query->where()->count());
     }
 
     public function testBasicDelete()
