@@ -18,13 +18,15 @@ class DeleteQueryTest extends PDOQueryTestCase
         $query->delete('users', 'u')
             ->partitions('p1','p2')
             ->where()
-                ->equal('id', 3);
+                ->equal('id', 3)
+                ->is('confirmed', true)
+            ;
         $query->limit(1);
         
         $this->assertSqlStatements($query, [ 
-            [ new MySQLDriver, 'DELETE users AS u PARTITION (p1,p2) WHERE id = 3 LIMIT 1' ],
-            [ new PgSQLDriver, 'DELETE users AS u WHERE id = 3' ],
-            [ new SQLiteDriver, 'DELETE users AS u WHERE id = 3' ],
+            [ new MySQLDriver, 'DELETE users AS u PARTITION (p1,p2) WHERE id = 3 AND confirmed IS TRUE LIMIT 1' ],
+            [ new PgSQLDriver, 'DELETE users AS u WHERE id = 3 AND confirmed IS TRUE' ],
+            [ new SQLiteDriver, 'DELETE users AS u WHERE id = 3 AND confirmed IS 1' ],
         ]);
     }
 }
