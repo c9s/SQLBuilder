@@ -34,12 +34,25 @@ class SelectQueryTest extends PDOQueryTestCase
         $q->column('price')->int(4)->unsigned();
         $q->column('content')->text();
         $this->assertQuery($q);
+
+        $q = new CreateTableQuery('users');
+        $q->column('id')->integer()
+            ->primary()
+            ->autoIncrement();
+        $q->column('name')->varchar(32);
+        $q->column('phone')->varchar(16);
+        $q->column('address')->varchar(128);
+        $this->assertQuery($q);
     }
 
     public function tearDown()
     {
         parent::tearDown();
         $q = new DropTableQuery('products');
+        $q->IfExists();
+        $this->assertQuery($q);
+
+        $q = new DropTableQuery('users');
         $q->IfExists();
         $this->assertQuery($q);
     }
@@ -74,7 +87,8 @@ class SelectQueryTest extends PDOQueryTestCase
             ->limit(20)
             ->offset(10)
             ;
-        $query->where('u.name LIKE :name', [ ':name' => '%John%' ]);
+        $query->where('u.name LIKE :name', [ ':name' => new Bind('name','%John%') ]);
+        $this->assertQuery($query);
         $this->assertSqlStatements($query, [ 
             [ new MySQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 20 OFFSET 10'],
             [ new PgSQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 20 OFFSET 10'],
@@ -88,7 +102,8 @@ class SelectQueryTest extends PDOQueryTestCase
             ->from('users', 'u')
             ->limit(20)
             ;
-        $query->where('u.name LIKE :name', [ ':name' => '%John%' ]);
+        $query->where('u.name LIKE :name', [ ':name' => new Bind('name','%John%') ]);
+        $this->assertQuery($query);
         $this->assertSqlStatements($query, [ 
             [ new MySQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 20'],
             [ new PgSQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 20'],
