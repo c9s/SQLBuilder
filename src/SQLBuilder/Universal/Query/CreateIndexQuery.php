@@ -213,8 +213,8 @@ class CreateIndexQuery implements ToSqlInterface
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
-        if (!$this->tableName || !$this->name) {
-            throw new IncompleteSettingsException('CREATE INDEX Query requires tableName and indexName');
+        if (!$this->tableName) {
+            throw new IncompleteSettingsException('CREATE INDEX Query requires tableName');
         }
         if ($driver instanceof PgSQLDriver) {
             return $this->buildPgSQLQuery($driver, $args);

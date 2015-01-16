@@ -38,6 +38,17 @@ class CreateIndexQueryTest extends QueryTestCase
         ]);
     }
 
+    /**
+     * @expectedException SQLBuilder\Exception\IncompleteSettingsException
+     */
+    public function testCreateIndexWithoutTableName()
+    {
+        // CREATE INDEX CONCURRENTLY idx_salary ON employees(last_name, salary);
+        $q = new CreateIndexQuery;
+        $q->unique('idx_salary');
+        $this->assertSql('', $q);
+    }
+
     public function testCreateIndexFulltext()
     {
         $q = new CreateIndexQuery;
@@ -48,6 +59,7 @@ class CreateIndexQueryTest extends QueryTestCase
             [ new MySQLDriver, 'CREATE FULLTEXT INDEX `idx_salary` ON `employees` (last_name,salary)' ],
         ]);
     }
+
 
     public function testCreateUniqueIndex()
     {
