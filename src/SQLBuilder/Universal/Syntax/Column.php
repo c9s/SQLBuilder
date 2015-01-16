@@ -220,8 +220,8 @@ class Column implements ToSqlInterface
 
 
     public function real($length = NULL, $decimals = NULL) {
-        $this->type = 'real';
-        $this->isa = 'int'; // XXX: correct type?
+        $this->type = 'REAL';
+        $this->isa = 'double';
         if ($length) {
             $this->setLengthInfo($length, $decimals);
         }

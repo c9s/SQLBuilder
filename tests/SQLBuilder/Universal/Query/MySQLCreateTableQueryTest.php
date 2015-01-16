@@ -59,6 +59,41 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
     }
 
 
+    public function testColumns()
+    {
+        $a = 1;
+        $q = new CreateTableQuery('groups');
+        $q->column('c' . $a++)->int();
+        $q->column('c' . $a++)->integer();
+        $q->column('c' . $a++)->tinyInt();
+        $q->column('c' . $a++)->smallInt();
+        $q->column('c' . $a++)->mediumInt();
+        $q->column('c' . $a++)->bigInt();
+
+        $q->column('c' . $a++)->int(3);
+        $q->column('c' . $a++)->integer(3);
+        $q->column('c' . $a++)->tinyInt(3);
+        $q->column('c' . $a++)->smallInt(3);
+        $q->column('c' . $a++)->mediumInt(3);
+        $q->column('c' . $a++)->bigInt(3);
+
+        $q->column('c' . $a++)->int(3)->unsigned();
+        $q->column('c' . $a++)->real(6,1);
+
+        $q->column('c' . $a++)->blob();
+        $q->column('c' . $a++)->text();
+        $q->column('c' . $a++)->mediumText();
+        $q->column('c' . $a++)->longText();
+        $q->column('c' . $a++)->binary();
+
+        $q->column('c' . $a++)->bool();
+        $q->column('c' . $a++)->boolean();
+        $q->column('c' . $a++)->enum([ 'a', 'b', 'c' ]);
+
+        $this->assertQuery($q);
+    }
+
+
     public function testCreateTableWithSimpleIndex()
     {
         $q = new CreateTableQuery('groups');
