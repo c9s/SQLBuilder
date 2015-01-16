@@ -111,6 +111,28 @@ class SelectQueryTest extends QueryTestCase
         is('SELECT id, name, phone, address FROM users AS u WHERE name = :name FOR UPDATE', $sql);
     }
 
+
+    public function testSelectWithOrderBy()
+    {
+        $q = new SelectQuery;
+        $q->select(array('name'))
+            ->from('products');
+        $q->orderBy('name', 'ASC');
+
+        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC']]);
+
+        $q->clearOrderBy();
+
+        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products']]);
+
+        $q->orderBy('name', 'ASC');
+        $q->orderBy('phone', 'ASC');
+
+        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC, phone ASC']]);
+    }
+
+
+
     public function testInExprWithQuery() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
