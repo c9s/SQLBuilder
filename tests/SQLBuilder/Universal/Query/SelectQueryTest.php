@@ -3,8 +3,10 @@ use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\SelectQuery;
+use SQLBuilder\MySQL\Query\ExplainQuery;
+use SQLBuilder\Testing\QueryTestCase;
 
-class SelectQueryTest extends PHPUnit_Framework_TestCase
+class SelectQueryTest extends QueryTestCase
 {
     public function testRawExprAndArgument()
     {
@@ -203,6 +205,15 @@ class SelectQueryTest extends PHPUnit_Framework_TestCase
         $sql = $query->toSql($driver, $args);
         is('SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p ON (p.user_id = u.id)', $sql);
         return $query;
+    }
+
+    /**
+     * @depends testLeftJoin
+     */
+    public function testMySQLExplain($query) {
+        $this->assertSqlStatements(new ExplainQuery($query), [ 
+            [new MySQLDriver, 'EXPLAIN SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p ON (p.user_id = u.id)']
+        ]);
     }
 
 
