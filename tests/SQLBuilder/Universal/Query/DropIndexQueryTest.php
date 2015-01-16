@@ -1,5 +1,6 @@
 <?php
 use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\DropIndexQuery;
@@ -16,8 +17,13 @@ class DropIndexQueryTest extends QueryTestCase
     public function testDropIndex()
     {
         $q = new DropIndexQuery;
-        $q->drop('idx_book')->on('books');
-        $this->assertSql("DROP INDEX `idx_book` ON `books`", $q);
+        $q->drop('idx_book')->on('books')->ifExists();
+
+        $this->assertSqlStatements($q, [
+            [ new MySQLDriver , "DROP INDEX `idx_book` IF EXISTS ON `books`"],
+            [ new PgSQLDriver , 'DROP INDEX "idx_book" IF EXISTS'],
+        ]);
+
     }
 }
 

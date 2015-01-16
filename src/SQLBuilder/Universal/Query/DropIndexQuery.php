@@ -97,7 +97,7 @@ class DropIndexQuery implements ToSqlInterface
         $sql = 'DROP INDEX';
 
         if ($driver instanceof PgSQLDriver) {
-            $sql .= $this->buildConcurrentlyClause();
+            $sql .= $this->buildConcurrentlyClause($driver, $args);
         }
 
         $sql .= ' ' . $driver->quoteIdentifier($this->indexName);
