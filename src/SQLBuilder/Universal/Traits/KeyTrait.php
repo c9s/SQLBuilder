@@ -99,7 +99,7 @@ trait KeyTrait {
                 $sql .= ' ' . $driver->quoteIdentifier($this->indexName);
             }
             if ($this->indexType) {
-                $sql .= ' ' . $this->indexType;
+                $sql .= ' USING ' . $this->indexType;
             }
         }
         $sql .= ' (' . $this->keyColumns->toSql($driver, $args) . ')';

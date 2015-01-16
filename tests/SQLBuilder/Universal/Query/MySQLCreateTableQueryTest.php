@@ -66,14 +66,14 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->column('name')->varchar(20);
         $q->column('content')->text();
         $q->column('blob_content')->blob();
-        $q->index(['name'])->name('name_idx');
+        $q->index(['name'])->name('name_idx')->using('BTREE');
 
         $this->assertSql('CREATE TABLE `groups`(
 `id` integer,
 `name` varchar(20),
 `content` text,
 `blob_content` blob,
-INDEX `name_idx` (`name`)
+INDEX `name_idx` USING BTREE (`name`)
 )',$q);
         $this->assertQuery($q);
     }
