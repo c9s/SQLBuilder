@@ -59,6 +59,25 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
     }
 
 
+    public function testCreateTableWithSimpleIndex()
+    {
+        $q = new CreateTableQuery('groups');
+        $q->column('id')->integer();
+        $q->column('name')->varchar(20);
+        $q->column('content')->text();
+        $q->column('blob_content')->blob();
+        $q->index(['name'])->name('name_idx');
+
+        $this->assertSql('CREATE TABLE `groups`(
+`id` integer,
+`name` varchar(20),
+`content` text,
+`blob_content` blob,
+INDEX `name_idx` (`name`)
+)',$q);
+        $this->assertQuery($q);
+    }
+
     public function testCreateTableWithPrimaryKey()
     {
         $q = new CreateTableQuery('groups');

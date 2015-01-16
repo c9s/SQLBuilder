@@ -13,24 +13,31 @@ trait ConstraintTrait
         return $constraint;
     }
 
-    public function foreignKey($name)
+    public function foreignKey($cols)
     {
         $this->constraints[] = $constraint = new Constraint(NULL, $this);
-        $constraint->foreignKey($name);
+        $constraint->foreignKey($cols);
         return $constraint;
     }
 
-    public function primaryKey($name)
+    public function primaryKey($cols)
     {
         $this->constraints[] = $constraint = new Constraint(NULL, $this);
-        $constraint->primaryKey($name);
+        $constraint->primaryKey($cols);
         return $constraint;
     }
 
-    public function uniqueKey($name)
+    public function uniqueKey($cols)
     {
         $this->constraints[] = $constraint = new Constraint(NULL, $this);
-        $constraint->uniqueKey($name);
+        $constraint->uniqueKey($cols);
+        return $constraint;
+    }
+
+    public function index($cols)
+    {
+        $this->constraints[] = $constraint = new Constraint(NULL, $this);
+        $constraint->index($cols);
         return $constraint;
     }
 

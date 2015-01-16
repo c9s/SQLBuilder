@@ -50,7 +50,14 @@ trait KeyTrait {
         return $this;
     }
 
-    public function index($indexName)
+    public function index($columns)
+    {
+        $this->keyType = 'INDEX';
+        $this->keyColumns = new ColumnNames($columns);
+        return $this;
+    }
+
+    public function name($indexName)
     {
         $this->indexName = $indexName;
         return $this;
