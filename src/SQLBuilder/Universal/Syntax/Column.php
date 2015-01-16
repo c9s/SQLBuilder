@@ -10,7 +10,6 @@ use SQLBuilder\Exception\IncompleteSettingsException;
 use SQLBuilder\Exception\UnsupportedDriverException;
 
 
-
 /**
  * Postgresql Data Types:
  * @see http://www.postgresql.org/docs/9.3/interactive/datatype.html
@@ -31,8 +30,8 @@ use SQLBuilder\Exception\UnsupportedDriverException;
             RESTRICT | CASCADE | SET NULL | NO ACTION
 
  */
-
-class Column implements ToSqlInterface {
+class Column implements ToSqlInterface 
+{
     const  ATTR_ANY = 0;
     const  ATTR_ARRAY = 1;
     const  ATTR_STRING = 2;
@@ -118,7 +117,6 @@ class Column implements ToSqlInterface {
     {
         $this->supportedAttributes = array(
             'autoIncrement' => self::ATTR_FLAG,
-            'immutable'     => self::ATTR_FLAG,
             'unique'        => self::ATTR_FLAG, /* unique, should support by SQL syntax */
             'timezone'      => self::ATTR_FLAG,
 
@@ -134,18 +132,6 @@ class Column implements ToSqlInterface {
     public function null()
     {
         $this->null = TRUE;
-        return $this;
-    }
-
-    public function isNull()
-    {
-        $this->null = TRUE;
-        return $this;
-    }
-
-    public function isNotNull()
-    {
-        $this->null = FALSE;
         return $this;
     }
 
@@ -172,7 +158,6 @@ class Column implements ToSqlInterface {
 
     public function bit($length = NULL)
     {
-
         return $this;
     }
 

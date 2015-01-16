@@ -3,6 +3,7 @@ use SQLBuilder\Universal\Query\CreateTableQuery;
 use SQLBuilder\Universal\Query\DropTableQuery;
 use SQLBuilder\Testing\PDOQueryTestCase;
 use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
 
 class MySQLCreateTableQueryTest extends PDOQueryTestCase
 {
@@ -28,11 +29,28 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 
     public function tearDown()
     {
-        foreach(array('groups','authors') as $table) {
+        foreach(array('groups','authors', 'points') as $table) {
             $dropQuery = new DropTableQuery($table);
             $dropQuery->IfExists();
             $this->assertQuery($dropQuery);
         }
+    }
+
+    public function testCreateTableWithDecimalsAndLength() 
+    {
+        $q = new CreateTableQuery('points');
+        $q->column('x')->float(10,2);
+        $q->column('y')->float(10,2);
+        $q->column('z')->float(10,2);
+        $q->column('strength')->double(10,2);
+        $this->assertSqlStatements($q, [ 
+            [new MySQLDriver, 'CREATE TABLE `points`(
+`x` float(10,2),
+`y` float(10,2),
+`z` float(10,2),
+`strength` double(10,2)
+)'],
+        ]);
     }
 
     public function testCreateTableQuery()
@@ -83,7 +101,6 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $dropQuery->IfExists();
         $this->assertSql('DROP TABLE IF EXISTS `authors`', $dropQuery);
         $this->assertQuery($dropQuery);
-
         $this->assertSql('CREATE TABLE `authors`(
 `id` integer PRIMARY KEY AUTO_INCREMENT,
 `first_name` varchar(32),
