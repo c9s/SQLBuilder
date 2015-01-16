@@ -86,7 +86,7 @@ class SelectQuery implements ToSqlInterface
         return $this->option('DISTINCT');
     }
 
-    public function distinctrow() {
+    public function distinctRow() {
         return $this->option('DISTINCTROW');
     }
 
