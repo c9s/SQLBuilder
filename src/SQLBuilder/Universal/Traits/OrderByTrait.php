@@ -65,12 +65,8 @@ trait OrderByTrait {
         foreach($this->orderByList as $orderBy) {
             if (is_string($orderBy[0])) {
                 $sql .= ', ' . $orderBy[0];
-                if (isset($orderBy[1])) {
-                    if ($orderBy[1] instanceof ToSqlInterface) {
-                        $sql .= ' ' . $orderBy[1]->toSql($driver, $args);
-                    } elseif (is_string($orderBy[1])) {
-                        $sql .= ' ' . $orderBy[1];
-                    }
+                if (isset($orderBy[1]) && $orderBy[1]) {
+                    $sql .= ' ' . $orderBy[1];
                 }
             } elseif ($orderBy[0] instanceof ToSqlInterface) {
                 $sql .= ', ' . $orderBy[0]->toSql($driver, $args);

@@ -142,6 +142,21 @@ class SelectQueryTest extends QueryTestCase
         $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY rand()']]);
     }
 
+
+    public function testSelectSetOrderBy()
+    {
+        $q = new SelectQuery;
+        $q->select(array('name'))
+            ->from('products');
+        $q->setOrderBy([ 
+            ['name', 'ASC'],
+            ['phone', 'DESC'],
+        ]);
+        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC, phone DESC']]);
+    }
+
+
+
     public function testSelectWithOrderBy()
     {
         $q = new SelectQuery;
