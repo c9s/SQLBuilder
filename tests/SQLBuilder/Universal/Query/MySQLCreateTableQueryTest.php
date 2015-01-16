@@ -91,6 +91,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->column('c' . $a++)->enum([ 'a', 'b', 'c' ]);
 
         $q->column('c' . $a++)->date();
+        $q->column('c' . $a++)->time();
         $q->column('c' . $a++)->year();
         $q->column('c' . $a++)->timestamp();
         $q->column('c' . $a++)->datetime();
