@@ -165,11 +165,8 @@ class SelectQuery implements ToSqlInterface
 
 
     public function having($expr = NULL , array $args = array()) {
-
         if (is_string($expr)) {
             $this->having->appendExpr($expr, $args);
-        } else {
-            throw new LogicException("Unsupported argument type of 'where' method.");
         }
         return $this->having;
     }

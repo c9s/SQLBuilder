@@ -11,6 +11,7 @@ use SQLBuilder\Universal\Expr\FuncCallExpr;
 use SQLBuilder\Universal\Query\CreateTableQuery;
 use SQLBuilder\Universal\Query\DropTableQuery;
 use SQLBuilder\Bind;
+use SQLBuilder\Raw;
 
 class SelectQueryTest extends PDOQueryTestCase
 {
@@ -78,6 +79,108 @@ class SelectQueryTest extends PDOQueryTestCase
         $this->assertSql('SELECT id, name, sn, content FROM products WHERE name LIKE :name', $query);
         $this->assertQuery($query);
     }
+
+
+    public function testMySQLSelectUseSqlCache() {
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users', 'u');
+        $query->useSqlCache();
+        $this->assertQuery($query);
+    }
+
+    public function testMySQLSelectUseSqlNoCache() {
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users', 'u');
+        $query->useSqlNoCache();
+        $this->assertQuery($query);
+    }
+
+    public function testMySQLSelectUseSmallResult() {
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users', 'u');
+        $query->useSmallResult();
+        $this->assertQuery($query);
+    }
+
+    public function testMySQLSelectUseBigResult() {
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users', 'u');
+        $query->useBigResult();
+        $this->assertQuery($query);
+    }
+
+    public function testMySQLSelectUseBufferResult() {
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users', 'u');
+        $query->useBufferResult();
+        $this->assertQuery($query);
+    }
+
+    public function testDistinct() {
+        $query = new SelectQuery;
+        $query->select(array('id'))
+            ->distinct()
+            ->from('users', 'u');
+        $this->assertQuery($query);
+        $this->assertSqlStatements($query, [ 
+            [ new MySQLDriver, "SELECT DISTINCT id FROM users AS u"],
+            [ new PgSQLDriver, "SELECT DISTINCT id FROM users AS u"],
+        ]);
+    }
+
+    public function testDistinctRow() {
+        $query = new SelectQuery;
+        $query->select(array('id'))
+            ->distinctRow()
+            ->from('users', 'u');
+        $this->assertQuery($query);
+        $this->assertSqlStatements($query, [ 
+            [ new MySQLDriver, "SELECT DISTINCTROW id FROM users AS u"],
+            // [ new PgSQLDriver, "SELECT id FROM users AS u"],
+        ]);
+    }
+
+    public function testSelectFuncExpr()
+    {
+        $query = new SelectQuery;
+        $query->select(array('name', new FuncCallExpr('COUNT',[new Raw('*')])));
+        $query->from('users');
+        $this->assertQuery($query);
+        $this->assertSql('SELECT name, COUNT(*) FROM users',$query);
+    }
+
+    public function testSelectRawExpr()
+    {
+        $query = new SelectQuery;
+        $query->select(array('name', new Raw('COUNT(*)')));
+        $query->from('users');
+        $this->assertQuery($query);
+        $this->assertSql('SELECT name, COUNT(*) FROM users',$query);
+    }
+
+    public function testGroupByHaving() 
+    {
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users', 'u')
+            ->groupBy('name')
+            ->limit(20)
+            ->offset(10)
+            ;
+        $query->where('u.name LIKE :name', [ ':name' => new Bind('name','%John%') ]);
+        $query->having()->equal('name', 'John');
+        $this->assertQuery($query);
+        $this->assertSqlStatements($query, [ 
+            [ new MySQLDriver, "SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name GROUP BY name HAVING name = 'John' LIMIT 20 OFFSET 10"],
+            [ new PgSQLDriver, "SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name GROUP BY name HAVING name = 'John' LIMIT 20 OFFSET 10"],
+        ]);
+    }
+
 
     public function testLimitAndOffset() 
     {
