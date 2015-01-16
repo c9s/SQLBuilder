@@ -51,6 +51,11 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 `strength` double(10,2)
 )'],
         ]);
+        $this->assertQuery($q);
+
+        $dropQuery = new DropTableQuery('points');
+        $dropQuery->IfExists();
+        $this->assertQuery($dropQuery);
     }
 
     public function testCreateTableQuery()
