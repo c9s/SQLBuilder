@@ -39,13 +39,6 @@ class XorOp extends Op {
     }
 }
 
-class NotOp extends Op { 
-    public function __toString() {
-        return '!';
-    }
-}
-
-
 class Conditions implements ToSqlInterface, Countable
 {
     protected $exprs = array();
