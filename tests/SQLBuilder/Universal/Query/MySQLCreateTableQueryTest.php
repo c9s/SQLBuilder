@@ -80,7 +80,11 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->column('c' . $a++)->int(3)->unsigned();
         $q->column('c' . $a++)->real(6,1);
 
+        $q->column('c' . $a++)->tinyblob();
         $q->column('c' . $a++)->blob();
+        $q->column('c' . $a++)->mediumblob();
+        $q->column('c' . $a++)->longblob();
+
         $q->column('c' . $a++)->text();
         $q->column('c' . $a++)->mediumText();
         $q->column('c' . $a++)->longText();

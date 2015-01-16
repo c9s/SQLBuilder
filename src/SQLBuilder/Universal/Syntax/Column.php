@@ -464,19 +464,19 @@ class Column implements ToSqlInterface
         return $this;
     }
 
-    public function timestamp()
+    public function timestamp($timezone = true)
     {
         $this->type = 'timestamp';
         $this->isa = 'DateTime';
-        $this->setAttribute('timezone', true);
+        $this->setAttribute('timezone', $timezone);
         return $this;
     }
 
-    public function time() 
+    public function time($timezone = true)
     {
         $this->type = 'time';
         $this->isa = 'str';
-        $this->setAttribute('timezone', $bool);
+        $this->setAttribute('timezone', $timezone);
         return $this;
     }
 
