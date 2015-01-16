@@ -4,6 +4,7 @@ use SQLBuilder\Universal\Query\DropTableQuery;
 use SQLBuilder\Testing\PDOQueryTestCase;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Raw;
 
 class MySQLCreateTableQueryTest extends PDOQueryTestCase
 {
@@ -70,7 +71,10 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->column('c' . $a++)->mediumInt();
         $q->column('c' . $a++)->bigInt();
 
+
+        $q->column('c' . $a++)->int()->setLength(6)->setDecimals(1);
         $q->column('c' . $a++)->int(3);
+        $q->column('c' . $a++)->int(3)->default(3);
         $q->column('c' . $a++)->integer(3);
         $q->column('c' . $a++)->tinyInt(3);
         $q->column('c' . $a++)->smallInt(3);
@@ -101,8 +105,11 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 
         $q->column('c' . $a++)->date();
         $q->column('c' . $a++)->time();
+        $q->column('c' . $a++)->time()->default(function() { 
+            return '02:00';
+        });
         $q->column('c' . $a++)->year();
-        $q->column('c' . $a++)->timestamp();
+        $q->column('c' . $a++)->timestamp()->default(new Raw('current_timestamp'));
         $q->column('c' . $a++)->datetime();
 
         $q->column('c' . $a++)->decimal();
