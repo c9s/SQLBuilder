@@ -92,7 +92,17 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         is('str', $bind->getValue());
     }
 
-    public function testAlwaysBind() 
+    public function testAlwaysBindWithBind() 
+    {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $driver->alwaysBindValues(true);
+        is(':name', $driver->deflate(new Bind('name','Ollie'), $args));
+        $bind = $args->getBindingByIndex(0);
+        is('Ollie', $bind->getValue());
+    }
+
+    public function testAlwaysBindWithScalar() 
     {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
