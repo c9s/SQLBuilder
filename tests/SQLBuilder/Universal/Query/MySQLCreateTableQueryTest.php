@@ -58,6 +58,20 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $this->assertQuery($dropQuery);
     }
 
+
+    public function testCreateTableWithPrimaryKey()
+    {
+        $q = new CreateTableQuery('groups');
+        $q->column('id')->integer();
+        $q->engine('InnoDB');
+        $q->primaryKey('id');
+        $this->assertQuery($q);
+        $this->assertSql('CREATE TABLE `groups`(
+`id` integer,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB',$q);
+    }
+
     public function testCreateTableQuery()
     {
         $q = new CreateTableQuery('groups');
