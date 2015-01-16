@@ -3,7 +3,7 @@ namespace SQLBuilder\Universal\Syntax;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
-use Exception;
+use InvalidArgumentException;
 
 class SelectAs implements ToSqlInterface
 {
@@ -25,7 +25,7 @@ class SelectAs implements ToSqlInterface
         } elseif ($this->expr instanceof ToSqlInterface) {
             $sql .= $this->expr->toSql($driver, $args);
         } else {
-            throw new Exception('Unknown type expr');
+            throw new InvalidArgumentException('Unknown type expr');
         }
         $sql .= ' AS ' . $driver->quoteIdentifier($this->as);
         return $sql;
