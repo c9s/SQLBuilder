@@ -19,10 +19,11 @@ class DropIndexQueryTest extends QueryTestCase
         $q = new DropIndexQuery;
         $q->drop('idx_book')->on('books')->ifExists();
         $q->lock('DEFAULT');
+        $q->cascade();
 
         $this->assertSqlStatements($q, [
             [ new MySQLDriver , "DROP INDEX `idx_book` IF EXISTS ON `books` LOCK = DEFAULT"],
-            [ new PgSQLDriver , 'DROP INDEX "idx_book" IF EXISTS'],
+            [ new PgSQLDriver , 'DROP INDEX "idx_book" IF EXISTS CASCADE'],
         ]);
 
     }
