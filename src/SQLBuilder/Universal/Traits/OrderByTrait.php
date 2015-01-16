@@ -12,6 +12,13 @@ use SQLBuilder\ParamMarker;
 
 trait OrderByTrait {
 
+
+    /**
+     * [
+     *   [ 'column_name', 'ASC' ],
+     *   [ 'column_name', new FuncCallExpr('rand', []) ],
+     * ]
+     */
     protected $orderByList = array();
 
     /**
@@ -56,10 +63,17 @@ trait OrderByTrait {
 
         $sql = '';
         foreach($this->orderByList as $orderBy) {
-            if (is_array($orderBy)) {
-                $sql .= ', ' . $orderBy[0] . ($orderBy[1] ? ' ' . strtoupper($orderBy[1]) : '');
-            } elseif ($orderBy instanceof ToSqlInterface) {
-                $sql .= ', ' . $orderBy->toSql($driver, $args);
+            if (is_string($orderBy[0])) {
+                $sql .= ', ' . $orderBy[0];
+                if (isset($orderBy[1])) {
+                    if ($orderBy[1] instanceof ToSqlInterface) {
+                        $sql .= ' ' . $orderBy[1]->toSql($driver, $args);
+                    } elseif (is_string($orderBy[1])) {
+                        $sql .= ' ' . $orderBy[1];
+                    }
+                }
+            } elseif ($orderBy[0] instanceof ToSqlInterface) {
+                $sql .= ', ' . $orderBy[0]->toSql($driver, $args);
             }
         }
         return ' ORDER BY' . ltrim($sql, ',');

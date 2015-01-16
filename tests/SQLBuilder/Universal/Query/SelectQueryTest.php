@@ -5,6 +5,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\MySQL\Query\ExplainQuery;
 use SQLBuilder\Testing\QueryTestCase;
+use SQLBuilder\Universal\Expr\FuncCallExpr;
 
 class SelectQueryTest extends QueryTestCase
 {
@@ -111,6 +112,35 @@ class SelectQueryTest extends QueryTestCase
         is('SELECT id, name, phone, address FROM users AS u WHERE name = :name FOR UPDATE', $sql);
     }
 
+    public function testSelectWithOrderByClear()
+    {
+        $q = new SelectQuery;
+        $q->select(array('name'))
+            ->from('products');
+        $q->orderBy('name', 'ASC');
+        $q->clearOrderBy();
+        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products']]);
+
+    }
+
+    public function testSelectWithMultipleOrderBy()
+    {
+        $q = new SelectQuery;
+        $q->select(array('name'))
+            ->from('products');
+        $q->orderBy('name', 'ASC');
+        $q->orderBy('phone', 'ASC');
+        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC, phone ASC']]);
+    }
+
+    public function testSelectWithOrderByFuncExpr()
+    {
+        $q = new SelectQuery;
+        $q->select(array('name'))
+            ->from('products');
+        $q->orderBy(new FuncCallExpr('rand'));
+        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY rand()']]);
+    }
 
     public function testSelectWithOrderBy()
     {
@@ -118,17 +148,7 @@ class SelectQueryTest extends QueryTestCase
         $q->select(array('name'))
             ->from('products');
         $q->orderBy('name', 'ASC');
-
         $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC']]);
-
-        $q->clearOrderBy();
-
-        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products']]);
-
-        $q->orderBy('name', 'ASC');
-        $q->orderBy('phone', 'ASC');
-
-        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC, phone ASC']]);
     }
 
 
