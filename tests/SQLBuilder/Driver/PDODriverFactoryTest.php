@@ -4,6 +4,7 @@ use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Testing\PDOQueryTestCase;
 use SQLBuilder\DataType\Unknown;
 use SQLBuilder\Bind;
+use SQLBuilder\ArgumentArray;
 
 class PDODriverFactoryTest extends PDOQueryTestCase
 {
@@ -93,11 +94,11 @@ class PDODriverFactoryTest extends PDOQueryTestCase
 
     public function testAlwaysBind() 
     {
+        $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $driver->alwaysBindValues(true);
-
-        $bind = $driver->deflate(10);
-        ok($bind instanceof Bind);
+        is(':p1', $driver->deflate(10, $args));
+        $bind = $args->getBindingByIndex(0);
         is(10, $bind->getValue());
     }
 

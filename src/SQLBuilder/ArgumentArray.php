@@ -28,9 +28,15 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
         return new ArrayIterator($this->args);
     }
 
-    public function add(Bind $bind) { 
+    public function add(Bind $bind) 
+    {
         $this->bindings[] = $bind;
         $this->args[$bind->getMarker()] = $bind->getValue();
+    }
+
+    public function getBindingByIndex($idx)
+    {
+        return $this->bindings[$idx];
     }
 
     public function getBindings() {
