@@ -208,7 +208,7 @@ abstract class BaseDriver
                 }
                 return $value->getMarker();
             } else {
-                $bind = new Bind('?', $value);
+                return new Bind('?', $value);
             }
         }
 

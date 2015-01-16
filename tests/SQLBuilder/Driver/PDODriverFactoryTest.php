@@ -3,6 +3,7 @@ use SQLBuilder\Driver\PDODriverFactory;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Testing\PDOQueryTestCase;
 use SQLBuilder\DataType\Unknown;
+use SQLBuilder\Bind;
 
 class PDODriverFactoryTest extends PDOQueryTestCase
 {
@@ -88,6 +89,16 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         is('p2', $bind->getName());
         is(':p2', $bind->getMarker());
         is('str', $bind->getValue());
+    }
+
+    public function testAlwaysBind() 
+    {
+        $driver = new MySQLDriver;
+        $driver->alwaysBindValues(true);
+
+        $bind = $driver->deflate(10);
+        ok($bind instanceof Bind);
+        is(10, $bind->getValue());
     }
 
     public function testSetQuoter()
