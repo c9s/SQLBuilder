@@ -2,26 +2,57 @@
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\MySQL\Query\ExplainQuery;
-use SQLBuilder\Testing\QueryTestCase;
+use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\Universal\Expr\FuncCallExpr;
+use SQLBuilder\Testing\QueryTestCase;
+use SQLBuilder\Testing\PDOQueryTestCase;
+use SQLBuilder\Universal\Query\CreateTableQuery;
+use SQLBuilder\Universal\Query\DropTableQuery;
+use SQLBuilder\Bind;
 
-class SelectQueryTest extends QueryTestCase
+class SelectQueryTest extends PDOQueryTestCase
 {
+    public $driverType = 'MySQL';
+
+    public function createDriver()
+    {
+        return new MySQLDriver;
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $q = new CreateTableQuery('products');
+        $q->column('id')->integer()
+            ->primary()
+            ->autoIncrement();
+        $q->column('name')->varchar(32);
+        $q->column('sn')->varchar(16);
+        $q->column('price')->int(4)->unsigned();
+        $q->column('content')->text();
+        $this->assertQuery($q);
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+        $q = new DropTableQuery('products');
+        $q->IfExists();
+        $this->assertQuery($q);
+    }
+
     public function testRawExprAndArgument()
     {
-        $args = new ArgumentArray;
-        $driver = new MySQLDriver;
         $query = new SelectQuery;
-        ok($query);
-        $query->select(array('name', 'phone', 'address'))
-            ->from('contacts')
-            ;
-        $query->where('name LIKE :name', [ ':name' => '%John%' ]);
-        $sql = $query->toSql($driver, $args);
-        is('SELECT name, phone, address FROM contacts WHERE name LIKE :name', $sql);
+        $query->select(array('id', 'name', 'sn', 'content'))
+            ->from('products');
+        $query->where('name LIKE :name', [ ':name' => new Bind('name','%John%') ]);
+        $this->assertSql('SELECT id, name, sn, content FROM products WHERE name LIKE :name', $query);
+        $this->assertQuery($query);
     }
+
 
     public function testSimpleJoin() {
         $args = new ArgumentArray;
