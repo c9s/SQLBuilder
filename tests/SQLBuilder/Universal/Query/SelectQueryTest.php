@@ -1,5 +1,6 @@
 <?php
 use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\MySQL\Query\ExplainQuery;
@@ -65,6 +66,48 @@ class SelectQueryTest extends PDOQueryTestCase
         $this->assertQuery($query);
     }
 
+    public function testLimitAndOffset() 
+    {
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users', 'u')
+            ->limit(20)
+            ->offset(10)
+            ;
+        $query->where('u.name LIKE :name', [ ':name' => '%John%' ]);
+        $this->assertSqlStatements($query, [ 
+            [ new MySQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 20 OFFSET 10'],
+            [ new PgSQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 20 OFFSET 10'],
+        ]);
+    }
+
+    public function testLimit() 
+    {
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users', 'u')
+            ->limit(20)
+            ;
+        $query->where('u.name LIKE :name', [ ':name' => '%John%' ]);
+        $this->assertSqlStatements($query, [ 
+            [ new MySQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 20'],
+            [ new PgSQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 20'],
+        ]);
+    }
+
+    public function testPaging() 
+    {
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users', 'u')
+            ->page(1)
+            ;
+        $query->where('u.name LIKE :name', [ ':name' => '%John%' ]);
+        $this->assertSqlStatements($query, [ 
+            [ new MySQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 10'],
+            [ new PgSQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 10'],
+        ]);
+    }
 
     public function testSimpleJoin() {
         $args = new ArgumentArray;
