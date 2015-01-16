@@ -85,10 +85,15 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->column('c' . $a++)->mediumblob();
         $q->column('c' . $a++)->longblob();
 
+        $q->column('c' . $a++)->char(12);
+        $q->column('c' . $a++)->varchar(12);
+        $q->column('c' . $a++)->varchar(12)->unique();
         $q->column('c' . $a++)->text();
         $q->column('c' . $a++)->mediumText();
         $q->column('c' . $a++)->longText();
         $q->column('c' . $a++)->binary();
+        $q->column('c' . $a++)->binary(255);
+
 
         $q->column('c' . $a++)->bool();
         $q->column('c' . $a++)->boolean();
@@ -99,6 +104,12 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->column('c' . $a++)->year();
         $q->column('c' . $a++)->timestamp();
         $q->column('c' . $a++)->datetime();
+
+        $q->column('c' . $a++)->decimal();
+        $q->column('c' . $a++)->decimal(5);
+
+        $q->column('c' . $a++)->numeric();
+        $q->column('c' . $a++)->numeric(10)->comment('FOR NUMERIC');
 
         $this->assertQuery($q);
     }

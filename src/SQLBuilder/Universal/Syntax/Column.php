@@ -698,7 +698,7 @@ class Column implements ToSqlInterface
         }
 
         if ($this->comment) {
-            $sql .= ' COMMENT ' . $driver->defalte($this->comment);
+            $sql .= ' COMMENT ' . $driver->deflate($this->comment);
         }
         return $sql;
     }
