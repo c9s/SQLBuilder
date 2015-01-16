@@ -43,6 +43,18 @@ class SelectQueryTest extends PDOQueryTestCase
         $this->assertQuery($q);
     }
 
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testInvalidWhereExpr()
+    {
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'sn', 'content'))
+            ->from('products');
+        $query->where(TRUE);
+    }
+
     public function testRawExprAndArgument()
     {
         $query = new SelectQuery;

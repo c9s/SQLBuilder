@@ -10,7 +10,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Universal\Syntax\Conditions;
-use LogicException;
+use InvalidArgumentException;
 
 trait WhereTrait {
 
@@ -24,7 +24,7 @@ trait WhereTrait {
             if (is_string($expr)) {
                 $this->where->appendExpr($expr, $args);
             } else {
-                throw new LogicException("Unsupported argument type of 'where' method.");
+                throw new InvalidArgumentException("Unsupported argument type of 'where' method.");
             }
         }
         return $this->where;
