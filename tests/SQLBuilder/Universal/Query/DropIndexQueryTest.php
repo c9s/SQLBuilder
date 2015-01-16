@@ -14,18 +14,37 @@ class DropIndexQueryTest extends QueryTestCase
         return new MySQLDriver; 
     }
 
-    public function testDropIndex()
+    public function testDropIndexSimple()
+    {
+        $q = new DropIndexQuery;
+        $q->drop('idx_book')->on('books');
+        $this->assertSqlStatements($q, [
+            [ new MySQLDriver , "DROP INDEX `idx_book` ON `books`"],
+            [ new PgSQLDriver , 'DROP INDEX "idx_book"'],
+        ]);
+    }
+
+    public function testDropIndexCascade()
     {
         $q = new DropIndexQuery;
         $q->drop('idx_book')->on('books')->ifExists();
         $q->lock('DEFAULT');
         $q->cascade();
-
         $this->assertSqlStatements($q, [
             [ new MySQLDriver , "DROP INDEX `idx_book` IF EXISTS ON `books` LOCK = DEFAULT"],
             [ new PgSQLDriver , 'DROP INDEX "idx_book" IF EXISTS CASCADE'],
         ]);
+    }
 
+    public function testDropIndexRestrict()
+    {
+        $q = new DropIndexQuery;
+        $q->drop('idx_book')->on('books')->ifExists();
+        $q->restrict();
+        $this->assertSqlStatements($q, [
+            [ new MySQLDriver , "DROP INDEX `idx_book` IF EXISTS ON `books`"],
+            [ new PgSQLDriver , 'DROP INDEX "idx_book" IF EXISTS RESTRICT'],
+        ]);
     }
 }
 
