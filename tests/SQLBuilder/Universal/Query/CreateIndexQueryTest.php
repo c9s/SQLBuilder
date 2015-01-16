@@ -71,6 +71,18 @@ class CreateIndexQueryTest extends QueryTestCase
         $this->assertSql('CREATE UNIQUE INDEX `idx_salary` ON `employees` (last_name,salary)', $q);
     }
 
+    public function testCreateUniqueIndexUsing()
+    {
+        // CREATE INDEX CONCURRENTLY idx_salary ON employees(last_name, salary);
+        $q = new CreateIndexQuery;
+        $q->unique('idx_salary')
+            ->on('employees', [ 'last_name', 'salary' ])
+            ->using('BTREE')
+            ;
+        $this->assertSql('CREATE UNIQUE INDEX `idx_salary` ON `employees` (last_name,salary) USING BTREE', $q);
+    }
+
+
 
     public function testCreateIndexFunctional() 
     {
