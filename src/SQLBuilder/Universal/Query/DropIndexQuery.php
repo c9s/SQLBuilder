@@ -60,11 +60,6 @@ class DropIndexQuery implements ToSqlInterface
         return $this;
     }
 
-    public function name($indexName) {
-        $this->indexName = $indexName;
-        return $this;
-    }
-
     public function on($tableName)
     {
         $this->tableName = $tableName;

@@ -24,6 +24,21 @@ class DropIndexQueryTest extends QueryTestCase
         ]);
     }
 
+
+    /**
+     * @expectedException SQLBuilder\Exception\IncompleteSettingsException
+     */
+    public function testDropIndexWithoutTable()
+    {
+        $q = new DropIndexQuery;
+        $q->drop('idx_book');
+        $this->assertSqlStrings($q, [
+            [ new MySQLDriver , "DROP INDEX `idx_book` IF EXISTS ON `books` LOCK = DEFAULT ALGORITHM = DEFAULT"],
+            [ new PgSQLDriver , 'DROP INDEX "idx_book" IF EXISTS CASCADE'],
+        ]);
+    }
+
+
     public function testDropIndexCascade()
     {
         $q = new DropIndexQuery;
