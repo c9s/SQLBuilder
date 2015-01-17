@@ -20,7 +20,7 @@ class AlterTableAddColumn implements ToSqlInterface
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         $sql = 'ADD COLUMN ';
-        $sql .= $this->column->buildMySQLDefinitionSql($driver, $args);
+        $sql .= $this->column->buildDefinitionSql($driver, $args);
         return $sql;
     }
 }

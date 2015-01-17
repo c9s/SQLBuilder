@@ -20,10 +20,6 @@ class AlterTableRenameColumn implements ToSqlInterface
         $this->toColumn = $toColumn;
     }
 
-    public function changeTo(Column $toColumn) {
-        $this->toColumn = $toColumn;
-    }
-
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         $sql = '';
@@ -50,7 +46,7 @@ class AlterTableRenameColumn implements ToSqlInterface
             }
 
             // the 'toColumn' must be a type of Column, we need at least column type to rename.
-            $sql .= ' TO ' . $driver->quoteIdentifier($this->toColumn->getName()) . ' ' . $this->toColumn->getType();
+            $sql .= ' TO ' . $driver->quoteIdentifier($this->toColumn->getName());
 
         } else {
             throw new UnsupportedDriverException;

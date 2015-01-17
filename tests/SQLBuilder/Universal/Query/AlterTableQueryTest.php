@@ -4,6 +4,8 @@ use SQLBuilder\Universal\Query\DropTableQuery;
 use SQLBuilder\Universal\Query\AlterTableQuery;
 use SQLBuilder\Testing\PDOQueryTestCase;
 use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Syntax\Column;
 
@@ -18,10 +20,30 @@ class AlterTableQueryTest extends PDOQueryTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->tearDown();
+        $this->testCreateTables();
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+        $this->cleanUpTables();
+    }
+
+    public function cleanUpTables() {
+        foreach(array('products','users','products_new') as $table) {
+            $dropQuery = new DropTableQuery($table);
+            $dropQuery->IfExists();
+            $this->assertDriverQuery(new MySQLDriver, $dropQuery);
+            $this->assertDriverQuery(new PgSQLDriver, $dropQuery);
+            $this->assertDriverQuery(new SQLiteDriver, $dropQuery);
+        }
+    }
+
+    public function testCreateTables()
+    {
+        $this->cleanUpTables();
 
         $createProductTable = new CreateTableQuery('products');
-
         $createProductTable->column('id')->integer()
             ->primary()
             ->autoIncrement();
@@ -34,45 +56,41 @@ class AlterTableQueryTest extends PDOQueryTestCase
 
         $createProductTable->column('updated_by')->int();
 
-        $this->assertQuery($createProductTable);
+        $this->assertDriverQuery(new MySQLDriver, $createProductTable);
+        $this->assertDriverQuery(new PgSQLDriver, $createProductTable);
 
         $createUserTable = new CreateTableQuery('users');
         $createUserTable->column('id')->integer()
             ->primary()
             ->autoIncrement();
-        $this->assertQuery($createUserTable);
+
+        $this->assertDriverQuery(new MySQLDriver, $createUserTable);
+        $this->assertDriverQuery(new PgSQLDriver, $createUserTable);
+        $this->assertDriverQuery(new SQLiteDriver, $createUserTable);
     }
 
-    public function tearDown()
-    {
-        parent::tearDown();
-        foreach(array('products','users','products_new') as $table) {
-            $dropQuery = new DropTableQuery($table);
-            $dropQuery->IfExists();
-            $this->assertQuery($dropQuery);
-        }
-    }
-
+    /**
+     * @depends testCreateTables
+     */
     public function testModifyColumnNullAttribute()
     {
-        $driver = new MySQLDriver;
-        $args = new ArgumentArray;
-
         $column = new Column('name', 'text');
         $column->null();
 
         $q = new AlterTableQuery('products');
         $q->modifyColumn($column);
 
-        $sql = $q->toSql($driver, $args);
-        $this->assertQuery($q);
-        is('ALTER TABLE `products` MODIFY COLUMN `name` text NULL', $sql);
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'ALTER TABLE `products` MODIFY COLUMN `name` text NULL'],
+        ]);
     }
 
 
 
 
     /**
+     * @depends testCreateTables
      * @expectedException SQLBuilder\Exception\IncompleteSettingsException
      */
     public function testModifyColumnWithIncompleteSettings() 
@@ -85,11 +103,11 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $sql = $q->toSql($driver, $args);
     }
 
+    /**
+     * @depends testCreateTables
+     * */
     public function testModifyColumnDefaultAttribute()
     {
-        $driver = new MySQLDriver;
-        $args = new ArgumentArray;
-
         $column = new Column('name', 'varchar(30)');
         $column->default('John');
         $column->null();
@@ -97,11 +115,15 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $q = new AlterTableQuery('products');
         $q->modifyColumn($column);
 
-        $sql = $q->toSql($driver, $args);
-        $this->assertQuery($q);
-        is('ALTER TABLE `products` MODIFY COLUMN `name` varchar(30) NULL DEFAULT \'John\'', $sql);
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertSqlStrings($q, [
+            [new MySQLDriver, 'ALTER TABLE `products` MODIFY COLUMN `name` varchar(30) NULL DEFAULT \'John\''],
+        ]);
     }
 
+    /**
+     * @depends testCreateTables
+     * */
 
     public function testAddColumn() 
     {
@@ -115,11 +137,15 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $q = new AlterTableQuery('products');
         $q->addColumn($column);
 
-        $sql = $q->toSql($driver, $args);
-        $this->assertQuery($q);
-        is('ALTER TABLE `products` ADD COLUMN `last_name` varchar(30) NOT NULL DEFAULT \'\'', $sql);
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'ALTER TABLE `products` ADD COLUMN `last_name` varchar(30) NOT NULL DEFAULT \'\''],
+        ]);
     }
 
+    /**
+     * @depends testCreateTables
+     * */
 
     public function testRenameTable()
     {
@@ -139,13 +165,13 @@ class AlterTableQueryTest extends PDOQueryTestCase
         is('ALTER TABLE `products_new` RENAME TO `products`', $sql);
     }
 
+    /**
+     * @depends testCreateTables
+     * */
 
     public function testAddForeignKey()
     {
-        $driver = new MySQLDriver;
-        $args = new ArgumentArray;
         $q = new AlterTableQuery('products');
-
         $q->add()->foreignKey('created_by')
             ->references('users', array('id'))
                 ;
@@ -153,26 +179,35 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $q->add()->constraint('fk_updated_by')->foreignKey('updated_by')
             ->references('users', array('id'))
                 ;
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertDriverQuery(new PgSQLDriver, $q);
 
-        $sql = $q->toSql($driver, $args);
-        $this->assertQuery($q);
-        is('ALTER TABLE `products` ADD FOREIGN KEY (`created_by`) REFERENCES `users` (`id`), ADD CONSTRAINT `fk_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`)', $sql);
+        $this->assertSqlStrings($q, [
+            [new MySQLDriver, 'ALTER TABLE `products` ADD FOREIGN KEY (`created_by`) REFERENCES `users` (`id`), ADD CONSTRAINT `fk_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`)'],
+        ]);
     }
 
+    /**
+     * @depends testCreateTables
+     * */
 
     public function testRenameColumn()
     {
-        $driver = new MySQLDriver;
-        $args = new ArgumentArray;
         $q = new AlterTableQuery('products');
         $q->renameColumn('name', new Column('title', 'varchar(30)'));
 
-        $sql = $q->toSql($driver, $args);
-        $this->assertQuery($q);
-        is('ALTER TABLE `products` CHANGE COLUMN `name` `title` varchar(30)', $sql);
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertDriverQuery(new PgSQLDriver, $q);
+
+        $this->assertSqlStrings($q, [
+            [new MySQLDriver, 'ALTER TABLE `products` CHANGE COLUMN `name` `title` varchar(30)'],
+            [new PgSQLDriver, 'ALTER TABLE "products" RENAME COLUMN "name" TO "title"'],
+        ]);
     }
 
-
+    /**
+     * @depends testCreateTables
+     */
     public function testRenameColumnFromColumnClass()
     {
         $driver = new MySQLDriver;

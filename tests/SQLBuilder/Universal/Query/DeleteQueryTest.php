@@ -61,7 +61,7 @@ class DeleteQueryTest extends PDOQueryTestCase
         $q = new DeleteQuery;
         $q->delete('users');
         $q->orderBy('first_name', 'DESC');
-        $this->assertSqlStatements($q, [
+        $this->assertSqlStrings($q, [
             [ new MySQLDriver, 'DELETE FROM users ORDER BY first_name DESC' ],
         ]);
         $this->assertQuery($q);
@@ -78,7 +78,7 @@ class DeleteQueryTest extends PDOQueryTestCase
                 ->equal('id', 4)
             ;
         $query->limit(1);
-        $this->assertSqlStatements($query, [
+        $this->assertSqlStrings($query, [
             [ new MySQLDriver, 'DELETE FROM users AS u PARTITION (p1,p2) WHERE id = 3 OR id = 4 LIMIT 1' ],
             [ new PgSQLDriver, 'DELETE FROM users AS u WHERE id = 3 OR id = 4' ],
             [ new SQLiteDriver, 'DELETE FROM users AS u WHERE id = 3 OR id = 4' ],
@@ -97,7 +97,7 @@ class DeleteQueryTest extends PDOQueryTestCase
             ;
         $query->limit(1);
         
-        $this->assertSqlStatements($query, [ 
+        $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, 'DELETE FROM users AS u PARTITION (p1,p2) WHERE id = 3 AND confirmed IS TRUE LIMIT 1' ],
             [ new PgSQLDriver, 'DELETE FROM users AS u WHERE id = 3 AND confirmed IS TRUE' ],
             [ new SQLiteDriver, 'DELETE FROM users AS u WHERE id = 3 AND confirmed IS 1' ],

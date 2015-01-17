@@ -19,7 +19,7 @@ class UpdateQueryTest extends PDOQueryTestCase
         $query->update('users2', 'u2');
         $query->set([ 'name' => 'Mary', 'phone' => '09752222123' ]);
         $query->where()->equal('id', 3);
-        $this->assertSqlStatements($query, [ 
+        $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, 'UPDATE users AS u, users2 AS u2 SET name = :name, phone = :phone WHERE id = 3' ],
         ]);
     }
@@ -38,7 +38,7 @@ class UpdateQueryTest extends PDOQueryTestCase
         $query->where()->equal('id', 3);
         $query->limit(1);
 
-        $this->assertSqlStatements($query, [ 
+        $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, 'UPDATE users LEFT JOIN user_votes AS uv ON (uv.user_id = u.id) PARTITION (p1,p2) SET name = :name, phone = :phone WHERE id = 3 LIMIT 1' ],
             [ new PgSQLDriver, 'UPDATE users LEFT JOIN user_votes AS uv ON (uv.user_id = u.id) SET name = :name, phone = :phone WHERE id = 3' ],
             [ new SQLiteDriver, 'UPDATE users LEFT JOIN user_votes AS uv ON (uv.user_id = u.id) SET name = :name, phone = :phone WHERE id = 3' ],

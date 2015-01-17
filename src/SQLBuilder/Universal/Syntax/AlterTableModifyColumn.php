@@ -39,7 +39,7 @@ class AlterTableModifyColumn implements ToSqlInterface
                 throw new IncompleteSettingsException('Missing column type');
             }
 
-            $sql .= $this->column->buildMySQLDefinitionSql($driver, $args);
+            $sql .= $this->column->buildDefinitionSql($driver, $args);
 
         } elseif ($driver instanceof PgSQLDriver) {
 

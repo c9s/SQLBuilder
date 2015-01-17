@@ -127,7 +127,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ->distinct()
             ->from('users', 'u');
         $this->assertQuery($query);
-        $this->assertSqlStatements($query, [ 
+        $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, "SELECT DISTINCT id FROM users AS u"],
             [ new PgSQLDriver, "SELECT DISTINCT id FROM users AS u"],
         ]);
@@ -139,7 +139,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ->distinctRow()
             ->from('users', 'u');
         $this->assertQuery($query);
-        $this->assertSqlStatements($query, [ 
+        $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, "SELECT DISTINCTROW id FROM users AS u"],
             // [ new PgSQLDriver, "SELECT id FROM users AS u"],
         ]);
@@ -175,7 +175,7 @@ class SelectQueryTest extends PDOQueryTestCase
         $query->where('u.name LIKE :name', [ ':name' => new Bind('name','%John%') ]);
         $query->having()->equal('name', 'John');
         $this->assertQuery($query);
-        $this->assertSqlStatements($query, [ 
+        $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, "SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name GROUP BY name HAVING name = 'John' LIMIT 20 OFFSET 10"],
             [ new PgSQLDriver, "SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name GROUP BY name HAVING name = 'John' LIMIT 20 OFFSET 10"],
         ]);
@@ -192,7 +192,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ;
         $query->where('u.name LIKE :name', [ ':name' => new Bind('name','%John%') ]);
         $this->assertQuery($query);
-        $this->assertSqlStatements($query, [ 
+        $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 20 OFFSET 10'],
             [ new PgSQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 20 OFFSET 10'],
         ]);
@@ -207,7 +207,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ;
         $query->where('u.name LIKE :name', [ ':name' => new Bind('name','%John%') ]);
         $this->assertQuery($query);
-        $this->assertSqlStatements($query, [ 
+        $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 20'],
             [ new PgSQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 20'],
         ]);
@@ -221,7 +221,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ->page(1)
             ;
         $query->where('u.name LIKE :name', [ ':name' => '%John%' ]);
-        $this->assertSqlStatements($query, [ 
+        $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 10'],
             [ new PgSQLDriver, 'SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name LIMIT 10'],
         ]);
@@ -323,7 +323,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ->from('products');
         $q->orderBy('name', 'ASC');
         $q->clearOrderBy();
-        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products']]);
+        $this->assertSqlStrings($q, [[new MySQLDriver, 'SELECT name FROM products']]);
 
     }
 
@@ -334,7 +334,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ->from('products');
         $q->orderBy('name', 'ASC');
         $q->orderBy('phone', 'ASC');
-        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC, phone ASC']]);
+        $this->assertSqlStrings($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC, phone ASC']]);
     }
 
     public function testSelectWithOrderByFuncExpr()
@@ -343,7 +343,7 @@ class SelectQueryTest extends PDOQueryTestCase
         $q->select(array('name'))
             ->from('products');
         $q->orderBy(new FuncCallExpr('rand'));
-        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY rand()']]);
+        $this->assertSqlStrings($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY rand()']]);
     }
 
 
@@ -356,7 +356,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ['name', 'ASC'],
             ['phone', 'DESC'],
         ]);
-        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC, phone DESC']]);
+        $this->assertSqlStrings($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC, phone DESC']]);
     }
 
 
@@ -367,7 +367,7 @@ class SelectQueryTest extends PDOQueryTestCase
         $q->select(array('name'))
             ->from('products');
         $q->orderBy('name', 'ASC');
-        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC']]);
+        $this->assertSqlStrings($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC']]);
     }
 
     public function testSelectPartitions()
@@ -377,7 +377,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ->from('products')
             ->partitions('p1', 'p2')
             ;
-        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products PARTITION (p1,p2)']]);
+        $this->assertSqlStrings($q, [[new MySQLDriver, 'SELECT name FROM products PARTITION (p1,p2)']]);
 
 
         $q = new SelectQuery;
@@ -385,7 +385,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ->from('products')
             ->partitions(['p1', 'p2'])
             ;
-        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products PARTITION (p1,p2)']]);
+        $this->assertSqlStrings($q, [[new MySQLDriver, 'SELECT name FROM products PARTITION (p1,p2)']]);
     }
 
 
@@ -548,7 +548,7 @@ class SelectQueryTest extends PDOQueryTestCase
      * @depends testLeftJoin
      */
     public function testMySQLExplain($query) {
-        $this->assertSqlStatements(new ExplainQuery($query), [ 
+        $this->assertSqlStrings(new ExplainQuery($query), [ 
             [new MySQLDriver, 'EXPLAIN SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p ON (p.user_id = u.id)']
         ]);
     }

@@ -3,6 +3,7 @@ namespace SQLBuilder\Universal\Syntax;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Exception\CriticalIncompatibleUsageException;
@@ -613,8 +614,65 @@ class Column implements ToSqlInterface
         return $this->name;
     }
 
+    public function buildPgSQLDefinitionSql(BaseDriver $driver, ArgumentArray $args)
+    {
+        $isa  = $this->isa ?: 'str';
 
-    public function buildMySQLDefinitionSql(BaseDriver $driver, ArgumentArray $args)
+        $sql = '';
+        $sql .= $driver->quoteIdentifier($this->name);
+
+        if ($this->autoIncrement) {
+            $sql .= ' SERIAL';
+        } else {
+            // format length to SQL
+            if ($this->type) {
+                $sql .= ' ' . $this->type;
+                if ($this->length && $this->decimals) {
+                    $sql .= '(' . $this->length . ',' . $this->decimals . ')';
+                } elseif ($this->length) {
+                    $sql .= '(' . $this->length . ')';
+                }
+            }
+        }
+
+        if ($this->unsigned) {
+            $sql .= ' UNSIGNED';
+        }
+
+        if (!is_null($this->null)) {
+            if ($this->null === FALSE) {
+                $sql .= ' NOT NULL';
+            } elseif ($this->null === TRUE) {
+                $sql .= ' NULL';
+            }
+        }
+
+        // Build default value
+        if (($default = $this->default) !== NULL && ! is_callable($this->default )) { 
+            // raw sql default value
+
+            if ($default instanceof Raw) {
+
+                $sql .= ' DEFAULT ' . $default[0];
+
+            } elseif (is_callable($default)) {
+
+                $sql .= ' DEFAULT ' . call_user_func($this->default, $this);
+
+            } elseif (is_array($default)) {
+
+                // TODO: remove raw value by array type here to support 'set' and 'enum'
+                $sql .= ' DEFAULT ' . $default;
+
+            } else {
+                $sql .= ' DEFAULT ' . $driver->deflate($default);
+            }
+        }
+        return $sql;
+    }
+
+
+    public function buildDefinitionSql(BaseDriver $driver, ArgumentArray $args)
     {
         $isa  = $this->isa ?: 'str';
 
@@ -690,7 +748,11 @@ class Column implements ToSqlInterface
         }
 
         if ($this->autoIncrement) {
-            $sql .= ' AUTO_INCREMENT';
+            if ($driver instanceof SQLiteDriver) {
+                $sql .= ' AUTOINCREMENT';
+            } elseif ($driver instanceof MySQLDriver) {
+                $sql .= ' AUTO_INCREMENT';
+            }
         }
 
         if ($this->unique) {
@@ -706,8 +768,10 @@ class Column implements ToSqlInterface
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
-        if ($driver instanceof MySQLDriver) {
-            return $this->buildMySQLDefinitionSql($driver, $args);
+        if ($driver instanceof MySQLDriver || $driver instanceof SQLiteDriver ) {
+            return $this->buildDefinitionSql($driver, $args);
+        } elseif ($driver instanceof PgSQLDriver) {
+            return $this->buildPgSQLDefinitionSql($driver, $args);
         } else {
             throw new UnsupportedDriverException;
         }

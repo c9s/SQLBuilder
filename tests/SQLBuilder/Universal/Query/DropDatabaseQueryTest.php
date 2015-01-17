@@ -21,7 +21,7 @@ class DropDatabaseQueryTest extends QueryTestCase
 
     public function testDropDatabaseQuery() {
         $q = new DropDatabaseQuery('test');
-        $this->assertSqlStatements($q, [ 
+        $this->assertSqlStrings($q, [ 
             [ new PgSQLDriver, 'DROP DATABASE "test"'],
             [ new MySQLDriver, "DROP DATABASE `test`"],
         ]);

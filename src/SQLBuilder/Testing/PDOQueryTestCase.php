@@ -6,6 +6,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Driver\SQLiteDriver;
 use PHPUnit_Framework_TestCase;
 
 use PDO;
@@ -302,12 +303,33 @@ abstract class PDOQueryTestCase extends QueryTestCase
             $conn = $this->createConnection('mysql');
         } elseif ($driver instanceof PgSQLDriver) {
             $conn = $this->createConnection('pgsql');
+        } elseif ($driver instanceof SQLiteDriver) {
+            $conn = $this->createConnection('sqlite');
         }
-        $stm = $conn->prepare( $sql )->execute($args->toArray());
+        $stm = $conn->prepare( $sql );
+
         $err = $conn->errorInfo();
-        $this->assertEquals('00000', $err[0]);
+        $this->assertEquals('00000', $err[0], $err[1]);
+
+        $stm->execute($args->toArray());
+
+        $err = $conn->errorInfo();
+        $this->assertEquals('00000', $err[0], $err[1]);
         return $args;
     }
+
+    /*
+    public function assertSqlQueries(ToSqlInterface $query, array $defines) {
+        foreach($defines as $define) {
+            list($driver, $expectedSQL) = $define;
+            $args = new ArgumentArray;
+            $sql = $query->toSql($driver, $args);
+            $this->assertEquals($expectedSQL, $sql);
+            // $this->assertDriverQuery($driver, $query);
+        }
+    }
+     */
+
 
     public function query($sql, array $args = array())
     {

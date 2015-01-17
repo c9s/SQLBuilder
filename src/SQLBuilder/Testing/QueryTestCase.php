@@ -36,12 +36,12 @@ abstract class QueryTestCase extends PHPUnit_Framework_TestCase
         $this->assertSame($expectedSql, $sql);
     }
 
-    public function assertSqlStatements(ToSqlInterface $query, array $defines) {
+    public function assertSqlStrings(ToSqlInterface $query, array $defines) {
         foreach($defines as $define) {
             list($driver, $expectedSQL) = $define;
             $args = new ArgumentArray;
             $sql = $query->toSql($driver, $args);
-            is($expectedSQL, $sql);
+            $this->assertEquals($expectedSQL, $sql);
         }
     }
 

@@ -67,7 +67,7 @@ class DropTableQuery implements ToSqlInterface
         $sql .= ' TABLE';
 
         if ($driver instanceof PgSQLDriver) {
-            $sql .= $this->buildConcurrentlyClause();
+            $sql .= $this->buildConcurrentlyClause($driver, $args);
         }
 
         $sql .= $this->buildIfExistsClause($driver, $args);

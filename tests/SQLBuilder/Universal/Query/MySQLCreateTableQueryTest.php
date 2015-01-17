@@ -42,7 +42,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->column('y')->float(10,2);
         $q->column('z')->float(10,2);
         $q->column('strength')->double(10,2);
-        $this->assertSqlStatements($q, [ 
+        $this->assertSqlStrings($q, [ 
             [new MySQLDriver, 'CREATE TABLE `points`(
 `x` float(10,2),
 `y` float(10,2),

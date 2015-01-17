@@ -16,7 +16,7 @@ class CreateIndexQueryTest extends QueryTestCase
         $q->on('employees', [ 'last_name', 'salary' ])
             ->concurrently()
             ;
-        $this->assertSqlStatements($q, [ 
+        $this->assertSqlStrings($q, [ 
             [ new MySQLDriver, 'CREATE INDEX `idx_salary` ON `employees` (last_name,salary)' ],
             [ new PgSQLDriver, 'CREATE INDEX CONCURRENTLY "idx_salary" ON "employees" (last_name,salary)' ],
         ]);
@@ -32,7 +32,7 @@ class CreateIndexQueryTest extends QueryTestCase
             ->on('employees', [ 'last_name', 'salary' ])
             ->concurrently()
             ;
-        $this->assertSqlStatements($q, [ 
+        $this->assertSqlStrings($q, [ 
             [ new MySQLDriver, 'CREATE INDEX `idx_salary` ON `employees` (last_name,salary)' ],
             [ new PgSQLDriver, 'CREATE INDEX CONCURRENTLY "idx_salary" ON "employees" (last_name,salary)' ],
         ]);
@@ -55,7 +55,7 @@ class CreateIndexQueryTest extends QueryTestCase
         $q->fulltext('idx_salary')
             ->on('employees', [ 'last_name', 'salary' ])
             ;
-        $this->assertSqlStatements($q, [ 
+        $this->assertSqlStrings($q, [ 
             [ new MySQLDriver, 'CREATE FULLTEXT INDEX `idx_salary` ON `employees` (last_name,salary)' ],
         ]);
     }
