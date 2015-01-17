@@ -69,11 +69,9 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $this->assertDriverQuery(new SQLiteDriver, $createUserTable);
     }
 
-    /**
-     * @depends testCreateTables
-     */
     public function testModifyColumnNullAttribute()
     {
+        // column type is required for MySQL to modify
         $column = new Column('name', 'text');
         $column->null();
 
@@ -85,6 +83,48 @@ class AlterTableQueryTest extends PDOQueryTestCase
             [new MySQLDriver, 'ALTER TABLE `products` MODIFY COLUMN `name` text NULL'],
         ]);
     }
+
+    public function testModifyColumnNullAttributePg()
+    {
+        $column = new Column('name');
+        $column->null();
+
+        $q = new AlterTableQuery('products');
+        $q->modifyColumn($column);
+
+        $this->assertDriverQuery(new PgSQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new PgSQLDriver, 'ALTER TABLE "products" ALTER COLUMN "name" DROP NOT NULL'],
+        ]);
+    }
+
+    public function testModifyColumnNotNullAttributePg()
+    {
+        $column = new Column('name');
+        $column->notNull();
+
+        $q = new AlterTableQuery('products');
+        $q->modifyColumn($column);
+
+        $this->assertDriverQuery(new PgSQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new PgSQLDriver, 'ALTER TABLE "products" ALTER COLUMN "name" SET NOT NULL'],
+        ]);
+    }
+
+    public function testModifyColumnTypeAttributePg()
+    {
+        $column = new Column('name', 'text');
+
+        $q = new AlterTableQuery('products');
+        $q->modifyColumn($column);
+
+        $this->assertDriverQuery(new PgSQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new PgSQLDriver, 'ALTER TABLE "products" ALTER COLUMN "name" TYPE text'],
+        ]);
+    }
+
 
 
 

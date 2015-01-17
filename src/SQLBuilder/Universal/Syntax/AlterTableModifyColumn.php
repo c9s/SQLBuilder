@@ -9,6 +9,7 @@ use SQLBuilder\Universal\Traits\KeyTrait;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\Exception\UnsupportedDriverException;
 use SQLBuilder\Exception\IncompleteSettingsException;
+use LogicException;
 
 class AlterTableModifyColumn implements ToSqlInterface
 {
@@ -22,16 +23,7 @@ class AlterTableModifyColumn implements ToSqlInterface
     {
         $sql = '';
         if ($driver instanceof MySQLDriver) {
-
             $sql = 'MODIFY COLUMN ';
-
-            /*
-            if (is_string($this->column)) {
-                $sql .= $driver->quoteIdentifier($this->column);
-            } elseif ($this->column instanceof Column) {
-                $sql .= $driver->quoteIdentifier($this->column->getName());
-            }
-            */
             if (!$this->column->getName()) {
                 throw new IncompleteSettingsException('Missing column name');
             }
@@ -45,14 +37,21 @@ class AlterTableModifyColumn implements ToSqlInterface
 
             // ALTER TABLE distributors RENAME CONSTRAINT zipchk TO zip_check;
             $sql = 'ALTER COLUMN ';
-            if (is_string($this->fromColumn)) {
-                $sql .= $driver->quoteIdentifier($this->fromColumn);
-            } elseif ($this->fromColumn instanceof Column) {
-                $sql .= $driver->quoteIdentifier($this->fromColumn->getName());
-            }
+            $sql .= $driver->quoteIdentifier($this->column->getName());
 
-            // the 'column' must be a type of Column, we need at least column type to rename.
-            $sql .= ' TO ' . $driver->quoteIdentifier($this->column->getName()) . ' ' . $this->column->getType();
+            if ($type = $this->column->getType()) {
+                $sql .= ' TYPE ' . $type;
+            } elseif ($default = $this->column->default) {
+                $sql .= ' SET DEFAULT ' . $driver->deflate($default);
+            } elseif ($this->column->nullDefined()) {
+                if ($this->column->null === true) {
+                    $sql .= ' DROP NOT NULL';
+                } elseif($this->column->null === false) {
+                    $sql .= ' SET NOT NULL';
+                }
+            } else {
+                throw new LogicException('Empty column attribute ');
+            }
 
         } else {
             throw new UnsupportedDriverException;

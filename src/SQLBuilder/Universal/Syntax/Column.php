@@ -72,13 +72,13 @@ class Column implements ToSqlInterface
      *
      * @var integer
      */
-    protected $decimals;
+    public $decimals;
 
-    protected $type;
+    public $type;
 
-    protected $isa = 'str';
+    public $isa = 'str';
 
-    protected $null = NULL;
+    public $null = NULL;
 
     /**
      * @var array is only used when isa = enum
@@ -432,6 +432,9 @@ class Column implements ToSqlInterface
         return $this;
     }
 
+    public function nullDefined() {
+        return $this->null !== NULL;
+    }
 
     /**
      * serial type
@@ -614,6 +617,18 @@ class Column implements ToSqlInterface
         return $this->name;
     }
 
+    public function buildNullClause(BaseDriver $driver) 
+    {
+        if (!is_null($this->null)) {
+            if ($this->null === FALSE) {
+                return ' NOT NULL';
+            } elseif ($this->null === TRUE) {
+                return  ' NULL';
+            }
+        }
+        return '';
+    }
+
     public function buildPgSQLDefinitionSql(BaseDriver $driver, ArgumentArray $args)
     {
         $isa  = $this->isa ?: 'str';
@@ -639,13 +654,7 @@ class Column implements ToSqlInterface
             $sql .= ' UNSIGNED';
         }
 
-        if (!is_null($this->null)) {
-            if ($this->null === FALSE) {
-                $sql .= ' NOT NULL';
-            } elseif ($this->null === TRUE) {
-                $sql .= ' NULL';
-            }
-        }
+        $sql .= $this->buildNullClause($driver);
 
         // Build default value
         if (($default = $this->default) !== NULL && ! is_callable($this->default )) { 
