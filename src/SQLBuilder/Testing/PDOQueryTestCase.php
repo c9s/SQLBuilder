@@ -3,7 +3,11 @@ namespace SQLBuilder\Testing;
 use SQLBuilder\Testing\QueryTestCase;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
 use PHPUnit_Framework_TestCase;
+
 use PDO;
 use Exception;
 
@@ -279,7 +283,8 @@ abstract class PDOQueryTestCase extends QueryTestCase
         return;
     }
 
-    public function assertQuery(ToSqlInterface $query, $message = '') {
+    public function assertQuery(ToSqlInterface $query)
+    {
         $driver = $this->createDriver();
         $args = new ArgumentArray;
         $sql = $query->toSql($driver, $args);
@@ -287,6 +292,22 @@ abstract class PDOQueryTestCase extends QueryTestCase
         return $args;
     }
 
+
+    public function assertDriverQuery(BaseDriver $driver, ToSqlInterface $query)
+    {
+        $args = new ArgumentArray;
+        $sql = $query->toSql($driver, $args);
+
+        if ($driver instanceof MySQLDriver) {
+            $conn = $this->createConnection('mysql');
+        } elseif ($driver instanceof PgSQLDriver) {
+            $conn = $this->createConnection('pgsql');
+        }
+        $stm = $conn->prepare( $sql )->execute($args->toArray());
+        $err = $conn->errorInfo();
+        $this->assertEquals('00000', $err[0]);
+        return $args;
+    }
 
     public function query($sql, array $args = array())
     {

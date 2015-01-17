@@ -39,11 +39,6 @@ class Join implements ToSqlInterface
         return $this;
     }
 
-    public function straight() {
-        $this->joinType = 'STRAIGHT_JOIN';
-        return $this;
-    }
-
     public function on($conditionExpr = NULL, array $args = array())
     {
         if (is_string($conditionExpr)){

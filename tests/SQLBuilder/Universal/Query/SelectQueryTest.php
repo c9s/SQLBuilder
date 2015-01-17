@@ -464,8 +464,7 @@ class SelectQueryTest extends PDOQueryTestCase
         $driver = new MySQLDriver;
         $query = new SelectQuery;
         $query->select(array('id', 'name', 'phone', 'address'))
-            ->from('users' ,'u')
-            ;
+            ->from('users' ,'u');
         $query->join('posts')
                 ->as('p')
                 ->right()
@@ -476,12 +475,28 @@ class SelectQueryTest extends PDOQueryTestCase
         return $query;
     }
 
+    public function testJoinInner()
+    {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users' ,'u');
+        $query->join('posts')
+                ->as('p')
+                ->inner()
+                ->on('p.user_id = u.id')
+                ;
+        $sql = $query->toSql($driver, $args);
+        is('SELECT id, name, phone, address FROM users AS u INNER JOIN posts AS p ON (p.user_id = u.id)', $sql);
+        return $query;
+    }
+
     public function testRightJoin()
     {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $query = new SelectQuery;
-        ok($query);
         $query->select(array('id', 'name', 'phone', 'address'))
             ->from('users' ,'u')
             ;

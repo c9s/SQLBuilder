@@ -32,14 +32,25 @@ class CreateDatabaseQueryTest extends PDOQueryTestCase
     }
 
     public function testCreateDatabaseQuery() {
+        $q = new DropDatabaseQuery('test_db');
+        $q->ifExists();
+
+        $this->assertDriverQuery(new PgSQLDriver, $q);
+        $this->assertDriverQuery(new MySQLDriver, $q);
+
         $q = new CreateDatabaseQuery;
-        $q->create('test')
+        $q->create('test_db')
             ->characterSet('utf8')
-            ->collate('en_US.UTF-8');
+            ->collate('en_US.UTF-8')
+            ->owner('postgres')
+            ;
         $this->assertSqlStatements($q, [
-            [ new PgSQLDriver, 'CREATE DATABASE "test" LC_COLLATE \'en_US.UTF-8\''],
-            [ new MySQLDriver, "CREATE DATABASE `test` CHARACTER SET 'utf8' COLLATE 'en_US.UTF-8'"],
+            [ new PgSQLDriver, 'CREATE DATABASE "test_db" OWNER \'postgres\' LC_COLLATE \'en_US.UTF-8\''],
+            [ new MySQLDriver, "CREATE DATABASE `test_db` CHARACTER SET 'utf8' COLLATE 'en_US.UTF-8'"],
         ]);
+
+        $this->assertDriverQuery(new PgSQLDriver, $q);
+        $this->assertDriverQuery(new MySQLDriver, $q);
     }
 
 
