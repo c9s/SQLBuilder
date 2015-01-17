@@ -6,6 +6,7 @@ use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\ToSqlInterface;
+use SQLBuilder\Raw;
 use SQLBuilder\Exception\CriticalIncompatibleUsageException;
 use SQLBuilder\Exception\IncompleteSettingsException;
 use SQLBuilder\Exception\UnsupportedDriverException;
