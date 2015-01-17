@@ -4,7 +4,9 @@ use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Testing\PDOQueryTestCase;
 use SQLBuilder\DataType\Unknown;
 use SQLBuilder\Bind;
+use SQLBuilder\Raw;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\ParamMarker;
 
 class PDODriverFactoryTest extends PDOQueryTestCase
 {
@@ -21,8 +23,6 @@ class PDODriverFactoryTest extends PDOQueryTestCase
             array('sqlite'),
         );
     }
-
-
 
     /**
      * @dataProvider driverTypeProvider
@@ -111,6 +111,22 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         is(':p1', $driver->deflate(10, $args));
         $bind = $args->getBindingByIndex(0);
         is(10, $bind->getValue());
+    }
+
+    public function testAlwaysBindWithRaw() 
+    {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $driver->alwaysBindValues(true);
+        is('10', $driver->deflate(new Raw('10'), $args));
+    }
+
+    public function testAlwaysBindWithParamMarker() 
+    {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $driver->alwaysBindValues(true);
+        is('?', $driver->deflate(new ParamMarker('hack'), $args));
     }
 
     public function testSetQuoter()

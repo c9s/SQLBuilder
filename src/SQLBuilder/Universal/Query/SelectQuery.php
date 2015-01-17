@@ -20,6 +20,7 @@ use SQLBuilder\MySQL\Syntax\Partition;
 use SQLBuilder\Universal\Traits\OrderByTrait;
 use SQLBuilder\Universal\Traits\WhereTrait;
 use SQLBuilder\MySQL\Traits\PartitionTrait;
+use SQLBuilder\MySQL\Traits\IndexHintTrait;
 use SQLBuilder\Universal\Traits\JoinTrait;
 use SQLBuilder\Universal\Traits\OptionTrait;
 
@@ -52,6 +53,7 @@ class SelectQuery implements ToSqlInterface
     use JoinTrait;
     use PartitionTrait;
     use OptionTrait;
+    use IndexHintTrait;
 
     protected $select = array();
 
@@ -256,20 +258,30 @@ class SelectQuery implements ToSqlInterface
     }
 
 
-    public function buildFromClause(BaseDriver $driver) {
+    public function buildFromClause(BaseDriver $driver, ArgumentArray $args) {
         $tableRefs = array();
         foreach($this->from as $k => $v) {
             /* "column AS alias" OR just "column" */
             if (is_string($k)) {
                 $sql = $driver->quoteTable($k) . ' AS ' . $v;
-                if ($driver instanceof MySQLDriver && isset($this->indexHintOn[$k])) {
-                    $sql .= $this->indexHintOn[$k]->toSql($driver, new ArgumentArray);
+
+                if ($driver instanceof MySQLDriver) {
+                    if ($this->definedIndexHint($v)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
+                    } elseif ($this->definedIndexHint($k)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
+                    }
                 }
                 $tableRefs[] = $sql;
             } elseif ( is_integer($k) || is_numeric($k) ) {
                 $sql = $driver->quoteTable($v);
-                if ($driver instanceof MySQLDriver && isset($this->indexHintOn[$v])) {
-                    $sql .= $this->indexHintOn[$v]->toSql($driver, new ArgumentArray);
+
+                if ($driver instanceof MySQLDriver) {
+                    if ($this->definedIndexHint($v)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
+                    } elseif ($this->definedIndexHint($k)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
+                    }
                 }
                 $tableRefs[] = $sql;
             }
@@ -332,10 +344,9 @@ class SelectQuery implements ToSqlInterface
         $sql = 'SELECT'
             . $this->buildOptionClause()
             . $this->buildSelectClause($driver, $args)
-            . $this->buildFromClause($driver)
+            . $this->buildFromClause($driver, $args)
             . $this->buildPartitionClause($driver, $args)
             . $this->buildJoinClause($driver, $args)
-            . $this->buildJoinIndexHintClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
             . $this->buildGroupByClause($driver, $args)
             . $this->buildHavingClause($driver, $args)

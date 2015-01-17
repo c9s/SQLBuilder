@@ -19,6 +19,7 @@ use SQLBuilder\Universal\Traits\WhereTrait;
 use SQLBuilder\Universal\Traits\OptionTrait;
 use SQLBuilder\Universal\Traits\LimitTrait;
 use SQLBuilder\MySQL\Traits\PartitionTrait;
+use SQLBuilder\MySQL\Traits\IndexHintTrait;
 
 use Exception;
 use LogicException;
@@ -67,8 +68,10 @@ class UpdateQuery implements ToSqlInterface
     use JoinTrait;
     use OrderByTrait;
     use LimitTrait;
-    use PartitionTrait;
 
+    /** MySQL only traits **/
+    use PartitionTrait;
+    use IndexHintTrait;
 
     protected $updateTables = array();
 
@@ -143,7 +146,7 @@ class UpdateQuery implements ToSqlInterface
             . $this->buildUpdateTableClause($driver);
 
         if ($driver instanceof MySQLDriver) {
-            $sql .= $this->buildJoinIndexHintClause($driver, $args);
+            $sql .= $this->buildIndexHintClause($driver, $args);
         }
 
         $sql .= $this->buildJoinClause($driver, $args);

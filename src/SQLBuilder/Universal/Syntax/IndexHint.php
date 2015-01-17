@@ -16,20 +16,12 @@ class IndexHint implements ToSqlInterface
 
     public $indexList = array();
 
-    protected $tableRef;
-
     protected $for;
 
     protected $parent;
 
     public function __construct($parent) {
         $this->parent = $parent;
-    }
-
-    public function on($tableRef)
-    {
-        $this->tableRef = $tableRef;
-        return $this;
     }
 
     public function useIndex($indexList)

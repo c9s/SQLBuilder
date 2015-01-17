@@ -5,9 +5,12 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ToSqlInterface;
 use LogicException;
+use SQLBuilder\MySQL\Traits\IndexHintTrait;
 
 class Join implements ToSqlInterface
 {
+    use IndexHintTrait;
+
     public $conditions;
 
     public $alias;
@@ -61,6 +64,9 @@ class Join implements ToSqlInterface
         if ($this->alias) {
             $sql .= ' AS ' . $this->alias;
         }
+
+        $sql .= $this->buildIndexHintClause($driver, $args);
+
         if ($this->conditions->hasExprs()) {
             $sql .= ' ON (' . $this->conditions->toSql($driver, $args) . ')';
         }

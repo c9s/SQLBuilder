@@ -14,12 +14,8 @@ use SQLBuilder\Universal\Syntax\LeftJoin;
 use SQLBuilder\Universal\Syntax\RightJoin;
 use SQLBuilder\Universal\Syntax\IndexHint;
 
-
 trait JoinTrait {
-
     protected $joins = array();
-
-    protected $indexHintOn = array();
 
     public function rightJoin($table, $alias = NULL) {
         $join = new RightJoin($table, $alias);
@@ -47,15 +43,6 @@ trait JoinTrait {
         return end($this->joins);
     }
 
-    public function indexHint($tableRef) {
-        $hint = new IndexHint($this);
-        $hint->on($tableRef);
-        $this->indexHints[] = $hint;
-        return $hint;
-    }
-
-
-
     public function buildJoinClause(BaseDriver $driver, ArgumentArray $args) {
         $sql = '';
         if (!empty($this->joins)) {
@@ -65,18 +52,5 @@ trait JoinTrait {
         }
         return $sql;
     }
-
-    public function buildJoinIndexHintClause(BaseDriver $driver, ArgumentArray $args)
-    {
-        if (empty($this->indexHints)) {
-            return '';
-        }
-        $clauses = array();
-        foreach($this->indexHints as $hint) {
-            $clauses[] = $hint->toSql($driver, $args);
-        }
-        return join(' ', $clauses);
-    }
-
 }
 

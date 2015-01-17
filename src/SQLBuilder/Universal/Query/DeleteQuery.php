@@ -16,6 +16,7 @@ use SQLBuilder\Universal\Syntax\Join;
 use SQLBuilder\Universal\Syntax\IndexHint;
 use SQLBuilder\MySQL\Syntax\Partition;
 use SQLBuilder\MySQL\Traits\PartitionTrait;
+use SQLBuilder\MySQL\Traits\IndexHintTrait;
 use SQLBuilder\Universal\Syntax\Paging;
 use SQLBuilder\Universal\Traits\OrderByTrait;
 use SQLBuilder\Universal\Traits\JoinTrait;
@@ -57,6 +58,7 @@ class DeleteQuery implements ToSqlInterface
     use WhereTrait;
     use LimitTrait;
     use PartitionTrait;
+    use IndexHintTrait;
 
     protected $deleteTables = array();
 
@@ -111,7 +113,7 @@ class DeleteQuery implements ToSqlInterface
         }
 
         $sql .= $this->buildJoinClause($driver, $args)
-            . $this->buildJoinIndexHintClause($driver, $args)
+            . $this->buildIndexHintClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
             ;
 

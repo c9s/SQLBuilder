@@ -44,9 +44,9 @@ class CreateDatabaseQuery implements ToSqlInterface
     protected $characterSet;
 
 
-    public function name($name) {
+    public function __construct($name = NULL)
+    {
         $this->dbName = $name;
-        return $this;
     }
 
     public function create($name) {
