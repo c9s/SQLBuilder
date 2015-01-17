@@ -8,6 +8,9 @@ use Exception;
 
 class PDODriverFactory
 {
+    /**
+     * @codeCoverageIgnore
+     */
     static public function create(PDO $pdo)
     {
         $driverName = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);

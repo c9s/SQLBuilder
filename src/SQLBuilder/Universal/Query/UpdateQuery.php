@@ -115,20 +115,29 @@ class UpdateQuery implements ToSqlInterface
         return ' SET ' . join(', ', $setClauses);
     }
 
-    public function buildUpdateTableClause(BaseDriver $driver) {
+    public function buildFromClause(BaseDriver $driver) {
         $tableRefs = array();
         foreach($this->updateTables as $k => $v) {
             /* "column AS alias" OR just "column" */
             if (is_string($k)) {
                 $sql = $driver->quoteTable($k) . ' AS ' . $v;
-                if ($driver instanceof MySQLDriver && isset($this->indexHintOn[$k])) {
-                    $sql .= $this->indexHintOn[$k]->toSql($driver, new ArgumentArray);
+                if ($driver instanceof MySQLDriver) {
+                    if ($this->definedIndexHint($v)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
+                    } elseif ($this->definedIndexHint($k)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
+                    }
                 }
                 $tableRefs[] = $sql;
             } elseif ( is_integer($k) || is_numeric($k) ) {
                 $sql = $driver->quoteTable($v);
-                if ($driver instanceof MySQLDriver && isset($this->indexHintOn[$v])) {
-                    $sql .= $this->indexHintOn[$v]->toSql($driver, NULL);
+
+                if ($driver instanceof MySQLDriver) {
+                    if ($this->definedIndexHint($v)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
+                    } elseif ($this->definedIndexHint($k)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
+                    }
                 }
                 $tableRefs[] = $sql;
             }
@@ -143,7 +152,7 @@ class UpdateQuery implements ToSqlInterface
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'UPDATE'
             . $this->buildOptionClause()
-            . $this->buildUpdateTableClause($driver);
+            . $this->buildFromClause($driver);
 
         if ($driver instanceof MySQLDriver) {
             $sql .= $this->buildIndexHintClause($driver, $args);
