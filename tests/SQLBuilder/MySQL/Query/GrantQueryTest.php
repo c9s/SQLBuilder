@@ -5,15 +5,16 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\MySQL\Query\CreateUserQuery;
 use SQLBuilder\MySQL\Query\GrantQuery;
 use SQLBuilder\ToSqlInterface;
-use SQLBuilder\Testing\QueryTestCase;
+use SQLBuilder\Testing\PDOQueryTestCase;
+use SQLBuilder\MySQL\Syntax\UserSpecification;
 
-class GrantQueryTest extends QueryTestCase
+class GrantQueryTest extends PDOQueryTestCase
 {
+    public $driverType = 'MySQL';
 
     public function createDriver() {
         return new MySQLDriver;
     }
-
 
     public function testBasicGrantQuery()
     {
@@ -22,6 +23,26 @@ class GrantQueryTest extends QueryTestCase
         $q->grant('ALL')->on('db1.*')
             ->to('jeffrey@localhost');
         $this->assertSql('GRANT ALL ON db1.* TO `jeffrey`@`localhost`', $q);
+        $this->assertQuery($q);
+    }
+
+    public function testGrantToWithUserSpec()
+    {
+        $specOn = UserSpecification::createWithSpec(NULL, 'localuser@localhost');
+        $specTo = UserSpecification::createWithSpec(NULL, 'externaluser@somehost');
+        $q = new GrantQuery;
+        $q->grant('PROXY')->on($specOn)
+            ->to($specTo);
+        $this->assertSql('GRANT PROXY ON `localuser`@`localhost` TO `externaluser`@`somehost`', $q);
+    }
+
+    public function testGrantProxy()
+    {
+        // GRANT PROXY ON 'localuser'@'localhost' TO 'externaluser'@'somehost';
+        $q = new GrantQuery;
+        $q->grant('PROXY')->on('localuser@localhost')
+            ->to('externaluser@somehost');
+        $this->assertSql('GRANT PROXY ON `localuser`@`localhost` TO `externaluser`@`somehost`', $q);
     }
 
     public function testGrantPrivWithColumns() 

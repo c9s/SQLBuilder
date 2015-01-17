@@ -1,6 +1,5 @@
 <?php
 namespace SQLBuilder\MySQL\Query;
-use Exception;
 use SQLBuilder\Raw;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
@@ -12,7 +11,8 @@ use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\MySQL\Syntax\UserSpecification;
 use SQLBuilder\MySQL\Traits\UserSpecTrait;
-
+use InvalidArgumentException;
+use Exception;
 /**
 
     SYNTAX
@@ -166,12 +166,16 @@ class GrantQuery implements ToSqlInterface
      * user specification is only supported in GRANT PROXY statement.
      */
     public function on($target, $objectType = NULL) {
-        // check if it's a user spec
-        if (strpos($target,'@') !== false) {
-            $user = UserSpecification::createWithSpec($this, $target);
+        if ($objectType) {
             $this->objectType = $objectType;
+        }
+        // check if it's a user spec
+        if (is_string($target) && strpos($target,'@') !== false) {
+            $user = UserSpecification::createWithSpec($this, $target);
             $this->on = $user;
-        } elseif(is_string($target)) {
+        } elseif ($target instanceof UserSpecification) {
+            $this->on = $target;
+        } elseif (is_string($target)) {
             $this->on = $target;
         } else {
             throw new InvalidArgumentException('The "ON" clause only supports UserSpecification class or string type');
@@ -180,11 +184,13 @@ class GrantQuery implements ToSqlInterface
     }
 
     public function to($spec) {
-        if (strpos($spec,'@') !== false) {
+        if ($spec instanceof UserSpecification) {
+            $this->to[] = $spec;
+        } elseif (strpos($spec,'@') !== false) {
             $user = UserSpecification::createWithSpec($this, $spec);
             $this->to[] = $user;
         } else {
-            $this->to[] = $spec;
+            throw new InvalidArgumentException('Unsupported "to" expression');
         }
         return $this;
     }

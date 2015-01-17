@@ -17,7 +17,7 @@ class UserSpecification {
 
     public $authPlugin;
 
-    public function __construct($parent) {
+    public function __construct($parent = null) {
         $this->parent = $parent;
     }
 
@@ -60,7 +60,9 @@ class UserSpecification {
     }
 
     public function __call($m , $args) {
-        return call_user_func_array(array($this->parent, $m), $args);
+        if ($this->parent) {
+            return call_user_func_array(array($this->parent, $m), $args);
+        }
     }
 
 
