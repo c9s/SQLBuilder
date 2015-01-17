@@ -6,6 +6,7 @@ use SQLBuilder\ParamMarker;
 use SQLBuilder\Criteria;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\ToSqlInterface;
+use SQLBuilder\Bind;
 use LogicException;
 
 class LikeExpr implements ToSqlInterface { 
@@ -25,26 +26,26 @@ class LikeExpr implements ToSqlInterface {
         // XXX: $pat can be a Bind object
         $isBind = $this->pat instanceof Bind;
 
-        $pat = $isBind ? $this->pat->value : $this->pat;
+        $pat = $isBind ? $this->pat->getValue() : $this->pat;
 
         switch ($this->criteria) {
         case Criteria::CONTAINS:
-            $pat = '%' . $this->pat . '%';
+            $pat = '%' . $pat . '%';
             break;
         case Criteria::STARTS_WITH:
-            $pat = $this->pat . '%';
+            $pat = $pat . '%';
             break;
 
         case Criteria::ENDS_WITH:
-            $pat = '%' . $this->pat;
+            $pat = '%' . $pat;
             break;
 
         case Criteria::EXACT:
-            $pat = $this->pat;
+            $pat = $pat;
             break;
 
         default:
-            $pat = '%' . $this->pat . '%';
+            $pat = '%' . $pat . '%';
             break;
         }
 

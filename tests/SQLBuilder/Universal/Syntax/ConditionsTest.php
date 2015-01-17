@@ -3,6 +3,7 @@ use SQLBuilder\Universal\Syntax\Conditions;
 use SQLBuilder\Criteria;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\DataType\Unknown;
+use SQLBuilder\Bind;
 
 class ConditionsTest extends PHPUnit_Framework_TestCase
 {
@@ -190,6 +191,7 @@ class ConditionsTest extends PHPUnit_Framework_TestCase
             [ Criteria::CONTAINS ,   "John", "name LIKE '%John%'" ],
             [ Criteria::STARTS_WITH, "John", "name LIKE 'John%'" ],
             [ Criteria::ENDS_WITH,   "John", "name LIKE '%John'" ],
+            [ Criteria::EXACT,       "John", "name LIKE 'John'" ],
         ];
     }
 
@@ -205,6 +207,12 @@ class ConditionsTest extends PHPUnit_Framework_TestCase
         $expr->like('name', $pat, $criteria);
         $sql = $expr->toSql($driver, $args);
         is($expectedSql, $sql);
+
+
+        $expr = new Conditions;
+        $expr->like('name', new Bind('name',$pat), $criteria);
+        $sql = $expr->toSql($driver, $args);
+        is('name LIKE :name', $sql);
     }
 
     public function testRegExp()
