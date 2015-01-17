@@ -57,6 +57,29 @@ class GrantQueryTest extends PDOQueryTestCase
         $this->assertSql('GRANT SELECT (col1), INSERT (col1,col2) ON mydb.mytbl TO `someuser`@`somehost`', $q);
     }
 
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testIncompleteSettings()
+    {
+        $q = new GrantQuery;
+        $q->on(false);
+    }
+
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testIncompleteSettings2()
+    {
+        $q = new GrantQuery;
+        $q->to(false);
+    }
+
+
+
+
     public function testGrantExecuteOnProcedure() 
     {
         $driver = new MySQLDriver;
