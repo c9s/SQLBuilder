@@ -43,13 +43,14 @@ class CreateDatabaseQueryTest extends PDOQueryTestCase
             ->characterSet('utf8')
             ->collate('en_US.UTF-8')
             ->owner('postgres')
+            ->ctype('en_US.UTF-8')
             ->template('template0')
             ->encoding('UTF8')
             ->connectionLimit(3)
             ;
         $this->assertSqlStrings($q, [
             [ new MySQLDriver, "CREATE DATABASE `test_db` CHARACTER SET 'utf8' COLLATE 'en_US.UTF-8'"],
-            [ new PgSQLDriver, 'CREATE DATABASE "test_db" OWNER \'postgres\' TEMPLATE \'template0\' ENCODING \'UTF8\' LC_COLLATE \'en_US.UTF-8\' CONNECTION LIMIT 3'],
+            [ new PgSQLDriver, 'CREATE DATABASE "test_db" OWNER \'postgres\' TEMPLATE \'template0\' ENCODING \'UTF8\' LC_COLLATE \'en_US.UTF-8\' LC_CTYPE \'en_US.UTF-8\' CONNECTION LIMIT 3'],
         ]);
 
         $this->assertDriverQuery(new PgSQLDriver, $q);
