@@ -434,6 +434,15 @@ class SelectQueryTest extends PDOQueryTestCase
         return $query;
     }
 
+    public function testSelectAlias()
+    {
+        $q = new SelectQuery;
+        $q->select(array('name' => 'user_name'))
+            ->from('users' ,'u')
+            ;
+        $this->assertSql('SELECT name AS user_name FROM users AS u', $q);
+    }
+
     public function testSetFrom()
     {
         $q = new SelectQuery;
