@@ -10,8 +10,6 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 {
     public $driverType = 'MySQL';
 
-    // public $schema = array( 'tests/schema/member_mysql.sql' );
-
     public function createDriver() {
         return new MySQLDriver;
     }

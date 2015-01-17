@@ -21,7 +21,7 @@ class DropTableQueryTest extends PDOQueryTestCase
         parent::setUp();
 
         // Clean up
-        foreach(array('groups','authors','points') as $table) {
+        foreach(array('groups','users','points') as $table) {
             $dropQuery = new DropTableQuery($table);
             $dropQuery->IfExists();
             $this->assertQuery($dropQuery);
@@ -30,7 +30,7 @@ class DropTableQueryTest extends PDOQueryTestCase
 
     public function tearDown()
     {
-        foreach(array('groups','authors', 'points') as $table) {
+        foreach(array('groups','users', 'points') as $table) {
             $dropQuery = new DropTableQuery($table);
             $dropQuery->IfExists();
             $this->assertQuery($dropQuery);

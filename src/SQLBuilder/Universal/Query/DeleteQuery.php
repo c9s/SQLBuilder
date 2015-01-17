@@ -13,10 +13,8 @@ use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Universal\Syntax\Conditions;
 use SQLBuilder\Universal\Syntax\Join;
-use SQLBuilder\Universal\Syntax\IndexHint;
 use SQLBuilder\MySQL\Syntax\Partition;
 use SQLBuilder\MySQL\Traits\PartitionTrait;
-use SQLBuilder\MySQL\Traits\IndexHintTrait;
 use SQLBuilder\Universal\Syntax\Paging;
 use SQLBuilder\Universal\Traits\OrderByTrait;
 use SQLBuilder\Universal\Traits\JoinTrait;
@@ -58,7 +56,7 @@ class DeleteQuery implements ToSqlInterface
     use WhereTrait;
     use LimitTrait;
     use PartitionTrait;
-    use IndexHintTrait;
+    use OrderByTrait;
 
     protected $deleteTables = array();
 
@@ -78,31 +76,15 @@ class DeleteQuery implements ToSqlInterface
     /****************************************************************
      * Builders
      ***************************************************************/
-    public function buildFromClause(BaseDriver $driver) {
+    public function buildFromClause(BaseDriver $driver, ArgumentArray $args) {
         $tableRefs = array();
         foreach($this->deleteTables as $k => $v) {
             /* "column AS alias" OR just "column" */
             if (is_string($k)) {
                 $sql = $driver->quoteTable($k) . ' AS ' . $v;
-
-                if ($driver instanceof MySQLDriver) {
-                    if ($this->definedIndexHint($v)) {
-                        $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
-                    } elseif ($this->definedIndexHint($k)) {
-                        $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
-                    }
-                }
                 $tableRefs[] = $sql;
             } elseif ( is_integer($k) || is_numeric($k) ) {
                 $sql = $driver->quoteTable($v);
-
-                if ($driver instanceof MySQLDriver) {
-                    if ($this->definedIndexHint($v)) {
-                        $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
-                    } elseif ($this->definedIndexHint($k)) {
-                        $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
-                    }
-                }
                 $tableRefs[] = $sql;
             }
         }
@@ -115,7 +97,7 @@ class DeleteQuery implements ToSqlInterface
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'DELETE'
             . $this->buildOptionClause()
-            . $this->buildFromClause($driver)
+            . $this->buildFromClause($driver, $args)
             ;
 
         if ($driver instanceof MySQLDriver) {
@@ -123,11 +105,11 @@ class DeleteQuery implements ToSqlInterface
         }
 
         $sql .= $this->buildJoinClause($driver, $args)
-            . $this->buildIndexHintClause($driver, $args)
             . $this->buildWhereClause($driver, $args)
             ;
 
         if ($driver instanceof MySQLDriver) {
+            $sql .= $this->buildOrderByClause($driver, $args);
             $sql .= $this->buildLimitClause($driver, $args);
         }
         return $sql;

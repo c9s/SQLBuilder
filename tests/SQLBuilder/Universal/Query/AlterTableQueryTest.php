@@ -150,13 +150,13 @@ class AlterTableQueryTest extends PDOQueryTestCase
             ->references('users', array('id'))
                 ;
 
-        $q->add()->foreignKey('updated_by')
+        $q->add()->constraint('fk_updated_by')->foreignKey('updated_by')
             ->references('users', array('id'))
                 ;
 
         $sql = $q->toSql($driver, $args);
         $this->assertQuery($q);
-        is('ALTER TABLE `products` ADD FOREIGN KEY (`created_by`) REFERENCES `users` (`id`), ADD FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`)', $sql);
+        is('ALTER TABLE `products` ADD FOREIGN KEY (`created_by`) REFERENCES `users` (`id`), ADD CONSTRAINT `fk_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`)', $sql);
     }
 
 

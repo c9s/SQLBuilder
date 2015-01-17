@@ -1,17 +1,71 @@
 <?php
-use SQLBuilder\Raw;
-use SQLBuilder\Universal\Query\UpdateQuery;
-use SQLBuilder\Universal\Query\DeleteQuery;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\Testing\PDOQueryTestCase;
+use SQLBuilder\Raw;
 use SQLBuilder\Bind;
+use SQLBuilder\Universal\Query\UpdateQuery;
+use SQLBuilder\Universal\Query\DeleteQuery;
+use SQLBuilder\Universal\Query\CreateTableQuery;
+use SQLBuilder\Universal\Query\CreateIndexQuery;
+use SQLBuilder\Universal\Query\DropTableQuery;
+use SQLBuilder\Testing\PDOQueryTestCase;
 
 class DeleteQueryTest extends PDOQueryTestCase
 {
+
+    public $driverType = 'MySQL';
+
+    public function createDriver() {
+        return new MySQLDriver;
+    }
+
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $q = new DropTableQuery('users');
+        $q->ifExists();
+        $this->assertQuery($q);
+
+        $q = new CreateTableQuery('users');
+        $q->column('id')->integer()
+            ->primary()
+            ->autoIncrement();
+        $q->column('first_name')->varchar(32);
+        $q->column('last_name')->varchar(16);
+        $q->column('age')->tinyint(3)->unsigned()->null();
+        $q->column('phone')->varchar(24)->null();
+        $q->column('email')->varchar(128)->notNull();
+        $q->column('confirmed')->boolean()->default(false);
+        $q->column('types')->set('student', 'teacher');
+        $q->column('remark')->text();
+        $q->index([ 'first_name', 'last_name' ])->name('username_idx');
+        $this->assertQuery($q);
+    }
+
+
+
+    public function testDeleteWithoutAlias()
+    {
+        $q = new DeleteQuery;
+        $q->delete('users');
+        $this->assertQuery($q);
+    }
+
+    public function testDeleteWithIndexHint()
+    {
+        $q = new DeleteQuery;
+        $q->delete('users');
+        $q->orderBy('first_name', 'DESC');
+        $this->assertSqlStatements($q, [
+            [ new MySQLDriver, 'DELETE FROM users ORDER BY first_name DESC' ],
+        ]);
+        $this->assertQuery($q);
+    }
 
     public function testDeleteWithOr()
     {
@@ -24,13 +78,11 @@ class DeleteQueryTest extends PDOQueryTestCase
                 ->equal('id', 4)
             ;
         $query->limit(1);
-        
-        $this->assertSqlStatements($query, [ 
+        $this->assertSqlStatements($query, [
             [ new MySQLDriver, 'DELETE FROM users AS u PARTITION (p1,p2) WHERE id = 3 OR id = 4 LIMIT 1' ],
             [ new PgSQLDriver, 'DELETE FROM users AS u WHERE id = 3 OR id = 4' ],
             [ new SQLiteDriver, 'DELETE FROM users AS u WHERE id = 3 OR id = 4' ],
         ]);
-
         is(3, $query->where()->count());
     }
 
