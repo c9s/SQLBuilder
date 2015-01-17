@@ -71,14 +71,18 @@ class CreateIndexQueryTest extends QueryTestCase
 
 
 
-    public function testCreateUniqueIndex()
+    public function testCreateUniqueIndexWithStorageParameters()
     {
         // CREATE INDEX CONCURRENTLY idx_salary ON employees(last_name, salary);
         $q = new CreateIndexQuery;
         $q->unique('idx_salary')
             ->on('employees', [ 'last_name', 'salary' ])
+            ->with('fastupdate', 'off')
             ;
-        $this->assertSql('CREATE UNIQUE INDEX `idx_salary` ON `employees` (last_name,salary)', $q);
+        $this->assertSqlStrings($q,[
+            [ new PgSQLDriver, 'CREATE UNIQUE INDEX "idx_salary" ON "employees" (last_name,salary) WITH fastupdate = off'],
+            [ new MySQLDriver, 'CREATE UNIQUE INDEX `idx_salary` ON `employees` (last_name,salary)'],
+        ]);
     }
 
     public function testCreateUniqueIndexUsing()
