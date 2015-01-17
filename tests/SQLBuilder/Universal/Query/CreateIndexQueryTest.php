@@ -77,11 +77,12 @@ class CreateIndexQueryTest extends QueryTestCase
         $q = new CreateIndexQuery;
         $q->unique('idx_salary')
             ->on('employees', [ 'last_name', 'salary' ])
+            ->using('BTREE')
             ->with('fastupdate', 'off')
             ;
         $this->assertSqlStrings($q,[
-            [ new PgSQLDriver, 'CREATE UNIQUE INDEX "idx_salary" ON "employees" (last_name,salary) WITH fastupdate = off'],
-            [ new MySQLDriver, 'CREATE UNIQUE INDEX `idx_salary` ON `employees` (last_name,salary)'],
+            [ new PgSQLDriver, 'CREATE UNIQUE INDEX "idx_salary" ON "employees" USING BTREE (last_name,salary) WITH fastupdate = off'],
+            [ new MySQLDriver, 'CREATE UNIQUE INDEX `idx_salary` ON `employees` (last_name,salary) USING BTREE'],
         ]);
     }
 
