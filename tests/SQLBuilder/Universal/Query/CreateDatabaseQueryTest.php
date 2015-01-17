@@ -21,7 +21,6 @@ class CreateDatabaseQueryTest extends PDOQueryTestCase
         $q->ifExists();
         $this->assertQuery($q);
 
-
         $q = new CreateDatabaseQuery('test123123');
         $q->characterSet('utf8');
         $this->assertSql("CREATE DATABASE `test123123` CHARACTER SET 'utf8'", $q);
@@ -37,7 +36,7 @@ class CreateDatabaseQueryTest extends PDOQueryTestCase
         $q->create('test')
             ->characterSet('utf8')
             ->collate('en_US.UTF-8');
-        $this->assertSqlStatements($q, [ 
+        $this->assertSqlStatements($q, [
             [ new PgSQLDriver, 'CREATE DATABASE "test" LC_COLLATE \'en_US.UTF-8\''],
             [ new MySQLDriver, "CREATE DATABASE `test` CHARACTER SET 'utf8' COLLATE 'en_US.UTF-8'"],
         ]);
