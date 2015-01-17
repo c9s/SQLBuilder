@@ -49,17 +49,5 @@ trait IndexHintTrait {
         return $sql;
     }
 
-    public function buildIndexHintClause(BaseDriver $driver, ArgumentArray $args)
-    {
-        if (empty($this->indexHints)) {
-            return '';
-        }
-        $sql = '';
-        foreach($this->indexHints as $hint) {
-            $sql .= $hint->toSql($driver, $args);
-        }
-        return $sql;
-    }
-
 }
 

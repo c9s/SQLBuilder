@@ -3,6 +3,7 @@ namespace SQLBuilder\Universal\Syntax;
 use SQLBuilder\Universal\Syntax\Conditions;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\ToSqlInterface;
 use LogicException;
 use SQLBuilder\MySQL\Traits\IndexHintTrait;
@@ -60,7 +61,15 @@ class Join implements ToSqlInterface
             $sql .= ' AS ' . $this->alias;
         }
 
-        $sql .= $this->buildIndexHintClause($driver, $args);
+        // $sql .= $this->buildIndexHintClause($driver, $args);
+
+        if ($driver instanceof MySQLDriver) {
+            if ($this->definedIndexHint($this->alias)) {
+                $sql .= $this->buildIndexHintClauseByTableRef($this->alias, $driver, $args);
+            } elseif ($this->definedIndexHint($this->table)) {
+                $sql .= $this->buildIndexHintClauseByTableRef($this->table, $driver, $args);
+            }
+        }
 
         if ($this->conditions->hasExprs()) {
             $sql .= ' ON (' . $this->conditions->toSql($driver, $args) . ')';
