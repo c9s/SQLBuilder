@@ -45,6 +45,9 @@ class DropTableQueryTest extends PDOQueryTestCase
         $this->assertQuery($q);
 
         $q = new DropTableQuery('points');
+        $q->drop('users');
+        $q->drop('books');
+        $q->ifExists();
         $this->assertQuery($q);
     }
 

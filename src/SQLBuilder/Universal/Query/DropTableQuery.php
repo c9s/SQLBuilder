@@ -45,7 +45,7 @@ class DropTableQuery implements ToSqlInterface
         }
     }
 
-    public function table($tableName) {
+    public function drop($tableName) {
         $this->tableNames[] = $tableName;
         return $this;
     }

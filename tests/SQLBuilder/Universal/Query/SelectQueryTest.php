@@ -434,12 +434,26 @@ class SelectQueryTest extends PDOQueryTestCase
         return $query;
     }
 
+    public function testSetFrom()
+    {
+        $q = new SelectQuery;
+        $q->select(array('id', 'name', 'phone', 'address'))
+            ->from('users' ,'u')
+            ;
+        $q->setFrom('authors');
+        $this->assertSql('SELECT id, name, phone, address FROM authors', $q);
+
+        $q->setFrom(array('authors' => 'a'));
+        $this->assertSql('SELECT id, name, phone, address FROM authors AS a', $q);
+
+        ok( is_array($q->getFrom()) );
+    }
+
     public function testJoinRight()
     {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $query = new SelectQuery;
-        ok($query);
         $query->select(array('id', 'name', 'phone', 'address'))
             ->from('users' ,'u')
             ;
