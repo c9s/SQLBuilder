@@ -125,6 +125,20 @@ class AlterTableQueryTest extends PDOQueryTestCase
         ]);
     }
 
+    public function testModifyColumnDefaultPg()
+    {
+        $column = new Column('name');
+        $column->default('Steve Jobs');
+
+        $q = new AlterTableQuery('products');
+        $q->modifyColumn($column);
+
+        $this->assertDriverQuery(new PgSQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new PgSQLDriver, 'ALTER TABLE "products" ALTER COLUMN "name" SET DEFAULT \'Steve Jobs\''],
+        ]);
+    }
+
 
 
 

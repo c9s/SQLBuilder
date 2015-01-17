@@ -630,6 +630,30 @@ class Column implements ToSqlInterface
         return '';
     }
 
+    public function buildDefaultClause(BaseDriver $driver)
+    {
+        // Build default value
+        if (($default = $this->default) !== NULL && ! is_callable($this->default )) { 
+            if ($default instanceof Raw) {
+
+                return ' DEFAULT ' . $default->__toString();
+
+            } elseif (is_callable($default)) {
+
+                return ' DEFAULT ' . call_user_func($this->default, $this);
+
+            } elseif (is_array($default)) {
+
+                // TODO: remove raw value by array type here to support 'set' and 'enum'
+                return ' DEFAULT ' . $default[0];
+
+            } else {
+                return ' DEFAULT ' . $driver->deflate($default);
+            }
+        }
+        return '';
+    }
+
     public function buildPgSQLDefinitionSql(BaseDriver $driver, ArgumentArray $args)
     {
         $isa  = $this->isa ?: 'str';
@@ -656,28 +680,7 @@ class Column implements ToSqlInterface
         }
 
         $sql .= $this->buildNullClause($driver);
-
-        // Build default value
-        if (($default = $this->default) !== NULL && ! is_callable($this->default )) { 
-            // raw sql default value
-
-            if ($default instanceof Raw) {
-
-                $sql .= ' DEFAULT ' . $default[0];
-
-            } elseif (is_callable($default)) {
-
-                $sql .= ' DEFAULT ' . call_user_func($this->default, $this);
-
-            } elseif (is_array($default)) {
-
-                // TODO: remove raw value by array type here to support 'set' and 'enum'
-                $sql .= ' DEFAULT ' . $default;
-
-            } else {
-                $sql .= ' DEFAULT ' . $driver->deflate($default);
-            }
-        }
+        $sql .= $this->buildDefaultClause($driver);
         return $sql;
     }
 
@@ -722,35 +725,9 @@ class Column implements ToSqlInterface
 
         }
 
-        if (!is_null($this->null)) {
-            if ($this->null === FALSE) {
-                $sql .= ' NOT NULL';
-            } elseif ($this->null === TRUE) {
-                $sql .= ' NULL';
-            }
-        }
+        $sql .= $this->buildNullClause($driver);
+        $sql .= $this->buildDefaultClause($driver);
 
-        // Build default value
-        if (($default = $this->default) !== NULL && ! is_callable($this->default )) { 
-            // raw sql default value
-
-            if ($default instanceof Raw) {
-
-                $sql .= ' DEFAULT ' . $default[0];
-
-            } elseif (is_callable($default)) {
-
-                $sql .= ' DEFAULT ' . call_user_func($this->default, $this);
-
-            } elseif (is_array($default)) {
-
-                // TODO: remove raw value by array type here to support 'set' and 'enum'
-                $sql .= ' DEFAULT ' . $default;
-
-            } else {
-                $sql .= ' DEFAULT ' . $driver->deflate($default);
-            }
-        }
 
         if ($this->primary) {
             $sql .= ' PRIMARY KEY';
