@@ -17,13 +17,6 @@ class ListExpr implements ToSqlInterface
         $this->expr = $expr;
     }
 
-    public function renderSet(BaseDriver $driver, ArgumentArray $args, array $set) 
-    {
-        return array_map(function($val) use($driver, $args) {
-            return $driver->deflate($val, $args);
-        }, $set);
-    }
-
     public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         $sql = '';
