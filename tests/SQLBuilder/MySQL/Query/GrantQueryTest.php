@@ -79,8 +79,20 @@ class GrantQueryTest extends PDOQueryTestCase
 
 
 
-
     public function testGrantExecuteOnProcedure() 
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+
+        // GRANT EXECUTE ON PROCEDURE mydb.myproc TO 'someuser'@'somehost';
+        $q = new GrantQuery;
+        $q->grant('EXECUTE')
+            ->on('mydb.mytbl','PROCEDURE')
+            ->to('someuser@somehost');
+        $this->assertSql('GRANT EXECUTE ON PROCEDURE mydb.mytbl TO `someuser`@`somehost`', $q);
+    }
+
+    public function testGrantExecuteOnProcedure2() 
     {
         $driver = new MySQLDriver;
         $args = new ArgumentArray;

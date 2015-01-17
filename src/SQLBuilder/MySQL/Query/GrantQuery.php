@@ -225,8 +225,6 @@ class GrantQuery implements ToSqlInterface
                 $sql .= ' ' . $this->on->toSql($driver, $args);
             } elseif( is_string($this->on) ) {
                 $sql .= ' ' . $this->on;
-            } else {
-                throw new InvalidArgumentException('The "ON" clause only supports UserSpecification class or string type');
             }
         }
        
@@ -234,11 +232,7 @@ class GrantQuery implements ToSqlInterface
             $sql .= ' TO ';
             $subclause = array();
             foreach($this->to as $t) {
-                if ($t instanceof UserSpecification) {
-                    $subclause[] = $t->getIdentitySql($driver, $args);
-                } else {
-                    $subclause[] = $t;
-                }
+                $subclause[] = $t->getIdentitySql($driver, $args);
             }
             $sql .= join(',', $subclause);
         }
