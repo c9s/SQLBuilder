@@ -370,6 +370,24 @@ class SelectQueryTest extends PDOQueryTestCase
         $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products ORDER BY name ASC']]);
     }
 
+    public function testSelectPartitions()
+    {
+        $q = new SelectQuery;
+        $q->select(array('name'))
+            ->from('products')
+            ->partitions('p1', 'p2')
+            ;
+        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products PARTITION (p1,p2)']]);
+
+
+        $q = new SelectQuery;
+        $q->select(array('name'))
+            ->from('products')
+            ->partitions(['p1', 'p2'])
+            ;
+        $this->assertSqlStatements($q, [[new MySQLDriver, 'SELECT name FROM products PARTITION (p1,p2)']]);
+    }
+
 
 
     public function testInExprWithQuery() {
