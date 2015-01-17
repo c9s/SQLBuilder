@@ -18,10 +18,6 @@ class Partition
         $this->names = $names;
     }
 
-    public function add($name) {
-        $this->names[] = $name;
-    }
-
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         return ' PARTITION (' . join(',', $this->names) . ')';
