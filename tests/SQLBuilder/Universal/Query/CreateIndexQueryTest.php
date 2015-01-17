@@ -60,6 +60,16 @@ class CreateIndexQueryTest extends QueryTestCase
         ]);
     }
 
+    public function testCreateSpatialIndex()
+    {
+        $q = new CreateIndexQuery;
+        $q->spatial('salary_idx')
+            ->on('employees', [ 'last_name', 'salary' ])
+            ;
+        $this->assertSql('CREATE SPATIAL INDEX `salary_idx` ON `employees` (last_name,salary)', $q);
+    }
+
+
 
     public function testCreateUniqueIndex()
     {
