@@ -158,8 +158,23 @@ class AlterTableQueryTest extends PDOQueryTestCase
     }
 
     /**
-     * @depends testCreateTables
-     * */
+     * @expectedException SQLBuilder\Exception\UnsupportedDriverException
+     */
+    public function testModifyColumnSqliteUnsupported()
+    {
+        $column = new Column('name', 'varchar(30)');
+        $column->default('John');
+        $column->null();
+
+        $q = new AlterTableQuery('products');
+        $q->modifyColumn($column);
+
+        $this->assertDriverQuery(new SQLiteDriver, $q);
+        $this->assertSqlStrings($q, [
+            [new SQLiteDriver, 'ALTER TABLE `products` MODIFY COLUMN `name` varchar(30) NULL DEFAULT \'John\''],
+        ]);
+    }
+
     public function testModifyColumnDefaultAttribute()
     {
         $column = new Column('name', 'varchar(30)');
@@ -174,10 +189,6 @@ class AlterTableQueryTest extends PDOQueryTestCase
             [new MySQLDriver, 'ALTER TABLE `products` MODIFY COLUMN `name` varchar(30) NULL DEFAULT \'John\''],
         ]);
     }
-
-    /**
-     * @depends testCreateTables
-     * */
 
     public function testAddColumn() 
     {
