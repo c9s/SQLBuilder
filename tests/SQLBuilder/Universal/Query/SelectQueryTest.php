@@ -399,12 +399,13 @@ class SelectQueryTest extends PDOQueryTestCase
         $query = new SelectQuery;
         ok($query);
         $query->select(array('id', 'name', 'phone', 'address'))
-            ->from('users', 'u')
-            ->indexHintOn('users')->useIndex('idx_users')->forOrderBy();
-            ;
+            ->from('users', 'u');
+
+        $query->indexHint('users')->useIndex('users_idx')->forOrderBy();
+        $query->indexHint('users')->ignoreIndex('name_idx')->forGroupBy();
 
         $sql = $query->toSql($driver, $args);
-        is('SELECT id, name, phone, address FROM users AS u USE INDEX FOR ORDER BY (idx_users)  USE INDEX FOR ORDER BY (idx_users)', $sql);
+        is('SELECT id, name, phone, address FROM users AS u USE INDEX FOR ORDER BY (users_idx)  IGNORE INDEX FOR GROUP BY (name_idx)', $sql);
     }
 
     public function testMultipleJoin() {

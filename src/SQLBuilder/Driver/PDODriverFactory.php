@@ -22,9 +22,8 @@ class PDODriverFactory
                 return new PDOSQLiteDriver($pdo);
                 break;
             default:
-                throw new Exception("Unknown driver type");
+                throw new Exception("Unsupported PDO driver");
                 break;
-
         }
     }
 

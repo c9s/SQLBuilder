@@ -47,9 +47,10 @@ trait JoinTrait {
         return end($this->joins);
     }
 
-    public function indexHintOn($tableRef) {
-        $hint = new IndexHint;
-        $this->indexHintOn[$tableRef] = $hint;
+    public function indexHint($tableRef) {
+        $hint = new IndexHint($this);
+        $hint->on($tableRef);
+        $this->indexHints[] = $hint;
         return $hint;
     }
 
@@ -67,14 +68,14 @@ trait JoinTrait {
 
     public function buildJoinIndexHintClause(BaseDriver $driver, ArgumentArray $args)
     {
-        if (empty($this->indexHintOn)) {
+        if (empty($this->indexHints)) {
             return '';
         }
         $clauses = array();
-        foreach($this->indexHintOn as $hint) {
+        foreach($this->indexHints as $hint) {
             $clauses[] = $hint->toSql($driver, $args);
         }
-        return ' ' . join(' ', $clauses);
+        return join(' ', $clauses);
     }
 
 }

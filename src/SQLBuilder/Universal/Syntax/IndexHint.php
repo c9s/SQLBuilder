@@ -16,10 +16,20 @@ class IndexHint implements ToSqlInterface
 
     public $indexList = array();
 
-    public $for;
+    protected $tableRef;
 
-    public function __construct() {
+    protected $for;
 
+    protected $parent;
+
+    public function __construct($parent) {
+        $this->parent = $parent;
+    }
+
+    public function on($tableRef)
+    {
+        $this->tableRef = $tableRef;
+        return $this;
     }
 
     public function useIndex($indexList)
@@ -68,8 +78,11 @@ class IndexHint implements ToSqlInterface
         return $sql . ' (' . join(',',$this->indexList) . ')';
     }
 
-    static public function create() {
-        return new self;
+    public function __call($m, $a)
+    {
+        if ($this->parent) {
+            return call_user_func_array(array($this->parent,$m), $a);
+        }
     }
 
 }

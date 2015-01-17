@@ -172,9 +172,6 @@ class SelectQuery implements ToSqlInterface
     }
 
 
-
-
-
     /********************************************************
      * LIMIT and OFFSET clauses
      *
