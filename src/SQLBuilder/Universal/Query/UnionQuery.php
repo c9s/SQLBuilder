@@ -11,11 +11,7 @@ class UnionQuery implements ToSqlInterface
 
     public function union(SelectQuery $query) { 
         $args = func_get_args();
-        if (count($args) == 1) {
-            $this->queries[] = $query;
-        } elseif (count($args) > 1) {
-            $this->queries = $this->queries + $args;
-        }
+        $this->queries = $this->queries + $args;
         return $this;
     }
 

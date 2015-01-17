@@ -7,6 +7,7 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
+use Exception;
 
 class Distinct implements ToSqlInterface
 {

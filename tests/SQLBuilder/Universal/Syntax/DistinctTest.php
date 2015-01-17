@@ -22,5 +22,17 @@ class DistinctTest extends PDOQueryTestCase
         $sql = $expr->toSql($driver, $args);
         is('DISTINCT SUM(*)', $sql);
     }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testUnknownType()
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+        $expr = new Distinct(false);
+        $sql = $expr->toSql($driver, $args);
+        is('DISTINCT SUM(*)', $sql);
+    }
 }
 
