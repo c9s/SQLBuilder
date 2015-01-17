@@ -78,26 +78,36 @@ class DeleteQuery implements ToSqlInterface
     /****************************************************************
      * Builders
      ***************************************************************/
-    public function buildDeleteTableClause(BaseDriver $driver) {
+    public function buildFromClause(BaseDriver $driver) {
         $tableRefs = array();
         foreach($this->deleteTables as $k => $v) {
             /* "column AS alias" OR just "column" */
             if (is_string($k)) {
                 $sql = $driver->quoteTable($k) . ' AS ' . $v;
-                if ($driver instanceof MySQLDriver && isset($this->indexHintOn[$k])) {
-                    $sql .= $this->indexHintOn[$k]->toSql($driver, new ArgumentArray);
+
+                if ($driver instanceof MySQLDriver) {
+                    if ($this->definedIndexHint($v)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
+                    } elseif ($this->definedIndexHint($k)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
+                    }
                 }
                 $tableRefs[] = $sql;
             } elseif ( is_integer($k) || is_numeric($k) ) {
                 $sql = $driver->quoteTable($v);
-                if ($driver instanceof MySQLDriver && isset($this->indexHintOn[$v])) {
-                    $sql .= $this->indexHintOn[$v]->toSql($driver, NULL);
+
+                if ($driver instanceof MySQLDriver) {
+                    if ($this->definedIndexHint($v)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
+                    } elseif ($this->definedIndexHint($k)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
+                    }
                 }
                 $tableRefs[] = $sql;
             }
         }
         if (!empty($tableRefs)) {
-            return ' ' . join(', ', $tableRefs);
+            return ' FROM ' . join(', ', $tableRefs);
         }
         return '';
     }
@@ -105,7 +115,7 @@ class DeleteQuery implements ToSqlInterface
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'DELETE'
             . $this->buildOptionClause()
-            . $this->buildDeleteTableClause($driver)
+            . $this->buildFromClause($driver)
             ;
 
         if ($driver instanceof MySQLDriver) {
