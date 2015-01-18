@@ -13,6 +13,18 @@ use SQLBuilder\Testing\PDOQueryTestCase;
 class UpdateQueryTest extends PDOQueryTestCase
 {
 
+
+    public function testUpdateTableWithIndexHint()
+    {
+        $query = new UpdateQuery;
+        $query->update('users', 'u');
+        $query->set([ 'name' => 'Mary', 'phone' => '09752222123' ]);
+        $query->indexHint('u')->useIndex('users_idx')->forOrderBy();
+        $this->assertSqlStrings($query, [ 
+            [ new MySQLDriver, 'UPDATE users AS u USE INDEX FOR ORDER BY (users_idx) SET name = :name, phone = :phone' ],
+        ]);
+    }
+
     public function testUpdateMultipleTables() {
         $query = new UpdateQuery;
         $query->update('users', 'u');

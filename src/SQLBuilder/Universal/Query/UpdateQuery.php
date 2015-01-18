@@ -115,7 +115,7 @@ class UpdateQuery implements ToSqlInterface
         return ' SET ' . join(', ', $setClauses);
     }
 
-    public function buildFromClause(BaseDriver $driver) {
+    public function buildFromClause(BaseDriver $driver, ArgumentArray $args) {
         $tableRefs = array();
         foreach($this->updateTables as $k => $v) {
             /* "column AS alias" OR just "column" */
@@ -152,7 +152,7 @@ class UpdateQuery implements ToSqlInterface
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         $sql = 'UPDATE'
             . $this->buildOptionClause()
-            . $this->buildFromClause($driver);
+            . $this->buildFromClause($driver, $args);
 
         $sql .= $this->buildJoinClause($driver, $args);
 
