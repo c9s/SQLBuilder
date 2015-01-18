@@ -101,21 +101,7 @@ class InsertQuery implements ToSqlInterface
         foreach ($this->values as $values) {
             $deflatedValues = array();
             foreach ($values as $key => $value) {
-                if ($value instanceof Raw) {
-
-                    $deflatedValues[] = $value->getRaw();
-
-                } elseif (!$value instanceof Bind && !$value instanceof ParamMarker) {
-
-                    if (is_numeric($key)) {
-                        $deflatedValues[] = $driver->deflate($driver->allocateBind($value), $args);
-                    } else {
-                        $deflatedValues[] = $driver->deflate(new Bind($key, $value), $args);
-                    }
-
-                } else {
-                    $deflatedValues[] = $driver->deflate($value, $args);
-                }
+                $deflatedValues[] = $driver->deflate($value, $args);
             }
             $valuesClauses[] = '(' . join(',', $deflatedValues) . ')';
         }

@@ -4,8 +4,10 @@ use SQLBuilder\Universal\Syntax\Conditions;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\ToSqlInterface;
 use LogicException;
+use BadMethodCallException;
 use SQLBuilder\MySQL\Traits\IndexHintTrait;
 
 class Join implements ToSqlInterface
@@ -61,14 +63,8 @@ class Join implements ToSqlInterface
             $sql .= ' AS ' . $this->alias;
         }
 
-        // $sql .= $this->buildIndexHintClause($driver, $args);
-
         if ($driver instanceof MySQLDriver) {
-            if ($this->definedIndexHint($this->alias)) {
-                $sql .= $this->buildIndexHintClauseByTableRef($this->alias, $driver, $args);
-            } elseif ($this->definedIndexHint($this->table)) {
-                $sql .= $this->buildIndexHintClauseByTableRef($this->table, $driver, $args);
-            }
+            $sql .= $this->buildIndexHintClause($driver, $args);
         }
 
         if ($this->conditions->hasExprs()) {
@@ -87,7 +83,7 @@ class Join implements ToSqlInterface
         if ($m == "as") {
             return $this->_as($a[0]);
         }
-        throw new LogicException("Invalid method call: $m");
+        throw new BadMethodCallException("Invalid method call: $m");
     }
 }
 

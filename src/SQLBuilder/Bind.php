@@ -7,7 +7,7 @@ class Bind {
 
     protected $value;
 
-    public function __construct($name = NULL, $value = NULL)
+    public function __construct($name, $value = NULL)
     {
         $this->name = $name;
         $this->value = $value;
@@ -28,10 +28,7 @@ class Bind {
     }
 
     public function getMarker() {
-        if ($this->name && is_string($this->name)) {
-            return ':' . $this->name;
-        }
-        return '?';
+        return ':' . $this->name;
     }
 }
 

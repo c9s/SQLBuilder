@@ -51,12 +51,12 @@ class Column implements ToSqlInterface
     /**
      * @var boolean primary
      */
-    protected $primary;
+    public $primary;
 
     /**
      * @var bool unsigned
      */
-    protected $unsigned;
+    public $unsigned;
 
 
     /**
@@ -65,7 +65,7 @@ class Column implements ToSqlInterface
      *
      * @var integer
      */
-    protected $length;
+    public $length;
 
     /**
      * When using numeric types, this property is used to save the decimals 
@@ -620,7 +620,7 @@ class Column implements ToSqlInterface
 
     public function buildNullClause(BaseDriver $driver) 
     {
-        if (!is_null($this->null)) {
+        if ($this->null !== NULL) {
             if ($this->null === FALSE) {
                 return ' NOT NULL';
             } elseif ($this->null === TRUE) {
@@ -633,20 +633,9 @@ class Column implements ToSqlInterface
     public function buildDefaultClause(BaseDriver $driver)
     {
         // Build default value
-        if (($default = $this->default) !== NULL && ! is_callable($this->default )) { 
-            if ($default instanceof Raw) {
-
-                return ' DEFAULT ' . $default->__toString();
-
-            } elseif (is_callable($default)) {
-
-                return ' DEFAULT ' . call_user_func($this->default, $this);
-
-            } elseif (is_array($default)) {
-
-                // TODO: remove raw value by array type here to support 'set' and 'enum'
-                return ' DEFAULT ' . $default[0];
-
+        if (($default = $this->default) !== NULL) { 
+            if (is_callable($default)) {
+                return ' DEFAULT ' . call_user_func($this->default, $this, $driver);
             } else {
                 return ' DEFAULT ' . $driver->deflate($default);
             }

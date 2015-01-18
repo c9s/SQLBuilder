@@ -19,7 +19,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         parent::setUp();
 
         // Clean up
-        foreach(array('groups','authors') as $table) {
+        foreach(array('groups','authors','points') as $table) {
             $dropQuery = new DropTableQuery($table);
             $dropQuery->IfExists();
             $this->assertQuery($dropQuery);
@@ -33,6 +33,16 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
             $dropQuery->IfExists();
             $this->assertQuery($dropQuery);
         }
+    }
+
+    public function testChangingColumnName() {
+        $q = new CreateTableQuery('points');
+        $q->column('x')->float(10,2)->name('x2');
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'CREATE TABLE `points`(
+`x2` float(10,2)
+)'],
+        ]);
     }
 
     public function testCreateTableWithDecimalsAndLength() 
@@ -103,8 +113,8 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 
         $q->column('c' . $a++)->date();
         $q->column('c' . $a++)->time();
-        $q->column('c' . $a++)->time()->default(function() { 
-            return '02:00';
+        $q->column('c' . $a++)->time()->default(function($column, $driver) { 
+            return $driver->deflate('02:00');
         });
         $q->column('c' . $a++)->year();
         $q->column('c' . $a++)->timestamp()->default(new Raw('current_timestamp'));

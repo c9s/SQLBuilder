@@ -144,7 +144,6 @@ class AlterTableQueryTest extends PDOQueryTestCase
 
 
     /**
-     * @depends testCreateTables
      * @expectedException SQLBuilder\Exception\IncompleteSettingsException
      */
     public function testModifyColumnWithIncompleteSettings() 
@@ -208,10 +207,6 @@ class AlterTableQueryTest extends PDOQueryTestCase
         ]);
     }
 
-    /**
-     * @depends testCreateTables
-     * */
-
     public function testRenameTable()
     {
         $driver = new MySQLDriver;
@@ -229,10 +224,6 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $this->assertQuery($q);
         is('ALTER TABLE `products_new` RENAME TO `products`', $sql);
     }
-
-    /**
-     * @depends testCreateTables
-     * */
 
     public function testAddForeignKey()
     {
@@ -253,8 +244,28 @@ class AlterTableQueryTest extends PDOQueryTestCase
     }
 
     /**
-     * @depends testCreateTables
-     * */
+     * @expectedException SQLBuilder\Exception\UnsupportedDriverException
+     */
+    public function testRenameColumnSqlite()
+    {
+        $q = new AlterTableQuery('products');
+        $q->renameColumn(new Column('name'), new Column('title', 'varchar(30)'));
+        $this->assertDriverQuery(new SQLiteDriver, $q);
+    }
+
+    public function testRenameColumnFromColumnObject()
+    {
+        $q = new AlterTableQuery('products');
+        $q->renameColumn(new Column('name'), new Column('title', 'varchar(30)'));
+
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertDriverQuery(new PgSQLDriver, $q);
+
+        $this->assertSqlStrings($q, [
+            [new MySQLDriver, 'ALTER TABLE `products` CHANGE COLUMN `name` `title` varchar(30)'],
+            [new PgSQLDriver, 'ALTER TABLE "products" RENAME COLUMN "name" TO "title"'],
+        ]);
+    }
 
     public function testRenameColumn()
     {
@@ -270,9 +281,6 @@ class AlterTableQueryTest extends PDOQueryTestCase
         ]);
     }
 
-    /**
-     * @depends testCreateTables
-     */
     public function testRenameColumnFromColumnClass()
     {
         $driver = new MySQLDriver;

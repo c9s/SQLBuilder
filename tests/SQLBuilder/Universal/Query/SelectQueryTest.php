@@ -227,6 +227,21 @@ class SelectQueryTest extends PDOQueryTestCase
         ]);
     }
 
+
+    /**
+     * @expectedException BadMethodCallException
+     */
+    public function testBadMethodCallOnJoin() {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $query = new SelectQuery;
+        $query->select(array('id', 'name', 'phone', 'address'))
+            ->from('users', 'u')
+            ->join('posts')
+                ->as('p')
+                ->where();
+    }
+
     public function testSimpleJoin() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
@@ -439,6 +454,7 @@ class SelectQueryTest extends PDOQueryTestCase
         $query->join('posts')
                 ->as('p')
                 ->left()
+                ->indexHint()->forceIndex('foo_idx')->forJoin()
                 ->on('p.user_id = u.id')
                 ;
 
@@ -447,9 +463,10 @@ class SelectQueryTest extends PDOQueryTestCase
                 ->left()
                 ->on('r.user_id = u.id')
                 ;
-
-        $sql = $query->toSql($driver, $args);
-        is('SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p ON (p.user_id = u.id) LEFT JOIN ratings AS r ON (r.user_id = u.id)', $sql);
+        $this->assertSqlStrings($query, [ 
+            [new MySQLDriver, 'SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p FORCE INDEX FOR JOIN (foo_idx) ON (p.user_id = u.id) LEFT JOIN ratings AS r ON (r.user_id = u.id)'],
+            [new PgSQLDriver, 'SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p ON (p.user_id = u.id) LEFT JOIN ratings AS r ON (r.user_id = u.id)'],
+        ]);
         return $query;
     }
 
@@ -557,17 +574,14 @@ class SelectQueryTest extends PDOQueryTestCase
 
 
     /**
-     * @depends testMultipleJoin
+     * @depends testLeftJoin
      */
     public function testClone($query)
     {
         $newQuery = clone $query;
-        ok($newQuery);
-
-        $args = new ArgumentArray;
-        $driver = new MySQLDriver;
-        $sql = $query->toSql($driver, $args);
-        is('SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p ON (p.user_id = u.id) LEFT JOIN ratings AS r ON (r.user_id = u.id)', $sql);
+        $this->assertSqlStrings($newQuery, [ 
+            [new MySQLDriver, 'SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p ON (p.user_id = u.id)'],
+        ]);
     }
 
 

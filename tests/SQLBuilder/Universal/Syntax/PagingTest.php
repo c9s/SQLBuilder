@@ -13,6 +13,7 @@ class PagingTest extends PHPUnit_Framework_TestCase
         $paging->limit(10);
         $sql = $paging->toSql($driver, $args);
         is(' LIMIT 10', $sql);
+        is(10, $paging->getLimit());
     }
 
     public function testOffset()
@@ -24,6 +25,7 @@ class PagingTest extends PHPUnit_Framework_TestCase
         $paging->offset(20);
         $sql = $paging->toSql($driver, $args);
         is(' LIMIT 10 OFFSET 20', $sql);
+        is(20, $paging->getOffset());
     }
 
     public function testPageMethod()

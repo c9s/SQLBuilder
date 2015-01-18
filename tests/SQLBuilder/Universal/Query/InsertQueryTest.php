@@ -1,5 +1,6 @@
 <?php
 use SQLBuilder\Raw;
+use SQLBuilder\Bind;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\InsertQuery;
@@ -16,9 +17,9 @@ class InsertQueryTest extends PDOQueryTestCase
         $query->insert([ 'name' => 'John', 'confirmed' => true ])->into('users');
         $query->returning('id');
         $this->assertSqlStrings($query, [ 
-            [ new MySQLDriver, 'INSERT INTO users (name,confirmed) VALUES (:name,:confirmed)' ],
-            [ new PgSQLDriver, 'INSERT INTO users (name,confirmed) VALUES (:name,:confirmed) RETURNING id' ],
-            [ new SQLiteDriver, 'INSERT INTO users (name,confirmed) VALUES (:name,:confirmed)' ],
+            [ new MySQLDriver, 'INSERT INTO users (name,confirmed) VALUES (\'John\',TRUE)' ],
+            [ new PgSQLDriver, 'INSERT INTO users (name,confirmed) VALUES (\'John\',TRUE) RETURNING id' ],
+            [ new SQLiteDriver, 'INSERT INTO users (name,confirmed) VALUES (\'John\',1)' ],
         ]);
     }
 
@@ -30,7 +31,7 @@ class InsertQueryTest extends PDOQueryTestCase
         $args = new ArgumentArray;
         $query = new InsertQuery;
         $query->option('LOW_PRIORITY', 'IGNORE');
-        $query->insert([ 'name' => 'John', 'confirmed' => true ])->into('users');
+        $query->insert([ 'name' => new Bind('name', 'John'), 'confirmed' => new Bind('confirmed',true) ])->into('users');
         $query->returning('id');
         $sql = $query->toSql($driver, $args);
         is('INSERT LOW_PRIORITY IGNORE INTO users (name,confirmed) VALUES (:name,:confirmed)', $sql);
@@ -47,7 +48,7 @@ class InsertQueryTest extends PDOQueryTestCase
         $args = new ArgumentArray;
         $query = new InsertQuery;
         $query->option('LOW_PRIORITY', 'IGNORE');
-        $query->insert([ 'name' => 'John', 'confirmed' => true ])->into('users');
+        $query->insert([ 'name' => new Bind('name','John'), 'confirmed' => new Bind('confirmed',true) ])->into('users');
         $query->returning('id');
         $sql = $query->toSql($driver, $args);
         is('INSERT LOW_PRIORITY IGNORE INTO users (name,confirmed) VALUES (?,?)', $sql);
