@@ -171,7 +171,7 @@ class GrantQuery implements ToSqlInterface
         }
         // check if it's a user spec
         if (is_string($target) && strpos($target,'@') !== false) {
-            $user = UserSpecification::createWithSpec($this, $target);
+            $user = UserSpecification::createWithFormat($this, $target);
             $this->on = $user;
         } elseif ($target instanceof UserSpecification) {
             $this->on = $target;
@@ -187,10 +187,10 @@ class GrantQuery implements ToSqlInterface
         if ($spec instanceof UserSpecification) {
             $this->to[] = $spec;
         } elseif (strpos($spec,'@') !== false) {
-            $user = UserSpecification::createWithSpec($this, $spec);
+            $user = UserSpecification::createWithFormat($this, $spec);
             $this->to[] = $user;
         } else {
-            throw new InvalidArgumentException('Unsupported "to" expression');
+            throw new InvalidArgumentException("Unsupported user specification: $spec");
         }
         return $this;
     }

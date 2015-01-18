@@ -39,12 +39,11 @@ trait IndexHintTrait {
 
     public function buildIndexHintClauseByTableRef($tableRef, BaseDriver $driver, ArgumentArray $args)
     {
-        if (!isset($this->indexHintsByTableRef[$tableRef])) {
-            return '';
-        }
         $sql = '';
-        foreach($this->indexHintsByTableRef[$tableRef] as $hint) {
-            $sql .= $hint->toSql($driver, $args);
+        if (isset($this->indexHintsByTableRef[$tableRef])) {
+            foreach($this->indexHintsByTableRef[$tableRef] as $hint) {
+                $sql .= $hint->toSql($driver, $args);
+            }
         }
         return $sql;
     }

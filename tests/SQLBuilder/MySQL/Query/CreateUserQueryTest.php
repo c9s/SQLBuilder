@@ -47,9 +47,11 @@ class CreateUserQueryTest extends QueryTestCase
     public function testCreateMultipleUser()
     {
         $q = new CreateUserQuery;
-        $q->user()->account('monty')->host('localhost')->identifiedBy('some_pass');
-        $q->user()->account('john')->host('%')->identifiedBy('some_pass');
-        $this->assertSql("CREATE USER `monty`@`localhost` IDENTIFIED BY 'some_pass', `john`@`%` IDENTIFIED BY 'some_pass'", $q);
+        $q->user()->account('monty')->host('localhost')->identifiedBy('some_pass')
+            ->user()->account('john')->host('%')->identifiedBy('some_pass')
+            ;
+        $q->user()->account('john2')->host('%')->identifiedBy('some_pass');
+        $this->assertSql("CREATE USER `monty`@`localhost` IDENTIFIED BY 'some_pass', `john`@`%` IDENTIFIED BY 'some_pass', `john2`@`%` IDENTIFIED BY 'some_pass'", $q);
     }
 }
 

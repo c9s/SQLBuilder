@@ -44,7 +44,7 @@ class SetPasswordQuery implements ToSqlInterface
     }
 
     public function _for($userspec) {
-        $this->for = UserSpecification::createWithSpec($this, $userspec);
+        $this->for = UserSpecification::createWithFormat($this, $userspec);
         return $this;
     }
 

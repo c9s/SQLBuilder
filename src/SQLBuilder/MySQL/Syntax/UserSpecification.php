@@ -2,6 +2,7 @@
 namespace SQLBuilder\MySQL\Syntax;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
+use InvalidArgumentException;
 
 class UserSpecification { 
 
@@ -66,7 +67,7 @@ class UserSpecification {
     }
 
 
-    static public function createWithSpec($parent, $spec) 
+    static public function createWithFormat($parent, $spec) 
     {
         if (is_string($spec) && strpos($spec,'@') !== false) {
             list($account, $host) = explode('@', $spec);
@@ -75,7 +76,7 @@ class UserSpecification {
             $user->host(trim($host, "`'"));
             return $user;
         }
-        return NULL;
+        throw new InvalidArgumentException('Invalid user spec format.');
     }
 
 

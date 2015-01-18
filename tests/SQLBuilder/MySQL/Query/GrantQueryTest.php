@@ -28,8 +28,8 @@ class GrantQueryTest extends PDOQueryTestCase
 
     public function testGrantToWithUserSpec()
     {
-        $specOn = UserSpecification::createWithSpec(NULL, 'localuser@localhost');
-        $specTo = UserSpecification::createWithSpec(NULL, 'externaluser@somehost');
+        $specOn = UserSpecification::createWithFormat(NULL, 'localuser@localhost');
+        $specTo = UserSpecification::createWithFormat(NULL, 'externaluser@somehost');
         $q = new GrantQuery;
         $q->grant('PROXY')->on($specOn)
             ->to($specTo);

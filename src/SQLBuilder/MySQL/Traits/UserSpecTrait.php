@@ -9,7 +9,7 @@ trait UserSpecTrait
 
     public function user($spec = NULL) {
         $user = NULL;
-        if (is_string($spec) && $user = UserSpecification::createWithSpec($this, $spec)) {
+        if (is_string($spec) && $user = UserSpecification::createWithFormat($this, $spec)) {
             $this->userSpecifications[] = $user;
         } else {
             $this->userSpecifications[] = $user = new UserSpecification($this);
