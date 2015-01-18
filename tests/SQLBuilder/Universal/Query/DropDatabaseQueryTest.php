@@ -17,6 +17,8 @@ class DropDatabaseQueryTest extends QueryTestCase
         $q = new DropDatabaseQuery('test');
         ok($q);
         $this->assertSql("DROP DATABASE `test`", $q);
+        $q->drop('test2');
+        $this->assertSql("DROP DATABASE `test2`", $q);
     }
 
     public function testDropDatabaseQuery() {

@@ -48,6 +48,29 @@ class DeleteQueryTest extends PDOQueryTestCase
     }
 
 
+    /**
+     * @expectedException SQLBuilder\Exception\IncompleteSettingsException
+     */
+    public function testDeleteWithoutTable()
+    {
+        $q = new DeleteQuery;
+        $this->assertQuery($q);
+    }
+
+
+    public function testQueryClone()
+    {
+        $q = new DeleteQuery;
+        $q->delete('users');
+        $q->where()
+            ->equal('id', 3);
+        $this->assertQuery($q);
+
+        $q2 = clone $q;
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'DELETE FROM users WHERE id = 3'],
+        ]);
+    }
 
     public function testDeleteWithoutAlias()
     {

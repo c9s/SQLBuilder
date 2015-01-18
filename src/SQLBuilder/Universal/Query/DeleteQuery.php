@@ -21,6 +21,7 @@ use SQLBuilder\Universal\Traits\JoinTrait;
 use SQLBuilder\Universal\Traits\OptionTrait;
 use SQLBuilder\Universal\Traits\WhereTrait;
 use SQLBuilder\Universal\Traits\LimitTrait;
+use SQLBuilder\Exception\IncompleteSettingsException;
 
 /**
  * Delete Statement Query
@@ -77,6 +78,10 @@ class DeleteQuery implements ToSqlInterface
      * Builders
      ***************************************************************/
     public function buildFromClause(BaseDriver $driver, ArgumentArray $args) {
+        if (empty($this->deleteTables)) {
+            throw new IncompleteSettingsException('DeleteQuery requires tables to delete.');
+        }
+
         $tableRefs = array();
         foreach($this->deleteTables as $k => $v) {
             /* "column AS alias" OR just "column" */
@@ -88,10 +93,7 @@ class DeleteQuery implements ToSqlInterface
                 $tableRefs[] = $sql;
             }
         }
-        if (!empty($tableRefs)) {
-            return ' FROM ' . join(', ', $tableRefs);
-        }
-        return '';
+        return ' FROM ' . join(', ', $tableRefs);
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
