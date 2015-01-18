@@ -17,5 +17,22 @@ class SetPasswordQueryTest extends QueryTestCase
         $q->password('secret')->for("jeffrey@localhost");
         $this->assertSql('SET PASSWORD FOR `jeffrey`@`localhost` = PASSWORD(\'secret\');', $q);
     }
+
+    public function testSetPasswordEncrypted()
+    {
+        $q = new SetPasswordQuery;
+        $q->password('d8e8fca2dc0f896fd7cb4cb0031ba249', true)->for("jeffrey@localhost");
+        $this->assertSql("SET PASSWORD FOR `jeffrey`@`localhost` = 'd8e8fca2dc0f896fd7cb4cb0031ba249';", $q);
+    }
+
+    /**
+     * @expectedException BadMethodCallException
+     */
+    public function testSetPasswordBadMethodCall()
+    {
+        $q = new SetPasswordQuery;
+        $q->password('d8e8fca2dc0f896fd7cb4cb0031ba249', true)->for("jeffrey@localhost");
+        $q->foo();
+    }
 }
 

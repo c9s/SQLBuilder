@@ -12,6 +12,7 @@ use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\MySQL\Syntax\UserSpecification;
 use SQLBuilder\MySQL\Traits\UserSpecTrait;
+use BadMethodCallException;
 
 
 /**
@@ -53,6 +54,7 @@ class SetPasswordQuery implements ToSqlInterface
             call_user_func_array(array($this,"_for"), $args);
             return $this;
         }
+        throw new BadMethodCallException;
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
