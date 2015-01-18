@@ -22,6 +22,7 @@ class UpdateQueryTest extends PDOQueryTestCase
         $query->indexHint('u')->useIndex('users_idx')->forOrderBy();
         $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, 'UPDATE users AS u USE INDEX FOR ORDER BY (users_idx) SET name = :name, phone = :phone' ],
+            [ new PgSQLDriver, 'UPDATE users AS u SET name = :name, phone = :phone' ],
         ]);
     }
 
