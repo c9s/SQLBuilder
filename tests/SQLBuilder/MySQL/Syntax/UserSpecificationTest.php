@@ -21,5 +21,14 @@ class UserSpecificationTest extends PHPUnit_Framework_TestCase
     {
         UserSpecification::createWithFormat(NULL, 'localuser_localhost');
     }
+
+    /**
+     * @expectedException BadMethodCallException
+     */
+    public function testBadMethodCall()
+    {
+        $spec = new UserSpecification(NULL);
+        $spec->foo();
+    }
 }
 

@@ -3,6 +3,7 @@ namespace SQLBuilder\MySQL\Syntax;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
 use InvalidArgumentException;
+use BadMethodCallException;
 
 class UserSpecification { 
 
@@ -64,6 +65,7 @@ class UserSpecification {
         if ($this->parent) {
             return call_user_func_array(array($this->parent, $m), $args);
         }
+        throw new BadMethodCallException("Undefined method $m");
     }
 
 
