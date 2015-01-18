@@ -37,6 +37,20 @@ class DropTableQueryTest extends PDOQueryTestCase
         }
     }
 
+    public function testDropTemporaryTable()
+    {
+        $q = new CreateTableQuery('points');
+        $q->temporary();
+        $q->column('x')->float(10,2);
+        $q->column('y')->float(10,2);
+        $this->assertQuery($q);
+
+        $q = new DropTableQuery('points');
+        $q->temporary();
+        $this->assertSql('DROP TEMPORARY TABLE `points`', $q);
+        $this->assertQuery($q);
+    }
+
     public function testDropTable() 
     {
         $q = new CreateTableQuery('points');

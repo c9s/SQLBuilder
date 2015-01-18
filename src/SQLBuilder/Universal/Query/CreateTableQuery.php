@@ -24,6 +24,8 @@ class CreateTableQuery implements ToSqlInterface
 
     protected $engine;
 
+    protected $temporary;
+
     protected $columns = array();
 
     public function __construct($tableName) {
@@ -46,6 +48,11 @@ class CreateTableQuery implements ToSqlInterface
         $col = new Column($name);
         $this->columns[] = $col;
         return $col;
+    }
+
+    public function temporary() {
+        $this->temporary = true;
+        return $this;
     }
 
 
@@ -81,7 +88,11 @@ class CreateTableQuery implements ToSqlInterface
     */
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
-        $sql = "CREATE TABLE " . $driver->quoteIdentifier($this->tableName);
+        $sql = "CREATE";
+        if ($this->temporary) {
+            $sql .= " TEMPORARY";
+        }
+        $sql .= " TABLE " . $driver->quoteIdentifier($this->tableName);
         $sql .= "(";
         $columnClauses = array();
         foreach($this->columns as $col) {
