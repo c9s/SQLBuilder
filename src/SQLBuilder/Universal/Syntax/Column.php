@@ -162,7 +162,7 @@ class Column implements ToSqlInterface
     {
         $this->type = 'bit';
         $this->isa = 'int';
-        $this->setLength($length);
+        $this->length = 1;
         return $this;
     }
 
@@ -771,6 +771,7 @@ class Column implements ToSqlInterface
 
     public function setLength($length) {
         $this->length = $length;
+        return $this;
     }
 
     public function setDecimals($decimals) {

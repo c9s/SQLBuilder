@@ -80,7 +80,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->column('c' . $a++)->bigInt();
 
 
-        $q->column('c' . $a++)->int()->setLength(6)->setDecimals(1);
+        $q->column('c' . $a++)->int()->setLength(6);
         $q->column('c' . $a++)->int(3);
         $q->column('c' . $a++)->int(3)->default(3);
         $q->column('c' . $a++)->integer(3);
@@ -90,7 +90,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->column('c' . $a++)->bigInt(3);
 
         $q->column('c' . $a++)->int(3)->unsigned();
-        $q->column('c' . $a++)->real(6,1);
+        $q->column('c' . $a++)->real(6,1)->setDecimals(2);
 
         $q->column('c' . $a++)->tinyblob();
         $q->column('c' . $a++)->blob();
@@ -138,7 +138,8 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->column('c' . $a++)->serial();
         $q->column('c' . $a++)->int();
         $q->column('c' . $a++)->int()->unsigned();
-        $q->column('c' . $a++)->int(1,3);
+        $q->column('c' . $a++)->int(1);
+        $q->column('c' . $a++)->double(2,1);
         $this->assertDriverQuery(new PgSQLDriver, $q);
     }
 
