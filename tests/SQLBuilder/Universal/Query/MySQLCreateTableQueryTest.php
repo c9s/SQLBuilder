@@ -125,8 +125,19 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 
         $q->column('c' . $a++)->numeric();
         $q->column('c' . $a++)->numeric(10)->comment('FOR NUMERIC');
-
         $this->assertQuery($q);
+    }
+
+
+    public function testPgCreateTable()
+    {
+        $a = 1;
+        $q = new CreateTableQuery('groups');
+        $q->column('c' . $a++)->serial();
+        $q->column('c' . $a++)->int();
+        $q->column('c' . $a++)->int()->unsigned();
+        $q->column('c' . $a++)->int(1,3);
+        $this->assertDriverQuery(new PgSQLDriver, $q);
     }
 
 
