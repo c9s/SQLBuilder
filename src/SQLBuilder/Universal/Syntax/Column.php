@@ -158,8 +158,11 @@ class Column implements ToSqlInterface
         return $this;
     }
 
-    public function bit($length = NULL)
+    public function bit($length = 1)
     {
+        $this->type = 'bit';
+        $this->isa = 'int';
+        $this->setLength($length);
         return $this;
     }
 
@@ -766,11 +769,11 @@ class Column implements ToSqlInterface
         }
     }
 
-    protected function setLength($length) {
+    public function setLength($length) {
         $this->length = $length;
     }
 
-    protected function setDecimals($decimals) {
+    public function setDecimals($decimals) {
         $this->decimals = $decimals;
         return $this;
     }

@@ -125,6 +125,8 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 
         $q->column('c' . $a++)->numeric();
         $q->column('c' . $a++)->numeric(10)->comment('FOR NUMERIC');
+
+        $q->column('c' . $a++)->bit(3);
         $this->assertQuery($q);
     }
 
