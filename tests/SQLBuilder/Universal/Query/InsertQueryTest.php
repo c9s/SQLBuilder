@@ -11,6 +11,16 @@ use SQLBuilder\Driver\SQLiteDriver;
 
 class InsertQueryTest extends PDOQueryTestCase
 {
+    public function testInsertOptions()
+    {
+        $query = new InsertQuery;
+        $query->option('LOW_PRIORITY');
+        $query->insert([ 'name' => 'John', 'confirmed' => true ])->into('users');
+        $this->assertSqlStrings($query, [ 
+            [ new MySQLDriver, 'INSERT LOW_PRIORITY INTO users (name,confirmed) VALUES (\'John\',TRUE)' ],
+        ]);
+    }
+
     public function testCrossPlatformInsert()
     {
         $query = new InsertQuery;
@@ -18,7 +28,7 @@ class InsertQueryTest extends PDOQueryTestCase
         $query->returning('id', 'name');
         $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, 'INSERT INTO users (name,confirmed) VALUES (\'John\',TRUE)' ],
-            [ new PgSQLDriver, 'INSERT INTO users (name,confirmed) VALUES (\'John\',TRUE) RETURNING id, name' ],
+            [ new PgSQLDriver, 'INSERT INTO users (name,confirmed) VALUES (\'John\',TRUE) RETURNING id,name' ],
             [ new SQLiteDriver, 'INSERT INTO users (name,confirmed) VALUES (\'John\',1)' ],
         ]);
     }
