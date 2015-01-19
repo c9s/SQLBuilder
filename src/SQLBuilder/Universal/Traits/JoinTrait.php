@@ -39,10 +39,6 @@ trait JoinTrait {
         return $this->joins;
     }
 
-    public function getLastJoin() {
-        return end($this->joins);
-    }
-
     public function buildJoinClause(BaseDriver $driver, ArgumentArray $args) {
         $sql = '';
         if (!empty($this->joins)) {

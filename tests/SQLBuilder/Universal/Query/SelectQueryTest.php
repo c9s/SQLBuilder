@@ -324,6 +324,7 @@ class SelectQueryTest extends PDOQueryTestCase
                 ->on('p.user_id = u.id')
             ;
         $query->where('u.name LIKE :name', [ ':name' => '%John%' ]);
+        ok( $query->getJoins());
         $sql = $query->toSql($driver, $args);
         is('SELECT id, name, phone, address FROM users AS u JOIN posts AS p ON (p.user_id = u.id) WHERE u.name LIKE :name', $sql);
     }
