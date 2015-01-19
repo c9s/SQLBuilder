@@ -76,7 +76,11 @@ class InsertQuery implements ToSqlInterface
     }
 
     public function returning($returningColumns) {
-        $this->returning = $returningColumns;
+        if (is_array($returningColumns)) {
+            $this->returning = $returningColumns;
+        } else {
+            $this->returning = func_get_args();
+        }
         return $this;
     }
 
