@@ -19,7 +19,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         parent::setUp();
 
         // Clean up
-        foreach(array('groups','authors','points') as $table) {
+        foreach(array('users','groups','authors','points') as $table) {
             $dropQuery = new DropTableQuery($table);
             $dropQuery->IfExists();
             $this->assertQuery($dropQuery);
@@ -28,12 +28,34 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 
     public function tearDown()
     {
-        foreach(array('groups','authors', 'points') as $table) {
+        foreach(array('users','groups','authors', 'points') as $table) {
             $dropQuery = new DropTableQuery($table);
             $dropQuery->IfExists();
             $this->assertQuery($dropQuery);
         }
     }
+
+    public function testCreateTableWithForeignKeyConstraint()
+    {
+        $q = new CreateTableQuery('groups');
+        $q->column('id')->integer()->primary();
+        $this->assertQuery($q);
+
+        $q = new CreateTableQuery('users');
+        $q->column('group_id')->int();
+        $q->foreignKey(['group_id'])
+            ->references('groups', 'id')
+            ->onDelete('CASCADE')
+            ->onUpdate('CASCADE')
+            ;
+        $this->assertSql('CREATE TABLE `users`(
+`group_id` integer,
+FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+)', $q);
+        $this->assertQuery($q);
+    }
+
+
 
     public function testChangingColumnName() {
         $q = new CreateTableQuery('points');
