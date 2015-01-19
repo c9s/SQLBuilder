@@ -497,14 +497,12 @@ class Column implements ToSqlInterface
 
     public function __get($name)
     {
-        if (isset($this->attributes[$name])) {
-            return $this->attributes[$name];
-        }
+        return $this->getAttribute($name);
     }
 
     public function __set($name,$value)
     {
-        $this->attributes[$name] = $value;
+        $this->setAttribute($name, $value);
     }
 
     public function __call($method,$args)
