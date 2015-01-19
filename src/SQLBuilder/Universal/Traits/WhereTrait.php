@@ -16,6 +16,13 @@ trait WhereTrait {
 
     protected $where;
 
+    /**
+     * The arguments here are always binding to varibles, won't be deflated to sql query
+     *
+     * Example:
+     *
+     *     where('name = :name', [ 'name' => 'name' ]);
+     */
     public function where($expr = NULL , array $args = array()) {
         if (!$this->where) {
             $this->where = new Conditions;

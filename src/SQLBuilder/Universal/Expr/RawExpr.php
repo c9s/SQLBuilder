@@ -23,10 +23,8 @@ class RawExpr implements ToSqlInterface
         foreach($this->args as $k => $a) {
             if ($a instanceof Bind) {
                 $args->add($a);
-            } elseif (is_string($a)) {
-                $args->add(new Bind($k, $a));
             } else {
-                throw new InvalidArgumentException('Unsupported argument type');
+                $args->add(new Bind($k, $a));
             }
         }
         return $this->str;

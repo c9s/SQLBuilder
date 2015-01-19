@@ -1,12 +1,34 @@
 <?php
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Universal\Syntax\Conditions;
 use SQLBuilder\Criteria;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\DataType\Unknown;
 use SQLBuilder\Bind;
+use SQLBuilder\Raw;
+use SQLBuilder\Testing\QueryTestCase;
 
-class ConditionsTest extends PHPUnit_Framework_TestCase
+class ConditionsTest extends QueryTestCase
 {
+    /**
+     * @expectedException BadMethodCallException
+     */
+    public function testBadMethodCall() {
+        $expr = new Conditions;
+        $expr->foo();
+    }
+
+    public function testRawExpr()
+    {
+        $conds = new Conditions;
+        $conds->append(new Raw('1 + 1'));
+        $conds->append(new Raw('2 + 2'));
+        $this->assertSqlStrings($conds, [
+            [new MySQLDriver,'1 + 1 AND 2 + 2']
+        ]);
+    }
+
     public function testAppendExpr() {
         $args = new ArgumentArray;
         $driver = new SQLBuilder\Driver\MySQLDriver;
@@ -213,6 +235,8 @@ class ConditionsTest extends PHPUnit_Framework_TestCase
         $expr->like('name', new Bind('name',$pat), $criteria);
         $sql = $expr->toSql($driver, $args);
         is('name LIKE :name', $sql);
+
+        ok($expr->notEmpty());
     }
 
     public function testRegExp()
@@ -223,6 +247,8 @@ class ConditionsTest extends PHPUnit_Framework_TestCase
         $expr->regExp('content', '.*');
         $sql = $expr->toSql($driver, $args);
         is("content REGEXP '.*'", $sql);
+
+        ok($expr->notEmpty());
     }
 
     public function testNotRegExp()

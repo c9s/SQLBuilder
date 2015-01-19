@@ -126,7 +126,7 @@ class SelectQuery implements ToSqlInterface
         return $this;
     }
 
-    public function setSelect($selecct) {
+    public function setSelect($select) {
         if (is_array($select)) {
             $this->select = $select;
         } else {
@@ -275,13 +275,8 @@ class SelectQuery implements ToSqlInterface
                 $tableRefs[] = $sql;
             } elseif ( is_integer($k) || is_numeric($k) ) {
                 $sql = $driver->quoteTable($v);
-
-                if ($driver instanceof MySQLDriver) {
-                    if ($this->definedIndexHint($v)) {
-                        $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
-                    } elseif ($this->definedIndexHint($k)) {
-                        $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
-                    }
+                if ($driver instanceof MySQLDriver && $this->definedIndexHint($v)) {
+                    $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
                 }
                 $tableRefs[] = $sql;
             }
@@ -303,8 +298,6 @@ class SelectQuery implements ToSqlInterface
         foreach($this->groupByList as $groupBy) {
             if (is_string($groupBy)) {
                 $clauses[] = $groupBy;
-            } elseif ($groupBy instanceof ToSqlInterface) {
-                $clauses[] = $groupBy->toSql($driver, $args);
             } else {
                 throw new InvalidArgumentException('Unsupported variable type for GROUP BY clause');
             }

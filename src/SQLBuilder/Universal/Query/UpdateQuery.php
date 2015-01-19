@@ -20,6 +20,7 @@ use SQLBuilder\Universal\Traits\OptionTrait;
 use SQLBuilder\Universal\Traits\LimitTrait;
 use SQLBuilder\MySQL\Traits\PartitionTrait;
 use SQLBuilder\MySQL\Traits\IndexHintTrait;
+use SQLBuilder\Exception\IncompleteSettingsException;
 
 use Exception;
 use LogicException;
@@ -92,11 +93,7 @@ class UpdateQuery implements ToSqlInterface
 
 
     public function set(array $sets) {
-        if (is_array($sets)) {
-            $this->sets = $this->sets + $sets;
-        } else {
-            $this->sets = $this->sets + func_get_args();
-        }
+        $this->sets = $this->sets + $sets;
         return $this;
     }
 
@@ -106,46 +103,39 @@ class UpdateQuery implements ToSqlInterface
     public function buildSetClause(BaseDriver $driver, ArgumentArray $args) {
         $setClauses = array();
         foreach($this->sets as $col => $val) {
-            if (!$val instanceof Bind && !$val instanceof ParamMarker) {
-                $setClauses[] = $driver->quoteColumn($col) . " = " . $driver->deflate(new Bind($col, $val));
-            } else {
-                $setClauses[] = $driver->quoteColumn($col) . " = " . $driver->deflate($val);
-            }
+            $setClauses[] = $driver->quoteColumn($col) . " = " . $driver->deflate($val);
         }
         return ' SET ' . join(', ', $setClauses);
     }
 
     public function buildFromClause(BaseDriver $driver, ArgumentArray $args) {
+        if (empty($this->updateTables)) {
+            throw new IncompleteSettingsException('UpdateQuery requires at least one table to update.');
+        }
         $tableRefs = array();
-        foreach($this->updateTables as $k => $v) {
+        foreach($this->updateTables as $k => $alias) {
             /* "column AS alias" OR just "column" */
             if (is_string($k)) {
-                $sql = $driver->quoteTable($k) . ' AS ' . $v;
+                $sql = $driver->quoteTable($k) . ' AS ' . $alias;
                 if ($driver instanceof MySQLDriver) {
-                    if ($this->definedIndexHint($v)) {
-                        $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
+                    if ($this->definedIndexHint($alias)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($alias, $driver, $args);
                     } elseif ($this->definedIndexHint($k)) {
                         $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
                     }
                 }
                 $tableRefs[] = $sql;
             } elseif ( is_integer($k) || is_numeric($k) ) {
-                $sql = $driver->quoteTable($v);
-
+                $sql = $driver->quoteTable($alias);
                 if ($driver instanceof MySQLDriver) {
-                    if ($this->definedIndexHint($v)) {
-                        $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
-                    } elseif ($this->definedIndexHint($k)) {
-                        $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
+                    if ($this->definedIndexHint($alias)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($alias, $driver, $args);
                     }
                 }
                 $tableRefs[] = $sql;
             }
         }
-        if (!empty($tableRefs)) {
-            return ' ' . join(', ', $tableRefs);
-        }
-        return '';
+        return ' ' . join(', ', $tableRefs);
     }
 
 

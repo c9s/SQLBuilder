@@ -6,7 +6,7 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\DataType\Unknown;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
-use LogicException;
+use InvalidArgumentException;
 
 class IsExpr implements ToSqlInterface { 
 
@@ -19,11 +19,11 @@ class IsExpr implements ToSqlInterface {
         $this->exprStr = $exprStr;
 
         // Validate boolean type
-        if (!is_bool($boolean) && !is_null($boolean) && ! $boolean instanceof Unknown) {
-            throw new LogicException('Invalid boolean type');
+        if (is_bool($boolean) || $boolean === NULL || $boolean instanceof Unknown) {
+            $this->boolean = $boolean;
+        } else {
+            throw new InvalidArgumentException('Invalid boolean type');
         }
-
-        $this->boolean = $boolean;
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {

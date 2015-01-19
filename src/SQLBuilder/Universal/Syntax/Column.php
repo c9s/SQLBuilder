@@ -10,6 +10,7 @@ use SQLBuilder\Raw;
 use SQLBuilder\Exception\CriticalIncompatibleUsageException;
 use SQLBuilder\Exception\IncompleteSettingsException;
 use SQLBuilder\Exception\UnsupportedDriverException;
+use InvalidArgumentException;
 
 
 /**
@@ -58,23 +59,6 @@ class Column implements ToSqlInterface
      */
     public $unsigned;
 
-
-    /**
-     * When using numeric types, this property is used to save the length 
-     * information, which is optional
-     *
-     * @var integer
-     */
-    public $length;
-
-    /**
-     * When using numeric types, this property is used to save the decimals 
-     * information, which is optional
-     *
-     * @var integer
-     */
-    public $decimals;
-
     public $type;
 
     public $isa = 'str';
@@ -96,12 +80,10 @@ class Column implements ToSqlInterface
      */
     protected $set;
 
-
-
     /**
-     * @var array $supportedAttributes
+     * @var array $attributeTypes
      */
-    protected $supportedAttributes = array();
+    protected $attributeTypes = array();
 
 
     /**
@@ -117,10 +99,25 @@ class Column implements ToSqlInterface
      */
     public function __construct($name, $type = NULL)
     {
-        $this->supportedAttributes = array(
+        $this->attributeTypes = array(
             'autoIncrement' => self::ATTR_FLAG,
             'unique'        => self::ATTR_FLAG, /* unique, should support by SQL syntax */
             'timezone'      => self::ATTR_FLAG,
+
+            /**
+            * When using numeric types, this property is used to save the length 
+            * information, which is optional
+            * @var integer
+            */
+            'length'   => self::ATTR_INTEGER,
+
+            /**
+            * When using numeric types, this property is used to save the decimals 
+            * information, which is optional
+            *
+            * @var integer
+            */
+            'decimals'   => self::ATTR_INTEGER,
 
             'comment'  => self::ATTR_STRING,
 
@@ -493,11 +490,6 @@ class Column implements ToSqlInterface
         return $this;
     }
 
-    public function index($indexName = NULL) {
-        $this->setAttribute('index', $indexName ?: true);
-        return $this;
-    }
-
     public function __isset($name)
     {
         return isset( $this->attributes[ $name ] );
@@ -505,8 +497,8 @@ class Column implements ToSqlInterface
 
     public function __get($name)
     {
-        if ( isset($this->attributes[ $name ] ) ) {
-            return $this->attributes[ $name ];
+        if (isset($this->attributes[$name])) {
+            return $this->attributes[$name];
         }
     }
 
@@ -517,9 +509,9 @@ class Column implements ToSqlInterface
 
     public function __call($method,$args)
     {
-        if (isset($this->supportedAttributes[ $method ])) {
+        if (isset($this->attributeTypes[ $method ])) {
             $c = count($args);
-            $t = $this->supportedAttributes[ $method ];
+            $t = $this->attributeTypes[ $method ];
 
             if ($t != self::ATTR_FLAG && $c == 0) {
                 throw new InvalidArgumentException( 'Attribute value is required.' );
@@ -555,10 +547,9 @@ class Column implements ToSqlInterface
                     break;
 
                 case self::ATTR_INTEGER:
-                    if( is_integer($args[0])) {
-                        $this->attributes[ $method ] = $args[0];
-                    }
-                    else {
+                    if (is_integer($args[0])) {
+                        $this->attributes[$method] = $args[0];
+                    } else {
                         throw new InvalidArgumentException("attribute value of $method is not a integer.");
                     }
                     break;
@@ -687,9 +678,9 @@ class Column implements ToSqlInterface
         // format length to SQL
         if ($this->type) {
             $sql .= ' ' . $this->type;
-            if ($this->length && $this->decimals) {
+            if (isset($this->length) && isset($this->decimals)) {
                 $sql .= '(' . $this->length . ',' . $this->decimals . ')';
-            } elseif ($this->length) {
+            } elseif (isset($this->length)) {
                 $sql .= '(' . $this->length . ')';
             }
         }
@@ -763,20 +754,10 @@ class Column implements ToSqlInterface
      * PROTECTED METHODS (internal use)
      ***********************************************************************/
     protected function setLengthInfo($length, $decimals = NULL) {
-        $this->length = $length;
+        $this->length($length);
         if ($decimals) {
-            $this->decimals = $decimals;
+            $this->decimals($decimals);
         }
-    }
-
-    public function setLength($length) {
-        $this->length = $length;
-        return $this;
-    }
-
-    public function setDecimals($decimals) {
-        $this->decimals = $decimals;
-        return $this;
     }
 }
 

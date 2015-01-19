@@ -163,7 +163,56 @@ class SelectQueryTest extends PDOQueryTestCase
         $this->assertSql('SELECT name, COUNT(*) FROM users',$query);
     }
 
-    public function testGroupByHaving() 
+    public function testSelectAll()
+    {
+        $query = new SelectQuery;
+        $query->select(array('name'))
+            ->from('users', 'u')
+            ->all();
+        $this->assertQuery($query);
+        $this->assertSqlStrings($query, [ 
+            [ new MySQLDriver, "SELECT ALL name FROM users AS u"],
+        ]);
+    }
+
+    public function testSelectOverride()
+    {
+        $query = new SelectQuery;
+        $query->select(array('foo'))
+            ->from('users', 'u')
+            ->groupBy('name')
+            ->having('total_scores > 10')
+            ;
+        $query->setSelect(array('name', new Raw('sum(scores) AS total_scores')));
+
+        $selected = $query->getSelect();
+        is(2, count($selected));
+
+        $this->assertSqlStrings($query, [ 
+            [ new MySQLDriver, "SELECT name, sum(scores) AS total_scores FROM users AS u GROUP BY name HAVING total_scores > 10"],
+        ]);
+
+        //  should be the same
+        $query->setSelect('name', new Raw('sum(scores) AS total_scores'));
+        $this->assertSqlStrings($query, [ 
+            [ new MySQLDriver, "SELECT name, sum(scores) AS total_scores FROM users AS u GROUP BY name HAVING total_scores > 10"],
+        ]);
+    }
+
+    public function testGroupByHavingStringExpr() 
+    {
+        $query = new SelectQuery;
+        $query->select(array('name', new Raw('sum(scores) AS total_scores')))
+            ->from('users', 'u')
+            ->groupBy('name')
+            ->having('total_scores > 10')
+            ;
+        $this->assertSqlStrings($query, [ 
+            [ new MySQLDriver, "SELECT name, sum(scores) AS total_scores FROM users AS u GROUP BY name HAVING total_scores > 10"],
+        ]);
+    }
+
+    public function testGroupByHavingConditions() 
     {
         $query = new SelectQuery;
         $query->select(array('id', 'name', 'phone', 'address'))
@@ -229,11 +278,21 @@ class SelectQueryTest extends PDOQueryTestCase
 
 
     /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testInvalidGroupBy()
+    {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $query = new SelectQuery;
+        $query->groupBy(1);
+        $query->toSql($driver, $args);
+    }
+
+    /**
      * @expectedException BadMethodCallException
      */
     public function testBadMethodCallOnJoin() {
-        $args = new ArgumentArray;
-        $driver = new MySQLDriver;
         $query = new SelectQuery;
         $query->select(array('id', 'name', 'phone', 'address'))
             ->from('users', 'u')
@@ -426,7 +485,41 @@ class SelectQueryTest extends PDOQueryTestCase
         is('SELECT id, name FROM products AS p WHERE id IN (SELECT product_id FROM product_category_junction WHERE category_id = 2)', $sql);
     }
 
-    public function testSelectIndexHint() {
+
+
+    public function testSelectIndexHintByTableAliasRef() {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $query = new SelectQuery;
+        ok($query);
+        $query->select(array('u.id', 'u.name', 'u.phone', 'u.address'))
+            ->from('users', 'u');
+
+        $query->indexHint('u')->useIndex('users_idx')->forOrderBy();
+        $query->indexHint('u')->ignoreIndex('name_idx')->forGroupBy();
+        $query->indexHint('u')->forceIndex('foo_idx')->forJoin();
+
+        $sql = $query->toSql($driver, $args);
+        is('SELECT u.id, u.name, u.phone, u.address FROM users AS u USE INDEX FOR ORDER BY (users_idx) IGNORE INDEX FOR GROUP BY (name_idx) FORCE INDEX FOR JOIN (foo_idx)', $sql);
+    }
+
+    public function testSelectIndexHintByTableNameOnly() {
+        $args = new ArgumentArray;
+        $driver = new MySQLDriver;
+        $query = new SelectQuery;
+        ok($query);
+        $query->select(array('u.id', 'u.name', 'u.phone', 'u.address'))
+            ->from('users');
+
+        $query->indexHint('users')->useIndex('users_idx')->forOrderBy();
+        $query->indexHint('users')->ignoreIndex('name_idx')->forGroupBy();
+        $query->indexHint('users')->forceIndex('foo_idx')->forJoin();
+
+        $sql = $query->toSql($driver, $args);
+        is('SELECT u.id, u.name, u.phone, u.address FROM users USE INDEX FOR ORDER BY (users_idx) IGNORE INDEX FOR GROUP BY (name_idx) FORCE INDEX FOR JOIN (foo_idx)', $sql);
+    }
+
+    public function testSelectIndexHintByTableNameRef() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $query = new SelectQuery;

@@ -13,16 +13,53 @@ use SQLBuilder\Testing\PDOQueryTestCase;
 class UpdateQueryTest extends PDOQueryTestCase
 {
 
+    /**
+     * @expectedException SQLBuilder\Exception\IncompleteSettingsException
+     */
+    public function testUpdateWithoutTable()
+    {
+        $query = new UpdateQuery;
+        $this->assertSqlStrings($query,[ 
+            [new MySQLDriver, '']
+        ]);
+    }
 
-    public function testUpdateTableWithIndexHint()
+    public function testUpdateTableWithIndexHintOnAlias()
     {
         $query = new UpdateQuery;
         $query->update('users', 'u');
-        $query->set([ 'name' => 'Mary', 'phone' => '09752222123' ]);
+        $query->update('users2', 'u2');
+        $query->set([ 'name' => new Bind('name','Mary'), 'phone' => new Bind('phone','09752222123') ]);
         $query->indexHint('u')->useIndex('users_idx')->forOrderBy();
+        $query->indexHint('u2')->useIndex('users_idx')->forOrderBy();
         $this->assertSqlStrings($query, [ 
-            [ new MySQLDriver, 'UPDATE users AS u USE INDEX FOR ORDER BY (users_idx) SET name = :name, phone = :phone' ],
-            [ new PgSQLDriver, 'UPDATE users AS u SET name = :name, phone = :phone' ],
+            [ new MySQLDriver, 'UPDATE users AS u USE INDEX FOR ORDER BY (users_idx), users2 AS u2 USE INDEX FOR ORDER BY (users_idx) SET name = :name, phone = :phone' ],
+            [ new PgSQLDriver, 'UPDATE users AS u, users2 AS u2 SET name = :name, phone = :phone' ],
+        ]);
+    }
+
+    public function testUpdateTableWithIndexHintOn2TableNames()
+    {
+        $query = new UpdateQuery;
+        $query->update('users','u')->update('users2','u2');
+        $query->set([ 'name' => new Bind('name','Mary'), 'phone' => new Bind('phone','09752222123') ]);
+        $query->indexHint('users')->useIndex('users_idx')->forOrderBy();
+        $this->assertSqlStrings($query, [ 
+            [ new MySQLDriver, 'UPDATE users AS u USE INDEX FOR ORDER BY (users_idx), users2 AS u2 SET name = :name, phone = :phone' ],
+            [ new PgSQLDriver, 'UPDATE users AS u, users2 AS u2 SET name = :name, phone = :phone' ],
+        ]);
+    }
+
+    public function testUpdateTableWithIndexHintOnTableNames()
+    {
+        $query = new UpdateQuery;
+        $query->update('users');
+        $query->update('users2');
+        $query->set([ 'name' => new Bind('name','Mary'), 'phone' => new Bind('phone','09752222123') ]);
+        $query->indexHint('users')->useIndex('users_idx')->forOrderBy();
+        $this->assertSqlStrings($query, [ 
+            [ new MySQLDriver, 'UPDATE users USE INDEX FOR ORDER BY (users_idx), users2 SET name = :name, phone = :phone' ],
+            [ new PgSQLDriver, 'UPDATE users, users2 SET name = :name, phone = :phone' ],
         ]);
     }
 
@@ -30,7 +67,7 @@ class UpdateQueryTest extends PDOQueryTestCase
         $query = new UpdateQuery;
         $query->update('users', 'u');
         $query->update('users2', 'u2');
-        $query->set([ 'name' => 'Mary', 'phone' => '09752222123' ]);
+        $query->set([ 'name' => new Bind('name','Mary'), 'phone' => new Bind('phone','09752222123') ]);
         $query->where()->equal('id', 3);
         $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, 'UPDATE users AS u, users2 AS u2 SET name = :name, phone = :phone WHERE id = 3' ],
@@ -47,7 +84,7 @@ class UpdateQueryTest extends PDOQueryTestCase
                 ->left()
                 ->on('uv.user_id = u.id');
 
-        $query->set([ 'name' => 'Mary', 'phone' => '09752222123' ]);
+        $query->set([ 'name' => new Bind('name','Mary'), 'phone' => new Bind('phone','09752222123') ]);
         $query->where()->equal('id', 3);
         $query->limit(1);
 
@@ -64,7 +101,7 @@ class UpdateQueryTest extends PDOQueryTestCase
         $args = new ArgumentArray;
         $query = new UpdateQuery;
         $query->update('users')->set([ 
-            'name' => 'Mary'
+            'name' => new Bind('name','Mary'),
         ]);
         $query->where()
             ->equal('id', 3);

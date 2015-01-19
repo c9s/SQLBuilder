@@ -18,6 +18,7 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use Countable;
 use Exception;
+use BadMethodCallException;
 
 class Op {  }
 
@@ -121,8 +122,7 @@ class Conditions implements ToSqlInterface, Countable
             $this->exprs[] = new XorOp;
             return $this;
         }
-        throw new Exception("Invalid method call: $method");
-        // return call_user_func_array(array($this->parent,$method) , $args );
+        throw new BadMethodCallException("Invalid method call: $method");
     }
 
     public function is($exprStr, $boolean) {
@@ -190,10 +190,8 @@ class Conditions implements ToSqlInterface, Countable
                 $sql .= ' ' . $expr->toSql($driver, $args);
             } elseif ($expr instanceof Op) { 
                 $sql .= ' ' . $expr->__toString();
-            } elseif (is_object($expr)) {
-                $sql .= ' ' . $expr->__toString();
             } else {
-                $sql .= ' ' . $expr;
+                $sql .= ' ' . $driver->deflate($expr);
             }
         }
         return ltrim($sql);
