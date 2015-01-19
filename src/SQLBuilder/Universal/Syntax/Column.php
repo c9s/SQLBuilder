@@ -614,12 +614,10 @@ class Column implements ToSqlInterface
 
     public function buildNullClause(BaseDriver $driver) 
     {
-        if ($this->null !== NULL) {
-            if ($this->null === FALSE) {
-                return ' NOT NULL';
-            } elseif ($this->null === TRUE) {
-                return  ' NULL';
-            }
+        if ($this->null === FALSE) {
+            return ' NOT NULL';
+        } elseif ($this->null === TRUE) {
+            return  ' NULL';
         }
         return '';
     }
