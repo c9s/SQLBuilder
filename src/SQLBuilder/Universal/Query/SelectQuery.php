@@ -19,6 +19,7 @@ use SQLBuilder\Universal\Syntax\Paging;
 use SQLBuilder\MySQL\Syntax\Partition;
 use SQLBuilder\Universal\Traits\OrderByTrait;
 use SQLBuilder\Universal\Traits\WhereTrait;
+use SQLBuilder\Universal\Expr\SelectExpr;
 use SQLBuilder\MySQL\Traits\PartitionTrait;
 use SQLBuilder\MySQL\Traits\IndexHintTrait;
 use SQLBuilder\Universal\Traits\JoinTrait;
