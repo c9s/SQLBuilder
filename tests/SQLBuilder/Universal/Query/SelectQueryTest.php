@@ -163,6 +163,17 @@ class SelectQueryTest extends PDOQueryTestCase
         $this->assertSql('SELECT name, COUNT(*) FROM users',$query);
     }
 
+    public function testSelectMultipleOptions()
+    {
+        $query = new SelectQuery;
+        $query->option([ 'SQL_SMALL_RESULT', 'SQL_CALC_FOUND_ROWS', 'MAX_STATEMENT_TIME = 20']);
+        $query->select('id');
+        $query->from('users', 'u');
+        $this->assertSqlStrings($query, [ 
+            [ new MySQLDriver, "SELECT SQL_SMALL_RESULT SQL_CALC_FOUND_ROWS MAX_STATEMENT_TIME = 20 id FROM users AS u"],
+        ]);
+    }
+
     public function testSelectAll()
     {
         $query = new SelectQuery;

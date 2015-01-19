@@ -47,7 +47,8 @@ trait OptionTrait
         if (empty($this->options)) {
             return '';
         }
-        return ' ' . join(' ', $this->options);
+        $sql = ' ' . join(' ', $this->options);
+        return $sql;
     }
 
 

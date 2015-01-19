@@ -140,6 +140,21 @@ class AlterTableQueryTest extends PDOQueryTestCase
     }
 
 
+    /**
+     * @expectedException SQLBuilder\Exception\IncompleteSettingsException
+     */
+    public function testModifyColumnPgWithoutChanges()
+    {
+        $column = new Column('name');
+        $q = new AlterTableQuery('products');
+        $q->modifyColumn($column);
+        $this->assertSqlStrings($q, [ 
+            [new PgSQLDriver, 'ALTER TABLE "products" ALTER COLUMN "name" SET DEFAULT \'Steve Jobs\''],
+        ]);
+    }
+
+
+
 
 
 

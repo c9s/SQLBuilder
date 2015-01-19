@@ -9,7 +9,7 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 use SQLBuilder\ParamMarker;
-use SQLBuilder\Universal\Syntax\IndexHint;
+use SQLBuilder\MySQL\Syntax\IndexHint;
 
 trait IndexHintTrait {
 

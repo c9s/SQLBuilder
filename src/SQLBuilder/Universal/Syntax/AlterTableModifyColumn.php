@@ -47,7 +47,7 @@ class AlterTableModifyColumn implements ToSqlInterface
                     $sql .= ' SET NOT NULL';
                 }
             } else {
-                throw new LogicException('Empty column attribute ');
+                throw new IncompleteSettingsException('Empty column attribute ');
             }
 
         } else {
