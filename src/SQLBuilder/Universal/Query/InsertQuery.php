@@ -67,12 +67,7 @@ class InsertQuery implements ToSqlInterface
     }
 
     public function getColumnNames(BaseDriver $driver) {
-        return array_map(function($col) use($driver) { 
-            if (is_numeric($col)) {
-                throw new InvalidArgumentException("Invalid column name: $col");
-            }
-            return $driver->quoteColumn($col);
-        }, array_keys($this->values[0]));
+        return array_map([$driver,'quoteColumn'], array_keys($this->values[0]));
     }
 
     public function returning($returningColumns) {
@@ -115,12 +110,7 @@ class InsertQuery implements ToSqlInterface
 
         // Check if RETURNING is supported
         if ($this->returning && ($driver instanceof PgSQLDriver) ) {
-            // The "RETURNING" can be an array.
-            if (is_array($this->returning)) {
-                $sql .= ' RETURNING ' . join(',', $driver->quoteColumns($this->returning));
-            } else {
-                $sql .= ' RETURNING ' . $driver->quoteColumn($this->returning);
-            }
+            $sql .= ' RETURNING ' . join(',', $driver->quoteColumns($this->returning));
         }
         return $sql;
     }

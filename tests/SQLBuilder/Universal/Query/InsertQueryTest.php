@@ -25,7 +25,7 @@ class InsertQueryTest extends PDOQueryTestCase
     {
         $query = new InsertQuery;
         $query->insert([ 'name' => 'John', 'confirmed' => true ])->into('users');
-        $query->returning('id', 'name');
+        $query->returning(['id', 'name']);
         $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, 'INSERT INTO users (name,confirmed) VALUES (\'John\',TRUE)' ],
             [ new PgSQLDriver, 'INSERT INTO users (name,confirmed) VALUES (\'John\',TRUE) RETURNING id,name' ],
