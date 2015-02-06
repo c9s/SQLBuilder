@@ -294,8 +294,11 @@ abstract class BaseDriver
             } else {
                 throw new LogicException('Unsupported class: ' . get_class($value));
             }
+        } elseif (is_array($value)) {
+            // error_log("LazyRecord: deflating array type value", 0);
+            return $value[0];
         } else {
-            throw new LogicException('Unsupported type');
+            throw new LogicException('BaseDriver::deflate: Unsupported variable type');
         }
         return $value;
     }
