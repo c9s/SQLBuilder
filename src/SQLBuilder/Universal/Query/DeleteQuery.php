@@ -61,6 +61,11 @@ class DeleteQuery implements ToSqlInterface
 
     protected $deleteTables = array();
 
+
+    public function from($table, $alias = NULL) {
+        return $this->delete($table, $alias);
+    }
+
     /**
      * ->delete('posts', 'p')
      * ->delete('users', 'u')
