@@ -211,12 +211,22 @@ class SelectQuery implements ToSqlInterface
      */
     public function groupBy($expr, array $modifiers = array())
     {
-        $this->groupByList[] = $expr;
+        if (is_array($expr)) {
+            $this->groupByList = array_merge($this->groupByList,$expr);
+        } else {
+            $this->groupByList[] = $expr;
+        }
         if (!empty($modifiers)) {
             $this->groupByModifiers = $modifiers;
         }
         return $this;
     }
+
+    public function clearGroupBy()
+    {
+        $this->groupByList = array();
+    }
+
 
     /**
      * Note: SELECT FOR UPDATE does not work when used in select statement with a subquery.
