@@ -30,11 +30,23 @@ trait WhereTrait {
         if ($expr) {
             if (is_string($expr)) {
                 $this->where->appendExpr($expr, $args);
+            } else if (is_array($expr)) {
+                foreach($expr as $key => $val) {
+                    $this->where->equal($key, $val);
+                }
             } else {
                 throw new InvalidArgumentException("Unsupported argument type of 'where' method.");
             }
         }
         return $this->where;
+    }
+
+    public function setWhere(Conditions $where) {
+        $this->where = $where;
+    }
+
+    public function cloneWhere() {
+        return clone $this->where;
     }
 
     public function buildWhereClause(BaseDriver $driver, ArgumentArray $args) {
@@ -43,7 +55,6 @@ trait WhereTrait {
         }
         return '';
     }
-
 
 
 }
