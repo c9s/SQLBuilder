@@ -19,5 +19,10 @@ class PDOSQLiteDriver extends SQLiteDriver
     {
         return $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
     }
+
+    public function getConnection()
+    {
+        return $this->pdo;
+    }
 }
 

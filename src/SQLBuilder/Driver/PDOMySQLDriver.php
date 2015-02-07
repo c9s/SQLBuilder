@@ -15,6 +15,11 @@ class PDOMySQLDriver extends MySQLDriver
         return $this->pdo->quote($str);
     }
 
+    public function getConnection()
+    {
+        return $this->pdo;
+    }
+
     public function getDriverName()
     {
         return $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
