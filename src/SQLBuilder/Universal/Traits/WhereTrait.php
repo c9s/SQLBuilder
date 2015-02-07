@@ -45,8 +45,11 @@ trait WhereTrait {
         $this->where = $where;
     }
 
-    public function cloneWhere() {
-        return clone $this->where;
+    public function getWhere() {
+        if ($this->where) {
+            return $this->where;
+        }
+        return $this->where = new Conditions;
     }
 
     public function buildWhereClause(BaseDriver $driver, ArgumentArray $args) {
