@@ -97,7 +97,7 @@ class Column implements ToSqlInterface
     /**
      * @var string $name column name (id)
      */
-    public function __construct($name, $type = NULL)
+    public function __construct($name = NULL, $type = NULL)
     {
         $this->attributeTypes = array(
             'autoIncrement' => self::ATTR_FLAG,

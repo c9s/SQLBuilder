@@ -220,11 +220,11 @@ abstract class BaseDriver
 
             return 'NULL';
 
-        } elseif ($value === true ) {
+        } elseif ($value === true) {
 
             return 'TRUE';
 
-        } elseif ($value === false ) {
+        } elseif ($value === false) {
 
             return 'FALSE';
 
