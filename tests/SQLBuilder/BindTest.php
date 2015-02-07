@@ -13,5 +13,17 @@ class BindTest extends PHPUnit_Framework_TestCase
         is('name', $bind->getName());
         is(':name', $bind->getMarker());
     }
+
+
+    public function testBindArray()
+    {
+        $array = Bind::bindArray(array(
+            'name' => 'John',
+            'phone' => '123123',
+        ));
+
+        $this->assertInstanceOf('SQLBuilder\Bind', $array['name']);
+        $this->assertInstanceOf('SQLBuilder\Bind', $array['phone']);
+    }
 }
 

@@ -30,5 +30,13 @@ class Bind {
     public function getMarker() {
         return ':' . $this->name;
     }
+
+    static public function bindArray(array $array) {
+        $args = array();
+        foreach($array as $key => $value) {
+            $args[$key] = new Bind($key, $value);
+        }
+        return $args;
+    }
 }
 
