@@ -2,7 +2,7 @@
 namespace SQLBuilder;
 use ArrayIterator;
 use ArrayAccess;
-use SQlBuilder\Bind;
+use SQLBuilder\Bind;
 use IteratorAggregate;
 
 class ArgumentArray implements ArrayAccess, IteratorAggregate
@@ -68,7 +68,14 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
         return $this->args;
     }
     
-    public function toArray() {
+    public function toArray($removeBinds = false) {
+        if ($removeBinds) {
+            $args = array();
+            foreach($this->args as $key => $val) {
+                $args[$key] = $val instanceof Bind ? $val->getValue() : $val;
+            }
+            return $args;
+        }
         return $this->args;
     }
 }
