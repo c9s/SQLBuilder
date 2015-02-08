@@ -99,7 +99,7 @@ class Column implements ToSqlInterface
      */
     public function __construct($name = NULL, $type = NULL)
     {
-        $this->attributeTypes = array(
+        $this->attributeTypes = $this->attributeTypes + array(
             'autoIncrement' => self::ATTR_FLAG,
             'unique'        => self::ATTR_FLAG, /* unique, should support by SQL syntax */
             'timezone'      => self::ATTR_FLAG,
@@ -643,15 +643,7 @@ class Column implements ToSqlInterface
         if ($this->autoIncrement) {
             $sql .= ' SERIAL';
         } else {
-            // format length to SQL
-            if ($this->type) {
-                $sql .= ' ' . $this->type;
-                if ($this->length && $this->decimals) {
-                    $sql .= '(' . $this->length . ',' . $this->decimals . ')';
-                } elseif ($this->length) {
-                    $sql .= '(' . $this->length . ')';
-                }
-            }
+            $sql .= $this->buildTypeSql($driver);
         }
 
         if ($this->unsigned) {
@@ -663,15 +655,9 @@ class Column implements ToSqlInterface
         return $sql;
     }
 
-
-    public function buildDefinitionSql(BaseDriver $driver, ArgumentArray $args)
+    public function buildTypeSql(BaseDriver $driver)
     {
-        $isa  = $this->isa ?: 'str';
-
         $sql = '';
-        $sql .= $driver->quoteIdentifier($this->name);
-
-        // format length to SQL
         if ($this->type) {
             $sql .= ' ' . $this->type;
             if (isset($this->length) && isset($this->decimals)) {
@@ -680,7 +666,17 @@ class Column implements ToSqlInterface
                 $sql .= '(' . $this->length . ')';
             }
         }
+        return $sql;
+    }
 
+    public function buildDefinitionSql(BaseDriver $driver, ArgumentArray $args)
+    {
+        $isa  = $this->isa ?: 'str';
+
+        $sql = '';
+        $sql .= $driver->quoteIdentifier($this->name);
+
+        $sql .= $this->buildTypeSql($driver);
 
         if ($this->unsigned) {
             $sql .= ' UNSIGNED';
