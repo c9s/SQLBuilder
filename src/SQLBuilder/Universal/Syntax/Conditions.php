@@ -42,7 +42,7 @@ class XorOp extends Op {
 
 class Conditions implements ToSqlInterface, Countable
 {
-    protected $exprs = array();
+    public $exprs = array();
 
     public function __construct(array $exprs = array()) 
     {
@@ -223,7 +223,10 @@ class Conditions implements ToSqlInterface, Countable
 
     static public function __set_state($array)
     {
-        return new self($array['exprs']);
+        if (isset($array['exprs'])) {
+            return new self($array['exprs']);
+        }
+        return new self;
     }
 }
 
