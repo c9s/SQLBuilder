@@ -44,6 +44,10 @@ class Conditions implements ToSqlInterface, Countable
 {
     protected $exprs = array();
 
+    public function __construct(array $exprs = array()) {
+        $this->exprs = $exprs;
+    }
+
     public function append($expr) {
         if (!empty($this->exprs) && ! end($this->exprs) instanceof Op) {
             $this->exprs[] = new AndOp;
