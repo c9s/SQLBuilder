@@ -22,4 +22,9 @@ class UnaryExpr implements ToSqlInterface
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         return $this->op . ' ' . $this->operand;
     }
+
+    static public function __set_state(array $array)
+    {
+        return new self($array['op'], $array['operand']);
+    }
 }

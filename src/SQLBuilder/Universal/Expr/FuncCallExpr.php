@@ -19,9 +19,13 @@ class FuncCallExpr implements ToSqlInterface
 {
     public $funcName;
 
+    /**
+     * @var ListExpr
+     */
+    public $funcParams;
+
     public function __construct($funcName, array $args = array())
     {
-        // code...
         $this->funcName = $funcName;
         $this->funcParams = new ListExpr($args);
     }
@@ -29,6 +33,14 @@ class FuncCallExpr implements ToSqlInterface
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         return $this->funcName . $this->funcParams->toSql($driver, $args);
     }
+
+    static public function __set_state($array)
+    {
+        $expr =  new self($array['funcName']);
+        $expr->funcParams = $array['funcParams'];
+        return $expr;
+    }
+
 }
 
 

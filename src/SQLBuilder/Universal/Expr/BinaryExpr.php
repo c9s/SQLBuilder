@@ -7,7 +7,6 @@ use SQLBuilder\ArgumentArray;
 
 class BinaryExpr implements ToSqlInterface
 {
-
     public $op;
 
     public $operand;
@@ -22,5 +21,10 @@ class BinaryExpr implements ToSqlInterface
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         return $this->operand . ' ' . $this->op . ' ' . $driver->deflate($this->operand2);
+    }
+
+    static public function __set_state($array)
+    {
+        return new self($array['operand'], $array['op'], $array['operand2']);
     }
 }

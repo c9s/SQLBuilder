@@ -29,4 +29,10 @@ class IsExpr implements ToSqlInterface {
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
         return $this->exprStr . ' IS ' . $driver->deflate($this->boolean, $args);
     }
+
+    static public function __set_state(array $array)
+    {
+        return new self($array['exprStr'], $array['boolean']);
+    }
+
 }

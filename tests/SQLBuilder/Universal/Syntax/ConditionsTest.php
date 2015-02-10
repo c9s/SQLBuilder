@@ -270,5 +270,15 @@ class ConditionsTest extends QueryTestCase
         $sql = $expr->toSql($driver, $args);
         // is("", $sql);
     }
+
+    public function testVarExport()
+    {
+        $expr = new Conditions;
+        $expr->regExp('content', '.*');
+        $code = '$ret =     ' . var_export($expr, true) . ';';
+        eval($code);
+        $this->assertNotEmpty($ret);
+        $this->assertInstanceOf('SQLBuilder\Universal\Syntax\Conditions', $ret);
+    }
 }
 

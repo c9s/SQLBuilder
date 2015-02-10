@@ -44,11 +44,13 @@ class Conditions implements ToSqlInterface, Countable
 {
     protected $exprs = array();
 
-    public function __construct(array $exprs = array()) {
+    public function __construct(array $exprs = array()) 
+    {
         $this->exprs = $exprs;
     }
 
-    public function append($expr) {
+    public function append($expr) 
+    {
         if (!empty($this->exprs) && ! end($this->exprs) instanceof Op) {
             $this->exprs[] = new AndOp;
         }
@@ -59,7 +61,8 @@ class Conditions implements ToSqlInterface, Countable
     /**
      * http://dev.mysql.com/doc/refman/5.0/en/expressions.html
      */
-    public function appendExprObject($expr) {
+    public function appendExprObject($expr) 
+    {
         // We duplicate the code of checking op object to avoid the extra function call.
         if (!empty($this->exprs) && ! end($this->exprs) instanceof Op) {
             $this->exprs[] = new AndOp;
@@ -68,11 +71,13 @@ class Conditions implements ToSqlInterface, Countable
         return $this;
     }
 
-    public function appendExpr($raw, array $args = array()) {
+    public function appendExpr($raw, array $args = array()) 
+    {
         return $this->appendExprObject(new RawExpr($raw, $args));
     }
 
-    public function appendBinExpr($a1, $op, $a2) {
+    public function appendBinExpr($a1, $op, $a2) 
+    {
         return $this->appendExprObject(new BinaryExpr($a1, $op, $a2));
     }
 
@@ -201,16 +206,24 @@ class Conditions implements ToSqlInterface, Countable
         return ltrim($sql);
     }
 
-    public function hasExprs() {
+    public function hasExprs() 
+    {
         return count($this->exprs) > 0;
     }
 
-    public function notEmpty() {
+    public function notEmpty() 
+    {
         return count($this->exprs) > 0;
     }
 
-    public function count() {
+    public function count() 
+    {
         return count($this->exprs);
+    }
+
+    static public function __set_state($array)
+    {
+        return new self($array['exprs']);
     }
 }
 
