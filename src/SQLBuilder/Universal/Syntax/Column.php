@@ -97,7 +97,7 @@ class Column implements ToSqlInterface
     /**
      * @var string $name column name (id)
      */
-    public function __construct($name = NULL, $type = NULL)
+    public function __construct($name = NULL, $type = NULL, array $extraAttributes = array())
     {
         $this->attributeTypes = $this->attributeTypes + array(
             'autoIncrement' => self::ATTR_FLAG,
@@ -126,6 +126,10 @@ class Column implements ToSqlInterface
         );
         $this->name = $name;
         $this->type = $type;
+
+        foreach ($extraAttributes as $key => $val) {
+            $this->setAttribute($key, $val);
+        }
     }
 
     public function null()
@@ -597,7 +601,11 @@ class Column implements ToSqlInterface
     }
 
     public function setAttribute($name, $value) {
-        $this->attributes[ $name ] = $value;
+        if (property_exists($this, $name)) {
+            $this->$name = $value;
+            return $this;
+        }
+        $this->attributes[$name] = $value;
         return $this;
     }
 
@@ -727,7 +735,6 @@ class Column implements ToSqlInterface
         return $sql;
     }
 
-
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         if ($driver instanceof MySQLDriver || $driver instanceof SQLiteDriver ) {
@@ -739,8 +746,6 @@ class Column implements ToSqlInterface
         }
         return '';
     }
-
-
 
     /*********************************************************************
      * PROTECTED METHODS (internal use)
