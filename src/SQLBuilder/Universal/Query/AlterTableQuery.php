@@ -14,6 +14,7 @@ use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\Universal\Syntax\AlterTableAddConstraint;
 use SQLBuilder\Universal\Syntax\AlterTableRenameColumn;
 use SQLBuilder\Universal\Syntax\AlterTableAddColumn;
+use SQLBuilder\Universal\Syntax\AlterTableDropColumn;
 use SQLBuilder\Universal\Syntax\AlterTableRenameTable;
 use SQLBuilder\Universal\Syntax\AlterTableModifyColumn;
 
@@ -55,6 +56,13 @@ class AlterTableQuery implements ToSqlInterface
     public function addColumn(Column $toColumn)
     {
         $this->specs[] = $spec = new AlterTableAddColumn($toColumn);
+        return $spec;
+    }
+
+    public function dropColumn(Column $column)
+    {
+        $this->specs[] = $spec = new AlterTableDropColumn($column);
+        return $spec;
     }
 
     /**
