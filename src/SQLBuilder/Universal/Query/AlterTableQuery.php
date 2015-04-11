@@ -65,6 +65,20 @@ class AlterTableQuery implements ToSqlInterface
         return $spec;
     }
 
+
+    public function dropIndex($indexName)
+    {
+        $this->specs[] = $spec = new AlterTableDropIndex($indexName);
+        return $spec;
+    }
+
+    public function dropForeignKey($fkSymbol)
+    {
+        $this->specs[] = $spec = new AlterTableDropForeignKey($fkSymbol);
+        return $spec;
+    }
+
+
     /**
      * Rename Table
      *
