@@ -256,6 +256,42 @@ class AlterTableQueryTest extends PDOQueryTestCase
         ]);
     }
 
+    public function testAddColumnAfterName() 
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+
+        $column = new Column('last_name', 'varchar(30)');
+        $column->default('');
+        $column->notNull();
+
+        $q = new AlterTableQuery('products');
+        $q->addColumn($column)->after('name');
+
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'ALTER TABLE `products` ADD COLUMN `last_name` varchar(30) NOT NULL DEFAULT \'\' AFTER `name`'],
+        ]);
+    }
+
+    public function testAddColumnFirst() 
+    {
+        $driver = new MySQLDriver;
+        $args = new ArgumentArray;
+
+        $column = new Column('last_name', 'varchar(30)');
+        $column->default('');
+        $column->notNull();
+
+        $q = new AlterTableQuery('products');
+        $q->addColumn($column)->first();
+
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'ALTER TABLE `products` ADD COLUMN `last_name` varchar(30) NOT NULL DEFAULT \'\' FIRST'],
+        ]);
+    }
+
     public function testRenameTable()
     {
         $driver = new MySQLDriver;
