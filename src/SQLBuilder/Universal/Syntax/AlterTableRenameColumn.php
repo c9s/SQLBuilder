@@ -33,7 +33,8 @@ class AlterTableRenameColumn implements ToSqlInterface
             }
 
             // the 'toColumn' must be a type of Column, we need at least column type to rename.
-            $sql .= ' ' . $driver->quoteIdentifier($this->toColumn->getName()) . ' ' . $this->toColumn->getType();
+            // $sql .= ' ' . $driver->quoteIdentifier($this->toColumn->getName()) . ' ' . $this->toColumn->getType();
+            $sql .= ' ' . $this->toColumn->buildDefinitionSql($driver, $args);
 
         } elseif ($driver instanceof PgSQLDriver) {
 

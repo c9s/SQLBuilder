@@ -27,7 +27,6 @@ class AlterTableModifyColumn implements ToSqlInterface
             if (!$this->column->getType()) {
                 throw new IncompleteSettingsException('Missing column type');
             }
-
             $sql .= $this->column->buildDefinitionSql($driver, $args);
 
         } elseif ($driver instanceof PgSQLDriver) {
