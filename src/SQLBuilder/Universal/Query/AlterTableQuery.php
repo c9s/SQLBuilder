@@ -17,6 +17,11 @@ use SQLBuilder\Universal\Syntax\AlterTableAddColumn;
 use SQLBuilder\Universal\Syntax\AlterTableDropColumn;
 use SQLBuilder\Universal\Syntax\AlterTableRenameTable;
 use SQLBuilder\Universal\Syntax\AlterTableModifyColumn;
+use SQLBuilder\Universal\Syntax\AlterTableDropPrimaryKey;
+use SQLBuilder\Universal\Syntax\AlterTableDropForeignKey;
+use SQLBuilder\Universal\Syntax\AlterTableDropIndex;
+
+use SQLBuilder\MySQL\Syntax\AlterTableOrderBy;
 
 class AlterTableQuery implements ToSqlInterface
 {
@@ -81,6 +86,12 @@ class AlterTableQuery implements ToSqlInterface
     public function dropPrimaryKey()
     {
         $this->specs[] = $spec = new AlterTableDropPrimaryKey;
+        return $spec;
+    }
+
+    public function orderBy(array $columnNames) 
+    {
+        $this->specs[] = $spec = new AlterTableOrderBy($columnNames);
         return $spec;
     }
 
