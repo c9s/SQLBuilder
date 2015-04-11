@@ -78,6 +78,12 @@ class AlterTableQuery implements ToSqlInterface
         return $spec;
     }
 
+    public function dropPrimaryKey()
+    {
+        $this->specs[] = $spec = new AlterTableDropPrimaryKey;
+        return $spec;
+    }
+
 
     /**
      * Rename Table
