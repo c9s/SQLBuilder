@@ -139,12 +139,30 @@ class AlterTableQueryTest extends PDOQueryTestCase
         ]);
     }
 
+    public function testDropColumn()
+    {
+        $q = new AlterTableQuery('products');
+        $q->dropColumn(new Column('name'));
+
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'ALTER TABLE `products` DROP COLUMN `name`'],
+        ]);
+    }
+
+    public function testDropPrimaryKey()
+    {
+        $q = new AlterTableQuery('products');
+        $q->dropPrimaryKey();
+
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'ALTER TABLE `products` DROP PRIMARY KEY'],
+        ]);
+    }
 
     public function testOrderByColumns()
     {
-        $column = new Column('name');
-        $column->default('Steve Jobs');
-
         $q = new AlterTableQuery('products');
         $q->orderBy([ 'name', 'description', 'created_on', 'created_by' ]);
 

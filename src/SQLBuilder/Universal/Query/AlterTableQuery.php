@@ -21,6 +21,8 @@ use SQLBuilder\Universal\Syntax\AlterTableDropPrimaryKey;
 use SQLBuilder\Universal\Syntax\AlterTableDropForeignKey;
 use SQLBuilder\Universal\Syntax\AlterTableDropIndex;
 
+use SQLBuilder\Exception\CriticalIncompatibleUsageException;
+
 use SQLBuilder\MySQL\Syntax\AlterTableOrderBy;
 
 class AlterTableQuery implements ToSqlInterface
@@ -64,8 +66,13 @@ class AlterTableQuery implements ToSqlInterface
         return $spec;
     }
 
-    public function dropColumn(Column $column)
+    public function dropColumn($column)
     {
+        if (is_string($column)) {
+            $column = new Column($column);
+        } else if (!$column instanceof Column) {
+            throw new CriticalIncompatibleUsageException('Argument must be `Column` or string');
+        }
         $this->specs[] = $spec = new AlterTableDropColumn($column);
         return $spec;
     }
