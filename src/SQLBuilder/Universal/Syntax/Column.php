@@ -236,6 +236,16 @@ class Column implements ToSqlInterface
 
 
     /**
+     * POINT type
+     */
+    public function point()
+    {
+        $this->type = 'double';
+        $this->isa = 'double';
+        return $this;
+    }
+
+    /**
      * PgSQL supports double, real.
      *
      * XXX: support for 'Infinity' '-Infinity' 'NaN'.
