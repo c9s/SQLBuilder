@@ -140,6 +140,22 @@ class AlterTableQueryTest extends PDOQueryTestCase
     }
 
 
+    public function testOrderByColumns()
+    {
+        $column = new Column('name');
+        $column->default('Steve Jobs');
+
+        $q = new AlterTableQuery('products');
+        $q->orderBy([ 'name', 'description', 'created_on', 'created_by' ]);
+
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'ALTER TABLE `products` ORDER BY `name`,`description`,`created_on`,`created_by`'],
+        ]);
+    }
+
+
+
     /**
      * @expectedException SQLBuilder\Exception\IncompleteSettingsException
      */
