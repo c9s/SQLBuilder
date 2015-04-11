@@ -15,8 +15,27 @@ class AlterTableModifyColumn implements ToSqlInterface
 {
     protected $column;
 
+    protected $after;
+
+    protected $first;
+
     public function __construct(Column $column) {
         $this->column = $column;
+    }
+
+    public function after($column) {
+        if ($column instanceof Column) {
+            $this->after = $column->getName();
+        } else {
+            $this->after = $column;
+        }
+        return $this;
+    }
+
+    public function first()
+    {
+        $this->first = true;
+        return $this;
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
@@ -28,6 +47,12 @@ class AlterTableModifyColumn implements ToSqlInterface
                 throw new IncompleteSettingsException('Missing column type');
             }
             $sql .= $this->column->buildDefinitionSql($driver, $args);
+
+            if ($this->after) {
+                $sql .= ' AFTER ' . $driver->quoteIdentifier($this->after);
+            } else if ($this->first) {
+                $sql .= ' FIRST';
+            }
 
         } elseif ($driver instanceof PgSQLDriver) {
 
