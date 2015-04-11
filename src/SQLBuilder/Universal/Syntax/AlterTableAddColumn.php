@@ -15,6 +15,8 @@ class AlterTableAddColumn implements ToSqlInterface
 
     protected $after;
 
+    protected $first;
+
     public function __construct(Column $column) {
         $this->column = $column;
     }
@@ -28,6 +30,12 @@ class AlterTableAddColumn implements ToSqlInterface
         return $this;
     }
 
+    public function first()
+    {
+        $this->first = true;
+        return $this;
+    }
+
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         $sql = 'ADD COLUMN ';
@@ -36,6 +44,8 @@ class AlterTableAddColumn implements ToSqlInterface
         if ($driver instanceof MySQLDriver) {
             if ($this->after) {
                 $sql .= ' AFTER ' . $driver->quoteIdentifier($this->after);
+            } else if ($this->first) {
+                $sql .= ' FIRST';
             }
         }
         return $sql;
