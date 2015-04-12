@@ -661,7 +661,7 @@ class Column implements ToSqlInterface
         if ($this->autoIncrement) {
             $sql .= ' SERIAL';
         } else {
-            $sql .= $this->buildTypeSql($driver);
+            $sql .= $this->buildTypeSql();
         }
 
         if ($this->unsigned) {
@@ -673,18 +673,15 @@ class Column implements ToSqlInterface
         return $sql;
     }
 
-    public function buildTypeSql(BaseDriver $driver)
+    public function buildTypeSql()
     {
-        $sql = '';
-        if ($this->type) {
-            $sql .= ' ' . $this->type;
-            if (isset($this->length) && isset($this->decimals)) {
-                $sql .= '(' . $this->length . ',' . $this->decimals . ')';
-            } elseif (isset($this->length)) {
-                $sql .= '(' . $this->length . ')';
-            }
+        if (isset($this->length) && isset($this->decimals)) {
+            return $this->type . '(' . $this->length . ',' . $this->decimals . ')';
+        } elseif (isset($this->length)) {
+            return $this->type . '(' . $this->length . ')';
+        } else {
+            return $this->type;
         }
-        return $sql;
     }
 
     public function buildDefinitionSql(BaseDriver $driver, ArgumentArray $args)
@@ -694,7 +691,7 @@ class Column implements ToSqlInterface
         $sql = '';
         $sql .= $driver->quoteIdentifier($this->name);
 
-        $sql .= $this->buildTypeSql($driver);
+        $sql .= $this->buildTypeSql();
 
         if ($this->unsigned) {
             $sql .= ' UNSIGNED';
