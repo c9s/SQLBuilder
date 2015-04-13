@@ -837,18 +837,36 @@ class Column implements ToSqlInterface
         }
     }
 
+    public function __get_state()
+    {
+        $vars = get_object_vars($this);
+        unset($vars['attributeTypes']);
+        $vars = array_filter($vars);
+        return $vars;
+    }
+
     static public function __set_state(array $stash) 
     {
         $column = new self($stash['name'], $stash['type']);
-        $column->primary = $stash['primary'];
-        $column->unsigned = $stash['unsigned'];
-        $column->type = $stash['type'];
-        $column->isa = $stash['isa'];
-        $column->null = $stash['null'];
-        if ($stash['enum']) {
+        if (isset($stash['primary'])) {
+            $column->primary = $stash['primary'];
+        }
+        if (isset($stash['unsigned'])) {
+            $column->unsigned = $stash['unsigned'];
+        }
+        if (isset($stash['type'])) {
+            $column->type = $stash['type'];
+        }
+        if (isset($stash['isa'])) {
+            $column->isa = $stash['isa'];
+        }
+        if (isset($stash['null'])) {
+            $column->null = $stash['null'];
+        }
+        if (isset($stash['enum']) && $stash['enum']) {
             $column->enum($stash['enum']);
         }
-        if ($stash['set']) {
+        if (isset($stash['set']) && $stash['set']) {
             $column->set($stash['set']);
         }
         $column->setAttributeStash($stash['attributes']);
