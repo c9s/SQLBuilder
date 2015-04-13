@@ -664,7 +664,7 @@ class Column implements ToSqlInterface
 
     public function buildEnumClause(BaseDriver $driver)
     {
-        if ($isa === 'enum' && !empty($this->enum)) {
+        if ($this->isa === 'enum' && !empty($this->enum)) {
             $enum = array();
             foreach ($this->enum as $val) {
                 $enum[] = $driver->deflate($val);
@@ -676,7 +676,7 @@ class Column implements ToSqlInterface
 
     public function buildSetClause(BaseDriver $driver)
     {
-        if ($isa === 'set' && !empty($this->set)) {
+        if ($this->isa === 'set' && !empty($this->set)) {
             $set = array();
             foreach ($this->set as $val) {
                 $set[] = $driver->deflate($val);
