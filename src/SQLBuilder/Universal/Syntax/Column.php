@@ -685,7 +685,7 @@ class Column implements ToSqlInterface
 
     public function buildTypeSql()
     {
-        return ' ' . $this->getTypeName();
+        return ' ' . $this->buildTypeName();
     }
 
     public function buildDefinitionSql(BaseDriver $driver, ArgumentArray $args)
