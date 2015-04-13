@@ -662,6 +662,30 @@ class Column implements ToSqlInterface
         return '';
     }
 
+    public function buildEnumClause(BaseDriver $driver)
+    {
+        if ($isa === 'enum' && !empty($this->enum)) {
+            $enum = array();
+            foreach ($this->enum as $val) {
+                $enum[] = $driver->deflate($val);
+            }
+            return ' (' . join(', ', $enum) . ')';
+        }
+        return '';
+    }
+
+    public function buildSetClause(BaseDriver $driver)
+    {
+        if ($isa === 'set' && !empty($this->set)) {
+            $set = array();
+            foreach ($this->set as $val) {
+                $set[] = $driver->deflate($val);
+            }
+            return ' (' . join(', ', $set) . ')';
+        }
+        return '';
+    }
+
 
     public function buildTypeName()
     {
@@ -703,6 +727,11 @@ class Column implements ToSqlInterface
 
     public function buildTypeClause(BaseDriver $driver)
     {
+        if ($driver instanceof PgSQLDriver) {
+            if ($this->autoIncrement) {
+                return ' SERIAL';
+            }
+        }
         return ' ' . $this->buildTypeName();
     }
 
@@ -712,13 +741,7 @@ class Column implements ToSqlInterface
 
         $sql = '';
         $sql .= $driver->quoteIdentifier($this->name);
-
-        if ($this->autoIncrement) {
-            $sql .= ' SERIAL';
-        } else {
-            $sql .= $this->buildTypeClause($driver);
-        }
-
+        $sql .= $this->buildTypeClause($driver);
         $sql .= $this->buildUnsignedClause($driver);
         $sql .= $this->buildNullClause($driver);
         $sql .= $this->buildDefaultClause($driver);
@@ -734,22 +757,11 @@ class Column implements ToSqlInterface
 
         $sql .= $this->buildTypeClause($driver);
         $sql .= $this->buildUnsignedClause($driver);
-
-
+        
         if ($isa === 'enum' && !empty($this->enum)) {
-            $enum = array();
-            foreach ($this->enum as $val) {
-                $enum[] = $driver->deflate($val);
-            }
-            $sql .= '(' . join(', ', $enum) . ')';
+            $sql .= $this->buildEnumClause($driver);
         } elseif ($isa === 'set' && !empty($this->set)) {
-
-            $set = array();
-            foreach ($this->set as $val) {
-                $set[] = $driver->deflate($val);
-            }
-            $sql .= '(' . join(', ', $set) . ')';
-
+            $sql .= $this->buildSetClause($driver);
         }
 
         $sql .= $this->buildNullClause($driver);
