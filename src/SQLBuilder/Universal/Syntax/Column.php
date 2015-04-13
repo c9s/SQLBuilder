@@ -673,15 +673,19 @@ class Column implements ToSqlInterface
         return $sql;
     }
 
-    public function buildTypeSql()
+    public function buildTypeName()
     {
         if (isset($this->length) && isset($this->decimals)) {
             return $this->type . '(' . $this->length . ',' . $this->decimals . ')';
         } elseif (isset($this->length)) {
             return $this->type . '(' . $this->length . ')';
-        } else {
-            return $this->type;
         }
+        return $this->type;
+    }
+
+    public function buildTypeSql()
+    {
+        return ' ' . $this->getTypeName();
     }
 
     public function buildDefinitionSql(BaseDriver $driver, ArgumentArray $args)
