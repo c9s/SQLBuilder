@@ -669,7 +669,7 @@ class Column implements ToSqlInterface
             foreach ($this->enum as $val) {
                 $enum[] = $driver->deflate($val);
             }
-            return ' (' . join(', ', $enum) . ')';
+            return '(' . join(', ', $enum) . ')';
         }
         return '';
     }
@@ -681,7 +681,7 @@ class Column implements ToSqlInterface
             foreach ($this->set as $val) {
                 $set[] = $driver->deflate($val);
             }
-            return ' (' . join(', ', $set) . ')';
+            return '(' . join(', ', $set) . ')';
         }
         return '';
     }
@@ -756,13 +756,14 @@ class Column implements ToSqlInterface
         $sql .= $driver->quoteIdentifier($this->name);
 
         $sql .= $this->buildTypeClause($driver);
-        $sql .= $this->buildUnsignedClause($driver);
         
         if ($isa === 'enum' && !empty($this->enum)) {
             $sql .= $this->buildEnumClause($driver);
         } elseif ($isa === 'set' && !empty($this->set)) {
             $sql .= $this->buildSetClause($driver);
         }
+
+        $sql .= $this->buildUnsignedClause($driver);
 
         $sql .= $this->buildNullClause($driver);
         $sql .= $this->buildDefaultClause($driver);
