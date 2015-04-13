@@ -662,6 +662,16 @@ class Column implements ToSqlInterface
         return '';
     }
 
+
+    public function buildTimeZoneClause(BaseDriver $driver)
+    {
+        if ($driver instanceof PgSQLDriver && $this->timezone) {
+            return ' WITH TIME ZONE';
+        }
+        return '';
+    }
+
+
     public function buildEnumClause(BaseDriver $driver)
     {
         if ($this->isa === 'enum' && !empty($this->enum)) {
@@ -742,6 +752,7 @@ class Column implements ToSqlInterface
         $sql = '';
         $sql .= $driver->quoteIdentifier($this->name);
         $sql .= $this->buildTypeClause($driver);
+        $sql .= $this->buildTimeZoneClause($driver);
         $sql .= $this->buildUnsignedClause($driver);
         $sql .= $this->buildNullClause($driver);
         $sql .= $this->buildDefaultClause($driver);
