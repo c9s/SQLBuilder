@@ -24,7 +24,7 @@ class InflatorTest extends PHPUnit_Framework_TestCase
         $d->setTime( 0,0,0 );
         # var_dump( $d->format(DateTime::ISO8601) . '' ); 
 
-        like( '/2000-01-01T00:00:00/' , $driver->deflate($d));
+        like( '/2000-01-01 00:00:00/' , $driver->deflate($d));
     }
 
 }
