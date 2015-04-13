@@ -628,12 +628,23 @@ class Column implements ToSqlInterface
         return $this->name;
     }
 
+
+    // ***** Clause builder *****
+
     public function buildNullClause(BaseDriver $driver) 
     {
         if ($this->null === FALSE) {
             return ' NOT NULL';
         } elseif ($this->null === TRUE) {
             return  ' NULL';
+        }
+        return '';
+    }
+
+    public function buildUnsignedClause(BaseDriver $driver)
+    {
+        if ($this->unsigned) {
+            return ' UNSIGNED';
         }
         return '';
     }
@@ -651,27 +662,6 @@ class Column implements ToSqlInterface
         return '';
     }
 
-    public function buildPgSQLDefinitionSql(BaseDriver $driver, ArgumentArray $args)
-    {
-        $isa  = $this->isa ?: 'str';
-
-        $sql = '';
-        $sql .= $driver->quoteIdentifier($this->name);
-
-        if ($this->autoIncrement) {
-            $sql .= ' SERIAL';
-        } else {
-            $sql .= $this->buildTypeSql();
-        }
-
-        if ($this->unsigned) {
-            $sql .= ' UNSIGNED';
-        }
-
-        $sql .= $this->buildNullClause($driver);
-        $sql .= $this->buildDefaultClause($driver);
-        return $sql;
-    }
 
     public function buildTypeName()
     {
@@ -683,9 +673,56 @@ class Column implements ToSqlInterface
         return $this->type;
     }
 
-    public function buildTypeSql()
+    public function buildPrimaryKeyClause(BaseDriver $driver)
+    {
+        if ($this->primary) {
+            return ' PRIMARY KEY';
+        }
+        return '';
+    }
+
+    public function buildUniqueClause(BaseDriver $driver)
+    {
+        if ($this->unique) {
+            return ' UNIQUE';
+        }
+        return '';
+    }
+
+    public function buildAutoIncrementClause(BaseDriver $driver)
+    {
+        if ($this->autoIncrement) {
+            if ($driver instanceof SQLiteDriver) {
+                return ' AUTOINCREMENT';
+            } elseif ($driver instanceof MySQLDriver) {
+                return ' AUTO_INCREMENT';
+            }
+        }
+        return '';
+    }
+
+    public function buildTypeClause(BaseDriver $driver)
     {
         return ' ' . $this->buildTypeName();
+    }
+
+    public function buildPgSQLDefinitionSql(BaseDriver $driver, ArgumentArray $args)
+    {
+        $isa  = $this->isa ?: 'str';
+
+        $sql = '';
+        $sql .= $driver->quoteIdentifier($this->name);
+
+        if ($this->autoIncrement) {
+            $sql .= ' SERIAL';
+        } else {
+            $sql .= $this->buildTypeClause($driver);
+        }
+
+        $sql .= $this->buildUnsignedClause($driver);
+        $sql .= $this->buildNullClause($driver);
+        $sql .= $this->buildDefaultClause($driver);
+        return $sql;
     }
 
     public function buildDefinitionSql(BaseDriver $driver, ArgumentArray $args)
@@ -695,12 +732,8 @@ class Column implements ToSqlInterface
         $sql = '';
         $sql .= $driver->quoteIdentifier($this->name);
 
-        $sql .= $this->buildTypeSql();
-
-        if ($this->unsigned) {
-            $sql .= ' UNSIGNED';
-        }
-
+        $sql .= $this->buildTypeClause($driver);
+        $sql .= $this->buildUnsignedClause($driver);
 
 
         if ($isa === 'enum' && !empty($this->enum)) {
@@ -721,24 +754,9 @@ class Column implements ToSqlInterface
 
         $sql .= $this->buildNullClause($driver);
         $sql .= $this->buildDefaultClause($driver);
-
-
-        if ($this->primary) {
-            $sql .= ' PRIMARY KEY';
-
-        }
-
-        if ($this->autoIncrement) {
-            if ($driver instanceof SQLiteDriver) {
-                $sql .= ' AUTOINCREMENT';
-            } elseif ($driver instanceof MySQLDriver) {
-                $sql .= ' AUTO_INCREMENT';
-            }
-        }
-
-        if ($this->unique) {
-            $sql .= ' UNIQUE';
-        }
+        $sql .= $this->buildPrimaryKeyClause($driver);
+        $sql .= $this->buildAutoIncrementClause($driver);
+        $sql .= $this->buildUniqueClause($driver);
 
         if ($this->comment) {
             $sql .= ' COMMENT ' . $driver->deflate($this->comment);
