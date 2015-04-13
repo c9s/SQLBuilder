@@ -132,6 +132,18 @@ class Column implements ToSqlInterface
         }
     }
 
+    public function type($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function isa($isa)
+    {
+        $this->isa = $isa;
+        return $this;
+    }
+
     public function null()
     {
         $this->null = TRUE;
@@ -645,7 +657,7 @@ class Column implements ToSqlInterface
 
     public function buildNullClause(BaseDriver $driver) 
     {
-        if ($this->null === FALSE) {
+        if ($this->required || $this->null === FALSE) {
             return ' NOT NULL';
         } elseif ($this->null === TRUE) {
             return  ' NULL';
@@ -665,15 +677,18 @@ class Column implements ToSqlInterface
     {
         // Build default value
         if (($default = $this->default) !== NULL) { 
+            // When user defines a closure, it means the default value is
+            // lazily provided, don't build the closure value for SQL
+            // statement.
             if (is_callable($default)) {
-                return ' DEFAULT ' . call_user_func($this->default, $this, $driver);
+                return '';
+                // return ' DEFAULT ' . $driver->deflate(call_user_func($this->default, $this, $driver));
             } else {
                 return ' DEFAULT ' . $driver->deflate($default);
             }
         }
         return '';
     }
-
 
     public function buildTimeZoneClause(BaseDriver $driver)
     {
