@@ -610,6 +610,18 @@ class Column implements ToSqlInterface
         }
     }
 
+    public function setAttributeStash(array $attributes)
+    {
+        $this->attributes = $attributes;
+    }
+
+    public function setAttributes(array $attributes) 
+    {
+        foreach ($attributes as $key => $val) {
+            $this->setAttribute($key, $val);
+        }
+    }
+
     public function setAttribute($name, $value) {
         if (property_exists($this, $name)) {
             $this->$name = $value;
@@ -808,6 +820,24 @@ class Column implements ToSqlInterface
         if ($decimals) {
             $this->decimals($decimals);
         }
+    }
+
+    static public function __set_state(array $stash) 
+    {
+        $column = new self($stash['name'], $stash['type']);
+        $column->primary = $stash['primary'];
+        $column->unsigned = $stash['unsigned'];
+        $column->type = $stash['type'];
+        $column->isa = $stash['isa'];
+        $column->null = $stash['null'];
+        if ($stash['enum']) {
+            $column->enum($stash['enum']);
+        }
+        if ($stash['set']) {
+            $column->set($stash['set']);
+        }
+        $column->setAttributeStash($stash['attributes']);
+        return $column;
     }
 }
 
