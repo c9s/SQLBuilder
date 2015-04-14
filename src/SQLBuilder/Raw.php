@@ -20,6 +20,14 @@ class Raw
     public function __toString() {
         return $this->value;
     }
+
+    public function compare(Raw $b) {
+        if ($this->value == $b->value) {
+            return 0;
+        } else {
+            return strcmp($this->value, $b->value);
+        }
+    }
 }
 
 
