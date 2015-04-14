@@ -28,6 +28,14 @@ class Raw
             return strcmp($this->value, $b->value);
         }
     }
+
+    static public function __set_state($array)
+    {
+        $raw = new self;
+        $raw->value = $array['value'];
+        return $raw;
+
+    }
 }
 
 
