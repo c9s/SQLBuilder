@@ -778,8 +778,11 @@ class Column implements ToSqlInterface
 
         if ($driver instanceof SQLiteDriver) {
             $type = $this->type;
-            if ($type == 'int') {
+            switch($type) {
+            case 'int':
                 $type = 'INTEGER';
+            case 'varchar':
+                $type = 'TEXT';
             }
             $sql = ' ' . $type;
         } else {
