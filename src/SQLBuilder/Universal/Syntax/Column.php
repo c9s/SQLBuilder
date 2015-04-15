@@ -776,7 +776,15 @@ class Column implements ToSqlInterface
             }
         }
 
-        $sql = ' ' . $this->buildTypeName();
+        if ($driver instanceof SQLiteDriver) {
+            $type = $this->type;
+            if ($type == 'int') {
+                $type = 'INTEGER';
+            }
+            $sql = ' ' . $type;
+        } else {
+            $sql = ' ' . $this->buildTypeName($driver);
+        }
 
         if ($driver instanceof MySQLDriver) {
             if ($this->isa === 'enum' && !empty($this->enum)) {

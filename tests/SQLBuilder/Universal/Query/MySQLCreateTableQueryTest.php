@@ -49,7 +49,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
             ->onUpdate('CASCADE')
             ;
         $this->assertSql('CREATE TABLE `users`(
-`group_id` integer,
+`group_id` int,
 FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 )', $q);
         $this->assertQuery($q);
@@ -177,7 +177,7 @@ FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE 
         $q->index(['name'])->name('name_idx')->using('BTREE');
 
         $this->assertSql('CREATE TABLE `groups`(
-`id` integer,
+`id` int,
 `name` varchar(20),
 `content` text,
 `blob_content` blob,
@@ -194,7 +194,7 @@ INDEX `name_idx` USING BTREE (`name`)
         $q->primaryKey('id');
         $this->assertQuery($q);
         $this->assertSql('CREATE TABLE `groups`(
-`id` integer,
+`id` int,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB',$q);
     }
@@ -248,7 +248,7 @@ PRIMARY KEY (`id`)
         $this->assertSql('DROP TABLE IF EXISTS `authors`', $dropQuery);
         $this->assertQuery($dropQuery);
         $this->assertSql('CREATE TABLE `authors`(
-`id` integer PRIMARY KEY AUTO_INCREMENT,
+`id` int PRIMARY KEY AUTO_INCREMENT,
 `first_name` varchar(32),
 `last_name` varchar(16),
 `age` tinyint(3) UNSIGNED NULL,
@@ -257,7 +257,7 @@ PRIMARY KEY (`id`)
 `confirmed` boolean DEFAULT FALSE,
 `types` set(\'student\', \'teacher\'),
 `remark` text,
-`group_id` integer,
+`group_id` int,
 CONSTRAINT `fk_group_id` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
 UNIQUE KEY (`email`)
 ) ENGINE=InnoDB', $q);
