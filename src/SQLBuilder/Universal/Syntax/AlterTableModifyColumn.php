@@ -46,7 +46,7 @@ class AlterTableModifyColumn implements ToSqlInterface
             if (!$this->column->getType()) {
                 throw new IncompleteSettingsException('Missing column type');
             }
-            $sql .= $this->column->buildDefinitionSql($driver, $args);
+            $sql .= $this->column->buildDefinitionSqlForModify($driver, $args);
 
             if ($this->after) {
                 $sql .= ' AFTER ' . $driver->quoteIdentifier($this->after);

@@ -49,7 +49,7 @@ class AlterTableChangeColumn implements ToSqlInterface
         }
 
         // the 'toColumn' must be a type of Column, we need at least column type to rename.
-        $sql .= ' ' . $driver->quoteIdentifier($this->toColumn->getName()) . ' ' . $this->toColumn->getType();
+        $sql .= ' ' . $driver->quoteIdentifier($this->toColumn->getName()) . ' ' . $this->toColumn->buildDefinitionSqlForModify($driver, $args);
 
         if ($driver instanceof MySQLDriver) {
             if ($this->after) {

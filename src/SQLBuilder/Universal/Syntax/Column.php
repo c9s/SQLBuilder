@@ -134,6 +134,9 @@ class Column implements ToSqlInterface
 
     public function type($type)
     {
+        if ($type == 'integer') {
+            $type = 'int';
+        }
         $this->type = $type;
         return $this;
     }
@@ -213,7 +216,7 @@ class Column implements ToSqlInterface
 
     public function int($length = NULL)
     {
-        $this->type = 'integer';
+        $this->type = 'int';
         $this->isa = 'int';
         if ($length) {
             $this->length = $length;
@@ -446,8 +449,11 @@ class Column implements ToSqlInterface
     public function autoIncrement()
     {
         $this->autoIncrement = true;
-        $this->type = 'integer';
         $this->isa = 'int';
+        if (!$this->type) {
+            $this->type = 'int';
+            $this->unsigned = TRUE;
+        }
         return $this;
     }
 
@@ -769,7 +775,17 @@ class Column implements ToSqlInterface
                 return ' SERIAL';
             }
         }
-        return ' ' . $this->buildTypeName();
+
+        $sql = ' ' . $this->buildTypeName();
+
+        if ($driver instanceof MySQLDriver) {
+            if ($this->isa === 'enum' && !empty($this->enum)) {
+                $sql .= $this->buildEnumClause($driver);
+            } elseif ($this->isa === 'set' && !empty($this->set)) {
+                $sql .= $this->buildSetClause($driver);
+            }
+        }
+        return $sql;
     }
 
     public function buildPgSQLDefinitionSql(BaseDriver $driver, ArgumentArray $args)
@@ -786,6 +802,23 @@ class Column implements ToSqlInterface
         return $sql;
     }
 
+    public function buildDefinitionSqlForModify(BaseDriver $driver, ArgumentArray $args)
+    {
+        $isa  = $this->isa ?: 'str';
+
+        $sql = '';
+        $sql .= $driver->quoteIdentifier($this->name);
+        $sql .= $this->buildTypeClause($driver);
+        $sql .= $this->buildUnsignedClause($driver);
+        $sql .= $this->buildNullClause($driver);
+        $sql .= $this->buildDefaultClause($driver);
+        $sql .= $this->buildAutoIncrementClause($driver);
+        if ($this->comment) {
+            $sql .= ' COMMENT ' . $driver->deflate($this->comment);
+        }
+        return $sql;
+    }
+
     public function buildDefinitionSql(BaseDriver $driver, ArgumentArray $args)
     {
         $isa  = $this->isa ?: 'str';
@@ -794,15 +827,7 @@ class Column implements ToSqlInterface
         $sql .= $driver->quoteIdentifier($this->name);
 
         $sql .= $this->buildTypeClause($driver);
-        
-        if ($isa === 'enum' && !empty($this->enum)) {
-            $sql .= $this->buildEnumClause($driver);
-        } elseif ($isa === 'set' && !empty($this->set)) {
-            $sql .= $this->buildSetClause($driver);
-        }
-
         $sql .= $this->buildUnsignedClause($driver);
-
         $sql .= $this->buildNullClause($driver);
         $sql .= $this->buildDefaultClause($driver);
         $sql .= $this->buildPrimaryKeyClause($driver);
