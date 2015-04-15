@@ -781,8 +781,10 @@ class Column implements ToSqlInterface
             switch($type) {
             case 'int':
                 $type = 'INTEGER';
+                break;
             case 'varchar':
                 $type = 'TEXT';
+                break;
             }
             $sql = ' ' . $type;
         } else {
