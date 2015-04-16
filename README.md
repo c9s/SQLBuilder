@@ -4,6 +4,14 @@
 
 [![Coverage Status](https://img.shields.io/coveralls/c9s/SQLBuilder.svg)](https://coveralls.io/r/c9s/SQLBuilder)
 
+[![Latest Stable Version](https://poser.pugx.org/corneltek/sqlbuilder/v/stable.svg)](https://packagist.org/packages/corneltek/sqlbuilder) 
+
+[![Total Downloads](https://poser.pugx.org/corneltek/sqlbuilder/downloads.svg)](https://packagist.org/packages/corneltek/sqlbuilder) 
+
+[![Latest Unstable Version](https://poser.pugx.org/corneltek/sqlbuilder/v/unstable.svg)](https://packagist.org/packages/corneltek/sqlbuilder) 
+
+[![License](https://poser.pugx.org/corneltek/sqlbuilder/license.svg)](https://packagist.org/packages/corneltek/sqlbuilder)
+
 If you're looking for something that is not an ORM but can generate SQL for
 you, you just found the right one.
 
