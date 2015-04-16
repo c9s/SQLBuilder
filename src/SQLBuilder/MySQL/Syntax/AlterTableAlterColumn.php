@@ -19,7 +19,7 @@ class AlterTableAlterColumn implements ToSqlInterface
     protected $clauseType;
 
     const SET_DEFAULT = 1;
-    const DROP_DEFAULT = 1;
+    const DROP_DEFAULT = 2;
 
     public function __construct($name)
     {
@@ -36,6 +36,7 @@ class AlterTableAlterColumn implements ToSqlInterface
     public function dropDefault()
     {
         $this->clauseType = self::DROP_DEFAULT;
+        return $this;
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
