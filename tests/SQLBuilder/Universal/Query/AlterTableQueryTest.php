@@ -69,7 +69,20 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $this->assertDriverQuery(new SQLiteDriver, $createUserTable);
     }
 
-    public function testSyntaxExtender()
+    public function testSyntaxExtenderForSetEngine()
+    {
+        $q = new AlterTableQuery('products');
+        $this->assertNotNull($q);
+        $q->registerClass('setEngine', 'SQLBuilder\MySQL\Syntax\AlterTableSetEngine');
+        $q->setEngine('InnoDB');
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'ALTER TABLE `products` ENGINE = \'InnoDB\''],
+        ]);
+    }
+
+
+    public function testSyntaxExtenderForSetAutoIncrement()
     {
         $q = new AlterTableQuery('products');
         $this->assertNotNull($q);
