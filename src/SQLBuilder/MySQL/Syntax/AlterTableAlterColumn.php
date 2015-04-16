@@ -41,9 +41,9 @@ class AlterTableAlterColumn implements ToSqlInterface
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
         if ($this->clauseType == self::SET_DEFAULT) {
-            return 'ALTER COLUMN' . $this->quoteIdentifier($this->name) . ' SET DEFAULT ' . $driver->deflate($this->defaultValue);
+            return 'ALTER COLUMN ' . $driver->quoteIdentifier($this->name) . ' SET DEFAULT ' . $driver->deflate($this->defaultValue);
         } else if ($this->clauseType == self::DROP_DEFAULT) {
-            return 'ALTER COLUMN' . $this->quoteIdentifier($this->name) . ' DROP DEFAULT';
+            return 'ALTER COLUMN ' . $driver->quoteIdentifier($this->name) . ' DROP DEFAULT';
         } else {
             throw new InvalidArgumentException('You should call either setDefault nor dropDefault');
         }

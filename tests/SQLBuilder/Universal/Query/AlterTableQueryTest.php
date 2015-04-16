@@ -69,6 +69,19 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $this->assertDriverQuery(new SQLiteDriver, $createUserTable);
     }
 
+    public function testSyntaxExtenderForAlterColumn()
+    {
+        $q = new AlterTableQuery('products');
+        $this->assertNotNull($q);
+        $q->registerClass('alterColumn', 'SQLBuilder\MySQL\Syntax\AlterTableAlterColumn');
+        $q->alterColumn('name')->setDefault('skateboard');
+
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'ALTER TABLE `products` ALTER COLUMN `name` SET DEFAULT \'skateboard\''],
+        ]);
+    }
+
     public function testSyntaxExtenderForSetEngine()
     {
         $q = new AlterTableQuery('products');
