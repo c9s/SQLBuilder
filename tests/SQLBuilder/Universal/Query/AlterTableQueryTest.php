@@ -69,6 +69,18 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $this->assertDriverQuery(new SQLiteDriver, $createUserTable);
     }
 
+    public function testSyntaxExtender()
+    {
+        $q = new AlterTableQuery('products');
+        $this->assertNotNull($q);
+        $q->registerClass('setAutoIncrement', 'SQLBuilder\MySQL\Syntax\AlterTableSetAutoIncrement');
+        $q->setAutoIncrement(100);
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'ALTER TABLE `products` AUTO_INCREMENT = 100'],
+        ]);
+    }
+
     public function testModifyColumnNullAttribute()
     {
         // column type is required for MySQL to modify
