@@ -761,7 +761,7 @@ class Column implements ToSqlInterface
         if ($this->autoIncrement) {
             if ($driver instanceof SQLiteDriver) {
                 return ' AUTOINCREMENT';
-            } elseif ($driver instanceof MySQLDriver) {
+            } else if ($driver instanceof MySQLDriver) {
                 return ' AUTO_INCREMENT';
             }
         }

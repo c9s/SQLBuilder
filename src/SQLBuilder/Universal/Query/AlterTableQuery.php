@@ -69,6 +69,13 @@ class AlterTableQuery implements ToSqlInterface
         return $spec;
     }
 
+
+    public function dropColumnByName($columnName)
+    {
+        $column = new Column($columnName);
+        return $this->dropColumn($column);
+    }
+
     public function dropColumn($column)
     {
         if (is_string($column)) {
