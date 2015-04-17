@@ -86,10 +86,6 @@ class Column implements ToSqlInterface
      */
     protected $attributeTypes = array();
 
-
-    public $default;
-
-
     /**
      * @var array $attributes
      *
@@ -124,6 +120,8 @@ class Column implements ToSqlInterface
 
             'comment'  => self::ATTR_STRING,
 
+            // 'default' is here because we can't name a method with 'default' in PHP.
+            'default'  => self::ATTR_ANY,
         );
         $this->name = $name;
         $this->type = $type;
@@ -131,13 +129,6 @@ class Column implements ToSqlInterface
         foreach ($extraAttributes as $key => $val) {
             $this->setAttribute($key, $val);
         }
-    }
-
-    public function default($default)
-    {
-        // MySQL: BLOB and TEXT columns cannot have DEFAULT values.
-        $this->default = $default;
-        return $this;
     }
 
     public function type($type)
