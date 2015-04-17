@@ -64,7 +64,7 @@ class Column implements ToSqlInterface
     public $isa = 'str';
 
     // Null is set to true by default. (I know MySQL set this as default if you don't specify the not null constraint)
-    public $null = TRUE;
+    public $notNull;
 
     /**
      * @var array is only used when isa = enum
@@ -101,7 +101,6 @@ class Column implements ToSqlInterface
     public function __construct($name = NULL, $type = NULL, array $extraAttributes = array())
     {
         $this->attributeTypes = $this->attributeTypes + array(
-            'autoIncrement' => self::ATTR_FLAG,
             'unique'        => self::ATTR_FLAG, /* unique, should support by SQL syntax */
             'timezone'      => self::ATTR_FLAG,
 
@@ -150,13 +149,13 @@ class Column implements ToSqlInterface
 
     public function null()
     {
-        $this->null = TRUE;
+        $this->notNull = FALSE;
         return $this;
     }
 
     public function notNull()
     {
-        $this->null = FALSE;
+        $this->notNull = TRUE;
         return $this;
     }
 
@@ -450,9 +449,7 @@ class Column implements ToSqlInterface
     public function autoIncrement()
     {
         $this->autoIncrement = TRUE;
-        $this->unsigned = TRUE;
         $this->isa = 'int';
-        $this->null = FALSE;
         if (!$this->type) {
             $this->type = 'int';
             $this->unsigned = TRUE;
@@ -469,7 +466,7 @@ class Column implements ToSqlInterface
     }
 
     public function nullDefined() {
-        return $this->null !== NULL;
+        return $this->notNull !== NULL;
     }
 
     /**
@@ -666,9 +663,9 @@ class Column implements ToSqlInterface
 
     public function buildNullClause(BaseDriver $driver) 
     {
-        if ($this->required || $this->null === FALSE) {
+        if ($this->required || $this->notNull) {
             return ' NOT NULL';
-        } elseif ($this->null === TRUE) {
+        } elseif ($this->notNull === FALSE) {
             return  ' NULL';
         }
         return '';
@@ -901,8 +898,8 @@ class Column implements ToSqlInterface
         if (isset($stash['isa'])) {
             $column->isa = $stash['isa'];
         }
-        if (isset($stash['null'])) {
-            $column->null = $stash['null'];
+        if (isset($stash['notNull'])) {
+            $column->notNull = $stash['notNull'];
         }
         if (isset($stash['enum']) && $stash['enum']) {
             $column->enum($stash['enum']);

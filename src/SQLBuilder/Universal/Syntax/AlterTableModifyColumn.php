@@ -65,10 +65,10 @@ class AlterTableModifyColumn implements ToSqlInterface
             } elseif ($default = $this->column->default) {
                 $sql .= ' SET DEFAULT ' . $driver->deflate($default);
             } elseif ($this->column->nullDefined()) {
-                if ($this->column->null === true) {
-                    $sql .= ' DROP NOT NULL';
-                } elseif($this->column->null === false) {
+                if ($this->column->notNull) {
                     $sql .= ' SET NOT NULL';
+                } else {
+                    $sql .= ' DROP NOT NULL';
                 }
             } else {
                 throw new IncompleteSettingsException('Empty column attribute ');

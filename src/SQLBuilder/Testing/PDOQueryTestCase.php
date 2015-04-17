@@ -310,12 +310,12 @@ abstract class PDOQueryTestCase extends QueryTestCase
         $stm = $conn->prepare( $sql );
 
         $err = $conn->errorInfo();
-        $this->assertEquals('00000', $err[0], $err[1] . ' SQL: ' . $sql);
+        $this->assertEquals('00000', $err[0], var_export($err, true) . ' SQL: ' . $sql);
 
         $stm->execute($args->toArray());
 
         $err = $conn->errorInfo();
-        $this->assertEquals('00000', $err[0], $err[1]);
+        $this->assertEquals('00000', $err[0], var_export($err, true) . ' SQL: ' . $sql);
         return $args;
     }
 

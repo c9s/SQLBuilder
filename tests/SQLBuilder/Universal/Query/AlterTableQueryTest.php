@@ -385,7 +385,7 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $this->assertDriverQuery(new PgSQLDriver, $q);
 
         $this->assertSqlStrings($q, [
-            [new MySQLDriver, 'ALTER TABLE `products` ADD FOREIGN KEY (`created_by`) REFERENCES `users` (`id`), ADD CONSTRAINT `fk_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`)'],
+            [new MySQLDriver, 'ALTER TABLE `products` ADD FOREIGN KEY (`created_by`) REFERENCES `users` (`id`),' . "\n" . '  ADD CONSTRAINT `fk_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`)'],
         ]);
     }
 
