@@ -69,6 +69,16 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $this->assertDriverQuery(new SQLiteDriver, $createUserTable);
     }
 
+    public function testDropColumnByName()
+    {
+        $q = new AlterTableQuery('products');
+        $this->assertNotNull($q);
+        $q->dropColumnByName('name');
+        $this->assertSqlStrings($q, [ 
+            [new MySQLDriver, 'ALTER TABLE `products` DROP COLUMN `name`'],
+        ]);
+    }
+
     public function testSyntaxExtenderForAlterColumnDropDefault()
     {
         $q = new AlterTableQuery('products');

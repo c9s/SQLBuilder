@@ -76,13 +76,9 @@ class AlterTableQuery implements ToSqlInterface
         return $this->dropColumn($column);
     }
 
-    public function dropColumn($column)
+    public function dropColumn(Column $column)
     {
-        if (is_string($column)) {
-            $column = new Column($column);
-        } else if (!$column instanceof Column) {
-            throw new CriticalIncompatibleUsageException('Argument must be `Column` or string');
-        }
+        // throw new CriticalIncompatibleUsageException('Argument must be `Column` or string');
         $this->specs[] = $spec = new AlterTableDropColumn($column);
         return $spec;
     }
