@@ -63,7 +63,8 @@ class Column implements ToSqlInterface
 
     public $isa = 'str';
 
-    public $null = NULL;
+    // Null is set to true by default. (I know MySQL set this as default if you don't specify the not null constraint)
+    public $null = TRUE;
 
     /**
      * @var array is only used when isa = enum
@@ -448,8 +449,10 @@ class Column implements ToSqlInterface
 
     public function autoIncrement()
     {
-        $this->autoIncrement = true;
+        $this->autoIncrement = TRUE;
+        $this->unsigned = TRUE;
         $this->isa = 'int';
+        $this->null = FALSE;
         if (!$this->type) {
             $this->type = 'int';
             $this->unsigned = TRUE;

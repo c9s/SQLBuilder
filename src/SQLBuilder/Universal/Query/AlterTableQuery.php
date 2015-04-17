@@ -132,7 +132,7 @@ class AlterTableQuery implements ToSqlInterface
         foreach($this->specs as $spec) {
             $alterSpecSqls[] = $spec->toSql($driver, $args);
         }
-        $sql .= join(', ', $alterSpecSqls);
+        $sql .= join(",\n  ", $alterSpecSqls);
         return $sql;
     }
 }
