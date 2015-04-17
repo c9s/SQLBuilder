@@ -71,7 +71,7 @@ class Column implements ToSqlInterface
      *
      * @MySQL
      */
-    protected $enum;
+    public $enum;
 
 
     /**
@@ -79,7 +79,7 @@ class Column implements ToSqlInterface
      *
      * @MySQL
      */
-    protected $set;
+    public $set;
 
     /**
      * @var array $attributeTypes
