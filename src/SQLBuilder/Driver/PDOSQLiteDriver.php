@@ -1,6 +1,7 @@
 <?php
 namespace SQLBuilder\Driver;
 use PDO;
+use SQLBuilder\Driver\SQLiteDriver;
 
 class PDOSQLiteDriver extends SQLiteDriver
 {
