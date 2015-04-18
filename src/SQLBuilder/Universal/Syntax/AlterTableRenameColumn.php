@@ -50,7 +50,7 @@ class AlterTableRenameColumn implements ToSqlInterface
             $sql .= ' TO ' . $driver->quoteIdentifier($this->toColumn->getName());
 
         } else {
-            throw new UnsupportedDriverException;
+            throw new UnsupportedDriverException($driver, $this);
         }
         return $sql;
     }

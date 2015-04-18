@@ -221,7 +221,7 @@ class CreateIndexQuery implements ToSqlInterface
         } elseif ($driver instanceof MySQLDriver) {
             return $this->buildMySQLQuery($driver, $args);
         } else {
-            throw new UnsupportedDriverException;
+            throw new UnsupportedDriverException($driver, $this);
         }
     }
 

@@ -859,7 +859,7 @@ class Column implements ToSqlInterface
         } elseif ($driver instanceof PgSQLDriver) {
             return $this->buildPgSQLDefinitionSql($driver, $args);
         } else {
-            throw new UnsupportedDriverException;
+            throw new UnsupportedDriverException($driver, $this);
         }
         return '';
     }

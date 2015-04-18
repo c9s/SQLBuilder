@@ -75,7 +75,7 @@ class AlterTableModifyColumn implements ToSqlInterface
             }
 
         } else {
-            throw new UnsupportedDriverException;
+            throw new UnsupportedDriverException($driver, $this);
         }
         return $sql;
     }
