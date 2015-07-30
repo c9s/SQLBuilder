@@ -182,6 +182,10 @@ abstract class BaseDriver
         }
     }
 
+    public function cast($value)
+    {
+        return $value;
+    }
 
     /**
      * For variable placeholder like PDO, we need 1 or 0 for boolean type,

@@ -15,7 +15,17 @@ class SQLiteDriver extends BaseDriver
     public function quoteIdentifier($id) {
         return '`' . addcslashes($id,'`') . '`';
     }
-    
+
+    public function cast($value)
+    {
+        if ($value === true) {
+            return 1;
+        } else if ($value === false) {
+            return 0;
+        }
+        return $value;
+    }
+
     /**
      * For variable placeholder like PDO, we need 1 or 0 for boolean type,
      *
@@ -28,16 +38,11 @@ class SQLiteDriver extends BaseDriver
     public function deflate($value, ArgumentArray $args = NULL)
     {
         // Special cases for SQLite
-        if ($value === true )
-        {
+        if ($value === true) {
             return 1;
-        }
-        elseif ($value === false ) 
-        {
+        } elseif ($value === false ) {
             return 0;
-        }
-        else
-        {
+        } else {
             return parent::deflate($value, $args);
         }
         return $value;
