@@ -43,6 +43,7 @@ class CreateDatabaseQuery implements ToSqlInterface
      */
     protected $characterSet;
 
+    protected $ifNotExists = false;
 
     public function __construct($name = NULL)
     {
@@ -93,14 +94,29 @@ class CreateDatabaseQuery implements ToSqlInterface
     /**
      * @see http://dev.mysql.com/doc/refman/5.0/en/charset.html
      */
-    public function characterSet($characterSet) {
+    public function characterSet($characterSet)
+    {
         $this->characterSet = $characterSet;
         return $this;
     }
 
+
+    public function ifNotExists()
+    {
+        $this->ifNotExists = true;
+        return $this;
+    }
+
+
     public function toSql(BaseDriver $driver, ArgumentArray $args) 
     {
-        $sql = 'CREATE DATABASE ' . $driver->quoteIdentifier($this->dbName);
+        $sql = 'CREATE DATABASE';
+
+        if ($this->ifNotExists && $driver instanceof MySQLDriver) {
+            $sql .= ' IF NOT EXISTS';
+        }
+
+        $sql .= ' ' . $driver->quoteIdentifier($this->dbName);
 
         if ($driver instanceof MySQLDriver) {
 
