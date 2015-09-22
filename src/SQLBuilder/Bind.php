@@ -31,6 +31,11 @@ class Bind {
         return ':' . $this->name;
     }
 
+    public function compare(Bind $b)
+    {
+        return $this->value === $b->value;
+    }
+
     static public function bindArray(array $array) {
         $args = array();
         foreach($array as $key => $value) {
@@ -38,5 +43,8 @@ class Bind {
         }
         return $args;
     }
+
+
+
 }
 

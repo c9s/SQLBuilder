@@ -221,6 +221,57 @@ class Conditions implements ToSqlInterface, Countable
         return count($this->exprs);
     }
 
+    public function compare(Conditions $conditions)
+    {
+        if (count($this->exprs) != count($conditions->exprs)) {
+            return false;
+        }
+
+        for ($i = 0 ; $i < count($this->exprs) ; $i++) {
+            $a = $this->exprs[$i];
+            $b = $conditions->exprs[$i];
+
+            if (!$a instanceof $b) {
+                return false;
+            }
+
+            if ($a instanceof BinaryExpr) {
+                if ($a->op !== $b->op) {
+                    return false;
+                }
+                if ($a->operand !== $b->operand) {
+                    return false;
+                }
+
+                if ($a->operand2 instanceof Bind) {
+                    if (! $b->operand2 instanceof Bind) {
+                        return false;
+                    }
+                    if ($a->operand2->value !== $b->operand2->value) {
+                        return false;
+                    }
+                } else {
+                    if ($a->operand2 !== $b->operand2) {
+                        return false;
+                    }
+                }
+
+
+            } else if ($a instanceof UnaryExpr) {
+
+                if ($a->op !== $b->op) {
+                    return false;
+                }
+                if ($a->operand !== $b->operand) {
+                    return false;
+                }
+
+            }
+        }
+
+        return true;
+    }
+
     static public function __set_state($array)
     {
         if (isset($array['exprs'])) {

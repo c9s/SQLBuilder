@@ -251,6 +251,59 @@ class ConditionsTest extends QueryTestCase
         ok($expr->notEmpty());
     }
 
+    public function testCompareSameEqualExprWithBind()
+    {
+        $expr1 = new Conditions;
+        $expr1->equal('foo', new Bind('foo', 1));
+        $expr1->equal('bar', new Bind('bar', 2));
+
+        $expr2 = new Conditions;
+        $expr2->equal('foo', new Bind('foo', 1));
+        $expr2->equal('bar', new Bind('bar', 2));
+
+        $this->assertFalse($expr1->compare($expr2));
+    }
+
+    public function testCompareDifferentEqualExprWithBind()
+    {
+        $expr1 = new Conditions;
+        $expr1->equal('foo', new Bind('foo', 0));
+        $expr1->equal('bar', new Bind('bar', 1));
+
+        $expr2 = new Conditions;
+        $expr2->equal('foo', new Bind('foo', 0));
+        $expr2->equal('bar', new Bind('bar', 3));
+
+        $this->assertFalse($expr1->compare($expr2));
+    }
+
+
+    public function testCompareDifferentEqualExpr()
+    {
+        $expr1 = new Conditions;
+        $expr1->equal('foo', 0);
+        $expr1->equal('bar', 1);
+
+        $expr2 = new Conditions;
+        $expr2->equal('foo', 0);
+        $expr2->equal('bar', 3);
+
+        $this->assertFalse($expr1->compare($expr2));
+    }
+
+    public function testCompareSameEqualExpr()
+    {
+        $expr1 = new Conditions;
+        $expr1->equal('foo', 1);
+        $expr1->equal('bar', 1);
+
+        $expr2 = new Conditions;
+        $expr2->equal('foo', 1);
+        $expr2->equal('bar', 1);
+
+        $this->assertTrue($expr1->compare($expr2));
+    }
+
     public function testNotRegExp()
     {
         $args = new ArgumentArray;
