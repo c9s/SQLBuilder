@@ -31,6 +31,10 @@ class Bind {
         return ':' . $this->name;
     }
 
+
+    /**
+     * The compare method only compares value.
+     */
     public function compare(Bind $b)
     {
         return $this->value === $b->value;

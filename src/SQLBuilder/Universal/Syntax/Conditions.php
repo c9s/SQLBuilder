@@ -247,7 +247,7 @@ class Conditions implements ToSqlInterface, Countable
                     if (! $b->operand2 instanceof Bind) {
                         return false;
                     }
-                    if ($a->operand2->value !== $b->operand2->value) {
+                    if ($a->operand2->compare($b)) {
                         return false;
                     }
                 } else {
@@ -262,10 +262,18 @@ class Conditions implements ToSqlInterface, Countable
                 if ($a->op !== $b->op) {
                     return false;
                 }
-                if ($a->operand !== $b->operand) {
-                    return false;
+                if ($a->operand instanceof Bind) {
+                    if (! $b->operand instanceof Bind) {
+                        return false;
+                    }
+                    if ($a->operand->compare($b)) {
+                        return false;
+                    }
+                } else {
+                    if ($a->operand !== $b->operand) {
+                        return false;
+                    }
                 }
-
             }
         }
 
