@@ -14,13 +14,15 @@ class UnaryExpr implements ToSqlInterface
 
     public $operand;
 
-    public function __construct($op, $operand) {
+    public function __construct($op, $operand)
+    {
         $this->op = $op;
         $this->operand = $operand;
     }
 
-    public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return $this->op . ' ' . $this->operand;
+    public function toSql(BaseDriver $driver, ArgumentArray $args)
+    {
+        return $this->op . ' ' . $driver->deflate($this->operand, $args);
     }
 
     static public function __set_state(array $array)
