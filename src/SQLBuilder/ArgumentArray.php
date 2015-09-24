@@ -24,7 +24,15 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
      */
     protected $bindings = array();
 
-    public function getIterator() {
+
+    public function __construct(array $args = array())
+    {
+        $this->args = $args;
+    }
+
+
+    public function getIterator()
+    {
         return new ArrayIterator($this->args);
     }
 
@@ -67,8 +75,17 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
     {
         return $this->args;
     }
+
     
-    public function toArray($removeBinds = false) {
+    /**
+     * toArray returns an array of the current arguments.
+     *
+     * Set $removeBinds to true if you want this array to be passed to PDO statement.
+     *
+     * @param boolean $removeBinds 
+     */
+    public function toArray($removeBinds = false)
+    {
         if ($removeBinds) {
             $args = array();
             foreach($this->args as $key => $val) {
