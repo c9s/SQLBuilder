@@ -9,7 +9,7 @@ use SQLBuilder\Universal\Traits\KeyTrait;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\Exception\UnsupportedDriverException;
 
-class AlterTableDropIndex implements ToSqlInterface
+class AlterTableDropForeignKey implements ToSqlInterface
 {
     protected $fkSymbol;
 
