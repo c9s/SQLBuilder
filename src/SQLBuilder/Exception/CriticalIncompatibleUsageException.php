@@ -3,7 +3,7 @@ namespace SQLBuilder\Exception;
 use Exception;
 use LogicException;
 
-class IncompleteSettingsException extends LogicException
+class CriticalIncompatibleUsageException extends LogicException
 {
 
 }
