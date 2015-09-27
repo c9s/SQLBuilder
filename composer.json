@@ -11,9 +11,12 @@
     "require-dev": {
         "corneltek/phpunit-testmore": "dev-master"
     },
+    "support": {
+        "email": "yoanlin93+github@gmail.com"
+    },
     "autoload": {
-        "psr-0": {
-            "SQLBuilder": "src"
+        "psr-4": {
+            "SQLBuilder\\": "src/SQLBuilder/"
         }
     },
     "version": "2.8.2"
