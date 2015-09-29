@@ -1,7 +1,10 @@
+Version 2.8.3
+
+- Fixed DateTime object deflation.
+
 Version 2.8.2
 
 - Fixed class names. related to https://github.com/c9s/SQLBuilder/issues/73
-
 
 Version 2.7.3 - Tue Sep 22 15:50:39 2015
 
