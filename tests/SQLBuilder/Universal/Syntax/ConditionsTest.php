@@ -314,6 +314,17 @@ class ConditionsTest extends QueryTestCase
         is("content NOT REGEXP '.*'", $sql);
     }
 
+    public function testBetweenExprWithDateTime()
+    {
+        $args = new ArgumentArray;
+        $driver = new SQLBuilder\Driver\MySQLDriver;
+        $expr = new Conditions;
+        $expr->between('created_at', new DateTime, new DateTime);
+        $sql = $expr->toSql($driver, $args);
+        // var_dump($sql);
+
+    }
+
     public function testBetweenExpr()
     {
         $args = new ArgumentArray;
@@ -321,6 +332,7 @@ class ConditionsTest extends QueryTestCase
         $expr = new Conditions;
         $expr->between('created_at', date('c') , date('c', time() + 3600));
         $sql = $expr->toSql($driver, $args);
+        // var_dump($sql);
         // is("", $sql);
     }
 

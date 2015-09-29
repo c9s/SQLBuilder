@@ -25,7 +25,7 @@ class MySQLDriver extends BaseDriver
     {
         if ($value instanceof DateTime) {
             // MySQL does not support date time string with timezone
-            return $value->format('Y-m-d H:i:s');
+            return $this->quote($value->format('Y-m-d H:i:s'));
         }
         return parent::deflate($value, $args);
     }
