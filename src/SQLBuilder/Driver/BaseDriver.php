@@ -282,8 +282,9 @@ abstract class BaseDriver
                 return 'UNKNOWN';
 
             } elseif ($value instanceof DateTime ) {
+
                 // convert DateTime object into string
-                return $value->format(DateTime::ISO8601);
+                return $this->quote($value->format(DateTime::ISO8601));
 
             } elseif ($value instanceof ToSqlInterface) {
 
