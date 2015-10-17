@@ -45,7 +45,7 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
     // Deprecated 
     public function add($bind) 
     {
-        trigger_error("Bind::add is deprecated, please use Bind::bind instead.", E_USER_DEPRECATED);
+        // trigger_error("Bind::add is deprecated, please use Bind::bind instead.", E_USER_DEPRECATED);
         $this->bindings[] = $bind;
         $this->args[$bind->getMarker()] = $bind->getValue();
     }
