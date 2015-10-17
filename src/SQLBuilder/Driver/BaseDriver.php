@@ -203,18 +203,18 @@ abstract class BaseDriver
                 return $value->__toString();
             } elseif ($value instanceof Bind) {
                 if ($args) {
-                    $args->add($value);
+                    $args->bind($value);
                 }
                 return $value->getMarker();
             } elseif ($value instanceof ParamMarker) {
                 if ($args) {
-                    $args->add(new Bind($value->getMarker(), NULL));
+                    $args->bind(new Bind($value->getMarker(), NULL));
                 }
                 return $value->getMarker();
             } else {
                 $bind = $this->allocateBind($value);
                 if ($args) {
-                    $args->add($bind);
+                    $args->bind($bind);
                 }
                 return $bind->getMarker();
             }
@@ -252,7 +252,7 @@ abstract class BaseDriver
 
             if ($value instanceof Bind) {
                 if ($args) {
-                    $args->add($value);
+                    $args->bind($value);
                 }
 
                 if ($this->paramMarkerType === self::QMARK_PARAM_MARKER) {
@@ -265,7 +265,7 @@ abstract class BaseDriver
 
             } elseif ($value instanceof ParamMarker) {
                 if ($args) {
-                    $args->add(new Bind( $value->getMarker(), NULL));
+                    $args->bind(new Bind( $value->getMarker(), NULL));
                 }
 
                 if ($this->paramMarkerType === self::QMARK_PARAM_MARKER) {
