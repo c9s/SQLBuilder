@@ -70,6 +70,8 @@ class SelectQuery implements ToSqlInterface
 
     protected $lockModifier;
 
+    protected $rollupModifier;
+
     public function __construct()
     {
         $this->having = new Conditions;
@@ -231,13 +233,20 @@ class SelectQuery implements ToSqlInterface
     /**
      * Note: SELECT FOR UPDATE does not work when used in select statement with a subquery.
      */
-    public function forUpdate() {
+    public function forUpdate()
+    {
         $this->lockModifier = 'FOR UPDATE';
         return $this;
     }
 
-    public function lockInShareMode() {
+    public function lockInShareMode()
+    {
         $this->lockModifier = 'LOCK IN SHARE MODE';
+    }
+
+    public function rollup()
+    {
+        $this->rollupModifier = 'WITH ROLLUP';
     }
 
     /****************************************************************
@@ -318,6 +327,13 @@ class SelectQuery implements ToSqlInterface
         $sql = ' GROUP BY ' . join(', ', $clauses);
         if ($this->groupByModifiers) {
             $sql .= ' ' . join(' ', $this->groupByModifiers);
+        }
+
+        if ($this->rollupModifier) {
+            if (!$driver instanceof MySQLDriver) {
+                throw new Exception("Incompatible Query Usage: rollup is only supported in MySQL.");
+            }
+            $sql .= ' ' . $this->rollupModifier;
         }
         return $sql;
     }
