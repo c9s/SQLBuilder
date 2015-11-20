@@ -263,14 +263,20 @@ class SelectQuery implements ToSqlInterface
                 $sql .= ', ';
             }
 
+            /* "column AS alias" OR just "column" */
             if (is_integer($k)) {
                 if ($v instanceof SelectExpr || $v instanceof ToSqlInterface) {
                     $sql .= $v->toSql($driver, $args);
+                } else if (is_array($v)) {
+                    if (count($v) == 2) {
+                        $sql .= $v[0] . ' AS ' . $v[1];
+                    }  else {
+                        $sql .= $v[0];
+                    }
                 } else {
                     $sql .= $driver->quoteColumn($v);
                 }
             } else {
-                /* "column AS alias" OR just "column" */
                 $sql .= $driver->quoteColumn($k) . ' AS ' . $v;
             }
         }
