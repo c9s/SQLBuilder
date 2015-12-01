@@ -672,6 +672,12 @@ class Column implements ToSqlInterface
 
     public function buildUnsignedClause(BaseDriver $driver)
     {
+        if ($driver instanceof SQLiteDriver || $driver instanceof PgSQLDriver) {
+            // unsigned primary key is not supported in SQLiteDriver and PgSQLDriver
+            if ($this->primary && $this->unsigned) {
+                return '';
+            }
+        }
         if ($this->unsigned) {
             return ' UNSIGNED';
         }
