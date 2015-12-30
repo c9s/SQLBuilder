@@ -9,7 +9,7 @@ php:
 install:
 - phpenv rehash
 - composer self-update
-- composer require satooshi/php-coveralls:dev-master --no-update --dev
+- composer require satooshi/php-coveralls "^1.0" --no-update --dev --prefer-dist
 - composer install
 
 before_script:
