@@ -54,6 +54,7 @@ class InsertQuery implements ToSqlInterface
      */
     protected $returning;
 
+    protected $alias;
 
     public function insert(array $values)
     {
@@ -61,8 +62,10 @@ class InsertQuery implements ToSqlInterface
         return $this;
     }
 
-    public function into($table) {
+    public function into($table, $alias = null)
+    {
         $this->intoTable = $table;
+        $this->alias = $alias;
         return $this;
     }
 
@@ -87,6 +90,10 @@ class InsertQuery implements ToSqlInterface
         }
 
         $sql .= ' INTO ' . $driver->quoteTable($this->intoTable);
+
+        if ($this->alias) {
+            $sql .= ' AS ' . $this->alias;
+        }
 
         // append partition clause if needed.
         $sql .= $this->buildPartitionClause($driver, $args);
