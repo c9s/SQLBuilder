@@ -17,25 +17,36 @@ use SQLBuilder\Universal\Syntax\IndexHint;
 trait JoinTrait {
     protected $joins = array();
 
-    public function rightJoin($table, $alias = NULL) {
-        $join = new RightJoin($table, $alias);
+    public function innerJoin($table, $alias = NULL)
+    {
+        $join = new Join($table, $alias, 'INNER');
         $this->joins[] = $join;
         return $join;
     }
 
-    public function leftJoin($table, $alias = NULL) {
-        $join = new LeftJoin($table, $alias);
+    public function rightJoin($table, $alias = NULL)
+    {
+        $join = new Join($table, $alias, 'RIGHT');
         $this->joins[] = $join;
         return $join;
     }
 
-    public function join($table, $alias = NULL, $joinType = NULL) {
+    public function leftJoin($table, $alias = NULL)
+    {
+        $join = new Join($table, $alias, 'LEFT');
+        $this->joins[] = $join;
+        return $join;
+    }
+
+    public function join($table, $alias = NULL, $joinType = NULL)
+    {
         $join = new Join($table, $alias, $joinType);
         $this->joins[] = $join;
         return $join;
     }
 
-    public function getJoins() {
+    public function getJoins()
+    {
         return $this->joins;
     }
 
