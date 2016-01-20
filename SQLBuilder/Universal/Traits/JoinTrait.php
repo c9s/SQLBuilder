@@ -29,8 +29,8 @@ trait JoinTrait {
         return $join;
     }
 
-    public function join($table, $alias = NULL) {
-        $join = new Join($table, $alias);
+    public function join($table, $alias = NULL, $joinType = NULL) {
+        $join = new Join($table, $alias, $joinType);
         $this->joins[] = $join;
         return $join;
     }

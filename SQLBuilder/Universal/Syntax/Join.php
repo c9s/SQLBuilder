@@ -20,10 +20,11 @@ class Join implements ToSqlInterface
 
     protected $joinType;
 
-    public function __construct($table, $alias = NULL)
+    public function __construct($table, $alias = NULL, $joinType = null)
     {
         $this->table = $table;
         $this->alias = $alias;
+        $this->joinType = $joinType;
         $this->conditions = new Conditions;
     }
 
