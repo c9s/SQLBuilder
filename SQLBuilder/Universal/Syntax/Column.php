@@ -662,7 +662,7 @@ class Column implements ToSqlInterface
 
     public function buildNullClause(BaseDriver $driver) 
     {
-        if ($this->required || $this->notNull) {
+        if ($this->notNull) {
             return ' NOT NULL';
         } elseif ($this->notNull === FALSE) {
             return  ' NULL';
