@@ -21,6 +21,14 @@ class MySQLDriver extends BaseDriver
         return '`' . addcslashes($id,'`') . '`';
     }
 
+    public function cast($value)
+    {
+        if (is_bool($value)) {
+            return intval($value);
+        }
+        return $value;
+    }
+
     public function deflate($value, ArgumentArray $args = NULL)
     {
         if ($value instanceof DateTime) {
