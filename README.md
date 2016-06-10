@@ -125,7 +125,7 @@ For PostgreSQL platform, the implementation is according to the specification of
 ## Development
 
 ```
-composer install --dev --prefer-source
+composer install
 ```
 
 Copy the `phpunit.xml` file for your local configuration:
