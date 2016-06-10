@@ -98,7 +98,7 @@ Universql Queries:
 - DropIndexQuery
 
 To see the implementation details, you can check the source code inside **Universal** namespace:
-<https://github.com/c9s/SQLBuilder/tree/master/src/SQLBuilder/Universal/Query>
+<https://github.com/c9s/SQLBuilder/tree/master/SQLBuilder/Universal/Query>
 
 MySQL Queries:
 
