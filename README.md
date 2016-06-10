@@ -148,7 +148,7 @@ To test with mysql database:
 
 To test with pgsql database:
 
-    $ sudo -u postgres createdb sqlbuilder
+    sudo -u postgres createdb sqlbuilder
 
 ## Reference
 
