@@ -116,13 +116,7 @@ For PostgreSQL platform, the implementation is according to the specification of
 
 ### Install through Composer
 
-```json
-{
-    "require": {
-        "corneltek/sqlbuilder": "2~"
-    }
-}
-```
+    composer require corneltek/sqlbuilder
 
 ## Getting Started
 
