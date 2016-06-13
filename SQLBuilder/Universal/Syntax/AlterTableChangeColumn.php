@@ -19,12 +19,19 @@ class AlterTableChangeColumn implements ToSqlInterface
 
     protected $first;
 
-    public function __construct($fromColumn, Column $toColumn) {
+
+    /**
+     * @param string|Column $fromColumn
+     * @param Column $toColumn
+     */
+    public function __construct($fromColumn, Column $toColumn)
+    {
         $this->fromColumn = $fromColumn;
         $this->toColumn = $toColumn;
     }
 
-    public function after($column) {
+    public function after($column)
+    {
         if ($column instanceof Column) {
             $this->after = $column->getName();
         } else {

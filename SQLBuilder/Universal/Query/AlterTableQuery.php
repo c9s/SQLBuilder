@@ -13,6 +13,7 @@ use SQLBuilder\ParamMarker;
 use SQLBuilder\Universal\Syntax\Column;
 use SQLBuilder\Universal\Syntax\AlterTableAddConstraint;
 use SQLBuilder\Universal\Syntax\AlterTableRenameColumn;
+use SQLBuilder\Universal\Syntax\AlterTableChangeColumn;
 use SQLBuilder\Universal\Syntax\AlterTableAddColumn;
 use SQLBuilder\Universal\Syntax\AlterTableDropColumn;
 use SQLBuilder\Universal\Syntax\AlterTableRenameTable;
@@ -50,6 +51,15 @@ class AlterTableQuery implements ToSqlInterface
         return $spec;
     }
 
+    /**
+     * @param string|Column $oldColumn
+     * @param Column $newColumn
+     */
+    public function changeColumn($oldColumn, Column $newColumn)
+    {
+        $this->specs[] = $spec = new AlterTableChangeColumn($oldColumn,$newColumn);
+        return $spec;
+    }
 
     /**
      * Rename table column
