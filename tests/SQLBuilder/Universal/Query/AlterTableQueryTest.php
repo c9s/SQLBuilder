@@ -413,6 +413,20 @@ class AlterTableQueryTest extends PDOQueryTestCase
         ]);
     }
 
+
+
+    public function testChangeColumn()
+    {
+        $q = new AlterTableQuery('products');
+        $q->changeColumn('name', new Column('title', 'varchar(30)'));
+        $this->assertDriverQuery(new MySQLDriver, $q);
+        $this->assertSqlStrings($q, [
+            [new MySQLDriver, 'ALTER TABLE `products` CHANGE COLUMN `name` `title` varchar(30)'],
+        ]);
+    }
+
+
+
     public function testRenameColumn()
     {
         $q = new AlterTableQuery('products');
