@@ -184,6 +184,9 @@ abstract class BaseDriver
 
     public function cast($value)
     {
+        if ($value instanceof DateTime) {
+            return $value->format(DateTime::ISO8601);
+        }
         return $value;
     }
 

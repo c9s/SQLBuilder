@@ -26,6 +26,9 @@ class MySQLDriver extends BaseDriver
         if (is_bool($value)) {
             return intval($value);
         }
+        if ($value instanceof DateTime) {
+            return $value->format('Y-m-d H:i:s');
+        }
         return $value;
     }
 
