@@ -93,9 +93,10 @@ FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE 
     {
         $a = 1;
         $q = new CreateTableQuery('ts_tests');
-        // MySQL 5.7 requires the last timestamp column to have default current_timestamp
-        $q->column('c' . $a++)->timestamp()->timezone();
+        $q->column('c' . $a++)->timestamp()->null()->timezone(); // timezone is for pgsql
         $q->column('c' . $a++)->timestamp()->null();
+
+        // MySQL 5.7 requires the last timestamp column to have default current_timestamp
         $q->column('c' . $a++)->timestamp()->default(new Raw('CURRENT_TIMESTAMP'));
         $this->assertQuery($q);
     }
