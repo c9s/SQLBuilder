@@ -1,3 +1,15 @@
+
+## v3.2.0
+
+- Added timestamp on update .. syntax support
+
+    ->onUpdate(new Raw('CURRENT_TIMESTAMP'));
+
+  Note this is only for MySQL
+
+
+## v2.8
+
 Version 2.8.3
 
 - Fixed DateTime object deflation.
