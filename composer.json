@@ -1,6 +1,6 @@
 {
     "name": "corneltek/sqlbuilder",
-    "description": "Fast and Powerful SQLBuilder for PHP5.3",
+    "description": "Fast and Powerful SQLBuilder for PHP",
     "license": "MIT",
     "authors": [
         {
@@ -19,5 +19,5 @@
             "SQLBuilder\\": "SQLBuilder/"
         }
     },
-    "extra": { "branch-alias": { "dev-master": "3.1.x-dev" } }
+    "extra": { "branch-alias": { "dev-master": "3.2.x-dev" } }
 }
