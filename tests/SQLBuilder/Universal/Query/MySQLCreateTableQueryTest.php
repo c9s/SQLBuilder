@@ -139,8 +139,12 @@ FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE 
             return $driver->deflate('02:00');
         });
         $q->column('c' . $a++)->year();
-        $q->column('c' . $a++)->timestamp()->default(new Raw('current_timestamp'));
+
+        // MySQL 5.7 requires the last timestamp column to have default current_timestamp
         $q->column('c' . $a++)->timestamp()->timezone();
+        $q->column('c' . $a++)->timestamp()->default(new Raw('CURRENT_TIMESTAMP'));
+        $q->column('c' . $a++)->timestamp()->null();
+
         $q->column('c' . $a++)->datetime();
 
         $q->column('c' . $a++)->decimal();

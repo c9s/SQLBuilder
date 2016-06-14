@@ -150,8 +150,9 @@ class SelectQueryTest extends PDOQueryTestCase
         $query = new SelectQuery;
         $query->select(array('name', new FuncCallExpr('COUNT',[new Raw('*')])));
         $query->from('users');
+        $query->groupBy('name');
         $this->assertQuery($query);
-        $this->assertSql('SELECT name, COUNT(*) FROM users',$query);
+        $this->assertSql('SELECT name, COUNT(*) FROM users GROUP BY name',$query);
     }
 
     public function testSelectRawExpr()
@@ -159,8 +160,9 @@ class SelectQueryTest extends PDOQueryTestCase
         $query = new SelectQuery;
         $query->select(array('name', new Raw('COUNT(*)')));
         $query->from('users');
+        $query->groupBy('name');
         $this->assertQuery($query);
-        $this->assertSql('SELECT name, COUNT(*) FROM users',$query);
+        $this->assertSql('SELECT name, COUNT(*) FROM users GROUP BY name',$query);
     }
 
     public function testSelectMultipleOptions()
@@ -226,7 +228,7 @@ class SelectQueryTest extends PDOQueryTestCase
     public function testGroupByHavingConditions() 
     {
         $query = new SelectQuery;
-        $query->select(array('id', 'name', 'phone', 'address'))
+        $query->select(array('name'))
             ->from('users', 'u')
             ->groupBy('name')
             ->limit(20)
@@ -236,8 +238,8 @@ class SelectQueryTest extends PDOQueryTestCase
         $query->having()->equal('name', 'John');
         $this->assertQuery($query);
         $this->assertSqlStrings($query, [ 
-            [ new MySQLDriver, "SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name GROUP BY name HAVING name = 'John' LIMIT 20 OFFSET 10"],
-            [ new PgSQLDriver, "SELECT id, name, phone, address FROM users AS u WHERE u.name LIKE :name GROUP BY name HAVING name = 'John' LIMIT 20 OFFSET 10"],
+            [ new MySQLDriver, "SELECT name FROM users AS u WHERE u.name LIKE :name GROUP BY name HAVING name = 'John' LIMIT 20 OFFSET 10"],
+            [ new PgSQLDriver, "SELECT name FROM users AS u WHERE u.name LIKE :name GROUP BY name HAVING name = 'John' LIMIT 20 OFFSET 10"],
         ]);
     }
 

@@ -11,6 +11,7 @@ use PHPUnit_Framework_TestCase;
 
 use PDO;
 use Exception;
+use PDOException;
 
 /**
  * @codeCoverageIgnore
@@ -115,10 +116,10 @@ abstract class PDOQueryTestCase extends QueryTestCase
         return $this->pdo;
     }
 
-    public function noPDOError()
+    protected function assertNoPDOError(PDO $conn, $message = null)
     {
-        $err = $this->pdo->errorInfo();
-        ok( $err[0] === '00000' );
+        $err = $conn->errorInfo();
+        $this->assertEquals('00000', $err[0], $message);
     }
 
     public function getCurrentDriverType() {
@@ -284,12 +285,12 @@ abstract class PDOQueryTestCase extends QueryTestCase
         return;
     }
 
-    public function assertQuery(ToSqlInterface $query)
+    public function assertQuery(ToSqlInterface $query, $message = null)
     {
         $driver = $this->createDriver();
         $args = new ArgumentArray;
         $sql = $query->toSql($driver, $args);
-        $this->queryOk($sql, $args->toArray());
+        $this->queryOk($sql, $args->toArray(), $message);
         return $args;
     }
 
@@ -339,7 +340,7 @@ abstract class PDOQueryTestCase extends QueryTestCase
         } else {
             $stm = $this->pdo->query( $sql );
         }
-        $this->noPDOError();
+        $this->assertNoPDOError($this->pdo, $sql);
         return $stm;
     }
 
@@ -349,39 +350,44 @@ abstract class PDOQueryTestCase extends QueryTestCase
      * @param string $sql SQL statement.
      * @param array $args Arguments for executing SQL statement.
      */
-    public function queryOk($sql, array $args = array())
+    public function queryOk($sql, array $args = array(), $message = null)
     {
-        if ($args) {
-            $stm = $this->pdo->prepare( $sql )->execute( $args );
-        } else {
-            $stm = $this->pdo->query( $sql );
+        try {
+            if ($args) {
+                $stm = $this->pdo->prepare($sql)->execute( $args );
+            } else {
+                $stm = $this->pdo->query( $sql );
+            }
+            $this->assertNoPDOError($this->pdo, $message ?: $sql);
+            return $stm;
+        } catch (PDOException $e) {
+            fprintf(STDERR, "\n");
+            fprintf(STDERR, get_class($e) . "\n");
+            fprintf(STDERR, $e->getMessage() . "\n");
+            fprintf(STDERR, "SQL: $sql\n");
+            throw $e;
         }
-        $this->noPDOError();
-        return $stm;
     }
 
-    public function executeOk($sql,$args)
+    protected function executeOk($sql,$args)
     {
         $stm = $this->pdo->prepare($sql);
         $err = $this->pdo->errorInfo();
 
         ok( ! $err[1] , $err[0] );
-
-        ok( $stm );
         $stm->execute( $args );
 
         $err = $this->pdo->errorInfo();
-        ok( ! $err[1] );
+        ok(! $err[1]);
         return $stm;
 
     }
 
-    public function recordOk($sql)
+    protected function recordOk($sql)
     {
         $stm = $this->queryOk($sql);
         $row = $stm->fetch();
-        ok( $row );
-        ok( ! empty( $row ));
+        $this->assertNotEmpty($row);
         return $row;
     }
 

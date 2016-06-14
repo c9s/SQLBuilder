@@ -139,9 +139,9 @@ phpunit -c your-phpunit.xml tests
 
 To test with mysql database:
 
-    $ mysql -uroot -p
-    create database sqlbuilder charset utf8;
-    grant all privileges on sqlbuilder.* to 'testing'@'localhost' identified by '';
+    mysql -uroot -p
+    CREATE DATABASE sqlbuilder CHARSET utf8;
+    GRANT ALL PRIVILEGES ON sqlbuilder.* TO 'testing'@'localhost' identified by '';
 
     --- or use this to remove password for testing account
     SET PASSWORD FOR testing@localhost=PASSWORD('');
