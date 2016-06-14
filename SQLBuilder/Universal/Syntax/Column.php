@@ -11,6 +11,7 @@ use SQLBuilder\Exception\CriticalIncompatibleUsageException;
 use SQLBuilder\Exception\IncompleteSettingsException;
 use SQLBuilder\Exception\UnsupportedDriverException;
 use InvalidArgumentException;
+use Closure;
 
 
 /**
@@ -80,6 +81,14 @@ class Column implements ToSqlInterface
      * @MySQL
      */
     public $set;
+
+
+    /**
+     * @var string right now this is only for timestamp column
+     *
+     * @MySQL
+     */
+    public $onUpdate;
 
     /**
      * @var array $attributeTypes
@@ -686,19 +695,20 @@ class Column implements ToSqlInterface
 
     public function buildDefaultClause(BaseDriver $driver)
     {
+        $sql = '';
         // Build default value
         if (($default = $this->default) !== NULL) { 
             // When user defines a closure, it means the default value is
             // lazily provided, don't build the closure value for SQL
             // statement.
-            if (is_callable($default)) {
-                return '';
-                // return ' DEFAULT ' . $driver->deflate(call_user_func($this->default, $this, $driver));
-            } else {
-                return ' DEFAULT ' . $driver->deflate($default);
+            if (!is_callable($default) && !$default instanceof Closure) {
+                $sql .= ' DEFAULT ' . $driver->deflate($default);
             }
         }
-        return '';
+        if ($this->onUpdate && $driver instanceof MySQLDriver) {
+            $sql .= ' ON UPDATE ' . $driver->deflate($this->onUpdate);
+        }
+        return $sql;
     }
 
     public function buildTimeZoneClause(BaseDriver $driver)

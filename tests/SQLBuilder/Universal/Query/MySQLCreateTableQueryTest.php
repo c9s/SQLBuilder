@@ -19,7 +19,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         parent::setUp();
 
         // Clean up
-        foreach(array('users','groups','authors','points') as $table) {
+        foreach(array('users','groups','authors','points','ts_tests') as $table) {
             $dropQuery = new DropTableQuery($table);
             $dropQuery->IfExists();
             $this->assertQuery($dropQuery);
@@ -89,6 +89,28 @@ FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE 
         $this->assertQuery($dropQuery);
     }
 
+    public function testTimestampColumns()
+    {
+        $a = 1;
+        $q = new CreateTableQuery('ts_tests');
+        // MySQL 5.7 requires the last timestamp column to have default current_timestamp
+        $q->column('c' . $a++)->timestamp()->timezone();
+        $q->column('c' . $a++)->timestamp()->null();
+        $q->column('c' . $a++)->timestamp()->default(new Raw('CURRENT_TIMESTAMP'));
+        $this->assertQuery($q);
+    }
+
+    public function testTimestampOnUpdate()
+    {
+        $a = 1;
+        $q = new CreateTableQuery('ts_tests');
+        // MySQL 5.7 requires the last timestamp column to have default current_timestamp
+        $q->column('c' . $a++)->timestamp()
+            ->default(new Raw('CURRENT_TIMESTAMP'))
+            ->onUpdate(new Raw('CURRENT_TIMESTAMP'))
+            ;
+        $this->assertQuery($q);
+    }
 
     public function testColumns()
     {
@@ -140,10 +162,6 @@ FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE 
         });
         $q->column('c' . $a++)->year();
 
-        // MySQL 5.7 requires the last timestamp column to have default current_timestamp
-        $q->column('c' . $a++)->timestamp()->timezone();
-        $q->column('c' . $a++)->timestamp()->default(new Raw('CURRENT_TIMESTAMP'));
-        $q->column('c' . $a++)->timestamp()->null();
 
         $q->column('c' . $a++)->datetime();
 
