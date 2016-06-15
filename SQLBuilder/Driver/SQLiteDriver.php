@@ -1,9 +1,9 @@
 <?php
 namespace SQLBuilder\Driver;
+use SQLBuilder\ArgumentArray;
 use DateTime;
 use Exception;
 use RuntimeException;
-use SQLBuilder\ArgumentArray;
 
 /**
  * Currently not supporting this SQLiteDriver
@@ -22,6 +22,9 @@ class SQLiteDriver extends BaseDriver
             return 1;
         } else if ($value === false) {
             return 0;
+        }
+        if ($value instanceof DateTime) {
+            return $value->format(DateTime::ATOM);
         }
         return $value;
     }

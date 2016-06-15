@@ -17,6 +17,9 @@ class PgSQLDriver extends BaseDriver
         } else if ($value === false) {
             return 0;
         }
+        if ($value instanceof DateTime) {
+            return $value->format(DateTime::ATOM);
+        }
         return $value;
     }
 }
