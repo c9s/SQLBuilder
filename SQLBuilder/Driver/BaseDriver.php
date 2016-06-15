@@ -185,7 +185,8 @@ abstract class BaseDriver
     public function cast($value)
     {
         if ($value instanceof DateTime) {
-            return $value->format(DateTime::ISO8601);
+            // return $value->format(DateTime::ISO8601);
+            return $value->format(DateTime::ATOM);
         }
         return $value;
     }
@@ -284,10 +285,11 @@ abstract class BaseDriver
 
                 return 'UNKNOWN';
 
-            } elseif ($value instanceof DateTime ) {
+            } else if ($value instanceof DateTime) {
 
                 // convert DateTime object into string
-                return $this->quote($value->format(DateTime::ISO8601));
+                // return $this->quote($value->format(DateTime::ISO8601));
+                return $this->quote($value->format(DateTime::ATOM)); // sqlite use ATOM format
 
             } elseif ($value instanceof ToSqlInterface) {
 
