@@ -510,9 +510,14 @@ class Column implements ToSqlInterface
         return $this;
     }
 
+    /**
+     * mysql timestamp automatic initialization
+     * @see http://dev.mysql.com/doc/refman/5.7/en/timestamp-initialization.html
+     */
     public function timestamp($timezone = true)
     {
         $this->type = 'timestamp';
+        $this->notNull = true;
         $this->isa = 'DateTime';
         $this->setAttribute('timezone', $timezone);
         return $this;
