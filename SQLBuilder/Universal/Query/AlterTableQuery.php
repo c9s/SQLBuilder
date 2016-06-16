@@ -40,10 +40,13 @@ class AlterTableQuery implements ToSqlInterface
         $this->table = $table;
     }
 
-    public function add()
+    public function add(ToSqlInterface $subquery = null)
     {
-        $this->specs[] = $spec = new AlterTableAddConstraint;
-        return $spec;
+        if ($subquery) {
+            return $this->specs[] = $subquery;
+        } else {
+            return $this->specs[] = new AlterTableAddConstraint;
+        }
     }
 
     public function modifyColumn(Column $column) {
