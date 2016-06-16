@@ -179,7 +179,6 @@ class Column implements ToSqlInterface
     public function primary($primary = true)
     {
         $this->primary = $primary;
-        $this->notNull = true; // once it's primary, it should be not null.
         return $this;
     }
 
