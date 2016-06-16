@@ -22,7 +22,7 @@ class Raw
     }
 
     public function compare(Raw $b) {
-        if ($this->value == $b->value) {
+        if ($this->value === $b->value) {
             return 0;
         } else {
             return strcmp($this->value, $b->value);
