@@ -21,6 +21,7 @@ use SQLBuilder\Universal\Syntax\AlterTableModifyColumn;
 use SQLBuilder\Universal\Syntax\AlterTableDropPrimaryKey;
 use SQLBuilder\Universal\Syntax\AlterTableDropForeignKey;
 use SQLBuilder\Universal\Syntax\AlterTableDropIndex;
+use SQLBuilder\Universal\Syntax\AlterTableAdd;
 
 use SQLBuilder\Exception\CriticalIncompatibleUsageException;
 
@@ -40,10 +41,10 @@ class AlterTableQuery implements ToSqlInterface
         $this->table = $table;
     }
 
-    public function add(ToSqlInterface $subquery = null)
+    public function add($subquery = null)
     {
         if ($subquery) {
-            return $this->specs[] = $subquery;
+            return $this->specs[] = new AlterTableAdd($subquery);
         } else {
             return $this->specs[] = new AlterTableAddConstraint;
         }
