@@ -517,7 +517,8 @@ class Column implements ToSqlInterface
     public function timestamp($timezone = true)
     {
         $this->type = 'timestamp';
-        $this->notNull = true;
+        // Disable not null for simpilicity
+        // $this->notNull = true;
         $this->isa = 'DateTime';
         $this->setAttribute('timezone', $timezone);
         return $this;
