@@ -759,11 +759,11 @@ class Column implements ToSqlInterface
             }
         }
         if (isset($this->length) && isset($this->decimals)) {
-            return $this->type . '(' . $this->length . ',' . $this->decimals . ')';
+            return $type . '(' . $this->length . ',' . $this->decimals . ')';
         } elseif (isset($this->length)) {
-            return $this->type . '(' . $this->length . ')';
+            return $type . '(' . $this->length . ')';
         }
-        return $this->type;
+        return $type;
     }
 
     public function buildPrimaryKeyClause(BaseDriver $driver)
