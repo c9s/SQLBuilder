@@ -749,14 +749,14 @@ class Column implements ToSqlInterface
     }
 
 
-    public function buildTypeName()
+    public function buildTypeName(BaseDriver $driver, $type)
     {
         if (isset($this->length) && isset($this->decimals)) {
-            return $this->type . '(' . $this->length . ',' . $this->decimals . ')';
+            return $type . '(' . $this->length . ',' . $this->decimals . ')';
         } elseif (isset($this->length)) {
-            return $this->type . '(' . $this->length . ')';
+            return $type . '(' . $this->length . ')';
         }
-        return $this->type;
+        return $type;
     }
 
     public function buildPrimaryKeyClause(BaseDriver $driver)
@@ -795,16 +795,16 @@ class Column implements ToSqlInterface
             }
         }
 
+        $type = $this->type;
         if ($driver instanceof SQLiteDriver) {
-            $type = $this->type;
             switch($type) {
             case 'int':
                 $type = 'INTEGER'; // sqlite requires auto-increment on "INTEGER"
                 break;
             }
-            $sql = ' ' . $type;
+            $sql = ' ' . $this->buildTypeName($driver, $type);
         } else {
-            $sql = ' ' . $this->buildTypeName($driver);
+            $sql = ' ' . $this->buildTypeName($driver, $type);
         }
 
         if ($driver instanceof MySQLDriver) {
