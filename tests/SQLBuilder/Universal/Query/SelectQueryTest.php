@@ -199,7 +199,7 @@ class SelectQueryTest extends PDOQueryTestCase
         $query->setSelect(array('name', new Raw('sum(scores) AS total_scores')));
 
         $selected = $query->getSelect();
-        is(2, count($selected));
+        $this->assertEquals(2, count($selected));
 
         $this->assertSqlStrings($query, [ 
             [ new MySQLDriver, "SELECT name, sum(scores) AS total_scores FROM users AS u GROUP BY name HAVING total_scores > 10"],
@@ -319,7 +319,6 @@ class SelectQueryTest extends PDOQueryTestCase
         $driver = new MySQLDriver;
         $driver->setQuoteColumn(true);
         $query = new SelectQuery;
-        ok($query);
         $query->select(array('u.id', 'u.name', 'u.phone', 'u.address', 'p.title' => 'post_title'))
             ->from('users', 'u')
             ->join('posts')
@@ -327,9 +326,8 @@ class SelectQueryTest extends PDOQueryTestCase
                 ->on('p.user_id = u.id')
             ;
         $query->where('u.name LIKE :name', [ ':name' => '%John%' ]);
-        ok( $query->getJoins());
         $sql = $query->toSql($driver, $args);
-        is('SELECT u.id, u.name, u.phone, u.address, p.title AS post_title FROM users AS u JOIN posts AS p ON (p.user_id = u.id) WHERE u.name LIKE :name', $sql);
+        $this->assertEquals('SELECT u.id, u.name, u.phone, u.address, p.title AS post_title FROM users AS u JOIN posts AS p ON (p.user_id = u.id) WHERE u.name LIKE :name', $sql);
     }
 
     public function testOrderBy()
@@ -343,7 +341,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ->orderBy('id', 'DESC')
             ;
         $sql = $query->toSql($driver, $args);
-        is('SELECT id, name, phone, address FROM users AS u ORDER BY rand(), id DESC', $sql);
+        $this->assertEquals('SELECT id, name, phone, address FROM users AS u ORDER BY rand(), id DESC', $sql);
     }
 
 
@@ -357,7 +355,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ->groupBy('c.code')
             ;
         $sql = $query->toSql($driver, $args);
-        is('SELECT id, country, code FROM counties AS c GROUP BY c.code', $sql);
+        $this->assertEquals('SELECT id, country, code FROM counties AS c GROUP BY c.code', $sql);
     }
 
     public function testSelectOptions() 
@@ -371,7 +369,7 @@ class SelectQueryTest extends PDOQueryTestCase
             ->from('counties', 'c')
             ;
         $sql = $query->toSql($driver, $args);
-        is('SELECT DISTINCT id, country, code FROM counties AS c', $sql);
+        $this->assertEquals('SELECT DISTINCT id, country, code FROM counties AS c', $sql);
     }
 
     public function testGroupByWithRollUp()
@@ -384,25 +382,24 @@ class SelectQueryTest extends PDOQueryTestCase
             ->groupBy('c.code', [ 'WITH ROLLUP' ])
             ;
         $sql = $query->toSql($driver, $args);
-        is('SELECT id, country, code FROM counties AS c GROUP BY c.code WITH ROLLUP', $sql);
+        $this->assertEquals('SELECT id, country, code FROM counties AS c GROUP BY c.code WITH ROLLUP', $sql);
     }
 
     public function testSelectWithSharedLock() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $query = new SelectQuery;
-        ok($query);
         $query->select(array('id', 'name', 'phone', 'address'))
             ->from('users', 'u')
             ->where('name = :name', [ ':name' => 'Joan' ])
             ;
         $query->lockInShareMode();
         $sql = $query->toSql($driver, $args);
-        is('SELECT id, name, phone, address FROM users AS u WHERE name = :name LOCK IN SHARE MODE', $sql);
+        $this->assertEquals('SELECT id, name, phone, address FROM users AS u WHERE name = :name LOCK IN SHARE MODE', $sql);
 
         $query->forUpdate();
         $sql = $query->toSql($driver, $args);
-        is('SELECT id, name, phone, address FROM users AS u WHERE name = :name FOR UPDATE', $sql);
+        $this->assertEquals('SELECT id, name, phone, address FROM users AS u WHERE name = :name FOR UPDATE', $sql);
     }
 
     public function testSelectWithOrderByClear()
@@ -490,14 +487,13 @@ class SelectQueryTest extends PDOQueryTestCase
                 ->equal('category_id', 2);
 
         $productQuery = new SelectQuery;
-        ok($productQuery);
         $productQuery->select(array('id', 'name'))
             ->from('products', 'p')
             ->where()
                 ->in('id', $subquery)
             ;
         $sql = $productQuery->toSql($driver, $args);
-        is('SELECT id, name FROM products AS p WHERE id IN (SELECT product_id FROM product_category_junction WHERE category_id = 2)', $sql);
+        $this->assertEquals('SELECT id, name FROM products AS p WHERE id IN (SELECT product_id FROM product_category_junction WHERE category_id = 2)', $sql);
     }
 
 
@@ -506,7 +502,6 @@ class SelectQueryTest extends PDOQueryTestCase
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $query = new SelectQuery;
-        ok($query);
         $query->select(array('u.id', 'u.name', 'u.phone', 'u.address'))
             ->from('users', 'u');
 
@@ -515,14 +510,13 @@ class SelectQueryTest extends PDOQueryTestCase
         $query->indexHint('u')->forceIndex('foo_idx')->forJoin();
 
         $sql = $query->toSql($driver, $args);
-        is('SELECT u.id, u.name, u.phone, u.address FROM users AS u USE INDEX FOR ORDER BY (users_idx) IGNORE INDEX FOR GROUP BY (name_idx) FORCE INDEX FOR JOIN (foo_idx)', $sql);
+        $this->assertEquals('SELECT u.id, u.name, u.phone, u.address FROM users AS u USE INDEX FOR ORDER BY (users_idx) IGNORE INDEX FOR GROUP BY (name_idx) FORCE INDEX FOR JOIN (foo_idx)', $sql);
     }
 
     public function testSelectIndexHintByTableNameOnly() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $query = new SelectQuery;
-        ok($query);
         $query->select(array('u.id', 'u.name', 'u.phone', 'u.address'))
             ->from('users');
 
@@ -531,14 +525,13 @@ class SelectQueryTest extends PDOQueryTestCase
         $query->indexHint('users')->forceIndex('foo_idx')->forJoin();
 
         $sql = $query->toSql($driver, $args);
-        is('SELECT u.id, u.name, u.phone, u.address FROM users USE INDEX FOR ORDER BY (users_idx) IGNORE INDEX FOR GROUP BY (name_idx) FORCE INDEX FOR JOIN (foo_idx)', $sql);
+        $this->assertEquals('SELECT u.id, u.name, u.phone, u.address FROM users USE INDEX FOR ORDER BY (users_idx) IGNORE INDEX FOR GROUP BY (name_idx) FORCE INDEX FOR JOIN (foo_idx)', $sql);
     }
 
     public function testSelectIndexHintByTableNameRef() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $query = new SelectQuery;
-        ok($query);
         $query->select(array('u.id', 'u.name', 'u.phone', 'u.address'))
             ->from('users', 'u');
 
@@ -547,14 +540,13 @@ class SelectQueryTest extends PDOQueryTestCase
         $query->indexHint('users')->forceIndex('foo_idx')->forJoin();
 
         $sql = $query->toSql($driver, $args);
-        is('SELECT u.id, u.name, u.phone, u.address FROM users AS u USE INDEX FOR ORDER BY (users_idx) IGNORE INDEX FOR GROUP BY (name_idx) FORCE INDEX FOR JOIN (foo_idx)', $sql);
+        $this->assertEquals('SELECT u.id, u.name, u.phone, u.address FROM users AS u USE INDEX FOR ORDER BY (users_idx) IGNORE INDEX FOR GROUP BY (name_idx) FORCE INDEX FOR JOIN (foo_idx)', $sql);
     }
 
     public function testMultipleJoin() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $query = new SelectQuery;
-        ok($query);
         $query->select(array('id', 'name', 'phone', 'address'))
             ->from('users' ,'u')
             ;
@@ -598,8 +590,7 @@ class SelectQueryTest extends PDOQueryTestCase
 
         $q->setFrom(array('authors' => 'a'));
         $this->assertSql('SELECT id, name, phone, address FROM authors AS a', $q);
-
-        ok( is_array($q->getFrom()) );
+        $this->assertTrue(is_array($q->getFrom()));
     }
 
     public function testJoinRight()
@@ -615,7 +606,7 @@ class SelectQueryTest extends PDOQueryTestCase
                 ->on('p.user_id = u.id')
                 ;
         $sql = $query->toSql($driver, $args);
-        is('SELECT id, name, phone, address FROM users AS u RIGHT JOIN posts AS p ON (p.user_id = u.id)', $sql);
+        $this->assertEquals('SELECT id, name, phone, address FROM users AS u RIGHT JOIN posts AS p ON (p.user_id = u.id)', $sql);
         return $query;
     }
 
@@ -632,7 +623,7 @@ class SelectQueryTest extends PDOQueryTestCase
                 ->on('p.user_id = u.id')
                 ;
         $sql = $query->toSql($driver, $args);
-        is('SELECT id, name, phone, address FROM users AS u INNER JOIN posts AS p ON (p.user_id = u.id)', $sql);
+        $this->assertEquals('SELECT id, name, phone, address FROM users AS u INNER JOIN posts AS p ON (p.user_id = u.id)', $sql);
         return $query;
     }
 
@@ -649,7 +640,7 @@ class SelectQueryTest extends PDOQueryTestCase
                 ->on('p.user_id = u.id')
                 ;
         $sql = $query->toSql($driver, $args);
-        is('SELECT id, name, phone, address FROM users AS u RIGHT JOIN posts AS p ON (p.user_id = u.id)', $sql);
+        $this->assertEquals('SELECT id, name, phone, address FROM users AS u RIGHT JOIN posts AS p ON (p.user_id = u.id)', $sql);
         return $query;
     }
 
@@ -657,7 +648,6 @@ class SelectQueryTest extends PDOQueryTestCase
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $query = new SelectQuery;
-        ok($query);
         $query->select(array('id', 'name', 'phone', 'address'))
             ->from('users' ,'u')
             ;
@@ -666,7 +656,7 @@ class SelectQueryTest extends PDOQueryTestCase
                 ->on('p.user_id = u.id')
                 ;
         $sql = $query->toSql($driver, $args);
-        is('SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p ON (p.user_id = u.id)', $sql);
+        $this->assertEquals('SELECT id, name, phone, address FROM users AS u LEFT JOIN posts AS p ON (p.user_id = u.id)', $sql);
         return $query;
     }
 

@@ -261,10 +261,7 @@ PRIMARY KEY (`id`)
                 ;
 
         $q->uniqueKey('email');
-
         $q->engine('InnoDB');
-
-        ok($q);
 
         $dropQuery = new DropTableQuery('authors');
         $dropQuery->IfExists();
@@ -286,7 +283,6 @@ UNIQUE KEY (`email`)
 ) ENGINE=InnoDB', $q);
         $this->assertQuery($q);
         $this->assertQuery($dropQuery); // drop again to test the if exists.
-
     }
 }
 

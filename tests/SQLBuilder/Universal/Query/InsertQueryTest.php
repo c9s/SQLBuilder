@@ -44,9 +44,9 @@ class InsertQueryTest extends PDOQueryTestCase
         $query->insert([ 'name' => new Bind('name', 'John'), 'confirmed' => new Bind('confirmed',true) ])->into('users');
         $query->returning('id');
         $sql = $query->toSql($driver, $args);
-        is('INSERT LOW_PRIORITY IGNORE INTO users (name,confirmed) VALUES (:name,:confirmed)', $sql);
-        is('John', $args[':name'] ); 
-        is(true, $args[':confirmed'] ); 
+        $this->assertEquals('INSERT LOW_PRIORITY IGNORE INTO users (name,confirmed) VALUES (:name,:confirmed)', $sql);
+        $this->assertEquals('John', $args[':name'] ); 
+        $this->assertEquals(true, $args[':confirmed'] ); 
     }
 
 
@@ -61,7 +61,7 @@ class InsertQueryTest extends PDOQueryTestCase
         $query->insert([ 'name' => new Bind('name','John'), 'confirmed' => new Bind('confirmed',true) ])->into('users');
         $query->returning('id');
         $sql = $query->toSql($driver, $args);
-        is('INSERT LOW_PRIORITY IGNORE INTO users (name,confirmed) VALUES (?,?)', $sql);
+        $this->assertEquals('INSERT LOW_PRIORITY IGNORE INTO users (name,confirmed) VALUES (?,?)', $sql);
     }
 
 

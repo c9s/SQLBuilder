@@ -361,14 +361,14 @@ class AlterTableQueryTest extends PDOQueryTestCase
         $q->rename('products_new');
         $sql = $q->toSql($driver, $args);
         $this->assertQuery($q);
-        is('ALTER TABLE `products` RENAME TO `products_new`', $sql);
+        $this->assertEquals('ALTER TABLE `products` RENAME TO `products_new`', $sql);
 
 
         $q = new AlterTableQuery('products_new');
         $q->rename('products');
         $sql = $q->toSql($driver, $args);
         $this->assertQuery($q);
-        is('ALTER TABLE `products_new` RENAME TO `products`', $sql);
+        $this->assertEquals('ALTER TABLE `products_new` RENAME TO `products`', $sql);
     }
 
     public function testAddForeignKey()
@@ -450,11 +450,6 @@ class AlterTableQueryTest extends PDOQueryTestCase
 
         $sql = $q->toSql($driver, $args);
         $this->assertQuery($q);
-        is('ALTER TABLE `products` CHANGE COLUMN `name` `title` varchar(30)', $sql);
+        $this->assertEquals('ALTER TABLE `products` CHANGE COLUMN `name` `title` varchar(30)', $sql);
     }
-
-
-
-
 }
-

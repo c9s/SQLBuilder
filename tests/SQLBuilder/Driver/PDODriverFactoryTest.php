@@ -30,12 +30,11 @@ class PDODriverFactoryTest extends PDOQueryTestCase
     public function testDriverFactory($type)
     {
         $conn = $this->createConnection($type);
-        ok($conn);
+        $this->assertNotNull($conn);
         $driver = PDODriverFactory::create($conn);
-        ok($driver);
-
+        $this->assertNotNull($driver);
         $quoted = $driver->quote('foo');
-        is('\'foo\'', $quoted);
+        $this->assertEquals('\'foo\'', $quoted);
     }
 
     public function testDeflateScalar() {
@@ -60,7 +59,7 @@ class PDODriverFactoryTest extends PDOQueryTestCase
     {
         $driver = new MySQLDriver;
         $driver->setQuoteColumn(true);
-        is('`name`', $driver->quoteColumn('name'));
+        $this->assertEquals('`name`', $driver->quoteColumn('name'));
     }
 
     public function testQuoteColumns()
@@ -75,7 +74,7 @@ class PDODriverFactoryTest extends PDOQueryTestCase
     {
         $driver = new MySQLDriver;
         $driver->setQuoteTable(true);
-        is('`users`', $driver->quoteTable('users'));
+        $this->assertEquals('`users`', $driver->quoteTable('users'));
     }
 
 
@@ -83,14 +82,14 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         $driver = new MySQLDriver;
 
         $bind = $driver->allocateBind(10);
-        is('p1', $bind->getName());
-        is(':p1', $bind->getMarker());
-        is(10, $bind->getValue());
+        $this->assertEquals('p1', $bind->getName());
+        $this->assertEquals(':p1', $bind->getMarker());
+        $this->assertEquals(10, $bind->getValue());
 
         $bind = $driver->allocateBind('str');
-        is('p2', $bind->getName());
-        is(':p2', $bind->getMarker());
-        is('str', $bind->getValue());
+        $this->assertEquals('p2', $bind->getName());
+        $this->assertEquals(':p2', $bind->getMarker());
+        $this->assertEquals('str', $bind->getValue());
     }
 
     public function testAlwaysBindWithBind() 
@@ -98,9 +97,9 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $driver->alwaysBindValues(true);
-        is(':name', $driver->deflate(new Bind('name','Ollie'), $args));
+        $this->assertEquals(':name', $driver->deflate(new Bind('name','Ollie'), $args));
         $bind = $args->getBindingByIndex(0);
-        is('Ollie', $bind->getValue());
+        $this->assertEquals('Ollie', $bind->getValue());
     }
 
     public function testAlwaysBindWithScalar() 
@@ -108,9 +107,9 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $driver->alwaysBindValues(true);
-        is(':p1', $driver->deflate(10, $args));
+        $this->assertEquals(':p1', $driver->deflate(10, $args));
         $bind = $args->getBindingByIndex(0);
-        is(10, $bind->getValue());
+        $this->assertEquals(10, $bind->getValue());
     }
 
     public function testAlwaysBindWithRaw() 
@@ -118,7 +117,7 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $driver->alwaysBindValues(true);
-        is('10', $driver->deflate(new Raw('10'), $args));
+        $this->assertEquals('10', $driver->deflate(new Raw('10'), $args));
     }
 
     public function testAlwaysBindWithParamMarker() 
@@ -126,7 +125,7 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
         $driver->alwaysBindValues(true);
-        is('?', $driver->deflate(new ParamMarker('hack'), $args));
+        $this->assertEquals('?', $driver->deflate(new ParamMarker('hack'), $args));
     }
 
     public function testSetQuoter()
@@ -136,7 +135,7 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         $driver->setQuoter(function($str) use($conn) {
             return $conn->quote($str);
         });
-        is("'str'", $driver->quote('str'));
+        $this->assertEquals("'str'", $driver->quote('str'));
     }
 
 

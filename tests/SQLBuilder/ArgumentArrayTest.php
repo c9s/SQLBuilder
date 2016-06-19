@@ -8,9 +8,8 @@ class ArgumentArrayTest extends PHPUnit_Framework_TestCase
     {
         $args = new ArgumentArray;
         $args->add(new Bind('name', 'John'));
-        ok($args);
-        is('John', $args[':name']);
-        ok($args instanceof IteratorAggregate);
+        $this->assertEquals('John', $args[':name']);
+        $this->assertInstanceOf('IteratorAggregate', $args);
     }
 
     public function testUnsetArgument()
@@ -18,37 +17,37 @@ class ArgumentArrayTest extends PHPUnit_Framework_TestCase
         $args = new ArgumentArray;
         $args->add(new Bind('name', 'John'));
         $args->add(new Bind('foo', 'FooBar'));
-        ok( isset($args[':foo']) );
+        $this->assertTrue(isset($args[':foo']));
 
         $foo = $args[':foo'];
-        is('FooBar', $foo);
+        $this->assertEquals('FooBar', $foo);
 
         unset( $args[':foo'] );
 
-        ok(is_array($args->toArray()));
-        ok(is_array($args->getArgs()));
-
-        foreach($args->getBindings() as $binding) {
-            ok($binding instanceof Bind);
+        $this->assertTrue(is_array($args->toArray()));
+        $this->assertTrue(is_array($args->getArgs()));
+        foreach ($args->getBindings() as $binding) {
+            $this->assertTrue($binding instanceof Bind);
         }
     }
 
-    public function testSettter() {
+    public function testSettter()
+    {
         $args = new ArgumentArray;
         $args[':name'] = 'John';
         $args[':foo'] = 'FooBar';
-
-        ok( isset($args[':foo']) );
-        ok( isset($args[':name']) );
+        $this->assertTrue(isset($args[':foo']) );
+        $this->assertTrue(isset($args[':name']) );
     }
 
-    public function testIterating() {
+    public function testIterating()
+    {
         $args = new ArgumentArray;
         $args->add(new Bind('name', 'John'));
         $args->add(new Bind('foo', 'FooBar'));
         foreach($args as $n => $v) {
-            ok( is_string($n) );
-            ok( in_array($v, array('John', 'FooBar')));
+            $this->assertTrue(is_string($n));
+            $this->assertTrue(in_array($v, array('John', 'FooBar')));
         }
     }
 

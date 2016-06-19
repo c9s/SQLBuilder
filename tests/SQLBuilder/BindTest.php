@@ -6,12 +6,11 @@ class BindTest extends PHPUnit_Framework_TestCase
     public function test()
     {
         $bind = new Bind('name', 'Mary');
-        ok($bind);
         $bind->setValue('Hacker');
-        is('Hacker', $bind->getValue());
+        $this->assertEquals('Hacker', $bind->getValue());
 
-        is('name', $bind->getName());
-        is(':name', $bind->getMarker());
+        $this->assertEquals('name', $bind->getName());
+        $this->assertEquals(':name', $bind->getMarker());
     }
 
 

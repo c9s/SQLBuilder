@@ -14,7 +14,7 @@ class DropUserQueryTest extends PHPUnit_Framework_TestCase
         $q = new DropUserQuery;
         $q->user()->account('monty')->host('localhost');
         $sql = $q->toSql($driver, $args);
-        is("DROP USER `monty`@`localhost`", $sql);
+        $this->assertEquals("DROP USER `monty`@`localhost`", $sql);
     }
 
     public function testDropSingleUserWithSpecString()
@@ -24,7 +24,7 @@ class DropUserQueryTest extends PHPUnit_Framework_TestCase
         $q = new DropUserQuery;
         $q->user('monty@localhost');
         $sql = $q->toSql($driver, $args);
-        is("DROP USER `monty`@`localhost`", $sql);
+        $this->assertEquals("DROP USER `monty`@`localhost`", $sql);
     }
 }
 

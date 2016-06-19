@@ -34,8 +34,7 @@ class AggregateFunctionTest extends PHPUnit_Framework_TestCase
             $query = new SelectQuery;
             $query->select($func);
             $sql = $query->toSql($driver, $args);
-            ok($sql);
-            is($expectedSql,$sql);
+            $this->assertEquals($expectedSql,$sql);
         }
 
     }

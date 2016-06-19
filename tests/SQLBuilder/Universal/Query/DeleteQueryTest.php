@@ -106,7 +106,7 @@ class DeleteQueryTest extends PDOQueryTestCase
             [ new PgSQLDriver, 'DELETE FROM users AS u WHERE id = 3 OR id = 4' ],
             [ new SQLiteDriver, 'DELETE FROM users AS u WHERE id = 3 OR id = 4' ],
         ]);
-        is(3, $query->where()->count());
+        $this->assertEquals(3, $query->where()->count());
     }
 
     public function testBasicDelete()
@@ -117,7 +117,7 @@ class DeleteQueryTest extends PDOQueryTestCase
             ->where()
                 ->equal('id', 3)
                 ->is('confirmed', true)
-            ;
+                ;
         $query->limit(1);
         
         $this->assertSqlStrings($query, [ 

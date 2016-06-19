@@ -18,7 +18,7 @@ class FuncCallExprTest extends PHPUnit_Framework_TestCase
         $args = new ArgumentArray;
         $func = new FuncCallExpr('COUNT', [ new Raw('*') ]);
         $sql = $func->toSql($driver, $args);
-        is('COUNT(*)', $sql);
+        $this->assertEquals('COUNT(*)', $sql);
     }
 }
 
