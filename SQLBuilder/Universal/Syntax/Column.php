@@ -799,10 +799,7 @@ class Column implements ToSqlInterface
             $type = $this->type;
             switch($type) {
             case 'int':
-                $type = 'INTEGER';
-                break;
-            case 'varchar':
-                $type = 'TEXT';
+                $type = 'INTEGER'; // sqlite requires auto-increment on "INTEGER"
                 break;
             }
             $sql = ' ' . $type;
