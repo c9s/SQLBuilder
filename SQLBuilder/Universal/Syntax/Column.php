@@ -748,9 +748,16 @@ class Column implements ToSqlInterface
         return '';
     }
 
-
-    public function buildTypeName()
+    public function buildTypeName(BaseDriver $driver)
     {
+        $type = $this->type;
+        if ($driver instanceof SQLiteDriver) {
+            switch($type) {
+            case 'int':
+                $type = 'INTEGER'; // sqlite requires auto-increment on "INTEGER"
+                break;
+            }
+        }
         if (isset($this->length) && isset($this->decimals)) {
             return $this->type . '(' . $this->length . ',' . $this->decimals . ')';
         } elseif (isset($this->length)) {
@@ -795,17 +802,7 @@ class Column implements ToSqlInterface
             }
         }
 
-        if ($driver instanceof SQLiteDriver) {
-            $type = $this->type;
-            switch($type) {
-            case 'int':
-                $type = 'INTEGER'; // sqlite requires auto-increment on "INTEGER"
-                break;
-            }
-            $sql = ' ' . $type;
-        } else {
-            $sql = ' ' . $this->buildTypeName($driver);
-        }
+        $sql = ' ' . $this->buildTypeName($driver);
 
         if ($driver instanceof MySQLDriver) {
             if ($this->isa === 'enum' && !empty($this->enum)) {
