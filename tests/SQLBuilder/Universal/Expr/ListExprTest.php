@@ -41,9 +41,5 @@ class ListExprTest extends QueryTestCase
         $expr = new ListExpr(1);
         $this->assertSql('(1,2,3)', $expr);
     }
-
-
-
-
 }
 

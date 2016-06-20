@@ -2,7 +2,7 @@
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Universal\Syntax\Conditions;
-use SQLBuilder\Universal\Expr\IsExpr;
+use SQLBuilder\Universal\Expr\IsNotExpr;
 use SQLBuilder\Criteria;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\DataType\Unknown;
@@ -10,19 +10,19 @@ use SQLBuilder\Bind;
 use SQLBuilder\Raw;
 use SQLBuilder\Testing\QueryTestCase;
 
-class IsExprTest extends QueryTestCase
+class IsNotExprTest extends QueryTestCase
 {
     public function testConstructor() {
-        $expr = new IsExpr('a', true);
+        $expr = new IsNotExpr('a', true);
         $this->assertSqlStrings($expr,[
-            [new MySQLDriver,'a IS TRUE'],
+            [new MySQLDriver,'a IS NOT TRUE'],
         ]);
 
         // quote test
         $driver = new MySQLDriver;
         $driver->quoteColumn = true;
         $this->assertSqlStrings($expr,[
-            [$driver,'`a` IS TRUE'],
+            [$driver,'`a` IS NOT TRUE'],
         ]);
     }
 
@@ -30,9 +30,16 @@ class IsExprTest extends QueryTestCase
      * @expectedException InvalidArgumentException
      */
     public function testConstructorInvalidType() {
-        $expr = new IsExpr('a', 'blah');
+        $expr = new IsNotExpr('a', 'blah');
         $this->assertSqlStrings($expr,[
-            [new MySQLDriver,'a IS TRUE'],
+            [new MySQLDriver,'a IS NOT TRUE'],
+        ]);
+
+        // quote test
+        $driver = new MySQLDriver;
+        $driver->quoteColumn = true;
+        $this->assertSqlStrings($expr,[
+            [$driver,'`a` IS NOT TRUE'],
         ]);
     }
 }

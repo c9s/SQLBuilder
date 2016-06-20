@@ -1,5 +1,7 @@
 <?php
+
 namespace SQLBuilder\Universal\Expr;
+
 use SQLBuilder\Universal\Expr\Expr;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ToSqlInterface;

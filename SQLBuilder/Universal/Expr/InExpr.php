@@ -19,6 +19,10 @@ class InExpr implements ToSqlInterface {
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return $this->exprStr . ' IN ' . $this->listExpr->toSql($driver, $args);
+        $column = $this->exprStr;
+        if ($driver->quoteColumn) {
+            $column = $driver->quoteIdentifier($column);
+        }
+        return $column . ' IN ' . $this->listExpr->toSql($driver, $args);
     }
 }

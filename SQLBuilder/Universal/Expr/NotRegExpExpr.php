@@ -11,6 +11,10 @@ use LogicException;
 class NotRegExpExpr extends RegExpExpr implements ToSqlInterface
 {
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return $this->exprStr . ' NOT REGEXP ' . $driver->deflate($this->pat, $args);
+        $column = $this->exprStr;
+        if ($driver->quoteColumn) {
+            $column = $driver->quoteIdentifier($column);
+        }
+        return $column . ' NOT REGEXP ' . $driver->deflate($this->pat, $args);
     }
 }
