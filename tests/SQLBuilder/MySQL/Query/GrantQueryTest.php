@@ -5,10 +5,10 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\MySQL\Query\CreateUserQuery;
 use SQLBuilder\MySQL\Query\GrantQuery;
 use SQLBuilder\ToSqlInterface;
-use SQLBuilder\Testing\PDOQueryTestCase;
+use SQLBuilder\Testing\QueryTestCase;
 use SQLBuilder\MySQL\Syntax\UserSpecification;
 
-class GrantQueryTest extends PDOQueryTestCase
+class GrantQueryTest extends QueryTestCase
 {
     public $driverType = 'MySQL';
 

@@ -54,7 +54,11 @@ class LikeExpr implements ToSqlInterface {
         } else {
             $this->pat = $pat;
         }
-        return $this->exprStr . ' LIKE ' . $driver->deflate($this->pat, $args);
+        $column = $this->exprStr;
+        if ($driver->quoteColumn) {
+            $column = $driver->quoteIdentifier($column);
+        }
+        return $column . ' LIKE ' . $driver->deflate($this->pat, $args);
     }
 
     static public function __set_state(array $array)

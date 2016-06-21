@@ -24,7 +24,11 @@ class RegExpExpr implements ToSqlInterface
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return $this->exprStr . ' REGEXP ' . $driver->deflate($this->pat, $args);
+        $column = $this->exprStr;
+        if ($driver->quoteColumn && is_string($column)) {
+            $column = $driver->quoteIdentifier($column);
+        }
+        return $column . ' REGEXP ' . $driver->deflate($this->pat, $args);
     }
 
     static public function __set_state(array $array)

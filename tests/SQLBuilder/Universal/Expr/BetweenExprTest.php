@@ -1,8 +1,27 @@
 <?php
-use SQLBuilder\Universal\Expr\BetweenExpr;
 
-class BetweenExprTest extends PHPUnit_Framework_TestCase
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Universal\Expr\BetweenExpr;
+use SQLBuilder\Testing\QueryTestCase;
+
+class BetweenExprTest extends QueryTestCase
 {
+    public function testConstructor()
+    {
+        $expr = new BetweenExpr('age', 12, 20);
+
+        $driver = new MySQLDriver;
+        $this->assertSqlStrings($expr,[
+            [$driver,'age BETWEEN 12 AND 20'],
+        ]);
+
+        // quote test
+        $driver = new MySQLDriver;
+        $driver->quoteColumn = true;
+        $this->assertSqlStrings($expr,[
+            [$driver,'`age` BETWEEN 12 AND 20'],
+        ]);
+    }
     public function testBetweenExprVarExport()
     {
         $expr = new BetweenExpr('age', 12, 20);

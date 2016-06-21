@@ -27,7 +27,11 @@ class IsExpr implements ToSqlInterface {
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return $this->exprStr . ' IS ' . $driver->deflate($this->boolean, $args);
+        $column = $this->exprStr;
+        if ($driver->quoteColumn) {
+            $column = $driver->quoteIdentifier($column);
+        }
+        return $column . ' IS ' . $driver->deflate($this->boolean, $args);
     }
 
     static public function __set_state(array $array)

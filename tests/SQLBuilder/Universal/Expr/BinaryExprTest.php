@@ -1,8 +1,20 @@
 <?php
-use SQLBuilder\Universal\Expr\BinaryExpr;
 
-class BinaryExprTest extends PHPUnit_Framework_TestCase
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Universal\Expr\BinaryExpr;
+use SQLBuilder\Testing\QueryTestCase;
+
+class BinaryExprTest extends QueryTestCase
 {
+    public function testConstructor()
+    {
+        $expr = new BinaryExpr(1, '+', 20);
+
+        $driver = new MySQLDriver;
+        $this->assertSqlStrings($expr,[
+            [$driver,'1 + 20'],
+        ]);
+    }
     public function testBinaryExprVarExport()
     {
         $expr = new BinaryExpr(1, '+', 20);

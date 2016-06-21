@@ -20,7 +20,11 @@ class BinaryExpr implements ToSqlInterface
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return $this->operand . ' ' . $this->op . ' ' . $driver->deflate($this->operand2, $args);
+        $column = $this->operand;
+        if ($driver->quoteColumn) {
+            $column = $driver->quoteIdentifier($column);
+        }
+        return $column . ' ' . $this->op . ' ' . $driver->deflate($this->operand2, $args);
     }
 
     static public function __set_state($array)
