@@ -33,12 +33,19 @@ dependencies.
 Here is a short example of using Universal SelectQuery
 
 ```php
+// class autoloader
+require_once __DIR__ . '/vendor/autoload.php';
+
 use SQLBuilder\Universal\Query\SelectQuery;
+
+// drivers
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 
-$mysql = new MySQLDriver;
+use SQLBuilder\ArgumentArray;
+
+$driver = new MySQLDriver;
 $args = new ArgumentArray;
 
 $query = new SelectQuery;
@@ -59,10 +66,20 @@ $query
     ->orderBy('id', 'DESC')
     ;
 
-$sql = $query->toSql($mysql, $args);
+$sql = $query->toSql($driver, $args);
 
 var_dump($sql);
+// "SELECT `id`, `name`, `phone`, `address`, `confirmed` FROM `users` AS u PARTITION (u1,u2,u3) JOIN posts AS p ON (p.user_id = u.id) WHERE `confirmed` IS TRUE AND id IN (1,2,3) ORDER BY rand(), id DESC"
+
 var_dump($args);
+// object(SQLBuilder\ArgumentArray)#2 (2) {
+//   ["args":protected]=>
+//   array(0) {
+//   }
+//   ["bindings":protected]=>
+//   array(0) {
+//   }
+// }
 ```
 
 
