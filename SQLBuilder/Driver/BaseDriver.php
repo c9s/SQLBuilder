@@ -95,29 +95,6 @@ abstract class BaseDriver
     abstract public function quoteIdentifier($id);
 
     /**
-     * Check driver option to quote column name.
-     *
-     * column quote can be configured by 'quote_column' option.
-     *
-     * @param string $name column name
-     *
-     * @return string column name with/without quotes.
-     */
-    public function quoteColumn($name)
-    {
-        // TODO: quote for DB.TABLE.COLNAME 
-        if ($this->quoteColumn) {
-            if (preg_match('/\W/', $name)) {
-                return $name;
-            }
-
-            return $this->quoteIdentifier($name);
-        }
-
-        return $name;
-    }
-
-    /**
      * Check driver optino to quote table name.
      *
      * column quote can be configured by 'quote_table' option.

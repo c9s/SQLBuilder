@@ -50,7 +50,6 @@ class SQLiteDriver extends BaseDriver
         } else {
             return parent::deflate($value, $args);
         }
-
         return $value;
     }
 }

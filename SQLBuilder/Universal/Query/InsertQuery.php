@@ -54,7 +54,7 @@ class InsertQuery implements ToSqlInterface
 
     public function getColumnNames(BaseDriver $driver)
     {
-        return array_map([$driver, 'quoteColumn'], array_keys($this->values[0]));
+        return array_keys($this->values[0]);
     }
 
     public function returning($returningColumns)
@@ -100,9 +100,8 @@ class InsertQuery implements ToSqlInterface
 
         // Check if RETURNING is supported
         if ($this->returning && ($driver instanceof PgSQLDriver)) {
-            $sql .= ' RETURNING '.implode(',', $driver->quoteColumns($this->returning));
+            $sql .= ' RETURNING '.implode(',', $this->returning);
         }
-
         return $sql;
     }
 }

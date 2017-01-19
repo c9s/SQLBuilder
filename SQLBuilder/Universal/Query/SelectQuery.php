@@ -257,10 +257,10 @@ class SelectQuery implements ToSqlInterface
                         $sql .= $v[0];
                     }
                 } else {
-                    $sql .= $driver->quoteColumn($v);
+                    $sql .= $v;
                 }
             } else {
-                $sql .= $driver->quoteColumn($k).' AS '.$v;
+                $sql .= $k.' AS '.$v;
             }
         }
 

@@ -55,21 +55,6 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         $driver->deflateScalar(new Unknown);
     }
 
-    public function testQuoteColumn() 
-    {
-        $driver = new MySQLDriver;
-        $driver->setQuoteColumn(true);
-        $this->assertEquals('`name`', $driver->quoteColumn('name'));
-    }
-
-    public function testQuoteColumns()
-    {
-        $driver = new MySQLDriver;
-        $driver->setQuoteColumn(true);
-        $this->assertSame(['`name`','`price`'], $driver->quoteColumns(['name','price']));
-    }
-
-
     public function testQuoteTable() 
     {
         $driver = new MySQLDriver;
