@@ -19,5 +19,5 @@
             "SQLBuilder\\": "SQLBuilder/"
         }
     },
-    "extra": { "branch-alias": { "dev-master": "3.2.x-dev" } }
+    "extra": { "branch-alias": { "dev-master": "4.0.x-dev" } }
 }
