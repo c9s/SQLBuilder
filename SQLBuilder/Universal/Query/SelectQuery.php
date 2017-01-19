@@ -59,8 +59,6 @@ class SelectQuery implements ToSqlInterface
 
     protected $groupByModifiers = array();
 
-    protected $paging;
-
     protected $lockModifier;
 
     protected $rollupModifier;
@@ -350,7 +348,7 @@ class SelectQuery implements ToSqlInterface
 
     public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
-        $sql = 'SELECT'
+        return 'SELECT'
             .$this->buildOptionClause()
             .$this->buildSelectClause($driver, $args)
             .$this->buildFromClause($driver, $args)
@@ -363,14 +361,11 @@ class SelectQuery implements ToSqlInterface
             .$this->buildPagingClause($driver, $args)
             .$this->buildLockModifierClause()
             ;
-
-        return $sql;
     }
 
     public function __clone()
     {
         $this->having = $this->having;
-        $this->paging = $this->paging;
         $this->where = $this->where;
     }
 }
