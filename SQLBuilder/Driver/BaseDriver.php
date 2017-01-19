@@ -1,29 +1,28 @@
 <?php
+
 namespace SQLBuilder\Driver;
+
 use SQLBuilder\Raw;
 use SQLBuilder\DataType\Unknown;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\ParamMarker;
 use SQLBuilder\Bind;
 use SQLBuilder\ToSqlInterface;
-use Closure;
 use DateTime;
 use Exception;
-use RuntimeException;
 use LogicException;
 
 abstract class BaseDriver
 {
     /**
-     * Question mark parameter marker
+     * Question mark parameter marker.
      *
      * (?,?)
      */
     const QMARK_PARAM_MARKER = 1;
 
-
     /**
-     * Named parameter marker
+     * Named parameter marker.
      */
     const NAMED_PARAM_MARKER = 2;
 
@@ -37,9 +36,8 @@ abstract class BaseDriver
 
     public $quoteTable;
 
-
     /**
-     * String quoter handler
+     * String quoter handler.
      *  
      *  Array:
      *
@@ -47,94 +45,103 @@ abstract class BaseDriver
      */
     public $quoter;
 
-    public function setQuoter(callable $quoter) {
+    public function setQuoter(callable $quoter)
+    {
         $this->quoter = $quoter;
     }
 
-    public function alwaysBindValues($on = true) {
+    public function alwaysBindValues($on = true)
+    {
         $this->alwaysBindValues = $on;
     }
 
     /**
-     * @param boolean $enable 
+     * @param bool $enable
      */
-    public function setQuoteTable($enable = true) { 
+    public function setQuoteTable($enable = true)
+    {
         $this->quoteTable = $enable;
     }
 
     /**
-     * @param boolean $enable 
+     * @param bool $enable
      */
-    public function setQuoteColumn($enable = true) {
+    public function setQuoteColumn($enable = true)
+    {
         $this->quoteColumn = $enable;
     }
 
     // The SQL statement can contain zero or more named (:name) or question mark (?) parameter markers
-    public function setNamedParamMarker() { 
+    public function setNamedParamMarker()
+    {
         $this->paramMarkerType = self::NAMED_PARAM_MARKER;
     }
 
-    public function setQMarkParamMarker() {
+    public function setQMarkParamMarker()
+    {
         $this->paramMarkerType = self::QMARK_PARAM_MARKER;
     }
 
     public function quoteColumns(array $columns)
     {
         $quotedColumns = array();
-        foreach($columns as $col) {
+        foreach ($columns as $col) {
             $quotedColumns[] = $this->quoteColumn($col);
         }
+
         return $quotedColumns;
     }
 
     abstract public function quoteIdentifier($id);
 
     /**
-     * Check driver option to quote column name
+     * Check driver option to quote column name.
      *
      * column quote can be configured by 'quote_column' option.
      *
      * @param string $name column name
+     *
      * @return string column name with/without quotes.
      */
     public function quoteColumn($name)
     {
         // TODO: quote for DB.TABLE.COLNAME 
         if ($this->quoteColumn) {
-            if (preg_match('/\W/',$name)) {
+            if (preg_match('/\W/', $name)) {
                 return $name;
             }
+
             return $this->quoteIdentifier($name);
         }
+
         return $name;
     }
 
-
-
     /**
-     * Check driver optino to quote table name
+     * Check driver optino to quote table name.
      *
      * column quote can be configured by 'quote_table' option.
      *
      * @param string $name table name
+     *
      * @return string table name with/without quotes.
      */
-    public function quoteTable($name) 
+    public function quoteTable($name)
     {
         if ($this->quoteTable) {
             // TODO: Split DB.Table
             return $this->quoteIdentifier($name);
         }
+
         return $name;
     }
 
-
     /**
-     * quote & escape string with single quote 
+     * quote & escape string with single quote.
      */
     public function quote($string)
     {
-        /**
+        /*
          * quote:
          *
          *    string mysqli_real_escape_string ( mysqli $link , string $escapestr )
@@ -148,35 +155,26 @@ abstract class BaseDriver
         }
 
         // Defualt escape function, this is not safe.
-        return "'" . addslashes($string) . "'";
+        return "'".addslashes($string)."'";
     }
 
-    public function allocateBind($value) {
-        return new Bind('p' . $this->paramNameCnt++, $value);
+    public function allocateBind($value)
+    {
+        return new Bind('p'.$this->paramNameCnt++, $value);
     }
 
     public function deflateScalar($value)
     {
-        if ($value === NULL ) {
-
+        if ($value === null) {
             return 'NULL';
-
-        } elseif ($value === true ) {
-
+        } elseif ($value === true) {
             return 'TRUE';
-
         } elseif ($value === false) {
-
             return 'FALSE';
-
         } elseif (is_integer($value) || is_float($value)) {
-
-            return '' . $value;
-
-        } elseif (is_string($value) ) {
-
+            return ''.$value;
+        } elseif (is_string($value)) {
             return $this->quote($value);
-
         } else {
             throw new Exception("Can't deflate value, unknown type.");
         }
@@ -188,11 +186,12 @@ abstract class BaseDriver
             // return $value->format(DateTime::ISO8601);
             return $value->format(DateTime::ATOM);
         }
+
         return $value;
     }
 
     /**
-     * For variable placeholder like PDO, we need 1 or 0 for boolean type,
+     * For variable placeholder like PDO, we need 1 or 0 for boolean type,.
      *
      * For pgsql and mysql sql statement, 
      * we use TRUE or FALSE for boolean type.
@@ -200,7 +199,7 @@ abstract class BaseDriver
      * FOr sqlite sql statement:
      * we use 1 or 0 for boolean type.
      */
-    public function deflate($value, ArgumentArray $args = NULL)
+    public function deflate($value, ArgumentArray $args = null)
     {
         if ($this->alwaysBindValues) {
             if ($value instanceof Raw) {
@@ -209,51 +208,39 @@ abstract class BaseDriver
                 if ($args) {
                     $args->bind($value);
                 }
+
                 return $value->getMarker();
             } elseif ($value instanceof ParamMarker) {
                 if ($args) {
-                    $args->bind(new Bind($value->getMarker(), NULL));
+                    $args->bind(new Bind($value->getMarker(), null));
                 }
+
                 return $value->getMarker();
             } else {
                 $bind = $this->allocateBind($value);
                 if ($args) {
                     $args->bind($bind);
                 }
+
                 return $bind->getMarker();
             }
         }
 
-        if ($value === NULL ) {
-
+        if ($value === null) {
             return 'NULL';
-
         } elseif ($value === true) {
-
             return 'TRUE';
-
         } elseif ($value === false) {
-
             return 'FALSE';
-
-        } elseif (is_integer($value) ) {
-
+        } elseif (is_integer($value)) {
             return intval($value);
-
-        } elseif (is_float($value) ) {
-
+        } elseif (is_float($value)) {
             return floatval($value);
-
-        } elseif (is_string($value) ) {
-
+        } elseif (is_string($value)) {
             return $this->quote($value);
-
         } elseif (is_callable($value)) {
-
             return call_user_func($value);
-
-        } elseif (is_object($value) ) {
-
+        } elseif (is_object($value)) {
             if ($value instanceof Bind) {
                 if ($args) {
                     $args->bind($value);
@@ -266,10 +253,9 @@ abstract class BaseDriver
                 } else {
                     return $value->getMarker();
                 }
-
             } elseif ($value instanceof ParamMarker) {
                 if ($args) {
-                    $args->bind(new Bind( $value->getMarker(), NULL));
+                    $args->bind(new Bind($value->getMarker(), null));
                 }
 
                 if ($this->paramMarkerType === self::QMARK_PARAM_MARKER) {
@@ -279,28 +265,21 @@ abstract class BaseDriver
                 } else {
                     return $value->getMarker();
                 }
+
                 return $value->getMarker();
-
             } elseif ($value instanceof Unknown) {
-
                 return 'UNKNOWN';
-
-            } else if ($value instanceof DateTime) {
+            } elseif ($value instanceof DateTime) {
 
                 // convert DateTime object into string
                 // return $this->quote($value->format(DateTime::ISO8601));
                 return $this->quote($value->format(DateTime::ATOM)); // sqlite use ATOM format
-
             } elseif ($value instanceof ToSqlInterface) {
-
                 return $value->toSql($this, $args);
-
             } elseif ($value instanceof Raw) {
-
                 return $value->__toString();
-
             } else {
-                throw new LogicException('Unsupported class: ' . get_class($value));
+                throw new LogicException('Unsupported class: '.get_class($value));
             }
         } elseif (is_array($value)) {
             // error_log("LazyRecord: deflating array type value", 0);
@@ -308,11 +287,7 @@ abstract class BaseDriver
         } else {
             throw new LogicException('BaseDriver::deflate: Unsupported variable type');
         }
+
         return $value;
     }
-
-
 }
-
-
-

@@ -1,13 +1,11 @@
 <?php
+
 namespace SQLBuilder\MySQL\Syntax;
+
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\Universal\Traits\KeyTrait;
 use SQLBuilder\Universal\Syntax\Column;
-use SQLBuilder\Exception\UnsupportedDriverException;
 use InvalidArgumentException;
 
 class AlterTableAlterColumn implements ToSqlInterface
@@ -30,27 +28,25 @@ class AlterTableAlterColumn implements ToSqlInterface
     {
         $this->clauseType = self::SET_DEFAULT;
         $this->defaultValue = $value;
+
         return $this;
     }
 
     public function dropDefault()
     {
         $this->clauseType = self::DROP_DEFAULT;
+
         return $this;
     }
 
-    public function toSql(BaseDriver $driver, ArgumentArray $args) 
+    public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         if ($this->clauseType == self::SET_DEFAULT) {
-            return 'ALTER COLUMN ' . $driver->quoteIdentifier($this->name) . ' SET DEFAULT ' . $driver->deflate($this->defaultValue);
-        } else if ($this->clauseType == self::DROP_DEFAULT) {
-            return 'ALTER COLUMN ' . $driver->quoteIdentifier($this->name) . ' DROP DEFAULT';
+            return 'ALTER COLUMN '.$driver->quoteIdentifier($this->name).' SET DEFAULT '.$driver->deflate($this->defaultValue);
+        } elseif ($this->clauseType == self::DROP_DEFAULT) {
+            return 'ALTER COLUMN '.$driver->quoteIdentifier($this->name).' DROP DEFAULT';
         } else {
             throw new InvalidArgumentException('You should call either setDefault nor dropDefault');
         }
     }
 }
-
-
-
-

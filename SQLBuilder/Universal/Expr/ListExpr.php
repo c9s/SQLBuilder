@@ -1,20 +1,19 @@
 <?php
+
 namespace SQLBuilder\Universal\Expr;
-use SQLBuilder\Universal\Expr\Expr;
+
 use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\ParamMarker;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\Bind;
 use SQLBuilder\Raw;
-use LogicException;
 use InvalidArgumentException;
 
 class ListExpr implements ToSqlInterface
 {
     protected $expr;
 
-    public function __construct($expr) {
+    public function __construct($expr)
+    {
         $this->expr = $expr;
     }
 
@@ -22,11 +21,11 @@ class ListExpr implements ToSqlInterface
     {
         $sql = '';
         if (is_array($this->expr)) {
-            foreach($this->expr as $val) {
-                $sql .= ',' . $driver->deflate($val, $args);
+            foreach ($this->expr as $val) {
+                $sql .= ','.$driver->deflate($val, $args);
             }
             $sql = ltrim($sql, ',');
-        } elseif ($this->expr instanceof ToSqlInterface ) {
+        } elseif ($this->expr instanceof ToSqlInterface) {
             $sql = $driver->deflate($this->expr, $args);
         } elseif ($this->expr instanceof Raw) {
             $sql = $this->expr->__toString();
@@ -35,7 +34,7 @@ class ListExpr implements ToSqlInterface
         } else {
             throw new InvalidArgumentException('Invalid expr type');
         }
-        return '(' . $sql . ')';
+
+        return '('.$sql.')';
     }
 }
-

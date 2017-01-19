@@ -1,11 +1,11 @@
 <?php
+
 namespace SQLBuilder;
-use SQLBuilder\ToSqlInterface;
-use SQLBuilder\Raw;
 
 class Utils
 {
-    static public function buildExprArg($a) {
+    public static function buildExprArg($a)
+    {
         if ($a instanceof ToSqlInterface) {
             return $a;
         } else {
@@ -13,10 +13,8 @@ class Utils
         }
     }
 
-    static public function buildFunctionArguments($args) {
-        return array_map(array('SQLBuilder\\Utils','buildExprArg'), $args);
+    public static function buildFunctionArguments($args)
+    {
+        return array_map(array('SQLBuilder\\Utils', 'buildExprArg'), $args);
     }
 }
-
-
-

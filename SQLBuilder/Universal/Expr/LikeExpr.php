@@ -1,16 +1,15 @@
 <?php
+
 namespace SQLBuilder\Universal\Expr;
-use SQLBuilder\Universal\Expr\Expr;
+
 use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\ParamMarker;
 use SQLBuilder\Criteria;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Bind;
-use LogicException;
 
-class LikeExpr implements ToSqlInterface { 
-
+class LikeExpr implements ToSqlInterface
+{
     public $pat;
 
     public $criteria;
@@ -22,7 +21,8 @@ class LikeExpr implements ToSqlInterface {
         $this->criteria = $criteria;
     }
 
-    public function toSql(BaseDriver $driver, ArgumentArray $args) {
+    public function toSql(BaseDriver $driver, ArgumentArray $args)
+    {
         // XXX: $pat can be a Bind object
         $isBind = $this->pat instanceof Bind;
 
@@ -30,14 +30,14 @@ class LikeExpr implements ToSqlInterface {
 
         switch ($this->criteria) {
         case Criteria::CONTAINS:
-            $pat = '%' . $pat . '%';
+            $pat = '%'.$pat.'%';
             break;
         case Criteria::STARTS_WITH:
-            $pat = $pat . '%';
+            $pat = $pat.'%';
             break;
 
         case Criteria::ENDS_WITH:
-            $pat = '%' . $pat;
+            $pat = '%'.$pat;
             break;
 
         case Criteria::EXACT:
@@ -45,7 +45,7 @@ class LikeExpr implements ToSqlInterface {
             break;
 
         default:
-            $pat = '%' . $pat . '%';
+            $pat = '%'.$pat.'%';
             break;
         }
 
@@ -54,10 +54,11 @@ class LikeExpr implements ToSqlInterface {
         } else {
             $this->pat = $pat;
         }
-        return $this->exprStr . ' LIKE ' . $driver->deflate($this->pat, $args);
+
+        return $this->exprStr.' LIKE '.$driver->deflate($this->pat, $args);
     }
 
-    static public function __set_state(array $array)
+    public static function __set_state(array $array)
     {
         return new self($array['exprStr'], $array['pat'], $array['criteria']);
     }

@@ -1,12 +1,15 @@
 <?php
+
 namespace SQLBuilder\Driver;
+
 use PDO;
 
 class PDOMySQLDriver extends MySQLDriver
 {
     public $pdo;
 
-    public function __construct(PDO $pdo) {
+    public function __construct(PDO $pdo)
+    {
         $this->pdo = $pdo;
     }
 
@@ -25,4 +28,3 @@ class PDOMySQLDriver extends MySQLDriver
         return $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
     }
 }
-

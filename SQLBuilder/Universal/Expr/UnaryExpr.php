@@ -1,6 +1,7 @@
 <?php
+
 namespace SQLBuilder\Universal\Expr;
-use SQLBuilder\Universal\Expr\Expr;
+
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
@@ -22,10 +23,10 @@ class UnaryExpr implements ToSqlInterface
 
     public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
-        return $this->op . ' ' . $driver->deflate($this->operand, $args);
+        return $this->op.' '.$driver->deflate($this->operand, $args);
     }
 
-    static public function __set_state(array $array)
+    public static function __set_state(array $array)
     {
         return new self($array['op'], $array['operand']);
     }

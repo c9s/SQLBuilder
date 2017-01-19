@@ -1,18 +1,11 @@
 <?php
+
 namespace SQLBuilder\Universal\Query;
-use SQLBuilder\Raw;
+
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\PgSQLDriver;
-use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\Bind;
-use SQLBuilder\ParamMarker;
-use SQLBuilder\Universal\Syntax\Conditions;
-use SQLBuilder\Universal\Syntax\Join;
-use SQLBuilder\Universal\Syntax\IndexHint;
-use SQLBuilder\Universal\Syntax\Paging;
 use SQLBuilder\Universal\Traits\OrderByTrait;
 use SQLBuilder\Universal\Traits\JoinTrait;
 use SQLBuilder\Universal\Traits\WhereTrait;
@@ -21,9 +14,6 @@ use SQLBuilder\Universal\Traits\LimitTrait;
 use SQLBuilder\MySQL\Traits\PartitionTrait;
 use SQLBuilder\MySQL\Traits\IndexHintTrait;
 use SQLBuilder\Exception\IncompleteSettingsException;
-
-use Exception;
-use LogicException;
 
 /**
  * update statement builder.
@@ -44,22 +34,7 @@ use LogicException;
  *    1. setters should return self, since there is no return value.
  *    2. getters should be just what they are.
  *    3. modifier can set / append data and return self
- *
- *
- * MySQL Update Syntax:
-
-    UPDATE [LOW_PRIORITY] [IGNORE] table_reference
-        SET col_name1={expr1|DEFAULT} [, col_name2={expr2|DEFAULT}] ...
-        [WHERE where_condition]
-        [ORDER BY ...]
-        [LIMIT row_count]
-
- * MySQL Update Multi-table syntax:
-
-    UPDATE [LOW_PRIORITY] [IGNORE] table_references
-        SET col_name1={expr1|DEFAULT} [, col_name2={expr2|DEFAULT}] ...
-        [WHERE where_condition]
-
+ 
  * @see http://dev.mysql.com/doc/refman/5.7/en/update.html for reference
  */
 class UpdateQuery implements ToSqlInterface
@@ -70,7 +45,7 @@ class UpdateQuery implements ToSqlInterface
     use OrderByTrait;
     use LimitTrait;
 
-    /** MySQL only traits **/
+    /* MySQL only traits **/
     use PartitionTrait;
     use IndexHintTrait;
 
@@ -80,43 +55,49 @@ class UpdateQuery implements ToSqlInterface
 
     /**
      * ->update('posts', 'p')
-     * ->update('users', 'u')
+     * ->update('users', 'u').
      */
-    public function update($table, $alias = NULL) {
+    public function update($table, $alias = null)
+    {
         if ($alias) {
             $this->updateTables[$table] = $alias;
         } else {
             $this->updateTables[] = $table;
         }
+
         return $this;
     }
 
-
-    public function set(array $sets) {
+    public function set(array $sets)
+    {
         $this->sets = $this->sets + $sets;
+
         return $this;
     }
 
     /****************************************************************
      * Builders
      ***************************************************************/
-    public function buildSetClause(BaseDriver $driver, ArgumentArray $args) {
+    public function buildSetClause(BaseDriver $driver, ArgumentArray $args)
+    {
         $setClauses = array();
-        foreach($this->sets as $col => $val) {
-            $setClauses[] = $driver->quoteColumn($col) . " = " . $driver->deflate($val);
+        foreach ($this->sets as $col => $val) {
+            $setClauses[] = $driver->quoteColumn($col).' = '.$driver->deflate($val);
         }
-        return ' SET ' . join(', ', $setClauses);
+
+        return ' SET '.implode(', ', $setClauses);
     }
 
-    public function buildFromClause(BaseDriver $driver, ArgumentArray $args) {
+    public function buildFromClause(BaseDriver $driver, ArgumentArray $args)
+    {
         if (empty($this->updateTables)) {
             throw new IncompleteSettingsException('UpdateQuery requires at least one table to update.');
         }
         $tableRefs = array();
-        foreach($this->updateTables as $k => $alias) {
+        foreach ($this->updateTables as $k => $alias) {
             /* "column AS alias" OR just "column" */
             if (is_string($k)) {
-                $sql = $driver->quoteTable($k) . ' AS ' . $alias;
+                $sql = $driver->quoteTable($k).' AS '.$alias;
                 if ($driver instanceof MySQLDriver) {
                     if ($this->definedIndexHint($alias)) {
                         $sql .= $this->buildIndexHintClauseByTableRef($alias, $driver, $args);
@@ -125,7 +106,7 @@ class UpdateQuery implements ToSqlInterface
                     }
                 }
                 $tableRefs[] = $sql;
-            } elseif ( is_integer($k) || is_numeric($k) ) {
+            } elseif (is_integer($k) || is_numeric($k)) {
                 $sql = $driver->quoteTable($alias);
                 if ($driver instanceof MySQLDriver) {
                     if ($this->definedIndexHint($alias)) {
@@ -135,14 +116,15 @@ class UpdateQuery implements ToSqlInterface
                 $tableRefs[] = $sql;
             }
         }
-        return ' ' . join(', ', $tableRefs);
+
+        return ' '.implode(', ', $tableRefs);
     }
 
-
-    public function toSql(BaseDriver $driver, ArgumentArray $args) {
+    public function toSql(BaseDriver $driver, ArgumentArray $args)
+    {
         $sql = 'UPDATE'
-            . $this->buildOptionClause()
-            . $this->buildFromClause($driver, $args);
+            .$this->buildOptionClause()
+            .$this->buildFromClause($driver, $args);
 
         $sql .= $this->buildJoinClause($driver, $args);
 
@@ -151,13 +133,13 @@ class UpdateQuery implements ToSqlInterface
         }
 
         $sql .= $this->buildSetClause($driver, $args)
-            . $this->buildWhereClause($driver, $args)
-            . $this->buildOrderByClause($driver, $args)
+            .$this->buildWhereClause($driver, $args)
+            .$this->buildOrderByClause($driver, $args)
             ;
         if ($driver instanceof MySQLDriver) {
             $sql .= $this->buildLimitClause($driver, $args);
         }
+
         return $sql;
     }
 }
-

@@ -1,5 +1,7 @@
 <?php
+
 namespace SQLBuilder\Universal\Syntax;
+
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
@@ -17,7 +19,8 @@ class SelectAs implements ToSqlInterface
         $this->as = $as;
     }
 
-    public function toSql(BaseDriver $driver, ArgumentArray $args) {
+    public function toSql(BaseDriver $driver, ArgumentArray $args)
+    {
         $sql = '';
 
         if (is_string($this->expr)) {
@@ -27,15 +30,8 @@ class SelectAs implements ToSqlInterface
         } else {
             throw new InvalidArgumentException('Unknown type expr');
         }
-        $sql .= ' AS ' . $driver->quoteIdentifier($this->as);
+        $sql .= ' AS '.$driver->quoteIdentifier($this->as);
+
         return $sql;
     }
 }
-
-
-
-
-
-
-
-

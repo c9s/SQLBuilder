@@ -1,10 +1,9 @@
 <?php
+
 namespace SQLBuilder\Testing;
+
 use PHPUnit_Framework_TestCase;
 use SQLBuilder\ToSqlInterface;
-use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\PgSQLDriver;
-use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
 
@@ -17,35 +16,35 @@ abstract class QueryTestCase extends PHPUnit_Framework_TestCase
 
     public $args;
 
-    public function createDriver() { 
+    public function createDriver()
+    {
         // XXX:
     }
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->currentDriver = $this->createDriver();
-        $this->args = new ArgumentArray;
+        $this->args = new ArgumentArray();
     }
 
-    public function getCurrentDriver() {
+    public function getCurrentDriver()
+    {
         return $this->currentDriver;
     }
 
-    public function assertSql($expectedSql, ToSqlInterface $query, BaseDriver $driver = NULL, ArgumentArray $args = NULL) 
+    public function assertSql($expectedSql, ToSqlInterface $query, BaseDriver $driver = null, ArgumentArray $args = null)
     {
-        $sql = $query->toSql($driver ?: $this->currentDriver ?: $this->createDriver(), $args ?: $this->args ?: new ArgumentArray);
+        $sql = $query->toSql($driver ?: $this->currentDriver ?: $this->createDriver(), $args ?: $this->args ?: new ArgumentArray());
         $this->assertSame($expectedSql, $sql);
     }
 
-    public function assertSqlStrings(ToSqlInterface $query, array $defines) {
-        foreach($defines as $define) {
+    public function assertSqlStrings(ToSqlInterface $query, array $defines)
+    {
+        foreach ($defines as $define) {
             list($driver, $expectedSQL) = $define;
-            $args = new ArgumentArray;
+            $args = new ArgumentArray();
             $sql = $query->toSql($driver, $args);
             $this->assertEquals($expectedSQL, $sql);
         }
     }
-
 }
-
-
-

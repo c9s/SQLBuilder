@@ -1,10 +1,9 @@
 <?php
+
 namespace SQLBuilder\Universal\Syntax;
+
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\PgSQLDriver;
-use SQLBuilder\Universal\Traits\KeyTrait;
 use SQLBuilder\ArgumentArray;
 
 class AlterTableAdd implements ToSqlInterface
@@ -19,12 +18,9 @@ class AlterTableAdd implements ToSqlInterface
     public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         if ($this->subquery instanceof ToSqlInterface) {
-            return 'ADD ' . $this->subquery->toSql($driver, $args);
+            return 'ADD '.$this->subquery->toSql($driver, $args);
         }
-        return 'ADD ' . $this->subquery;
+
+        return 'ADD '.$this->subquery;
     }
 }
-
-
-
-

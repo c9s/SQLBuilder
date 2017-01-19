@@ -1,31 +1,20 @@
 <?php
+
 namespace SQLBuilder\Universal\Query;
+
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
-use SQLBuilder\Raw;
 use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
-use SQLBuilder\Exception\CriticalIncompatibleUsageException;
-use SQLBuilder\Exception\IncompleteSettingsException;
-use SQLBuilder\Exception\UnsupportedDriverException;
 use SQLBuilder\PgSQL\Traits\ConcurrentlyTrait;
 use SQLBuilder\Universal\Traits\IfExistsTrait;
 use SQLBuilder\Universal\Traits\RestrictTrait;
 use SQLBuilder\Universal\Traits\CascadeTrait;
-use SQLBuilder\Accessor;
-
 
 /**
- * MySQL Drop table syntax
- *
-    DROP [TEMPORARY] TABLE [IF EXISTS]
-        tbl_name [, tbl_name] ...
-        [RESTRICT | CASCADE]
-
+ * MySQL Drop table syntax.
  */
-
 class DropTableQuery implements ToSqlInterface
 {
     use ConcurrentlyTrait;
@@ -37,7 +26,8 @@ class DropTableQuery implements ToSqlInterface
 
     protected $temporary;
 
-    public function __construct($tableNames = NULL) {
+    public function __construct($tableNames = null)
+    {
         if ($tableNames && is_array($tableNames)) {
             $this->tableNames = $tableNames;
         } elseif (is_string($tableNames)) {
@@ -45,17 +35,21 @@ class DropTableQuery implements ToSqlInterface
         }
     }
 
-    public function drop($tableName) {
+    public function drop($tableName)
+    {
         $this->tableNames[] = $tableName;
+
         return $this;
     }
 
-    public function temporary() {
+    public function temporary()
+    {
         $this->temporary = true;
+
         return $this;
     }
 
-    public function toSql(BaseDriver $driver, ArgumentArray $args) 
+    public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         $sql = 'DROP';
 
@@ -72,17 +66,16 @@ class DropTableQuery implements ToSqlInterface
 
         $sql .= $this->buildIfExistsClause($driver, $args);
 
-        foreach($this->tableNames as $tableName) {
-            $sql .= ' ' . $driver->quoteIdentifier($tableName) . ',';
+        foreach ($this->tableNames as $tableName) {
+            $sql .= ' '.$driver->quoteIdentifier($tableName).',';
         }
         $sql = rtrim($sql, ',');
-
 
         if ($driver instanceof PgSQLDriver) {
             $sql .= $this->buildCascadeClause();
             $sql .= $this->buildRestrictClause();
         }
+
         return $sql;
     }
 }
-

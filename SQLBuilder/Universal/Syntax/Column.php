@@ -1,21 +1,20 @@
 <?php
+
 namespace SQLBuilder\Universal\Syntax;
+
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\ToSqlInterface;
-use SQLBuilder\Raw;
-use SQLBuilder\Exception\CriticalIncompatibleUsageException;
-use SQLBuilder\Exception\IncompleteSettingsException;
 use SQLBuilder\Exception\UnsupportedDriverException;
 use InvalidArgumentException;
 use Closure;
 
-
 /**
- * Postgresql Data Types:
+ * Postgresql Data Types:.
+ *
  * @see http://www.postgresql.org/docs/9.3/interactive/datatype.html
  *
  * MySQL Data Types:
@@ -23,18 +22,8 @@ use Closure;
  *
  *
  * MySQL Reference
-
-        reference_definition:
-            REFERENCES tbl_name (index_col_name,...)
-            [MATCH FULL | MATCH PARTIAL | MATCH SIMPLE]
-            [ON DELETE reference_option]
-            [ON UPDATE reference_option]
-
-        reference_option:
-            RESTRICT | CASCADE | SET NULL | NO ACTION
-
  */
-class Column implements ToSqlInterface 
+class Column implements ToSqlInterface
 {
     const  ATTR_ANY = 0;
     const  ATTR_ARRAY = 1;
@@ -49,9 +38,8 @@ class Column implements ToSqlInterface
      */
     public $name;
 
-
     /**
-     * @var boolean primary
+     * @var bool primary
      */
     public $primary;
 
@@ -74,14 +62,12 @@ class Column implements ToSqlInterface
      */
     public $enum;
 
-
     /**
      * @var array is only used when isa = set
      *
      * @MySQL
      */
     public $set;
-
 
     /**
      * @var string right now this is only for timestamp column
@@ -91,46 +77,45 @@ class Column implements ToSqlInterface
     public $onUpdate;
 
     /**
-     * @var array $attributeTypes
+     * @var array
      */
     protected $attributeTypes = array();
 
     /**
-     * @var array $attributes
+     * @var array
      *
      * The default attributes for a column.
      */
     protected $attributes = array();
 
-
     /**
-     * @var string $name column name (id)
+     * @var string column name (id)
      */
-    public function __construct($name = NULL, $type = NULL, array $extraAttributes = array())
+    public function __construct($name = null, $type = null, array $extraAttributes = array())
     {
         $this->attributeTypes = $this->attributeTypes + array(
-            'unique'        => self::ATTR_FLAG, /* unique, should support by SQL syntax */
-            'timezone'      => self::ATTR_FLAG,
+            'unique' => self::ATTR_FLAG, /* unique, should support by SQL syntax */
+            'timezone' => self::ATTR_FLAG,
 
-            /**
+            /*
             * When using numeric types, this property is used to save the length 
             * information, which is optional
             * @var integer
             */
-            'length'   => self::ATTR_INTEGER,
+            'length' => self::ATTR_INTEGER,
 
-            /**
+            /*
             * When using numeric types, this property is used to save the decimals 
             * information, which is optional
             *
             * @var integer
             */
-            'decimals'   => self::ATTR_INTEGER,
+            'decimals' => self::ATTR_INTEGER,
 
-            'comment'  => self::ATTR_STRING,
+            'comment' => self::ATTR_STRING,
 
             // 'default' is here because we can't name a method with 'default' in PHP.
-            'default'  => self::ATTR_ANY,
+            'default' => self::ATTR_ANY,
         );
         $this->name = $name;
         $this->type = $type;
@@ -146,39 +131,42 @@ class Column implements ToSqlInterface
             $type = 'int';
         }
         $this->type = $type;
+
         return $this;
     }
 
     public function isa($isa)
     {
         $this->isa = $isa;
+
         return $this;
     }
 
     public function null()
     {
-        $this->notNull = FALSE;
+        $this->notNull = false;
+
         return $this;
     }
 
     public function notNull()
     {
-        $this->notNull = TRUE;
+        $this->notNull = true;
+
         return $this;
     }
 
-
-
-
-    public function name($name) 
+    public function name($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
     public function primary($primary = true)
     {
         $this->primary = $primary;
+
         return $this;
     }
 
@@ -187,84 +175,89 @@ class Column implements ToSqlInterface
         $this->type = 'bit';
         $this->isa = 'int';
         $this->length = 1;
+
         return $this;
     }
 
-
-
-    public function tinyInt($length = NULL) 
+    public function tinyInt($length = null)
     {
         $this->type = 'tinyint';
         $this->isa = 'int';
         if ($length) {
             $this->length = $length;
         }
+
         return $this;
     }
 
-    public function smallInt($length = NULL)
+    public function smallInt($length = null)
     {
         $this->type = 'smallint';
         $this->isa = 'int';
         if ($length) {
             $this->length = $length;
         }
+
         return $this;
     }
 
-    public function mediumInt($length = NULL)
+    public function mediumInt($length = null)
     {
         $this->type = 'mediumint';
         $this->isa = 'int';
         if ($length) {
             $this->length = $length;
         }
+
         return $this;
     }
 
-    public function int($length = NULL)
+    public function int($length = null)
     {
         $this->type = 'int';
         $this->isa = 'int';
         if ($length) {
             $this->length = $length;
         }
+
         return $this;
     }
 
-    public function bigint($length = NULL)
+    public function bigint($length = null)
     {
         $this->type = 'bigint';
         $this->isa = 'int';
         if ($length) {
             $this->length = $length;
         }
+
         return $this;
     }
 
-    public function integer($length = NULL)
+    public function integer($length = null)
     {
         return $this->int($length);
     }
 
-
-    public function real($length = NULL, $decimals = NULL) {
+    public function real($length = null, $decimals = null)
+    {
         $this->type = 'REAL';
         $this->isa = 'double';
         if ($length) {
             $this->setLengthInfo($length, $decimals);
         }
+
         return $this;
     }
 
-
     /**
-     * POINT type
+     * POINT type.
      */
     public function point()
     {
         $this->type = 'double';
         $this->isa = 'double';
+
         return $this;
     }
 
@@ -293,81 +286,83 @@ class Column implements ToSqlInterface
      * we should handle exceptions when number is out-of-range:
      * @link http://dev.mysql.com/doc/refman/5.0/en/out-of-range-and-overflow.html
      */
-    public function double($length = NULL, $decimals = NULL)
+    public function double($length = null, $decimals = null)
     {
         $this->type = 'double';
         $this->isa = 'double';
         if ($length) {
             $this->setLengthInfo($length, $decimals);
         }
+
         return $this;
     }
 
-    public function float($length = NULL ,$decimals = NULL)
+    public function float($length = null, $decimals = null)
     {
         $this->type = 'float';
-        $this->isa  = 'float';
+        $this->isa = 'float';
         if ($length) {
             $this->setLengthInfo($length, $decimals);
         }
+
         return $this;
     }
 
-
-    public function decimal($length = NULL, $decimals = NULL)
+    public function decimal($length = null, $decimals = null)
     {
         $this->type = 'decimal';
         $this->isa = 'int';
         if ($length) {
             $this->setLengthInfo($length, $decimals);
         }
+
         return $this;
     }
 
-
-    public function numeric($length = NULL, $decimals = NULL)
+    public function numeric($length = null, $decimals = null)
     {
         $this->type = 'numeric';
         $this->isa = 'int';
         if ($length) {
             $this->setLengthInfo($length, $decimals);
         }
+
         return $this;
     }
 
-    public function unsigned($unsigned = true) 
+    public function unsigned($unsigned = true)
     {
         $this->unsigned = $unsigned;
+
         return $this;
     }
-
-
-
 
     public function varchar($length)
     {
-        $this->type = "varchar";
-        $this->isa  = 'str';
+        $this->type = 'varchar';
+        $this->isa = 'str';
         $this->length = $length;
+
         return $this;
     }
 
     public function char($length)
     {
-        $this->type = "char";
+        $this->type = 'char';
         $this->isa = 'str';
-        $this->length  = $length;
+        $this->length = $length;
+
         return $this;
     }
 
-
-    public function binary($length = NULL)
+    public function binary($length = null)
     {
         $this->type = 'binary';
         $this->isa = 'str';
         if ($length) {
             $this->length = $length;
         }
+
         return $this;
     }
 
@@ -375,6 +370,7 @@ class Column implements ToSqlInterface
     {
         $this->type = 'text';
         $this->isa = 'str';
+
         return $this;
     }
 
@@ -382,6 +378,7 @@ class Column implements ToSqlInterface
     {
         $this->type = 'MEDIUMTEXT';
         $this->isa = 'str';
+
         return $this;
     }
 
@@ -389,15 +386,15 @@ class Column implements ToSqlInterface
     {
         $this->type = 'LONGTEXT';
         $this->isa = 'str';
+
         return $this;
     }
-
-
 
     public function blob()
     {
         $this->type = 'blob';
         $this->isa = 'str';
+
         return $this;
     }
 
@@ -405,6 +402,7 @@ class Column implements ToSqlInterface
     {
         $this->type = 'tinyblob';
         $this->isa = 'str';
+
         return $this;
     }
 
@@ -412,18 +410,17 @@ class Column implements ToSqlInterface
     {
         $this->type = 'mediumblob';
         $this->isa = 'str';
+
         return $this;
     }
-
 
     public function longblob()
     {
         $this->type = 'longblob';
         $this->isa = 'str';
+
         return $this;
     }
-
-
 
     public function bool()
     {
@@ -434,15 +431,16 @@ class Column implements ToSqlInterface
     {
         $this->type = 'boolean';
         $this->isa = 'bool';
+
         return $this;
     }
-
 
     public function enum($a)
     {
         $this->type = 'enum';
         $this->isa = 'enum';
         $this->enum = is_array($a) ? $a : func_get_args();
+
         return $this;
     }
 
@@ -451,34 +449,37 @@ class Column implements ToSqlInterface
         $this->type = 'set';
         $this->isa = 'set';
         $this->set = is_array($a) ? $a : func_get_args();
+
         return $this;
     }
 
     public function autoIncrement()
     {
-        $this->autoIncrement = TRUE;
+        $this->autoIncrement = true;
         $this->isa = 'int';
         if (!$this->type) {
             $this->type = 'int';
-            $this->unsigned = TRUE;
+            $this->unsigned = true;
         }
+
         return $this;
     }
 
-
-    public function year() 
+    public function year()
     {
         $this->type = 'year';
         $this->isa = 'int';
+
         return $this;
     }
 
-    public function nullDefined() {
-        return $this->notNull !== NULL;
+    public function nullDefined()
+    {
+        return $this->notNull !== null;
     }
 
     /**
-     * serial type
+     * serial type.
      *
      * for postgresql-only
      */
@@ -486,9 +487,9 @@ class Column implements ToSqlInterface
     {
         $this->type = 'serial';
         $this->isa = 'int';
+
         return $this;
     }
-
 
     /************************************************
      * DateTime related types
@@ -506,11 +507,13 @@ class Column implements ToSqlInterface
         $this->type = 'datetime';
         $this->isa = 'DateTime';
         $this->setAttribute('timezone', true);
+
         return $this;
     }
 
     /**
-     * mysql timestamp automatic initialization
+     * mysql timestamp automatic initialization.
+     *
      * @see http://dev.mysql.com/doc/refman/5.7/en/timestamp-initialization.html
      */
     public function timestamp($timezone = true)
@@ -520,6 +523,7 @@ class Column implements ToSqlInterface
         // $this->notNull = true;
         $this->isa = 'DateTime';
         $this->setAttribute('timezone', $timezone);
+
         return $this;
     }
 
@@ -528,17 +532,20 @@ class Column implements ToSqlInterface
         $this->type = 'time';
         $this->isa = 'str';
         $this->setAttribute('timezone', $timezone);
+
         return $this;
     }
 
-    public function timezone($bool = true) {
+    public function timezone($bool = true)
+    {
         $this->setAttribute('timezone', $bool);
+
         return $this;
     }
 
     public function __isset($name)
     {
-        return isset( $this->attributes[ $name ] );
+        return isset($this->attributes[ $name ]);
     }
 
     public function __get($name)
@@ -546,46 +553,41 @@ class Column implements ToSqlInterface
         return $this->getAttribute($name);
     }
 
-    public function __set($name,$value)
+    public function __set($name, $value)
     {
         $this->setAttribute($name, $value);
     }
 
-    public function __call($method,$args)
+    public function __call($method, $args)
     {
         if (isset($this->attributeTypes[ $method ])) {
             $c = count($args);
             $t = $this->attributeTypes[ $method ];
 
             if ($t != self::ATTR_FLAG && $c == 0) {
-                throw new InvalidArgumentException( 'Attribute value is required.' );
+                throw new InvalidArgumentException('Attribute value is required.');
             }
 
-            switch( $t ) {
+            switch ($t) {
 
                 case self::ATTR_ANY:
                     $this->attributes[ $method ] = $args[0];
                     break;
 
                 case self::ATTR_ARRAY:
-                    if( $c > 1 ) {
+                    if ($c > 1) {
                         $this->attributes[ $method ] = $args;
-                    }
-                    elseif( is_array($args[0]) ) 
-                    {
+                    } elseif (is_array($args[0])) {
                         $this->attributes[ $method ] = $args[0];
-                    } 
-                    else
-                    {
+                    } else {
                         $this->attributes[ $method ] = (array) $args[0];
                     }
                     break;
 
                 case self::ATTR_STRING:
-                    if( is_string($args[0]) ) {
+                    if (is_string($args[0])) {
                         $this->attributes[ $method ] = $args[0];
-                    }
-                    else {
+                    } else {
                         throw new InvalidArgumentException("attribute value of $method is not a string.");
                     }
                     break;
@@ -600,10 +602,10 @@ class Column implements ToSqlInterface
 
                 case self::ATTR_CALLABLE:
 
-                    /**
+                    /*
                      * handle for __invoke, array($obj,$method), 'function_name 
                      */
-                    if( is_callable($args[0]) ) {
+                    if (is_callable($args[0])) {
                         $this->attributes[ $method ] = $args[0];
                     } else {
                         throw new InvalidArgumentException("attribute value of $method is not callable type.");
@@ -621,21 +623,22 @@ class Column implements ToSqlInterface
                 default:
                     throw new InvalidArgumentException("Unsupported attribute type: $method");
             }
+
             return $this;
         }
 
         // save unknown attribute by default
-        $this->attributes[ $method ] = ! empty($args) ? $args[0] : NULL;
+        $this->attributes[ $method ] = !empty($args) ? $args[0] : null;
+
         return $this;
     }
 
-
     /**
-     * Which should be something like getAttribute($name)
+     * Which should be something like getAttribute($name).
      *
      * @param string $name attribute name
      */
-    public function getAttribute($name) 
+    public function getAttribute($name)
     {
         if (isset($this->attributes[$name])) {
             return $this->attributes[$name];
@@ -647,41 +650,45 @@ class Column implements ToSqlInterface
         $this->attributes = $attributes;
     }
 
-    public function setAttributes(array $attributes) 
+    public function setAttributes(array $attributes)
     {
         foreach ($attributes as $key => $val) {
             $this->setAttribute($key, $val);
         }
     }
 
-    public function setAttribute($name, $value) {
+    public function setAttribute($name, $value)
+    {
         if (property_exists($this, $name)) {
             $this->$name = $value;
+
             return $this;
         }
         $this->attributes[$name] = $value;
+
         return $this;
     }
 
-
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
-
     // ***** Clause builder *****
 
-    public function buildNullClause(BaseDriver $driver) 
+    public function buildNullClause(BaseDriver $driver)
     {
         if ($this->notNull) {
             return ' NOT NULL';
-        } elseif ($this->notNull === FALSE) {
+        } elseif ($this->notNull === false) {
             return  ' NULL';
         }
+
         return '';
     }
 
@@ -694,6 +701,7 @@ class Column implements ToSqlInterface
         if ($this->unsigned) {
             return ' UNSIGNED';
         }
+
         return '';
     }
 
@@ -701,17 +709,18 @@ class Column implements ToSqlInterface
     {
         $sql = '';
         // Build default value
-        if (($default = $this->default) !== NULL) { 
+        if (($default = $this->default) !== null) {
             // When user defines a closure, it means the default value is
             // lazily provided, don't build the closure value for SQL
             // statement.
             if (!is_callable($default) && !$default instanceof Closure) {
-                $sql .= ' DEFAULT ' . $driver->deflate($default);
+                $sql .= ' DEFAULT '.$driver->deflate($default);
             }
         }
         if ($this->onUpdate && $driver instanceof MySQLDriver) {
-            $sql .= ' ON UPDATE ' . $driver->deflate($this->onUpdate);
+            $sql .= ' ON UPDATE '.$driver->deflate($this->onUpdate);
         }
+
         return $sql;
     }
 
@@ -720,9 +729,9 @@ class Column implements ToSqlInterface
         if ($driver instanceof PgSQLDriver && $this->timezone) {
             return ' WITH TIME ZONE';
         }
+
         return '';
     }
-
 
     public function buildEnumClause(BaseDriver $driver)
     {
@@ -731,8 +740,10 @@ class Column implements ToSqlInterface
             foreach ($this->enum as $val) {
                 $enum[] = $driver->deflate($val);
             }
-            return '(' . join(', ', $enum) . ')';
+
+            return '('.implode(', ', $enum).')';
         }
+
         return '';
     }
 
@@ -743,8 +754,10 @@ class Column implements ToSqlInterface
             foreach ($this->set as $val) {
                 $set[] = $driver->deflate($val);
             }
-            return '(' . join(', ', $set) . ')';
+
+            return '('.implode(', ', $set).')';
         }
+
         return '';
     }
 
@@ -752,17 +765,18 @@ class Column implements ToSqlInterface
     {
         $type = $this->type;
         if ($driver instanceof SQLiteDriver) {
-            switch($type) {
+            switch ($type) {
             case 'int':
                 $type = 'INTEGER'; // sqlite requires auto-increment on "INTEGER"
                 break;
             }
         }
         if (isset($this->length) && isset($this->decimals)) {
-            return $type . '(' . $this->length . ',' . $this->decimals . ')';
+            return $type.'('.$this->length.','.$this->decimals.')';
         } elseif (isset($this->length)) {
-            return $type . '(' . $this->length . ')';
+            return $type.'('.$this->length.')';
         }
+
         return $type;
     }
 
@@ -771,6 +785,7 @@ class Column implements ToSqlInterface
         if ($this->primary) {
             return ' PRIMARY KEY';
         }
+
         return '';
     }
 
@@ -779,6 +794,7 @@ class Column implements ToSqlInterface
         if ($this->unique) {
             return ' UNIQUE';
         }
+
         return '';
     }
 
@@ -787,10 +803,11 @@ class Column implements ToSqlInterface
         if ($this->autoIncrement) {
             if ($driver instanceof SQLiteDriver) {
                 return ' AUTOINCREMENT';
-            } else if ($driver instanceof MySQLDriver) {
+            } elseif ($driver instanceof MySQLDriver) {
                 return ' AUTO_INCREMENT';
             }
         }
+
         return '';
     }
 
@@ -802,7 +819,7 @@ class Column implements ToSqlInterface
             }
         }
 
-        $sql = ' ' . $this->buildTypeName($driver);
+        $sql = ' '.$this->buildTypeName($driver);
 
         if ($driver instanceof MySQLDriver) {
             if ($this->isa === 'enum' && !empty($this->enum)) {
@@ -811,12 +828,13 @@ class Column implements ToSqlInterface
                 $sql .= $this->buildSetClause($driver);
             }
         }
+
         return $sql;
     }
 
     public function buildPgSQLDefinitionSql(BaseDriver $driver, ArgumentArray $args)
     {
-        $isa  = $this->isa ?: 'str';
+        $isa = $this->isa ?: 'str';
 
         $sql = '';
         $sql .= $driver->quoteIdentifier($this->name);
@@ -825,12 +843,13 @@ class Column implements ToSqlInterface
         $sql .= $this->buildUnsignedClause($driver);
         $sql .= $this->buildNullClause($driver);
         $sql .= $this->buildDefaultClause($driver);
+
         return $sql;
     }
 
     public function buildDefinitionSqlForModify(BaseDriver $driver, ArgumentArray $args)
     {
-        $isa  = $this->isa ?: 'str';
+        $isa = $this->isa ?: 'str';
 
         $sql = '';
         $sql .= $driver->quoteIdentifier($this->name);
@@ -840,14 +859,15 @@ class Column implements ToSqlInterface
         $sql .= $this->buildDefaultClause($driver);
         $sql .= $this->buildAutoIncrementClause($driver);
         if ($this->comment) {
-            $sql .= ' COMMENT ' . $driver->deflate($this->comment);
+            $sql .= ' COMMENT '.$driver->deflate($this->comment);
         }
+
         return $sql;
     }
 
     public function buildDefinitionSql(BaseDriver $driver, ArgumentArray $args)
     {
-        $isa  = $this->isa ?: 'str';
+        $isa = $this->isa ?: 'str';
 
         $sql = '';
         $sql .= $driver->quoteIdentifier($this->name);
@@ -861,27 +881,30 @@ class Column implements ToSqlInterface
         $sql .= $this->buildUniqueClause($driver);
 
         if ($this->comment) {
-            $sql .= ' COMMENT ' . $driver->deflate($this->comment);
+            $sql .= ' COMMENT '.$driver->deflate($this->comment);
         }
+
         return $sql;
     }
 
-    public function toSql(BaseDriver $driver, ArgumentArray $args) 
+    public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
-        if ($driver instanceof MySQLDriver || $driver instanceof SQLiteDriver ) {
+        if ($driver instanceof MySQLDriver || $driver instanceof SQLiteDriver) {
             return $this->buildDefinitionSql($driver, $args);
         } elseif ($driver instanceof PgSQLDriver) {
             return $this->buildPgSQLDefinitionSql($driver, $args);
         } else {
             throw new UnsupportedDriverException($driver, $this);
         }
+
         return '';
     }
 
     /*********************************************************************
      * PROTECTED METHODS (internal use)
      ***********************************************************************/
-    protected function setLengthInfo($length, $decimals = NULL) {
+    protected function setLengthInfo($length, $decimals = null)
+    {
         $this->length($length);
         if ($decimals) {
             $this->decimals($decimals);
@@ -893,10 +916,11 @@ class Column implements ToSqlInterface
         $vars = get_object_vars($this);
         unset($vars['attributeTypes']);
         $vars = array_filter($vars);
+
         return $vars;
     }
 
-    static public function __set_state(array $stash) 
+    public static function __set_state(array $stash)
     {
         $column = new self($stash['name'], $stash['type']);
         if (isset($stash['primary'])) {
@@ -921,7 +945,7 @@ class Column implements ToSqlInterface
             $column->set($stash['set']);
         }
         $column->setAttributeStash($stash['attributes']);
+
         return $column;
     }
 }
-

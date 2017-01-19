@@ -1,13 +1,13 @@
 <?php
+
 namespace SQLBuilder\Universal\Expr;
-use SQLBuilder\Universal\Expr\Expr;
-use SQLBuilder\Universal\Expr\ListExpr;
+
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 
-class InExpr implements ToSqlInterface { 
-
+class InExpr implements ToSqlInterface
+{
     public $exprStr;
 
     public $listExpr;
@@ -18,7 +18,8 @@ class InExpr implements ToSqlInterface {
         $this->listExpr = new ListExpr($expr);
     }
 
-    public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        return $this->exprStr . ' IN ' . $this->listExpr->toSql($driver, $args);
+    public function toSql(BaseDriver $driver, ArgumentArray $args)
+    {
+        return $this->exprStr.' IN '.$this->listExpr->toSql($driver, $args);
     }
 }

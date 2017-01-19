@@ -1,13 +1,14 @@
 <?php
+
 namespace SQLBuilder;
 
-class Bind { 
-
+class Bind
+{
     protected $name;
 
     protected $value;
 
-    public function __construct($name, $value = NULL)
+    public function __construct($name, $value = null)
     {
         $this->name = $name;
         $this->value = $value;
@@ -23,14 +24,15 @@ class Bind {
         return $this->value;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
-    public function getMarker() {
-        return ':' . $this->name;
+    public function getMarker()
+    {
+        return ':'.$this->name;
     }
-
 
     /**
      * The compare method only compares value.
@@ -40,15 +42,13 @@ class Bind {
         return $this->value === $b->value;
     }
 
-    static public function bindArray(array $array) {
+    public static function bindArray(array $array)
+    {
         $args = array();
-        foreach($array as $key => $value) {
-            $args[$key] = new Bind($key, $value);
+        foreach ($array as $key => $value) {
+            $args[$key] = new self($key, $value);
         }
+
         return $args;
     }
-
-
-
 }
-

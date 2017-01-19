@@ -1,4 +1,5 @@
 <?php
+
 namespace SQLBuilder;
 
 class Raw
@@ -13,15 +14,18 @@ class Raw
     /**
      * @codeCoverageIgnore
      */
-    public function getRaw() {
+    public function getRaw()
+    {
         return $this->value;
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->value;
     }
 
-    public function compare(Raw $b) {
+    public function compare(Raw $b)
+    {
         if ($this->value === $b->value) {
             return 0;
         } else {
@@ -29,12 +33,8 @@ class Raw
         }
     }
 
-    static public function __set_state($array)
+    public static function __set_state($array)
     {
         return new self($array['value']);
-
     }
 }
-
-
-

@@ -1,14 +1,13 @@
 <?php
+
 namespace SQLBuilder\Testing;
-use SQLBuilder\Testing\QueryTestCase;
+
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
-use PHPUnit_Framework_TestCase;
-
 use PDO;
 use Exception;
 use PDOException;
@@ -16,7 +15,6 @@ use PDOException;
 /**
  * @codeCoverageIgnore
  *
- * @package SQLBuilder
  *
  * @class PHPUnit_PDO_TestCase
  *
@@ -57,12 +55,10 @@ use PDOException;
  */
 abstract class PDOQueryTestCase extends QueryTestCase
 {
-
     /**
      * @var PDO PDO connection handle
      */
     public $pdo;
-
 
     /**
      * @var string database connection string (DSN)
@@ -79,30 +75,25 @@ abstract class PDOQueryTestCase extends QueryTestCase
      */
     public $pass;
 
-
     /**
      * @var array PDO connection options
      */
     public $options;
-
 
     /**
      * @var array Schema files
      */
     public $schema;
 
-
     /**
      * @var string Schema directory path
      */
     public $schemaDir = 'tests/schema';
 
-
     /**
      * @var array Fixture files
      */
     public $fixture;
-
 
     /**
      * @var string Fixture directory path
@@ -111,8 +102,8 @@ abstract class PDOQueryTestCase extends QueryTestCase
 
     public $driverType = 'MySQL';
 
-
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->pdo;
     }
 
@@ -122,59 +113,58 @@ abstract class PDOQueryTestCase extends QueryTestCase
         $this->assertEquals('00000', $err[0], $message);
     }
 
-    public function getCurrentDriverType() {
+    public function getCurrentDriverType()
+    {
         return strtoupper($this->driverType);
     }
 
     public function getCurrentDSN()
     {
-        return $this->dsn ?: getenv( strtoupper($this->driverType) . '_DSN' );
+        return $this->dsn ?: getenv(strtoupper($this->driverType).'_DSN');
     }
 
     public function getCurrentUser()
     {
-        return $this->user ?: getenv( strtoupper($this->driverType) . '_USER');
+        return $this->user ?: getenv(strtoupper($this->driverType).'_USER');
     }
 
     public function getCurrentPass()
     {
-        return $this->pass ?: getenv( strtoupper($this->driverType) . '_PASS');
+        return $this->pass ?: getenv(strtoupper($this->driverType).'_PASS');
     }
-
 
     public function getDriverDSN($driverType)
     {
-        return getenv(strtoupper($driverType) . '_DSN');
+        return getenv(strtoupper($driverType).'_DSN');
     }
 
     public function getDriverUser($driverType)
     {
-        return getenv(strtoupper($driverType) . '_USER');
+        return getenv(strtoupper($driverType).'_USER');
     }
 
     public function getDriverPass($driverType)
     {
-        return getenv(strtoupper($driverType) . '_PASS');
+        return getenv(strtoupper($driverType).'_PASS');
     }
 
-    public function createConnection($driverType) {
+    public function createConnection($driverType)
+    {
         $dsn = $this->getDriverDSN($driverType);
         $user = $this->getDriverUser($driverType);
         $pass = $this->getDriverPass($driverType);
-        $options = $this->getOptions() ?: NULL;
+        $options = $this->getOptions() ?: null;
 
         if ($dsn && $user && $pass) {
             return new PDO($dsn, $user, $pass, $options);
         } elseif ($dsn && $user) {
-            return new PDO($dsn , $user);
+            return new PDO($dsn, $user);
         } elseif ($dsn) {
             return new PDO($dsn);
         } else {
             throw new Exception("Can't create connection for $driverType, missing configurations.");
         }
     }
-
-
 
     public function getOptions()
     {
@@ -186,12 +176,9 @@ abstract class PDOQueryTestCase extends QueryTestCase
         return $this->pdo;
     }
 
-
-
-
     public function setUp()
     {
-        if (! extension_loaded('pdo')) {
+        if (!extension_loaded('pdo')) {
             return skip('pdo extension is required');
         }
 
@@ -202,15 +189,15 @@ abstract class PDOQueryTestCase extends QueryTestCase
         if ($driverType = $this->getCurrentDriverType()) {
             $this->pdo = $this->createConnection($driverType);
         } else {
-            throw new Exception("Please define driver type for testing.");
+            throw new Exception('Please define driver type for testing.');
         }
 
-        if ( ! $this->pdo ) {
-            throw new Exception("Can not create PDO connection: " . get_class($this) );
+        if (!$this->pdo) {
+            throw new Exception('Can not create PDO connection: '.get_class($this));
         }
 
         // throw Exception on Error.
-        $this->pdo->setAttribute( PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION );
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->setupSchema();
 
         $this->assertNotEmpty($this->pdo);
@@ -219,32 +206,30 @@ abstract class PDOQueryTestCase extends QueryTestCase
     public function setupSchema()
     {
         // get schema file (if we provide them)
-        if( $this->schema ) {
-            foreach( $this->schema as $file ) {
+        if ($this->schema) {
+            foreach ($this->schema as $file) {
 
                 // try to find schema file in schema directory
-                if (! file_exists($file) ) {
-                    if( file_exists($this->schemaDir . DIRECTORY_SEPARATOR . $file) ) {
-                        $file = $this->schemaDir . DIRECTORY_SEPARATOR . $file;
-                    }
-                    else {
-                        throw new Exception( "schema file $file not found." );
+                if (!file_exists($file)) {
+                    if (file_exists($this->schemaDir.DIRECTORY_SEPARATOR.$file)) {
+                        $file = $this->schemaDir.DIRECTORY_SEPARATOR.$file;
+                    } else {
+                        throw new Exception("schema file $file not found.");
                     }
                 }
                 $content = file_get_contents($file);
 
-                $statements = preg_split( '#;\s*$#ms', $content );
-                foreach( $statements as $statement )  {
+                $statements = preg_split('#;\s*$#ms', $content);
+                foreach ($statements as $statement) {
                     $this->queryOk(trim($statement));
                 }
             }
-
         }
 
         // get schema from class method, which is SQL. 
         // then send query
-        if( $sqls = $this->schema() ) {
-            foreach( $sqls as $sql ) {
+        if ($sqls = $this->schema()) {
+            foreach ($sqls as $sql) {
                 $this->pdo->query($sql);
             }
         }
@@ -253,29 +238,26 @@ abstract class PDOQueryTestCase extends QueryTestCase
 
     public function setupFixture()
     {
-        if( $this->fixture ) {
-            foreach( $this->fixture as $file ) {
-
-                if (! file_exists($file) ) {
-                    if( file_exists($this->fixtureDir . DIRECTORY_SEPARATOR . $file) ) {
-                        $file = $this->fixtureDir . DIRECTORY_SEPARATOR . $file;
-                    }
-                    else {
-                        throw new Exception( "fixture file $file not found." );
+        if ($this->fixture) {
+            foreach ($this->fixture as $file) {
+                if (!file_exists($file)) {
+                    if (file_exists($this->fixtureDir.DIRECTORY_SEPARATOR.$file)) {
+                        $file = $this->fixtureDir.DIRECTORY_SEPARATOR.$file;
+                    } else {
+                        throw new Exception("fixture file $file not found.");
                     }
                 }
 
-
                 $content = file_get_contents($file);
-                $statements = preg_split( '#;\s*$#', $content );
-                foreach( $statements as $statement ) {
+                $statements = preg_split('#;\s*$#', $content);
+                foreach ($statements as $statement) {
                     $this->queryOk($statement);
                 }
             }
         }
     }
 
-    public function testConnection() 
+    public function testConnection()
     {
         $this->assertInstanceOf('PDO', $this->pdo);
     }
@@ -288,16 +270,16 @@ abstract class PDOQueryTestCase extends QueryTestCase
     public function assertQuery(ToSqlInterface $query, $message = null)
     {
         $driver = $this->createDriver();
-        $args = new ArgumentArray;
+        $args = new ArgumentArray();
         $sql = $query->toSql($driver, $args);
         $this->queryOk($sql, $args->toArray(), $message);
+
         return $args;
     }
 
-
     public function assertDriverQuery(BaseDriver $driver, ToSqlInterface $query)
     {
-        $args = new ArgumentArray;
+        $args = new ArgumentArray();
         $sql = $query->toSql($driver, $args);
 
         if ($driver instanceof MySQLDriver) {
@@ -308,15 +290,16 @@ abstract class PDOQueryTestCase extends QueryTestCase
             $conn = $this->createConnection('sqlite');
         }
 
-        $stm = $conn->prepare( $sql );
+        $stm = $conn->prepare($sql);
 
         $err = $conn->errorInfo();
-        $this->assertEquals('00000', $err[0], var_export($err, true) . ' SQL: ' . $sql);
+        $this->assertEquals('00000', $err[0], var_export($err, true).' SQL: '.$sql);
 
         $stm->execute($args->toArray());
 
         $err = $conn->errorInfo();
-        $this->assertEquals('00000', $err[0], var_export($err, true) . ' SQL: ' . $sql);
+        $this->assertEquals('00000', $err[0], var_export($err, true).' SQL: '.$sql);
+
         return $args;
     }
 
@@ -332,55 +315,56 @@ abstract class PDOQueryTestCase extends QueryTestCase
     }
      */
 
-
     public function query($sql, array $args = array())
     {
         if ($args) {
-            $stm = $this->pdo->prepare( $sql )->execute( $args );
+            $stm = $this->pdo->prepare($sql)->execute($args);
         } else {
-            $stm = $this->pdo->query( $sql );
+            $stm = $this->pdo->query($sql);
         }
         $this->assertNoPDOError($this->pdo, $sql);
+
         return $stm;
     }
 
     /**
-     * Test Query
+     * Test Query.
      *
-     * @param string $sql SQL statement.
-     * @param array $args Arguments for executing SQL statement.
+     * @param string $sql  SQL statement.
+     * @param array  $args Arguments for executing SQL statement.
      */
     public function queryOk($sql, array $args = array(), $message = null)
     {
         try {
             if ($args) {
-                $stm = $this->pdo->prepare($sql)->execute( $args );
+                $stm = $this->pdo->prepare($sql)->execute($args);
             } else {
-                $stm = $this->pdo->query( $sql );
+                $stm = $this->pdo->query($sql);
             }
             $this->assertNoPDOError($this->pdo, $message ?: $sql);
+
             return $stm;
         } catch (PDOException $e) {
             fprintf(STDERR, "\n");
-            fprintf(STDERR, get_class($e) . "\n");
-            fprintf(STDERR, $e->getMessage() . "\n");
+            fprintf(STDERR, get_class($e)."\n");
+            fprintf(STDERR, $e->getMessage()."\n");
             fprintf(STDERR, "SQL: $sql\n");
             throw $e;
         }
     }
 
-    protected function executeOk($sql,$args)
+    protected function executeOk($sql, $args)
     {
         $stm = $this->pdo->prepare($sql);
         $err = $this->pdo->errorInfo();
 
-        ok( ! $err[1] , $err[0] );
-        $stm->execute( $args );
+        ok(!$err[1], $err[0]);
+        $stm->execute($args);
 
         $err = $this->pdo->errorInfo();
-        ok(! $err[1]);
-        return $stm;
+        ok(!$err[1]);
 
+        return $stm;
     }
 
     protected function recordOk($sql)
@@ -388,7 +372,7 @@ abstract class PDOQueryTestCase extends QueryTestCase
         $stm = $this->queryOk($sql);
         $row = $stm->fetch();
         $this->assertNotEmpty($row);
+
         return $row;
     }
-
 }

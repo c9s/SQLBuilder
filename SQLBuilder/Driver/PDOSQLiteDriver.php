@@ -1,13 +1,15 @@
 <?php
+
 namespace SQLBuilder\Driver;
+
 use PDO;
-use SQLBuilder\Driver\SQLiteDriver;
 
 class PDOSQLiteDriver extends SQLiteDriver
 {
     public $pdo;
 
-    public function __construct(PDO $pdo) {
+    public function __construct(PDO $pdo)
+    {
         $this->pdo = $pdo;
     }
 
@@ -26,4 +28,3 @@ class PDOSQLiteDriver extends SQLiteDriver
         return $this->pdo;
     }
 }
-

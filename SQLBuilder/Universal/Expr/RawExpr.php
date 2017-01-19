@@ -1,11 +1,11 @@
 <?php
+
 namespace SQLBuilder\Universal\Expr;
-use SQLBuilder\Universal\Expr\Expr;
+
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
-use InvalidArgumentException;
 
 class RawExpr implements ToSqlInterface
 {
@@ -19,14 +19,16 @@ class RawExpr implements ToSqlInterface
         $this->args = $args;
     }
 
-    public function toSql(BaseDriver $driver, ArgumentArray $args) {
-        foreach($this->args as $k => $a) {
+    public function toSql(BaseDriver $driver, ArgumentArray $args)
+    {
+        foreach ($this->args as $k => $a) {
             if ($a instanceof Bind) {
                 $args->add($a);
             } else {
                 $args->add(new Bind($k, $a));
             }
         }
+
         return $this->str;
     }
 }

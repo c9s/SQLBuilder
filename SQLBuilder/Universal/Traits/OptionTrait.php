@@ -1,22 +1,13 @@
 <?php
+
 namespace SQLBuilder\Universal\Traits;
-use SQLBuilder\Raw;
-use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\PgSQLDriver;
-use SQLBuilder\Driver\SQLiteDriver;
-use SQLBuilder\ToSqlInterface;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Bind;
-use SQLBuilder\ParamMarker;
-use SQLBuilder\Universal\Syntax\Join;
 
 trait OptionTrait
 {
     protected $options = array();
 
     /**
-     * MySQL Select Options:
+     * MySQL Select Options:.
      *
      *   [ALL | DISTINCT | DISTINCTROW ]
      *   [HIGH_PRIORITY]
@@ -27,30 +18,31 @@ trait OptionTrait
      *
      * $this->option([ 'SQL_SMALL_RESULT', 'SQL_CALC_FOUND_ROWS', 'MAX_STATEMENT_TIME = N']);
      */
-    public function option($selectOption) 
+    public function option($selectOption)
     {
         if (is_array($selectOption)) {
             $this->options = $this->options + $selectOption;
         } else {
             $this->options = $this->options + func_get_args();
         }
+
         return $this;
     }
 
-    public function options() {
+    public function options()
+    {
         $this->options = func_get_args();
+
         return $this;
     }
 
-    public function buildOptionClause() 
+    public function buildOptionClause()
     {
         if (empty($this->options)) {
             return '';
         }
-        $sql = ' ' . join(' ', $this->options);
+        $sql = ' '.implode(' ', $this->options);
+
         return $sql;
     }
-
-
 }
-

@@ -1,14 +1,10 @@
 <?php
+
 namespace SQLBuilder\Universal\Syntax;
+
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\PgSQLDriver;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Universal\Syntax\ColumnNames;
-use SQLBuilder\Universal\Syntax\Constraint;
-use SQLBuilder\Universal\Syntax\KeyReference;
-use SQLBuilder\Universal\Traits\KeyTrait;
+use SQLBuilder\ArgumentArray; use SQLBuilder\Universal\Traits\KeyTrait;
 
 class Constraint implements ToSqlInterface
 {
@@ -16,22 +12,20 @@ class Constraint implements ToSqlInterface
 
     protected $symbol;
 
-    public function __construct($symbol = NULL)
+    public function __construct($symbol = null)
     {
         $this->symbol = $symbol;
     }
 
-    public function toSql(BaseDriver $driver, ArgumentArray $args) 
+    public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         $sql = '';
         // constrain symbol is optional but only supported by MySQL
         if ($this->symbol) {
-            $sql .= 'CONSTRAINT ' . $driver->quoteIdentifier($this->symbol) . ' ';
+            $sql .= 'CONSTRAINT '.$driver->quoteIdentifier($this->symbol).' ';
         }
         $sql .= $this->buildKeyClause($driver, $args);
+
         return $sql;
     }
 }
-
-
-

@@ -1,4 +1,5 @@
 <?php
+
 namespace SQLBuilder\MySQL\Constant;
 
 class ReferenceOption
@@ -8,4 +9,3 @@ class ReferenceOption
     const SET_NULL = 'SET NULL';
     const NO_ACTION = 'NO ACTION';
 }
-

@@ -1,13 +1,13 @@
 <?php
+
 namespace SQLBuilder;
+
 use ArrayIterator;
 use ArrayAccess;
-use SQLBuilder\Bind;
 use IteratorAggregate;
 
 class ArgumentArray implements ArrayAccess, IteratorAggregate
 {
-
     /**
      * @var array
      *
@@ -15,7 +15,6 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
      *      :name => 'John',
      *      :phone => 'Phone',
      *   }
-     *
      */
     protected $args = array();
 
@@ -24,12 +23,10 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
      */
     protected $bindings = array();
 
-
     public function __construct(array $args = array())
     {
         $this->args = $args;
     }
-
 
     public function getIterator()
     {
@@ -43,14 +40,14 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
     }
 
     // Deprecated 
-    public function add($bind) 
+    public function add($bind)
     {
         // trigger_error("Bind::add is deprecated, please use Bind::bind instead.", E_USER_DEPRECATED);
         $this->bindings[] = $bind;
         $this->args[$bind->getMarker()] = $bind->getValue();
     }
 
-    public function bind($bind) 
+    public function bind($bind)
     {
         $this->bindings[] = $bind;
         $this->args[$bind->getMarker()] = $bind->getValue();
@@ -61,7 +58,8 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
         return $this->bindings[$idx];
     }
 
-    public function getBindings() {
+    public function getBindings()
+    {
         return $this->bindings;
     }
 
@@ -69,17 +67,17 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
     {
         $this->args[$name] = $value;
     }
-    
+
     public function offsetExists($name)
     {
         return isset($this->args[ $name ]);
     }
-    
+
     public function offsetGet($name)
     {
         return $this->args[ $name ];
     }
-    
+
     public function offsetUnset($name)
     {
         unset($this->args[$name]);
@@ -90,26 +88,24 @@ class ArgumentArray implements ArrayAccess, IteratorAggregate
         return $this->args;
     }
 
-    
     /**
      * toArray returns an array of the current arguments.
      *
      * Set $removeBinds to true if you want this array to be passed to PDO statement.
      *
-     * @param boolean $removeBinds 
+     * @param bool $removeBinds
      */
     public function toArray($removeBinds = false)
     {
         if ($removeBinds) {
             $args = array();
-            foreach($this->args as $key => $val) {
+            foreach ($this->args as $key => $val) {
                 $args[$key] = $val instanceof Bind ? $val->getValue() : $val;
             }
+
             return $args;
         }
+
         return $this->args;
     }
 }
-
-
-

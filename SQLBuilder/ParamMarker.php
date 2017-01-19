@@ -1,4 +1,5 @@
 <?php
+
 namespace SQLBuilder;
 
 /**
@@ -11,14 +12,13 @@ class ParamMarker
 {
     public $value;
 
-    public function __construct($value = NULL) {
+    public function __construct($value = null)
+    {
         $this->value = $value;
     }
 
-    public function getMarker() {
+    public function getMarker()
+    {
         return '?';
     }
 }
-
-
-

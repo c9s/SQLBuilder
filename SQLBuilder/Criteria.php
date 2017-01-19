@@ -1,4 +1,5 @@
 <?php
+
 namespace SQLBuilder;
 
 class Criteria
@@ -8,7 +9,3 @@ class Criteria
     const ENDS_WITH = 3;
     const EXACT = 4;
 }
-
-
-
-

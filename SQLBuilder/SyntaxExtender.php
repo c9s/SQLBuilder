@@ -1,7 +1,8 @@
 <?php
+
 namespace SQLBuilder;
+
 use BadMethodCallException;
-use ReflectionObject;
 use ReflectionClass;
 
 /**
@@ -20,27 +21,24 @@ use ReflectionClass;
  *   }
  *
  * }
- *
- *
  */
-trait SyntaxExtender {
-
+trait SyntaxExtender
+{
     protected $extraSyntax = array();
 
     protected $syntaxClass = array();
 
     protected $reflectionCache = array();
 
-    public function registerClass($methodName, $class) 
+    public function registerClass($methodName, $class)
     {
         $this->syntaxClass[ $methodName ] = $class;
     }
 
-    public function registerCallback($methodName, callable $callback) 
+    public function registerCallback($methodName, callable $callback)
     {
         $this->extraSyntax[$methodName] = $callback;
     }
-
 
     public function handleSyntax($methodName, array $arguments = array())
     {
@@ -51,12 +49,12 @@ trait SyntaxExtender {
             } else {
                 $this->reflectionCache[$methodName] = $refClass = new ReflectionClass($this->syntaxClass[$methodName]);
             }
+
             return $refClass->newInstanceArgs($arguments);
-        } else if (isset($this->extraSyntax[$methodName])) {
+        } elseif (isset($this->extraSyntax[$methodName])) {
             return call_user_func_array($this->extraSyntax[$methodName], $arguments);
         } else {
-            throw new BadMethodCallException;
+            throw new BadMethodCallException();
         }
     }
 }
-
