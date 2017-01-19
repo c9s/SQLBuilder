@@ -248,35 +248,37 @@ abstract class BaseDriver
 
                 if ($this->paramMarkerType === self::QMARK_PARAM_MARKER) {
                     return '?';
-                } elseif ($this->paramMarkerType === self::NAMED_PARAM_MARKER) {
-                    return $value->getMarker();
-                } else {
+                }
+                /*
+                elseif ($this->paramMarkerType === self::NAMED_PARAM_MARKER) {
                     return $value->getMarker();
                 }
-            } elseif ($value instanceof ParamMarker) {
+                */
+                return $value->getMarker();
+            } else if ($value instanceof ParamMarker) {
                 if ($args) {
                     $args->bind(new Bind($value->getMarker(), null));
                 }
 
                 if ($this->paramMarkerType === self::QMARK_PARAM_MARKER) {
                     return '?';
-                } elseif ($this->paramMarkerType === self::NAMED_PARAM_MARKER) {
-                    return $value->getMarker();
-                } else {
+                }
+                /*
+                else if ($this->paramMarkerType === self::NAMED_PARAM_MARKER) {
                     return $value->getMarker();
                 }
-
+                */
                 return $value->getMarker();
-            } elseif ($value instanceof Unknown) {
+            } else if ($value instanceof Unknown) {
                 return 'UNKNOWN';
-            } elseif ($value instanceof DateTime) {
+            } else if ($value instanceof DateTime) {
 
                 // convert DateTime object into string
                 // return $this->quote($value->format(DateTime::ISO8601));
                 return $this->quote($value->format(DateTime::ATOM)); // sqlite use ATOM format
-            } elseif ($value instanceof ToSqlInterface) {
+            } else if ($value instanceof ToSqlInterface) {
                 return $value->toSql($this, $args);
-            } elseif ($value instanceof Raw) {
+            } else if ($value instanceof Raw) {
                 return $value->__toString();
             } else {
                 throw new LogicException('Unsupported class: '.get_class($value));
