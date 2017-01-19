@@ -20,9 +20,7 @@ use SQLBuilder\ArgumentArray;
 use Countable;
 use BadMethodCallException;
 
-class Op
-{
-}
+class Op { }
 
 class AndOp extends Op
 {
@@ -217,7 +215,7 @@ class Conditions implements ToSqlInterface, Countable
         foreach ($this->exprs as $expr) {
             if ($expr instanceof ToSqlInterface) {
                 $sql .= ' '.$expr->toSql($driver, $args);
-            } elseif ($expr instanceof Op) {
+            } else if ($expr instanceof Op) {
                 $sql .= ' '.$expr->__toString();
             } else {
                 $sql .= ' '.$driver->deflate($expr);
