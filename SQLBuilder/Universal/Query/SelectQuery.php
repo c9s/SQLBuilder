@@ -12,6 +12,7 @@ use SQLBuilder\Universal\Syntax\Conditions;
 use SQLBuilder\Universal\Syntax\Paging;
 use SQLBuilder\Universal\Traits\OrderByTrait;
 use SQLBuilder\Universal\Traits\WhereTrait;
+use SQLBuilder\Universal\Traits\PagingTrait;
 use SQLBuilder\Universal\Expr\SelectExpr;
 use SQLBuilder\MySQL\Traits\PartitionTrait;
 use SQLBuilder\MySQL\Traits\IndexHintTrait;
@@ -46,6 +47,7 @@ class SelectQuery implements ToSqlInterface
     use PartitionTrait;
     use OptionTrait;
     use IndexHintTrait;
+    use PagingTrait;
 
     protected $select = array();
 
@@ -66,7 +68,6 @@ class SelectQuery implements ToSqlInterface
     public function __construct()
     {
         $this->having = new Conditions();
-        $this->paging = new Paging();
     }
 
     /**********************************************************
@@ -183,31 +184,6 @@ class SelectQuery implements ToSqlInterface
         }
 
         return $this->having;
-    }
-
-    /********************************************************
-     * LIMIT and OFFSET clauses
-     *
-     *******************************************************/
-    public function limit($limit)
-    {
-        $this->paging->limit($limit);
-
-        return $this;
-    }
-
-    public function offset($offset)
-    {
-        $this->paging->offset($offset);
-
-        return $this;
-    }
-
-    public function page($page, $pageSize = 10)
-    {
-        $this->paging->page($page, $pageSize);
-
-        return $this;
     }
 
     /**
@@ -354,11 +330,6 @@ class SelectQuery implements ToSqlInterface
         return $sql;
     }
 
-    public function buildLimitClause(BaseDriver $driver, ArgumentArray $args)
-    {
-        return $this->paging->toSql($driver, $args);
-    }
-
     public function buildLockModifierClause()
     {
         if ($this->lockModifier) {
@@ -389,7 +360,7 @@ class SelectQuery implements ToSqlInterface
             .$this->buildGroupByClause($driver, $args)
             .$this->buildHavingClause($driver, $args)
             .$this->buildOrderByClause($driver, $args)
-            .$this->buildLimitClause($driver, $args)
+            .$this->buildPagingClause($driver, $args)
             .$this->buildLockModifierClause()
             ;
 
