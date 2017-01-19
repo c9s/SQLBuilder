@@ -6,7 +6,7 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Universal\Expr\BetweenExpr;
 use SQLBuilder\Universal\Expr\RawExpr;
 use SQLBuilder\Universal\Expr\UnaryExpr;
-use SQLBuilder\Universal\Expr\BinaryExpr;
+use SQLBuilder\Universal\Expr\BinExpr;
 use SQLBuilder\Universal\Expr\InExpr;
 use SQLBuilder\Universal\Expr\NotInExpr;
 use SQLBuilder\Universal\Expr\LikeExpr;
@@ -57,6 +57,9 @@ class Conditions implements ToSqlInterface, Countable
         $this->exprs = $exprs;
     }
 
+    /**
+     * http://dev.mysql.com/doc/refman/5.0/en/expressions.html.
+     */
     public function append($expr)
     {
         if (!empty($this->exprs) && !end($this->exprs) instanceof Op) {
@@ -67,68 +70,54 @@ class Conditions implements ToSqlInterface, Countable
         return $this;
     }
 
-    /**
-     * http://dev.mysql.com/doc/refman/5.0/en/expressions.html.
-     */
-    public function appendExprObject($expr)
-    {
-        // We duplicate the code of checking op object to avoid the extra function call.
-        if (!empty($this->exprs) && !end($this->exprs) instanceof Op) {
-            $this->exprs[] = new AndOp();
-        }
-        $this->exprs[] = $expr;
-
-        return $this;
-    }
-
     public function appendExpr($raw, array $args = array())
     {
-        return $this->appendExprObject(new RawExpr($raw, $args));
+        return $this->append(new RawExpr($raw, $args));
     }
 
     public function appendBinExpr($a1, $op, $a2)
     {
-        return $this->appendExprObject(new BinaryExpr($a1, $op, $a2));
+        return $this->append(new BinExpr($a1, $op, $a2));
     }
 
     public function equal($a1, $a2)
     {
-        $this->appendExprObject(new BinaryExpr($a1, '=', $a2));
+        $this->append(new BinExpr($a1, '=', $a2));
 
         return $this;
     }
 
     public function notEqual($a1, $a2)
     {
-        $this->appendExprObject(new BinaryExpr($a1, '<>', $a2));
+        $this->append(new BinExpr($a1, '<>', $a2));
 
         return $this;
     }
 
     public function greaterThan($a1, $a2)
     {
-        $this->appendExprObject(new BinaryExpr($a1, '>', $a2));
+        $this->append(new BinExpr($a1, '>', $a2));
 
         return $this;
     }
 
     public function greaterThanOrEqual($a1, $a2)
     {
-        $this->appendExprObject(new BinaryExpr($a1, '>=', $a2));
+        $this->append(new BinExpr($a1, '>=', $a2));
 
         return $this;
     }
 
     public function lessThan($a1, $a2)
     {
-        $this->appendExprObject(new BinaryExpr($a1, '<', $a2));
+        $this->append(new BinExpr($a1, '<', $a2));
 
         return $this;
     }
 
     public function lessThanOrEqual($a1, $a2)
     {
-        $this->appendExprObject(new BinaryExpr($a1, '<=', $a2));
+        $this->append(new BinExpr($a1, '<=', $a2));
 
         return $this;
     }
@@ -154,21 +143,21 @@ class Conditions implements ToSqlInterface, Countable
 
     public function is($exprStr, $boolean)
     {
-        $this->appendExprObject(new IsExpr($exprStr, $boolean));
+        $this->append(new IsExpr($exprStr, $boolean));
 
         return $this;
     }
 
     public function isNot($exprStr, $boolean)
     {
-        $this->appendExprObject(new IsNotExpr($exprStr, $boolean));
+        $this->append(new IsNotExpr($exprStr, $boolean));
 
         return $this;
     }
 
     public function between($exprStr, $min, $max)
     {
-        $this->appendExprObject(new BetweenExpr($exprStr, $min, $max));
+        $this->append(new BetweenExpr($exprStr, $min, $max));
 
         return $this;
     }
@@ -178,7 +167,7 @@ class Conditions implements ToSqlInterface, Countable
      */
     public function in($exprStr, $expr)
     {
-        $this->appendExprObject(new InExpr($exprStr, $expr));
+        $this->append(new InExpr($exprStr, $expr));
 
         return $this;
     }
@@ -188,28 +177,28 @@ class Conditions implements ToSqlInterface, Countable
      */
     public function notIn($exprStr, array $set)
     {
-        $this->appendExprObject(new NotInExpr($exprStr, $set));
+        $this->append(new NotInExpr($exprStr, $set));
 
         return $this;
     }
 
     public function like($exprStr, $pat, $criteria = Criteria::CONTAINS)
     {
-        $this->appendExprObject(new LikeExpr($exprStr, $pat, $criteria));
+        $this->append(new LikeExpr($exprStr, $pat, $criteria));
 
         return $this;
     }
 
     public function regexp($exprStr, $pat)
     {
-        $this->appendExprObject(new RegExpExpr($exprStr, $pat));
+        $this->append(new RegExpExpr($exprStr, $pat));
 
         return $this;
     }
 
     public function notRegexp($exprStr, $pat)
     {
-        $this->appendExprObject(new NotRegExpExpr($exprStr, $pat));
+        $this->append(new NotRegExpExpr($exprStr, $pat));
 
         return $this;
     }
@@ -267,7 +256,7 @@ class Conditions implements ToSqlInterface, Countable
                 return false;
             }
 
-            if ($a instanceof BinaryExpr) {
+            if ($a instanceof BinExpr) {
                 if ($a->op !== $b->op) {
                     return false;
                 }

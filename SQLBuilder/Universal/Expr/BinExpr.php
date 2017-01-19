@@ -6,7 +6,7 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 
-class BinaryExpr implements ToSqlInterface
+class BinExpr implements ToSqlInterface
 {
     public $op;
 
