@@ -48,10 +48,10 @@ trait PagingTrait
     {
         $sql = '';
         if ($this->limit) {
-            $sql .= ' LIMIT '.intval($this->limit);
+            $sql .= ' LIMIT '.$this->limit;
         }
         if ($this->offset) {
-            $sql .= ' OFFSET '.intval($this->offset);
+            $sql .= ' OFFSET '.$this->offset;
         }
 
         return $sql;
