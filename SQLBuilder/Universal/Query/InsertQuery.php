@@ -3,6 +3,7 @@
 namespace SQLBuilder\Universal\Query;
 
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Universal\Traits\OptionTrait;
 use SQLBuilder\MySQL\Traits\PartitionTrait;
@@ -78,8 +79,9 @@ class InsertQuery implements ToSqlInterface
 
         $sql .= ' INTO '.$driver->quoteTable($this->intoTable);
 
-        // append partition clause if needed.
-        $sql .= $this->buildPartitionClause($driver, $args);
+        if ($driver instanceof MySQLDriver) {
+            $sql .= $this->buildPartitionClause($driver, $args);
+        }
 
         $valuesClauses = array();
         $varCnt = 1;
