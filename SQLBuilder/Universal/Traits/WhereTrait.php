@@ -54,7 +54,7 @@ trait WhereTrait
 
     public function buildWhereClause(BaseDriver $driver, ArgumentArray $args)
     {
-        if ($this->where && $this->where->hasExprs()) {
+        if ($this->where && count($this->where->exprs)) {
             return ' WHERE '.$this->where->toSql($driver, $args);
         }
 

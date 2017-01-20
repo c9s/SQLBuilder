@@ -300,7 +300,7 @@ class SelectQuery implements ToSqlInterface
             }
         }
         if (!empty($tableRefs)) {
-            return ' FROM '.implode(', ', $tableRefs);
+            return ' FROM '.join(', ', $tableRefs);
         }
         return '';
     }
@@ -310,17 +310,10 @@ class SelectQuery implements ToSqlInterface
         if (empty($this->groupByList)) {
             return '';
         }
-        $clauses = array();
-        foreach ($this->groupByList as $groupBy) {
-            if (is_string($groupBy)) {
-                $clauses[] = $groupBy;
-            } else {
-                throw new InvalidArgumentException('Unsupported variable type for GROUP BY clause');
-            }
-        }
+
         // TODO: group by modifiers, currently only support for syntax like "GROUP BY a WITH ROLLUP".
         // @see http://dev.mysql.com/doc/refman/5.7/en/group-by-modifiers.html
-        $sql = ' GROUP BY '.implode(', ', $clauses);
+        $sql = ' GROUP BY '.implode(', ', $this->groupByList);
         if ($this->groupByModifiers) {
             $sql .= ' '.implode(' ', $this->groupByModifiers);
         }
