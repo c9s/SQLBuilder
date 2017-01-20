@@ -251,11 +251,7 @@ class SelectQuery implements ToSqlInterface
                 if ($v instanceof SelectExpr || $v instanceof ToSqlInterface) {
                     $sql .= $v->toSql($driver, $args);
                 } elseif (is_array($v)) {
-                    if (count($v) == 2) {
-                        $sql .= $v[0].' AS '.$v[1];
-                    } else {
-                        $sql .= $v[0];
-                    }
+                    $sql .= join(' ', $v);
                 } else {
                     $sql .= $v;
                 }
