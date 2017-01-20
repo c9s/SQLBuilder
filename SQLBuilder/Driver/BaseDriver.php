@@ -82,16 +82,6 @@ abstract class BaseDriver
         $this->paramMarkerType = self::QMARK_PARAM_MARKER;
     }
 
-    public function quoteColumns(array $columns)
-    {
-        $quotedColumns = array();
-        foreach ($columns as $col) {
-            $quotedColumns[] = $this->quoteColumn($col);
-        }
-
-        return $quotedColumns;
-    }
-
     abstract public function quoteIdentifier($id);
 
     /**
