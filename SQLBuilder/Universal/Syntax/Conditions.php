@@ -63,11 +63,7 @@ class Conditions implements ToSqlInterface, Countable
      */
     public function append($expr)
     {
-        if (!empty($this->exprs) && !end($this->exprs) instanceof Op) {
-            $this->exprs[] = new AndOp();
-        }
         $this->exprs[] = $expr;
-
         return $this;
     }
 
@@ -215,16 +211,32 @@ class Conditions implements ToSqlInterface, Countable
     public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         $sql = '';
-        foreach ($this->exprs as $expr) {
-            if ($expr instanceof ToSqlInterface) {
-                $sql .= ' '.$expr->toSql($driver, $args);
-            } else if ($expr instanceof Op) {
-                $sql .= ' '.$expr->__toString();
+
+        // By default we treat all expressions are concatenated with "AND" op.
+        // If there is a specific op, then the specific op will be used.
+        $len = count($this->exprs);
+        for ($i = 0; $i < $len; $i++) {
+            $expr = $this->exprs[$i];
+            if ($expr instanceof Op) {
+                if ($expr instanceof OrOp) {
+                    $sql .= ' OR ';
+                } else if ($expr instanceof AndOp) {
+                    $sql .= ' AND ';
+                } else {
+                    $sql .= ' ' . $expr->__toString() . ' ';
+                }
+                $expr = $this->exprs[++$i];
             } else {
-                $sql .= ' '.$driver->deflate($expr);
+                if ($i > 0) {
+                    $sql .= ' AND ';
+                }
+            }
+            if ($expr instanceof ToSqlInterface) {
+                $sql .= $expr->toSql($driver, $args);
+            } else {
+                $sql .= $driver->deflate($expr);
             }
         }
-
         return ltrim($sql);
     }
 
