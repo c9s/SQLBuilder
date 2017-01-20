@@ -4,7 +4,8 @@ namespace SQLBuilder\Universal\Syntax;
 
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\ArgumentArray; use SQLBuilder\Universal\Traits\KeyTrait;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\Universal\Traits\KeyTrait;
 
 class Constraint implements ToSqlInterface
 {

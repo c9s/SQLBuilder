@@ -6,7 +6,6 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
 
-
 class AlterTableDropColumn implements ToSqlInterface
 {
     protected $column;

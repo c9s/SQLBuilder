@@ -212,7 +212,7 @@ abstract class BaseDriver
                 }
                 */
                 return $value->getMarker();
-            } else if ($value instanceof ParamMarker) {
+            } elseif ($value instanceof ParamMarker) {
                 if ($args) {
                     $args->bind(new Bind($value->getMarker(), null));
                 }
@@ -226,16 +226,16 @@ abstract class BaseDriver
                 }
                 */
                 return $value->getMarker();
-            } else if ($value instanceof Unknown) {
+            } elseif ($value instanceof Unknown) {
                 return 'UNKNOWN';
-            } else if ($value instanceof DateTime) {
+            } elseif ($value instanceof DateTime) {
 
                 // convert DateTime object into string
                 // return $this->quote($value->format(DateTime::ISO8601));
                 return $this->quote($value->format(DateTime::ATOM)); // sqlite use ATOM format
-            } else if ($value instanceof ToSqlInterface) {
+            } elseif ($value instanceof ToSqlInterface) {
                 return $value->toSql($this, $args);
-            } else if ($value instanceof Raw) {
+            } elseif ($value instanceof Raw) {
                 return $value->__toString();
             } else {
                 throw new LogicException('Unsupported class: '.get_class($value));

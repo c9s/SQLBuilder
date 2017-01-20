@@ -12,18 +12,18 @@ use SQLBuilder\Universal\Expr\NotInExpr;
 use SQLBuilder\Universal\Expr\LikeExpr;
 use SQLBuilder\Universal\Expr\RegExpExpr;
 use SQLBuilder\Universal\Expr\NotRegExpExpr;
-use SQLBuilder\Universal\Expr\IsExpr;
-use SQLBuilder\Universal\Expr\IsNotExpr;
 use SQLBuilder\Criteria;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use Countable;
 use BadMethodCallException;
 
-require __DIR__ . '/../Expr/UnaryExpr.php';
-require __DIR__ . '/../Expr/BinExpr.php';
+require __DIR__.'/../Expr/UnaryExpr.php';
+require __DIR__.'/../Expr/BinExpr.php';
 
-class Op { }
+class Op
+{
+}
 
 class AndOp extends Op
 {
@@ -64,54 +64,63 @@ class Conditions implements ToSqlInterface, Countable
     public function append($expr)
     {
         $this->exprs[] = $expr;
+
         return $this;
     }
 
     public function raw($raw, array $args = array())
     {
         $this->exprs[] = new RawExpr($raw, $args);
+
         return $this;
     }
 
     public function appendBinExpr($a1, $op, $a2)
     {
         $this->exprs[] = new BinExpr($a1, $op, $a2);
+
         return $this;
     }
 
     public function equal($a1, $a2)
     {
         $this->exprs[] = new BinExpr($a1, '=', $a2);
+
         return $this;
     }
 
     public function notEqual($a1, $a2)
     {
         $this->exprs[] = new BinExpr($a1, '<>', $a2);
+
         return $this;
     }
 
     public function greaterThan($a1, $a2)
     {
         $this->exprs[] = new BinExpr($a1, '>', $a2);
+
         return $this;
     }
 
     public function greaterThanOrEqual($a1, $a2)
     {
         $this->exprs[] = new BinExpr($a1, '>=', $a2);
+
         return $this;
     }
 
     public function lessThan($a1, $a2)
     {
         $this->exprs[] = new BinExpr($a1, '<', $a2);
+
         return $this;
     }
 
     public function lessThanOrEqual($a1, $a2)
     {
         $this->exprs[] = new BinExpr($a1, '<=', $a2);
+
         return $this;
     }
 
@@ -200,6 +209,7 @@ class Conditions implements ToSqlInterface, Countable
     {
         $group = new GroupConditions($this);
         $this->exprs[] = $group;
+
         return $group;
     }
 
@@ -210,15 +220,15 @@ class Conditions implements ToSqlInterface, Countable
         // By default we treat all expressions are concatenated with "AND" op.
         // If there is a specific op, then the specific op will be used.
         $len = count($this->exprs);
-        for ($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $len; ++$i) {
             $expr = $this->exprs[$i];
             if ($expr instanceof Op) {
                 if ($expr instanceof OrOp) {
                     $sql .= ' OR ';
-                } else if ($expr instanceof AndOp) {
+                } elseif ($expr instanceof AndOp) {
                     $sql .= ' AND ';
                 } else {
-                    $sql .= ' ' . $expr->__toString() . ' ';
+                    $sql .= ' '.$expr->__toString().' ';
                 }
                 $expr = $this->exprs[++$i];
             } else {
@@ -229,12 +239,13 @@ class Conditions implements ToSqlInterface, Countable
 
             if ($expr instanceof ToSqlInterface) {
                 $sql .= $expr->toSql($driver, $args);
-            } else if (is_string($expr)) {
+            } elseif (is_string($expr)) {
                 $sql .= $expr;
             } else {
                 $sql .= $driver->deflate($expr);
             }
         }
+
         return $sql;
     }
 

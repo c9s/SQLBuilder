@@ -3,13 +3,11 @@
 namespace SQLBuilder\Universal\Query;
 
 use Exception;
-use InvalidArgumentException;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Syntax\Conditions;
-use SQLBuilder\Universal\Syntax\Paging;
 use SQLBuilder\Universal\Traits\OrderByTrait;
 use SQLBuilder\Universal\Traits\WhereTrait;
 use SQLBuilder\Universal\Traits\PagingTrait;
@@ -251,7 +249,7 @@ class SelectQuery implements ToSqlInterface
                 if ($v instanceof SelectExpr || $v instanceof ToSqlInterface) {
                     $sql .= $v->toSql($driver, $args);
                 } elseif (is_array($v)) {
-                    $sql .= join(' ', $v);
+                    $sql .= implode(' ', $v);
                 } else {
                     $sql .= $v;
                 }
@@ -276,7 +274,7 @@ class SelectQuery implements ToSqlInterface
                     $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
                 }
                 $tableRefs[] = $sql;
-            } else if (is_integer($k) || is_numeric($k)) {
+            } elseif (is_integer($k) || is_numeric($k)) {
                 $sql = $driver->quoteTable($v);
                 if ($this->definedIndexHint($v)) {
                     $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
@@ -285,8 +283,9 @@ class SelectQuery implements ToSqlInterface
             }
         }
         if (!empty($tableRefs)) {
-            return ' FROM '.join(', ', $tableRefs);
+            return ' FROM '.implode(', ', $tableRefs);
         }
+
         return '';
     }
 
@@ -302,8 +301,9 @@ class SelectQuery implements ToSqlInterface
             }
         }
         if (!empty($tableRefs)) {
-            return ' FROM '.join(', ', $tableRefs);
+            return ' FROM '.implode(', ', $tableRefs);
         }
+
         return '';
     }
 
@@ -344,6 +344,7 @@ class SelectQuery implements ToSqlInterface
         if (!empty($this->having->exprs)) {
             return ' HAVING '.$this->having->toSql($driver, $args);
         }
+
         return '';
     }
 
@@ -364,6 +365,7 @@ class SelectQuery implements ToSqlInterface
                 .$this->buildLockModifierClauseMySQL()
                 ;
         }
+
         return 'SELECT'
             .$this->buildOptionClause()
             .$this->buildSelectClause($driver, $args)

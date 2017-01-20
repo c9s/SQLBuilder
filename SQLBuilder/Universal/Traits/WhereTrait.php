@@ -26,7 +26,7 @@ trait WhereTrait
         if ($expr) {
             if (is_string($expr)) {
                 $this->where->raw($expr, $args);
-            } else if (is_array($expr)) {
+            } elseif (is_array($expr)) {
                 foreach ($expr as $key => $val) {
                     $this->where->equal($key, $val);
                 }

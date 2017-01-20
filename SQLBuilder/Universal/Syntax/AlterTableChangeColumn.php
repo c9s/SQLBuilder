@@ -7,7 +7,6 @@ use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\ArgumentArray;
 
-
 class AlterTableChangeColumn implements ToSqlInterface
 {
     protected $fromColumn;

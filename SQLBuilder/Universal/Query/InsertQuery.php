@@ -102,6 +102,7 @@ class InsertQuery implements ToSqlInterface
         if ($this->returning && ($driver instanceof PgSQLDriver)) {
             $sql .= ' RETURNING '.implode(',', $this->returning);
         }
+
         return $sql;
     }
 }

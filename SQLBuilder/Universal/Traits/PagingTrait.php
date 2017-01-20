@@ -14,12 +14,14 @@ trait PagingTrait
     public function offset($offset)
     {
         $this->offset = $offset;
+
         return $this;
     }
 
     public function limit($limit)
     {
         $this->limit = $limit;
+
         return $this;
     }
 
@@ -28,6 +30,7 @@ trait PagingTrait
         if ($page > 1) {
             $this->offset(($page - 1) * $pageSize);
         }
+
         return $this->limit($pageSize);
     }
 
@@ -50,6 +53,7 @@ trait PagingTrait
         if ($this->offset) {
             $sql .= ' OFFSET '.intval($this->offset);
         }
+
         return $sql;
     }
 }
