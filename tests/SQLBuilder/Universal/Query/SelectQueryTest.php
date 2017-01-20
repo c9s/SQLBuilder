@@ -317,7 +317,6 @@ class SelectQueryTest extends PDOQueryTestCase
     public function testSimpleJoin() {
         $args = new ArgumentArray;
         $driver = new MySQLDriver;
-        $driver->setQuoteColumn(true);
         $query = new SelectQuery;
         $query->select(array('u.id', 'u.name', 'u.phone', 'u.address', 'p.title' => 'post_title'))
             ->from('users', 'u')

@@ -140,14 +140,14 @@ class Conditions implements ToSqlInterface, Countable
 
     public function is($exprStr, $boolean)
     {
-        $this->append(new IsExpr($exprStr, $boolean));
+        $this->append(new BinExpr($exprStr, 'IS', $boolean));
 
         return $this;
     }
 
     public function isNot($exprStr, $boolean)
     {
-        $this->append(new IsNotExpr($exprStr, $boolean));
+        $this->append(new BinExpr($exprStr, 'IS NOT', $boolean));
 
         return $this;
     }
@@ -231,8 +231,11 @@ class Conditions implements ToSqlInterface, Countable
                     $sql .= ' AND ';
                 }
             }
+
             if ($expr instanceof ToSqlInterface) {
                 $sql .= $expr->toSql($driver, $args);
+            } else if (is_string($expr)) {
+                $sql .= $expr;
             } else {
                 $sql .= $driver->deflate($expr);
             }
@@ -242,12 +245,12 @@ class Conditions implements ToSqlInterface, Countable
 
     public function hasExprs()
     {
-        return count($this->exprs) > 0;
+        return !empty($this->exprs);
     }
 
     public function notEmpty()
     {
-        return count($this->exprs) > 0;
+        return !empty($this->exprs);
     }
 
     public function count()
