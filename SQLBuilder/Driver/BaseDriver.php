@@ -32,8 +32,6 @@ abstract class BaseDriver
 
     public $paramMarkerType = self::NAMED_PARAM_MARKER;
 
-    public $quoteColumn;
-
     public $quoteTable;
 
     /**
@@ -61,14 +59,6 @@ abstract class BaseDriver
     public function setQuoteTable($enable = true)
     {
         $this->quoteTable = $enable;
-    }
-
-    /**
-     * @param bool $enable
-     */
-    public function setQuoteColumn($enable = true)
-    {
-        $this->quoteColumn = $enable;
     }
 
     // The SQL statement can contain zero or more named (:name) or question mark (?) parameter markers
