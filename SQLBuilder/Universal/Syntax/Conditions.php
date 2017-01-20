@@ -235,7 +235,7 @@ class Conditions implements ToSqlInterface, Countable
                 $sql .= $driver->deflate($expr);
             }
         }
-        return ltrim($sql);
+        return $sql;
     }
 
     public function hasExprs()
