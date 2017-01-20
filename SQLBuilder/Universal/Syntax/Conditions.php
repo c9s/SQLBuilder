@@ -20,6 +20,10 @@ use SQLBuilder\ArgumentArray;
 use Countable;
 use BadMethodCallException;
 
+require __DIR__ . '/../Expr/UnaryExpr.php';
+require __DIR__ . '/../Expr/BinExpr.php';
+require __DIR__ . '/../Expr/IsExpr.php';
+
 class Op { }
 
 class AndOp extends Op

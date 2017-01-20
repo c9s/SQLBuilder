@@ -270,31 +270,38 @@ class SelectQuery implements ToSqlInterface
     public function buildFromClause(BaseDriver $driver, ArgumentArray $args)
     {
         $tableRefs = array();
-        foreach ($this->from as $k => $v) {
-            /* "column AS alias" OR just "column" */
-            if (is_string($k)) {
-                $sql = $driver->quoteTable($k).' AS '.$v;
-
-                if ($driver instanceof MySQLDriver) {
+        if ($driver instanceof MySQLDriver) {
+            foreach ($this->from as $k => $v) {
+                /* "column AS alias" OR just "column" */
+                if (is_string($k)) {
+                    $sql = $driver->quoteTable($k).' AS '.$v;
                     if ($this->definedIndexHint($v)) {
                         $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
                     } elseif ($this->definedIndexHint($k)) {
                         $sql .= $this->buildIndexHintClauseByTableRef($k, $driver, $args);
                     }
+                    $tableRefs[] = $sql;
+                } else if (is_integer($k) || is_numeric($k)) {
+                    $sql = $driver->quoteTable($v);
+                    if ($this->definedIndexHint($v)) {
+                        $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
+                    }
+                    $tableRefs[] = $sql;
                 }
-                $tableRefs[] = $sql;
-            } elseif (is_integer($k) || is_numeric($k)) {
-                $sql = $driver->quoteTable($v);
-                if ($driver instanceof MySQLDriver && $this->definedIndexHint($v)) {
-                    $sql .= $this->buildIndexHintClauseByTableRef($v, $driver, $args);
+            }
+        } else {
+            foreach ($this->from as $k => $v) {
+                /* "column AS alias" OR just "column" */
+                if (is_string($k)) {
+                    $tableRefs[] = $driver->quoteTable($k).' AS '.$v;
+                } elseif (is_integer($k) || is_numeric($k)) {
+                    $tableRefs[] = $driver->quoteTable($v);
                 }
-                $tableRefs[] = $sql;
             }
         }
         if (!empty($tableRefs)) {
             return ' FROM '.implode(', ', $tableRefs);
         }
-
         return '';
     }
 
@@ -339,10 +346,9 @@ class SelectQuery implements ToSqlInterface
 
     public function buildHavingClause(BaseDriver $driver, ArgumentArray $args)
     {
-        if ($this->having->hasExprs()) {
+        if (!empty($this->having->exprs)) {
             return ' HAVING '.$this->having->toSql($driver, $args);
         }
-
         return '';
     }
 
