@@ -51,7 +51,7 @@ class XorOp extends Op
 
 class Conditions implements ToSqlInterface, Countable
 {
-    public $exprs = array();
+    public $exprs;
 
     public function __construct(array $exprs = array())
     {
@@ -67,55 +67,51 @@ class Conditions implements ToSqlInterface, Countable
         return $this;
     }
 
-    public function appendExpr($raw, array $args = array())
+    public function raw($raw, array $args = array())
     {
-        return $this->append(new RawExpr($raw, $args));
+        $this->exprs[] = new RawExpr($raw, $args);
+        return $this;
     }
 
     public function appendBinExpr($a1, $op, $a2)
     {
-        return $this->append(new BinExpr($a1, $op, $a2));
+        $this->exprs[] = new BinExpr($a1, $op, $a2);
+        return $this;
     }
 
     public function equal($a1, $a2)
     {
-        $this->append(new BinExpr($a1, '=', $a2));
-
+        $this->exprs[] = new BinExpr($a1, '=', $a2);
         return $this;
     }
 
     public function notEqual($a1, $a2)
     {
-        $this->append(new BinExpr($a1, '<>', $a2));
-
+        $this->exprs[] = new BinExpr($a1, '<>', $a2);
         return $this;
     }
 
     public function greaterThan($a1, $a2)
     {
-        $this->append(new BinExpr($a1, '>', $a2));
-
+        $this->exprs[] = new BinExpr($a1, '>', $a2);
         return $this;
     }
 
     public function greaterThanOrEqual($a1, $a2)
     {
-        $this->append(new BinExpr($a1, '>=', $a2));
-
+        $this->exprs[] = new BinExpr($a1, '>=', $a2);
         return $this;
     }
 
     public function lessThan($a1, $a2)
     {
-        $this->append(new BinExpr($a1, '<', $a2));
-
+        $this->exprs[] = new BinExpr($a1, '<', $a2);
         return $this;
     }
 
     public function lessThanOrEqual($a1, $a2)
     {
-        $this->append(new BinExpr($a1, '<=', $a2));
-
+        $this->exprs[] = new BinExpr($a1, '<=', $a2);
         return $this;
     }
 
@@ -140,21 +136,21 @@ class Conditions implements ToSqlInterface, Countable
 
     public function is($exprStr, $boolean)
     {
-        $this->append(new BinExpr($exprStr, 'IS', $boolean));
+        $this->exprs[] = new BinExpr($exprStr, 'IS', $boolean);
 
         return $this;
     }
 
     public function isNot($exprStr, $boolean)
     {
-        $this->append(new BinExpr($exprStr, 'IS NOT', $boolean));
+        $this->exprs[] = new BinExpr($exprStr, 'IS NOT', $boolean);
 
         return $this;
     }
 
     public function between($exprStr, $min, $max)
     {
-        $this->append(new BetweenExpr($exprStr, $min, $max));
+        $this->exprs[] = new BetweenExpr($exprStr, $min, $max);
 
         return $this;
     }
@@ -164,7 +160,7 @@ class Conditions implements ToSqlInterface, Countable
      */
     public function in($exprStr, $expr)
     {
-        $this->append(new InExpr($exprStr, $expr));
+        $this->exprs[] = new InExpr($exprStr, $expr);
 
         return $this;
     }
@@ -174,38 +170,37 @@ class Conditions implements ToSqlInterface, Countable
      */
     public function notIn($exprStr, array $set)
     {
-        $this->append(new NotInExpr($exprStr, $set));
+        $this->exprs[] = new NotInExpr($exprStr, $set);
 
         return $this;
     }
 
     public function like($exprStr, $pat, $criteria = Criteria::CONTAINS)
     {
-        $this->append(new LikeExpr($exprStr, $pat, $criteria));
+        $this->exprs[] = new LikeExpr($exprStr, $pat, $criteria);
 
         return $this;
     }
 
     public function regexp($exprStr, $pat)
     {
-        $this->append(new RegExpExpr($exprStr, $pat));
+        $this->exprs[] = new RegExpExpr($exprStr, $pat);
 
         return $this;
     }
 
     public function notRegexp($exprStr, $pat)
     {
-        $this->append(new NotRegExpExpr($exprStr, $pat));
+        $this->exprs[] = new NotRegExpExpr($exprStr, $pat);
 
         return $this;
     }
 
     public function group()
     {
-        $conds = new GroupConditions($this);
-        $this->append($conds);
-
-        return $conds;
+        $group = new GroupConditions($this);
+        $this->exprs[] = $group;
+        return $group;
     }
 
     public function toSql(BaseDriver $driver, ArgumentArray $args)

@@ -51,7 +51,7 @@ class Join implements ToSqlInterface
     public function on($conditionExpr = null, array $args = array())
     {
         if (is_string($conditionExpr)) {
-            $this->conditions->appendExpr($conditionExpr, $args);
+            $this->conditions->raw($conditionExpr, $args);
         }
 
         return $this->conditions;

@@ -178,7 +178,7 @@ class SelectQuery implements ToSqlInterface
     public function having($expr = null, array $args = array())
     {
         if (is_string($expr)) {
-            $this->having->appendExpr($expr, $args);
+            $this->having->raw($expr, $args);
         }
 
         return $this->having;
