@@ -51,13 +51,13 @@ trait JoinTrait
 
     public function buildJoinClause(BaseDriver $driver, ArgumentArray $args)
     {
-        $sql = '';
-        if (!empty($this->joins)) {
-            foreach ($this->joins as $join) {
-                $sql .= $join->toSql($driver, $args);
-            }
+        if (empty($this->joins)) {
+            return '';
         }
-
+        $sql = '';
+        foreach ($this->joins as $join) {
+            $sql .= $join->toSql($driver, $args);
+        }
         return $sql;
     }
 }
