@@ -289,19 +289,6 @@ class SelectQueryTest extends PDOQueryTestCase
         ]);
     }
 
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testInvalidGroupBy()
-    {
-        $args = new ArgumentArray;
-        $driver = new MySQLDriver;
-        $query = new SelectQuery;
-        $query->groupBy(1);
-        $query->toSql($driver, $args);
-    }
-
     /**
      * @expectedException BadMethodCallException
      */
