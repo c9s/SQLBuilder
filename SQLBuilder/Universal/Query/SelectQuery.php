@@ -192,14 +192,14 @@ class SelectQuery implements ToSqlInterface
      * @see http://dev.mysql.com/doc/refman/5.7/en/group-by-functions.html
      * @see http://dev.mysql.com/doc/refman/5.7/en/group-by-functions-and-modifiers.html
      */
-    public function groupBy($expr, array $modifiers = array())
+    public function groupBy($expr, array $modifiers = null)
     {
         if (is_array($expr)) {
             $this->groupByList = array_merge($this->groupByList, $expr);
         } else {
             $this->groupByList[] = $expr;
         }
-        if (!empty($modifiers)) {
+        if ($modifiers) {
             $this->groupByModifiers = $modifiers;
         }
 
