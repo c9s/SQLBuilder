@@ -29,7 +29,7 @@ trait OrderByTrait
         return $this;
     }
 
-    public function clearOrderBy()
+    public function removeOrderBy()
     {
         $this->orderByList = array();
     }

@@ -394,7 +394,7 @@ class SelectQueryTest extends PDOQueryTestCase
         $q->select(array('name'))
             ->from('products');
         $q->orderBy('name', 'ASC');
-        $q->clearOrderBy();
+        $q->removeOrderBy();
         $this->assertSqlStrings($q, [[new MySQLDriver, 'SELECT name FROM products']]);
 
     }
