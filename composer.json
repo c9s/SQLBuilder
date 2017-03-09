@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "SQLBuilder\\": "SQLBuilder/"
+            "SQLBuilder\\": "src/"
         }
     },
     "extra": { "branch-alias": { "dev-master": "4.0.x-dev" } }
