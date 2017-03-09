@@ -3,7 +3,7 @@ use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Universal\Syntax\Paging;
 use SQLBuilder\ArgumentArray;
 
-class PagingTest extends PHPUnit_Framework_TestCase
+class PagingTest extends \PHPUnit\Framework\TestCase
 {
     public function testLimit()
     {

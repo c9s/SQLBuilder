@@ -10,7 +10,7 @@ use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Bind;
 
-class FuncCallExprTest extends PHPUnit_Framework_TestCase
+class FuncCallExprTest extends \PHPUnit\Framework\TestCase
 {
     public function testFuncCall()
     {

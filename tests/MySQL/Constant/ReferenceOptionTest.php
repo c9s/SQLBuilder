@@ -1,6 +1,6 @@
 <?php
 
-class ReferenceOptionTest extends PHPUnit_Framework_TestCase
+class ReferenceOptionTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {

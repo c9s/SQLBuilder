@@ -1,6 +1,6 @@
 <?php
 
-class FunctionTest extends PHPUnit_Framework_TestCase
+class FunctionTest extends \PHPUnit\Framework\TestCase
 {
     public function testSingleQuote()
     {

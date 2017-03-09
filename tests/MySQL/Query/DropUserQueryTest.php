@@ -5,7 +5,7 @@ use SQLBuilder\ArgumentArray;
 use SQLBuilder\MySQL\Query\CreateUserQuery;
 use SQLBuilder\MySQL\Query\DropUserQuery;
 
-class DropUserQueryTest extends PHPUnit_Framework_TestCase
+class DropUserQueryTest extends \PHPUnit\Framework\TestCase
 {
     public function testDropSingleUser()
     {

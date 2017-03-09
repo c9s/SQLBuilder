@@ -7,7 +7,7 @@ use SQLBuilder\ANSI\AggregateFunction;
 use SQLBuilder\Universal\Syntax\SelectAs;
 use SQLBuilder\Universal\Syntax\Distinct;
 
-class AggregateFunctionTest extends PHPUnit_Framework_TestCase
+class AggregateFunctionTest extends \PHPUnit\Framework\TestCase
 {
 
     public function getFunctionTests() {

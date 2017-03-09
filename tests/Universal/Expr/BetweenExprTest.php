@@ -1,7 +1,7 @@
 <?php
 use SQLBuilder\Universal\Expr\BetweenExpr;
 
-class BetweenExprTest extends PHPUnit_Framework_TestCase
+class BetweenExprTest extends \PHPUnit\Framework\TestCase
 {
     public function testBetweenExprVarExport()
     {

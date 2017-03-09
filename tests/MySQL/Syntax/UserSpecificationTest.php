@@ -6,7 +6,7 @@ use SQLBuilder\MySQL\Query\CreateUserQuery;
 use SQLBuilder\Testing\QueryTestCase;
 use SQLBuilder\MySQL\Syntax\UserSpecification;
 
-class UserSpecificationTest extends PHPUnit_Framework_TestCase
+class UserSpecificationTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreateWithSpec()
     {

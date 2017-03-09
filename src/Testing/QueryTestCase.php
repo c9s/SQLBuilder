@@ -2,7 +2,7 @@
 
 namespace SQLBuilder\Testing;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\ArgumentArray;
@@ -10,7 +10,7 @@ use SQLBuilder\ArgumentArray;
 /**
  * @codeCoverageIgnore
  */
-abstract class QueryTestCase extends PHPUnit_Framework_TestCase
+abstract class QueryTestCase extends \PHPUnit\Framework\TestCase
 {
     public $currentDriver;
 

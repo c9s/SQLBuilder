@@ -1,7 +1,7 @@
 <?php
 use SQLBuilder\Universal\Expr\BinExpr;
 
-class BinExprTest extends PHPUnit_Framework_TestCase
+class BinExprTest extends \PHPUnit\Framework\TestCase
 {
     public function testBinExprVarExport()
     {

@@ -1,7 +1,7 @@
 <?php
 use SQLBuilder\Bind;
 
-class BindTest extends PHPUnit_Framework_TestCase
+class BindTest extends \PHPUnit\Framework\TestCase
 {
     public function test()
     {

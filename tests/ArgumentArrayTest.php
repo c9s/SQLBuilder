@@ -2,7 +2,7 @@
 use SQLBuilder\Bind;
 use SQLBuilder\ArgumentArray;
 
-class ArgumentArrayTest extends PHPUnit_Framework_TestCase
+class ArgumentArrayTest extends \PHPUnit\Framework\TestCase
 {
     public function testAddArgument()
     {

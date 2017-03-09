@@ -13,7 +13,7 @@ use SQLBuilder\Universal\Query\DropTableQuery;
 use SQLBuilder\Universal\Syntax\SelectAs;
 use SQLBuilder\ANSI\AggregateFunction;
 
-class SelectAsTest extends PHPUnit_Framework_TestCase
+class SelectAsTest extends \PHPUnit\Framework\TestCase
 {
     public function testString()
     {

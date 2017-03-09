@@ -1,7 +1,7 @@
 <?php
 use SQLBuilder\Inflator;
 
-class InflatorTest extends PHPUnit_Framework_TestCase
+class InflatorTest extends \PHPUnit\Framework\TestCase
 {
     function testBool()
     {
