@@ -8,7 +8,7 @@ php:
 install:
 - phpenv rehash
 - composer self-update
-- composer require satooshi/php-coveralls "^1.0" --no-update --dev --prefer-dist
+- composer require satooshi/php-coveralls --no-update --dev --prefer-dist
 - composer install
 
 before_script:
