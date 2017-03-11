@@ -1,11 +1,13 @@
 <?php
 
-namespace Universal\Query;
+namespace SQLBuilder\Universal\Query;
 
 use Exception;
 use SQLBuilder\Exception\UnsupportedDriverException;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\Driver\SQLiteDriver;
 use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Syntax\Conditions;
