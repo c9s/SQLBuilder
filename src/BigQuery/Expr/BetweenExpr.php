@@ -1,6 +1,6 @@
 <?php
 
-namespace SQLBuilder\BigQuerySQL\Expr;
+namespace SQLBuilder\BigQuery\Expr;
 
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
@@ -10,7 +10,7 @@ use SQLBuilder\ToSqlInterface;
 /**
  * Class BetweenExpr
  *
- * @package SQLBuilder\BigQuerySQL\Expr
+ * @package SQLBuilder\BigQuery\Expr
  *
  * @author  Aleksey Ilyenko <assada.ua@gmail.com
  *
@@ -19,12 +19,28 @@ use SQLBuilder\ToSqlInterface;
  */
 class BetweenExpr implements ToSqlInterface
 {
+    /**
+     * @var string
+     */
     public $exprStr;
 
+    /**
+     * @var string|int
+     */
     public $min;
 
+    /**
+     * @var string|int
+     */
     public $max;
 
+    /**
+     * BetweenExpr constructor.
+     *
+     * @param string     $exprStr
+     * @param string|int $min
+     * @param string|int $max
+     */
     public function __construct($exprStr, $min, $max)
     {
         $this->exprStr = $exprStr;
@@ -32,11 +48,23 @@ class BetweenExpr implements ToSqlInterface
         $this->max     = $max;
     }
 
+    /**
+     * @param \SQLBuilder\Driver\BaseDriver $driver
+     * @param \SQLBuilder\ArgumentArray     $args
+     *
+     * @return string
+     * @throws \LogicException
+     */
     public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         return $this->exprStr . ' BETWEEN ' . $driver->deflate($this->min, $args) . ' AND ' . $driver->deflate($this->max, $args);
     }
 
+    /**
+     * @param $array
+     *
+     * @return \SQLBuilder\BigQuery\Expr\BetweenExpr
+     */
     public static function __set_state($array)
     {
         return new self($array['exprStr'], $array['min'], $array['max']);
