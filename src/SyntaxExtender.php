@@ -24,23 +24,38 @@ use ReflectionClass;
  */
 trait SyntaxExtender
 {
-    protected $extraSyntax = array();
+    protected $extraSyntax = [];
 
-    protected $syntaxClass = array();
+    protected $syntaxClass = [];
 
-    protected $reflectionCache = array();
+    protected $reflectionCache = [];
 
+    /**
+     * @param string $methodName
+     * @param        $class
+     */
     public function registerClass($methodName, $class)
     {
-        $this->syntaxClass[ $methodName ] = $class;
+        $this->syntaxClass[$methodName] = $class;
     }
 
+    /**
+     * @param string   $methodName
+     * @param callable $callback
+     */
     public function registerCallback($methodName, callable $callback)
     {
         $this->extraSyntax[$methodName] = $callback;
     }
 
-    public function handleSyntax($methodName, array $arguments = array())
+    /**
+     * @param       $methodName
+     * @param array $arguments
+     *
+     * @return mixed|object
+     * @throws \BadMethodCallException
+     */
+    public function handleSyntax($methodName, array $arguments = [])
     {
         if (isset($this->syntaxClass[$methodName])) {
             $refClass = null;
@@ -51,10 +66,12 @@ trait SyntaxExtender
             }
 
             return $refClass->newInstanceArgs($arguments);
-        } elseif (isset($this->extraSyntax[$methodName])) {
-            return call_user_func_array($this->extraSyntax[$methodName], $arguments);
-        } else {
-            throw new BadMethodCallException();
         }
+
+        if (isset($this->extraSyntax[$methodName])) {
+            return call_user_func_array($this->extraSyntax[$methodName], $arguments);
+        }
+
+        throw new BadMethodCallException();
     }
 }

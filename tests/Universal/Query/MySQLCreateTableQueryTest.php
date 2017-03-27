@@ -1,16 +1,17 @@
 <?php
-use SQLBuilder\Universal\Query\CreateTableQuery;
-use SQLBuilder\Universal\Query\DropTableQuery;
-use SQLBuilder\Testing\PDOQueryTestCase;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Raw;
+use SQLBuilder\Testing\PDOQueryTestCase;
+use SQLBuilder\Universal\Query\CreateTableQuery;
+use SQLBuilder\Universal\Query\DropTableQuery;
 
 class MySQLCreateTableQueryTest extends PDOQueryTestCase
 {
     public $driverType = 'MySQL';
 
-    public function createDriver() {
+    public function createDriver()
+    {
         return new MySQLDriver;
     }
 
@@ -19,7 +20,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         parent::setUp();
 
         // Clean up
-        foreach(array('users','groups','authors','points','ts_tests') as $table) {
+        foreach (['users', 'groups', 'authors', 'points', 'ts_tests'] as $table) {
             $dropQuery = new DropTableQuery($table);
             $dropQuery->IfExists();
             $this->assertQuery($dropQuery);
@@ -28,7 +29,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
 
     public function tearDown()
     {
-        foreach(array('users','groups','authors', 'points') as $table) {
+        foreach (['users', 'groups', 'authors', 'points'] as $table) {
             $dropQuery = new DropTableQuery($table);
             $dropQuery->IfExists();
             $this->assertQuery($dropQuery);
@@ -46,8 +47,7 @@ class MySQLCreateTableQueryTest extends PDOQueryTestCase
         $q->foreignKey(['group_id'])
             ->references('groups', 'id')
             ->onDelete('CASCADE')
-            ->onUpdate('CASCADE')
-            ;
+            ->onUpdate('CASCADE');
         $this->assertSql('CREATE TABLE `users`(
 `group_id` int,
 FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
@@ -56,31 +56,37 @@ FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE 
     }
 
 
-
-    public function testChangingColumnName() {
+    public function testChangingColumnName()
+    {
         $q = new CreateTableQuery('points');
-        $q->column('x')->float(10,2)->name('x2');
-        $this->assertSqlStrings($q, [ 
-            [new MySQLDriver, 'CREATE TABLE `points`(
+        $q->column('x')->float(10, 2)->name('x2');
+        $this->assertSqlStrings($q, [
+            [
+                new MySQLDriver,
+                'CREATE TABLE `points`(
 `x2` float(10,2)
-)'],
+)'
+            ],
         ]);
     }
 
-    public function testCreateTableWithDecimalsAndLength() 
+    public function testCreateTableWithDecimalsAndLength()
     {
         $q = new CreateTableQuery('points');
-        $q->column('x')->float(10,2);
-        $q->column('y')->float(10,2);
-        $q->column('z')->float(10,2);
-        $q->column('strength')->double(10,2);
-        $this->assertSqlStrings($q, [ 
-            [new MySQLDriver, 'CREATE TABLE `points`(
+        $q->column('x')->float(10, 2);
+        $q->column('y')->float(10, 2);
+        $q->column('z')->float(10, 2);
+        $q->column('strength')->double(10, 2);
+        $this->assertSqlStrings($q, [
+            [
+                new MySQLDriver,
+                'CREATE TABLE `points`(
 `x` float(10,2),
 `y` float(10,2),
 `z` float(10,2),
 `strength` double(10,2)
-)'],
+)'
+            ],
         ]);
         $this->assertQuery($q);
 
@@ -108,8 +114,7 @@ FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE 
         // MySQL 5.7 requires the last timestamp column to have default current_timestamp
         $q->column('c' . $a++)->timestamp()
             ->default(new Raw('CURRENT_TIMESTAMP'))
-            ->onUpdate(new Raw('CURRENT_TIMESTAMP'))
-            ;
+            ->onUpdate(new Raw('CURRENT_TIMESTAMP'));
         $this->assertQuery($q);
     }
 
@@ -135,7 +140,7 @@ FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE 
         $q->column('c' . $a++)->bigInt(3);
 
         $q->column('c' . $a++)->int(3)->unsigned();
-        $q->column('c' . $a++)->real(6,1)->decimals(2);
+        $q->column('c' . $a++)->real(6, 1)->decimals(2);
 
         $q->column('c' . $a++)->tinyblob();
         $q->column('c' . $a++)->blob();
@@ -154,11 +159,11 @@ FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE 
 
         $q->column('c' . $a++)->bool();
         $q->column('c' . $a++)->boolean();
-        $q->column('c' . $a++)->enum([ 'a', 'b', 'c' ]);
+        $q->column('c' . $a++)->enum(['a', 'b', 'c']);
 
         $q->column('c' . $a++)->date();
         $q->column('c' . $a++)->time();
-        $q->column('c' . $a++)->time()->default(function($column, $driver) { 
+        $q->column('c' . $a++)->time()->default(function ($column, $driver) {
             return $driver->deflate('02:00');
         });
         $q->column('c' . $a++)->year();
@@ -179,13 +184,17 @@ FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE 
 
     public function testPgCreateTable()
     {
+        $this->markTestSkipped(
+            'The PostgreSQL extension is not available.'
+        );
+
         $a = 1;
         $q = new CreateTableQuery('groups');
         $q->column('c' . $a++)->serial();
         $q->column('c' . $a++)->int();
         $q->column('c' . $a++)->int()->unsigned();
         $q->column('c' . $a++)->int(1);
-        $q->column('c' . $a++)->double(2,1);
+        $q->column('c' . $a++)->double(2, 1);
         $this->assertDriverQuery(new PgSQLDriver, $q);
     }
 
@@ -205,7 +214,7 @@ FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON UPDATE CASCADE ON DELETE 
 `content` text,
 `blob_content` blob,
 INDEX `name_idx` USING BTREE (`name`)
-)',$q);
+)', $q);
         $this->assertQuery($q);
     }
 
@@ -219,7 +228,7 @@ INDEX `name_idx` USING BTREE (`name`)
         $this->assertSql('CREATE TABLE `groups`(
 `id` int,
 PRIMARY KEY (`id`)
-) ENGINE=InnoDB',$q);
+) ENGINE=InnoDB', $q);
     }
 
     public function testCreateTableQuery()
@@ -255,10 +264,9 @@ PRIMARY KEY (`id`)
         //      FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) );
         $q->constraint('fk_group_id')
             ->foreignKey('group_id')
-                ->references('groups', 'id')
-                ->onDelete('CASCADE')
-                ->onUpdate('CASCADE')
-                ;
+            ->references('groups', 'id')
+            ->onDelete('CASCADE')
+            ->onUpdate('CASCADE');
 
         $q->uniqueKey('email');
         $q->engine('InnoDB');

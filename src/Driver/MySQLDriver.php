@@ -2,18 +2,36 @@
 
 namespace SQLBuilder\Driver;
 
-use SQLBuilder\ArgumentArray;
 use DateTime;
+use SQLBuilder\ArgumentArray;
 
+/**
+ * Class MySQLDriver
+ *
+ * @package SQLBuilder\Driver
+ *
+ * @author  Yo-An Lin (c9s) <cornelius.howl@gmail.com>
+ * @author  Aleksey Ilyenko <assada.ua@gmail.com>
+ */
 class MySQLDriver extends BaseDriver
 {
     public $quoteTable = false;
 
+    /**
+     * @param $id
+     *
+     * @return string
+     */
     public function quoteIdentifier($id)
     {
-        return '`'.addcslashes($id, '`').'`';
+        return '`' . addcslashes($id, '`') . '`';
     }
 
+    /**
+     * @param $value
+     *
+     * @return int|string
+     */
     public function cast($value)
     {
         if (is_bool($value)) {
@@ -26,7 +44,15 @@ class MySQLDriver extends BaseDriver
         return $value;
     }
 
-    public function deflate($value, ArgumentArray $args = null)
+    /**
+     * @param                                $value
+     * @param \SQLBuilder\ArgumentArray|null $args
+     *
+     * @param bool                           $quote
+     *
+     * @return mixed|string
+     */
+    public function deflate($value, ArgumentArray $args = null, $quote = true)
     {
         if ($value instanceof DateTime) {
             // MySQL does not support date time string with timezone

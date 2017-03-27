@@ -2,13 +2,26 @@
 
 namespace SQLBuilder\Driver;
 
-use PDO;
 use Exception;
+use PDO;
 
+/**
+ * Class PDODriverFactory
+ *
+ * @package SQLBuilder\Driver
+ *
+ * @author  Yo-An Lin (c9s) <cornelius.howl@gmail.com>
+ * @author  Aleksey Ilyenko <assada.ua@gmail.com>
+ */
 class PDODriverFactory
 {
     /**
      * @codeCoverageIgnore
+     *
+     * @param \PDO $pdo
+     *
+     * @return \SQLBuilder\Driver\PDOMySQLDriver|\SQLBuilder\Driver\PDOPgSQLDriver|\SQLBuilder\Driver\PDOSQLiteDriver
+     * @throws \Exception
      */
     public static function create(PDO $pdo)
     {

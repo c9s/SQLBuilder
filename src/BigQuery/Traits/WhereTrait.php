@@ -1,28 +1,23 @@
 <?php
 
-namespace SQLBuilder\Universal\Traits;
+namespace SQLBuilder\BigQuery\Traits;
 
 use InvalidArgumentException;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\BigQuery\Syntax\Conditions;
 use SQLBuilder\ConditionsInterface;
 use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\Universal\Syntax\Conditions;
 
 /**
  * Class WhereTrait
  *
- * @package SQLBuilder\Universal\Traits
+ * @package SQLBuilder\BigQuery\Traits
  *
  * @author  Yo-An Lin (c9s) <cornelius.howl@gmail.com>
  * @author  Aleksey Ilyenko <assada.ua@gmail.com>
  */
 trait WhereTrait
 {
-    /**
-     * @var Conditions
-     */
-    protected $where;
-
     /**
      * The arguments here are always binding to variables, won't be deflated to sql query.
      *
