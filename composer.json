@@ -1,23 +1,31 @@
 {
-    "name": "corneltek/sqlbuilder",
-    "description": "Fast and Powerful SQLBuilder for PHP",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "c9s",
-            "email": "cornelius.howl@gmail.com"
-        }
-    ],
-    "require-dev": {
-        "corneltek/phpunit-testmore": "dev-master"
+  "name": "reactorbits-montreal/sqlbuilder",
+  "description": "Fast and Powerful SQLBuilder for PHP",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "c9s",
+      "email": "cornelius.howl@gmail.com"
     },
-    "support": {
-        "email": "yoanlin93+github@gmail.com"
-    },
-    "autoload": {
-        "psr-4": {
-            "SQLBuilder\\": "src/"
-        }
-    },
-    "extra": { "branch-alias": { "dev-master": "4.0.x-dev" } }
+    {
+      "name": "Alex Assada Ilyenko <assada.ua@gmail.com>",
+      "email": "assada.ua@gmail.com"
+    }
+  ],
+  "require-dev": {
+    "corneltek/phpunit-testmore": "dev-master"
+  },
+  "support": {
+    "email": "assada.ua@gmail.com"
+  },
+  "autoload": {
+    "psr-4": {
+      "SQLBuilder\\": "src/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "4.0.x-dev"
+    }
+  }
 }
