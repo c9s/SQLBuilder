@@ -24,13 +24,4 @@ class BigQueryDriver extends BaseDriver
         return '`' . addcslashes($id, '`') . '`';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function quote($string)
-    {
-        return $string;
-    }
-
-
 }

@@ -219,10 +219,11 @@ abstract class BaseDriver
      * @param                                $value
      * @param \SQLBuilder\ArgumentArray|null $args
      *
+     * @param bool                           $quote
+     *
      * @return mixed|string
-     * @throws \LogicException
      */
-    public function deflate($value, ArgumentArray $args = null)
+    public function deflate($value, ArgumentArray $args = null, $quote = true)
     {
         if ($this->alwaysBindValues) {
             if ($value instanceof Raw) {
@@ -260,7 +261,11 @@ abstract class BaseDriver
         } elseif (is_float($value)) {
             return (float)$value;
         } elseif (is_string($value)) {
-            return $this->quote($value);
+            if ($quote) {
+                return $this->quote($value);
+            }
+
+            return $value;
         } elseif (is_callable($value)) {
             return call_user_func($value);
         } elseif (is_object($value)) {
