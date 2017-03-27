@@ -19,11 +19,6 @@ use SQLBuilder\Driver\BaseDriver;
 trait WhereTrait
 {
     /**
-     * @var Conditions
-     */
-    protected $where;
-
-    /**
      * The arguments here are always binding to variables, won't be deflated to sql query.
      *
      * Example:
