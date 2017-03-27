@@ -60,9 +60,11 @@ class SQLiteDriver extends BaseDriver
      * @param                                $value
      * @param \SQLBuilder\ArgumentArray|null $args
      *
+     * @param bool                           $quote
+     *
      * @return int|mixed|string
      */
-    public function deflate($value, ArgumentArray $args = null)
+    public function deflate($value, ArgumentArray $args = null, $quote = true)
     {
         // Special cases for SQLite
         if ($value === true) {

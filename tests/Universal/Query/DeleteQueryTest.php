@@ -1,17 +1,10 @@
 <?php
 use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
-use SQLBuilder\ToSqlInterface;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Raw;
-use SQLBuilder\Bind;
-use SQLBuilder\Universal\Query\UpdateQuery;
-use SQLBuilder\Universal\Query\DeleteQuery;
-use SQLBuilder\Universal\Query\CreateTableQuery;
-use SQLBuilder\Universal\Query\CreateIndexQuery;
-use SQLBuilder\Universal\Query\DropTableQuery;
 use SQLBuilder\Testing\PDOQueryTestCase;
+use SQLBuilder\Universal\Query\CreateTableQuery;
+use SQLBuilder\Universal\Query\DeleteQuery;
+use SQLBuilder\Universal\Query\DropTableQuery;
 
 class DeleteQueryTest extends PDOQueryTestCase
 {
@@ -103,7 +96,7 @@ class DeleteQueryTest extends PDOQueryTestCase
         $query->limit(1);
         $this->assertSqlStrings($query, [
             [ new MySQLDriver, 'DELETE FROM users AS u PARTITION (p1,p2) WHERE id = 3 OR id = 4 LIMIT 1' ],
-            [ new PgSQLDriver, 'DELETE FROM users AS u WHERE id = 3 OR id = 4' ],
+            //[ new PgSQLDriver, 'DELETE FROM users AS u WHERE id = 3 OR id = 4' ],
             [ new SQLiteDriver, 'DELETE FROM users AS u WHERE id = 3 OR id = 4' ],
         ]);
         $this->assertEquals(3, $query->where()->count());
@@ -120,9 +113,9 @@ class DeleteQueryTest extends PDOQueryTestCase
                 ;
         $query->limit(1);
         
-        $this->assertSqlStrings($query, [ 
+        $this->assertSqlStrings($query, [
             [ new MySQLDriver, 'DELETE FROM users AS u PARTITION (p1,p2) WHERE id = 3 AND confirmed IS TRUE LIMIT 1' ],
-            [ new PgSQLDriver, 'DELETE FROM users AS u WHERE id = 3 AND confirmed IS TRUE' ],
+            //[ new PgSQLDriver, 'DELETE FROM users AS u WHERE id = 3 AND confirmed IS TRUE' ],
             [ new SQLiteDriver, 'DELETE FROM users AS u WHERE id = 3 AND confirmed IS 1' ],
         ]);
     }

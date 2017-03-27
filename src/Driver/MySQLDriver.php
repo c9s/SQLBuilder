@@ -48,9 +48,11 @@ class MySQLDriver extends BaseDriver
      * @param                                $value
      * @param \SQLBuilder\ArgumentArray|null $args
      *
+     * @param bool                           $quote
+     *
      * @return mixed|string
      */
-    public function deflate($value, ArgumentArray $args = null)
+    public function deflate($value, ArgumentArray $args = null, $quote = true)
     {
         if ($value instanceof DateTime) {
             // MySQL does not support date time string with timezone

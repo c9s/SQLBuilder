@@ -291,10 +291,10 @@ class Conditions implements ToSqlInterface, Countable, ConditionsInterface
                 }
 
                 if ($a->operand2 instanceof Bind) {
-                    if (!$b->operand2 instanceof Bind) {
+                    if (!($b->operand2 instanceof Bind)) {
                         return false;
                     }
-                    if ($a->operand2->compare($b)) {
+                    if (!($b instanceof Bind) || $a->operand2->compare($b)) {
                         return false;
                     }
                 } else {

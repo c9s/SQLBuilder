@@ -1,27 +1,28 @@
 <?php
-use SQLBuilder\Driver\PDODriverFactory;
-use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Testing\PDOQueryTestCase;
-use SQLBuilder\DataType\Unknown;
-use SQLBuilder\Bind;
-use SQLBuilder\Raw;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\Bind;
+use SQLBuilder\DataType\Unknown;
+use SQLBuilder\Driver\MySQLDriver;
+use SQLBuilder\Driver\PDODriverFactory;
 use SQLBuilder\ParamMarker;
+use SQLBuilder\Raw;
+use SQLBuilder\Testing\PDOQueryTestCase;
 
 class PDODriverFactoryTest extends PDOQueryTestCase
 {
 
-    public function createDriver() {
+    public function createDriver()
+    {
         return MySQLDriver;
     }
 
-    public function driverTypeProvider() 
+    public function driverTypeProvider()
     {
-        return array(
-            array('mysql'),
-            array('pgsql'),
-            array('sqlite'),
-        );
+        return [
+            ['mysql'],
+            //array('pgsql'),
+            ['sqlite'],
+        ];
     }
 
     /**
@@ -37,7 +38,8 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         $this->assertEquals('\'foo\'', $quoted);
     }
 
-    public function testDeflateScalar() {
+    public function testDeflateScalar()
+    {
         $driver = new MySQLDriver;
         $this->assertSame('0', $driver->deflateScalar(0));
         $this->assertSame('1.23', $driver->deflateScalar(1.23));
@@ -50,12 +52,13 @@ class PDODriverFactoryTest extends PDOQueryTestCase
     /**
      * @expectedException Exception
      */
-    public function testUnknownType() {
+    public function testUnknownType()
+    {
         $driver = new MySQLDriver;
         $driver->deflateScalar(new Unknown);
     }
 
-    public function testQuoteTable() 
+    public function testQuoteTable()
     {
         $driver = new MySQLDriver;
         $driver->setQuoteTable(true);
@@ -63,7 +66,8 @@ class PDODriverFactoryTest extends PDOQueryTestCase
     }
 
 
-    public function testAllocateBind() {
+    public function testAllocateBind()
+    {
         $driver = new MySQLDriver;
 
         $bind = $driver->allocateBind(10);
@@ -77,19 +81,19 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         $this->assertEquals('str', $bind->getValue());
     }
 
-    public function testAlwaysBindWithBind() 
+    public function testAlwaysBindWithBind()
     {
-        $args = new ArgumentArray;
+        $args   = new ArgumentArray;
         $driver = new MySQLDriver;
         $driver->alwaysBindValues(true);
-        $this->assertEquals(':name', $driver->deflate(new Bind('name','Ollie'), $args));
+        $this->assertEquals(':name', $driver->deflate(new Bind('name', 'Ollie'), $args));
         $bind = $args->getBindingByIndex(0);
         $this->assertEquals('Ollie', $bind->getValue());
     }
 
-    public function testAlwaysBindWithScalar() 
+    public function testAlwaysBindWithScalar()
     {
-        $args = new ArgumentArray;
+        $args   = new ArgumentArray;
         $driver = new MySQLDriver;
         $driver->alwaysBindValues(true);
         $this->assertEquals(':p1', $driver->deflate(10, $args));
@@ -97,17 +101,17 @@ class PDODriverFactoryTest extends PDOQueryTestCase
         $this->assertEquals(10, $bind->getValue());
     }
 
-    public function testAlwaysBindWithRaw() 
+    public function testAlwaysBindWithRaw()
     {
-        $args = new ArgumentArray;
+        $args   = new ArgumentArray;
         $driver = new MySQLDriver;
         $driver->alwaysBindValues(true);
         $this->assertEquals('10', $driver->deflate(new Raw('10'), $args));
     }
 
-    public function testAlwaysBindWithParamMarker() 
+    public function testAlwaysBindWithParamMarker()
     {
-        $args = new ArgumentArray;
+        $args   = new ArgumentArray;
         $driver = new MySQLDriver;
         $driver->alwaysBindValues(true);
         $this->assertEquals('?', $driver->deflate(new ParamMarker('hack'), $args));
@@ -115,9 +119,9 @@ class PDODriverFactoryTest extends PDOQueryTestCase
 
     public function testSetQuoter()
     {
-        $conn = $this->createConnection('mysql');
+        $conn   = $this->createConnection('mysql');
         $driver = new MySQLDriver;
-        $driver->setQuoter(function($str) use($conn) {
+        $driver->setQuoter(function ($str) use ($conn) {
             return $conn->quote($str);
         });
         $this->assertEquals("'str'", $driver->quote('str'));

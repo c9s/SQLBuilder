@@ -1,12 +1,8 @@
 <?php
 use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\Driver\PgSQLDriver;
-use SQLBuilder\Driver\BaseDriver;
-use SQLBuilder\ArgumentArray;
+use SQLBuilder\Testing\PDOQueryTestCase;
 use SQLBuilder\Universal\Query\CreateDatabaseQuery;
 use SQLBuilder\Universal\Query\DropDatabaseQuery;
-use SQLBuilder\ToSqlInterface;
-use SQLBuilder\Testing\PDOQueryTestCase;
 
 class CreateDatabaseQueryTest extends PDOQueryTestCase
 {
@@ -35,7 +31,7 @@ class CreateDatabaseQueryTest extends PDOQueryTestCase
         $q = new DropDatabaseQuery('test_db');
         $q->ifExists();
 
-        $this->assertDriverQuery(new PgSQLDriver, $q);
+        // $this->assertDriverQuery(new PgSQLDriver, $q);
         $this->assertDriverQuery(new MySQLDriver, $q);
 
         $q = new CreateDatabaseQuery;
@@ -51,10 +47,10 @@ class CreateDatabaseQueryTest extends PDOQueryTestCase
             ;
         $this->assertSqlStrings($q, [
             [ new MySQLDriver, "CREATE DATABASE `test_db` CHARACTER SET 'utf8' COLLATE 'en_US.UTF-8'"],
-            [ new PgSQLDriver, 'CREATE DATABASE "test_db" OWNER \'postgres\' TEMPLATE \'template0\' ENCODING \'UTF8\' LC_COLLATE \'en_US.UTF-8\' LC_CTYPE \'en_US.UTF-8\' TABLESPACE \'pg_default\' CONNECTION LIMIT 3'],
+            //[ new PgSQLDriver, 'CREATE DATABASE "test_db" OWNER \'postgres\' TEMPLATE \'template0\' ENCODING \'UTF8\' LC_COLLATE \'en_US.UTF-8\' LC_CTYPE \'en_US.UTF-8\' TABLESPACE \'pg_default\' CONNECTION LIMIT 3'],
         ]);
 
-        $this->assertDriverQuery(new PgSQLDriver, $q);
+        //$this->assertDriverQuery(new PgSQLDriver, $q);
         $this->assertDriverQuery(new MySQLDriver, $q);
     }
 
