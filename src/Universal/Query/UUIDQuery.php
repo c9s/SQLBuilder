@@ -2,26 +2,31 @@
 
 namespace SQLBuilder\Universal\Query;
 
-use Exception;
-use SQLBuilder\Exception\UnsupportedDriverException;
+use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
 use SQLBuilder\Driver\SQLiteDriver;
+use SQLBuilder\Exception\UnsupportedDriverException;
 use SQLBuilder\ToSqlInterface;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\Universal\Syntax\Conditions;
-use SQLBuilder\Universal\Traits\OrderByTrait;
-use SQLBuilder\Universal\Traits\WhereTrait;
-use SQLBuilder\Universal\Traits\PagingTrait;
-use SQLBuilder\Universal\Expr\SelectExpr;
-use SQLBuilder\MySQL\Traits\PartitionTrait;
-use SQLBuilder\MySQL\Traits\IndexHintTrait;
-use SQLBuilder\Universal\Traits\JoinTrait;
-use SQLBuilder\Universal\Traits\OptionTrait;
 
+/**
+ * Class UUIDQuery
+ *
+ * @package SQLBuilder\Universal\Query
+ *
+ * @author  Yo-An Lin (c9s) <cornelius.howl@gmail.com>
+ * @author  Aleksey Ilyenko <assada.ua@gmail.com>
+ */
 class UUIDQuery implements ToSqlInterface
 {
+    /**
+     * @param \SQLBuilder\Driver\BaseDriver $driver
+     * @param \SQLBuilder\ArgumentArray     $args
+     *
+     * @return string
+     * @throws \SQLBuilder\Exception\UnsupportedDriverException
+     */
     public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         if ($driver instanceof MySQLDriver) {

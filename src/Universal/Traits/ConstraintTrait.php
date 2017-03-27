@@ -6,8 +6,16 @@ use SQLBuilder\Universal\Syntax\Constraint;
 
 trait ConstraintTrait
 {
-    protected $constraints = array();
+    /**
+     * @var Constraint[]
+     */
+    protected $constraints = [];
 
+    /**
+     * @param string $name
+     *
+     * @return \SQLBuilder\Universal\Syntax\Constraint
+     */
     public function constraint($name)
     {
         $this->constraints[] = $constraint = new Constraint($name, $this);
@@ -15,6 +23,11 @@ trait ConstraintTrait
         return $constraint;
     }
 
+    /**
+     * @param string|array $cols
+     *
+     * @return \SQLBuilder\Universal\Syntax\Constraint
+     */
     public function foreignKey($cols)
     {
         $this->constraints[] = $constraint = new Constraint(null, $this);
@@ -23,6 +36,11 @@ trait ConstraintTrait
         return $constraint;
     }
 
+    /**
+     * @param string|array $cols
+     *
+     * @return \SQLBuilder\Universal\Syntax\Constraint
+     */
     public function primaryKey($cols)
     {
         $this->constraints[] = $constraint = new Constraint(null, $this);
@@ -31,6 +49,11 @@ trait ConstraintTrait
         return $constraint;
     }
 
+    /**
+     * @param string|array $cols
+     *
+     * @return \SQLBuilder\Universal\Syntax\Constraint
+     */
     public function uniqueKey($cols)
     {
         $this->constraints[] = $constraint = new Constraint(null, $this);
@@ -39,6 +62,11 @@ trait ConstraintTrait
         return $constraint;
     }
 
+    /**
+     * @param string|array $cols
+     *
+     * @return \SQLBuilder\Universal\Syntax\Constraint
+     */
     public function index($cols)
     {
         $this->constraints[] = $constraint = new Constraint(null, $this);
@@ -47,6 +75,9 @@ trait ConstraintTrait
         return $constraint;
     }
 
+    /**
+     * @return \SQLBuilder\Universal\Syntax\Constraint[]
+     */
     public function getConstraints()
     {
         return $this->constraints;

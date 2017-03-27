@@ -4,8 +4,14 @@ namespace SQLBuilder\Universal\Traits;
 
 trait IfExistsTrait
 {
+    /**
+     * @var bool
+     */
     protected $ifExists = false;
 
+    /**
+     * @return $this
+     */
     public function ifExists()
     {
         $this->ifExists = true;
@@ -13,6 +19,9 @@ trait IfExistsTrait
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function buildIfExistsClause()
     {
         if ($this->ifExists) {

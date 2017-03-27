@@ -2,7 +2,6 @@
 
 namespace SQLBuilder\Universal\Query;
 
-use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
@@ -11,9 +10,17 @@ use SQLBuilder\Exception\CriticalIncompatibleUsageException;
 use SQLBuilder\Exception\IncompleteSettingsException;
 use SQLBuilder\Exception\UnsupportedDriverException;
 use SQLBuilder\PgSQL\Traits\ConcurrentlyTrait;
+use SQLBuilder\ToSqlInterface;
 
 /**
- SELECT * FROM points.
+ * Class CreateIndexQuery
+ *
+ * SELECT * FROM points.
+ *
+ * @package SQLBuilder\Universal\Query
+ *
+ * @author  Yo-An Lin (c9s) <cornelius.howl@gmail.com>
+ * @author  Aleksey Ilyenko <assada.ua@gmail.com>
  */
 class CreateIndexQuery implements ToSqlInterface
 {
@@ -21,7 +28,7 @@ class CreateIndexQuery implements ToSqlInterface
 
     protected $type;
 
-    protected $options = array();
+    protected $options = [];
 
     protected $method;
 
@@ -31,8 +38,13 @@ class CreateIndexQuery implements ToSqlInterface
 
     protected $columns;
 
-    protected $storageParameters = array();
+    protected $storageParameters = [];
 
+    /**
+     * CreateIndexQuery constructor.
+     *
+     * @param null $name
+     */
     public function __construct($name = null)
     {
         $this->name = $name;
@@ -40,6 +52,10 @@ class CreateIndexQuery implements ToSqlInterface
 
     /**
      * MySQL, PostgreSQL.
+     *
+     * @param null $name
+     *
+     * @return $this
      */
     public function unique($name = null)
     {
@@ -55,6 +71,10 @@ class CreateIndexQuery implements ToSqlInterface
      * FULLTEXT is only supported on MySQL.
      *
      * MySQL only
+     *
+     * @param null $name
+     *
+     * @return $this
      */
     public function fulltext($name = null)
     {
@@ -68,6 +88,10 @@ class CreateIndexQuery implements ToSqlInterface
 
     /**
      * MySQL only.
+     *
+     * @param null $name
+     *
+     * @return $this
      */
     public function spatial($name = null)
     {
@@ -82,6 +106,10 @@ class CreateIndexQuery implements ToSqlInterface
     /**
      * MySQL: {BTREE | HASH}
      * PostgreSQL:  {btree | hash | gist | spgist | gin}.
+     *
+     * @param $method
+     *
+     * @return $this
      */
     public function using($method)
     {
@@ -90,6 +118,11 @@ class CreateIndexQuery implements ToSqlInterface
         return $this;
     }
 
+    /**
+     * @param $name
+     *
+     * @return $this
+     */
     public function create($name)
     {
         $this->name = $name;
@@ -97,7 +130,13 @@ class CreateIndexQuery implements ToSqlInterface
         return $this;
     }
 
-    public function on($tableName, array $columns = array())
+    /**
+     * @param       $tableName
+     * @param array $columns
+     *
+     * @return $this
+     */
+    public function on($tableName, array $columns = [])
     {
         $this->tableName = $tableName;
         if (!empty($columns)) {
@@ -107,6 +146,12 @@ class CreateIndexQuery implements ToSqlInterface
         return $this;
     }
 
+    /**
+     * @param $name
+     * @param $val
+     *
+     * @return $this
+     */
     public function with($name, $val)
     {
         $this->storageParameters[$name] = $val;
@@ -114,29 +159,41 @@ class CreateIndexQuery implements ToSqlInterface
         return $this;
     }
 
+    /**
+     * @param \SQLBuilder\Driver\BaseDriver $driver
+     * @param \SQLBuilder\ArgumentArray     $args
+     *
+     * @return string
+     */
     protected function buildMySQLQuery(BaseDriver $driver, ArgumentArray $args)
     {
         $sql = 'CREATE';
 
         if ($this->type) {
             // validate index type
-            $sql .= ' '.$this->type;
+            $sql .= ' ' . $this->type;
         }
 
         $sql .= ' INDEX';
 
-        $sql .= ' '.$driver->quoteIdentifier($this->name).' ON '.$driver->quoteIdentifier($this->tableName);
+        $sql .= ' ' . $driver->quoteIdentifier($this->name) . ' ON ' . $driver->quoteIdentifier($this->tableName);
 
         if (!empty($this->columns)) {
-            $sql .= ' ('.implode(',', $this->columns).')';
+            $sql .= ' (' . implode(',', $this->columns) . ')';
         }
         if ($this->method) {
-            $sql .= ' USING '.$this->method;
+            $sql .= ' USING ' . $this->method;
         }
 
         return $sql;
     }
 
+    /**
+     * @param \SQLBuilder\Driver\BaseDriver $driver
+     * @param \SQLBuilder\ArgumentArray     $args
+     *
+     * @return string
+     */
     protected function buildPgSQLQuery(BaseDriver $driver, ArgumentArray $args)
     {
         $sql = 'CREATE';
@@ -151,27 +208,34 @@ class CreateIndexQuery implements ToSqlInterface
 
         $sql .= $this->buildConcurrentlyClause($driver, $args);
 
-        $sql .= ' '.$driver->quoteIdentifier($this->name).' ON '.$driver->quoteIdentifier($this->tableName);
+        $sql .= ' ' . $driver->quoteIdentifier($this->name) . ' ON ' . $driver->quoteIdentifier($this->tableName);
 
         // TODO: validate method 
         if ($this->method) {
-            $sql .= ' USING '.$this->method;
+            $sql .= ' USING ' . $this->method;
         }
         if (!empty($this->columns)) {
-            $sql .= ' ('.implode(',', $this->columns).')';
+            $sql .= ' (' . implode(',', $this->columns) . ')';
         }
 
         if (!empty($this->storageParameters)) {
             $sql .= ' WITH ';
             foreach ($this->storageParameters as $name => $val) {
-                $sql .= $name.' = '.$val.',';
+                $sql .= $name . ' = ' . $val . ',';
             }
             $sql = rtrim($sql, ',');
         }
+
         // TODO: support tablespace and predicate
         return $sql;
     }
 
+    /**
+     * @param \SQLBuilder\Driver\BaseDriver $driver
+     * @param \SQLBuilder\ArgumentArray     $args
+     *
+     * @return string
+     */
     public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         if (!$this->tableName) {

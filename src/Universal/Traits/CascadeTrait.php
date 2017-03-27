@@ -4,8 +4,14 @@ namespace SQLBuilder\Universal\Traits;
 
 trait CascadeTrait
 {
+    /**
+     * @var bool
+     */
     protected $cascade;
 
+    /**
+     * @return $this
+     */
     public function cascade()
     {
         $this->cascade = true;
@@ -13,6 +19,9 @@ trait CascadeTrait
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function buildCascadeClause()
     {
         if ($this->cascade) {

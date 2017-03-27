@@ -2,16 +2,23 @@
 
 namespace SQLBuilder\Driver;
 
-use SQLBuilder\Raw;
-use SQLBuilder\DataType\Unknown;
-use SQLBuilder\ArgumentArray;
-use SQLBuilder\ParamMarker;
-use SQLBuilder\Bind;
-use SQLBuilder\ToSqlInterface;
 use DateTime;
-use Exception;
 use LogicException;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\Bind;
+use SQLBuilder\DataType\Unknown;
+use SQLBuilder\ParamMarker;
+use SQLBuilder\Raw;
+use SQLBuilder\ToSqlInterface;
 
+/**
+ * Class BaseDriver
+ *
+ * @package SQLBuilder\Driver
+ *
+ * @author  Yo-An Lin (c9s) <cornelius.howl@gmail.com>
+ * @author  Aleksey Ilyenko <assada.ua@gmail.com>
+ */
 abstract class BaseDriver
 {
     /**
@@ -36,18 +43,24 @@ abstract class BaseDriver
 
     /**
      * String quoter handler.
-     *  
+     *
      *  Array:
      *
      *    array($obj,'method')
      */
     public $quoter;
 
+    /**
+     * @param callable $quoter
+     */
     public function setQuoter(callable $quoter)
     {
         $this->quoter = $quoter;
     }
 
+    /**
+     * @param bool $on
+     */
     public function alwaysBindValues($on = true)
     {
         $this->alwaysBindValues = $on;
@@ -61,7 +74,9 @@ abstract class BaseDriver
         $this->quoteTable = $enable;
     }
 
-    // The SQL statement can contain zero or more named (:name) or question mark (?) parameter markers
+    /**
+     * The SQL statement can contain zero or more named (:name) or question mark (?) parameter markers
+     */
     public function setNamedParamMarker()
     {
         $this->paramMarkerType = self::NAMED_PARAM_MARKER;
@@ -72,6 +87,11 @@ abstract class BaseDriver
         $this->paramMarkerType = self::QMARK_PARAM_MARKER;
     }
 
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
     abstract public function quoteIdentifier($id);
 
 
@@ -81,6 +101,7 @@ abstract class BaseDriver
      * column quote can be configured by 'quote_column' option.
      *
      * @param string $name column name
+     *
      * @return string column name with/without quotes.
      */
     public function quoteColumn($name)
@@ -89,6 +110,7 @@ abstract class BaseDriver
         if (preg_match('/\W/', $name)) {
             return $name;
         }
+
         return $this->quoteIdentifier($name);
     }
 
@@ -113,6 +135,10 @@ abstract class BaseDriver
 
     /**
      * quote & escape string with single quote.
+     *
+     * @param $string
+     *
+     * @return mixed|string
      */
     public function quote($string)
     {
@@ -129,15 +155,26 @@ abstract class BaseDriver
             return call_user_func($this->quoter, $string);
         }
 
-        // Defualt escape function, this is not safe.
-        return "'".addslashes($string)."'";
+        // Default escape function, this is not safe.
+        return "'" . addslashes($string) . "'";
     }
 
+    /**
+     * @param $value
+     *
+     * @return \SQLBuilder\Bind
+     */
     public function allocateBind($value)
     {
-        return new Bind('p'.$this->paramNameCnt++, $value);
+        return new Bind('p' . $this->paramNameCnt++, $value);
     }
 
+    /**
+     * @param $value
+     *
+     * @return mixed|string
+     * @throws \Exception
+     */
     public function deflateScalar($value)
     {
         if ($value === null) {
@@ -146,15 +183,20 @@ abstract class BaseDriver
             return 'TRUE';
         } elseif ($value === false) {
             return 'FALSE';
-        } elseif (is_integer($value) || is_float($value)) {
-            return ''.$value;
+        } elseif (is_int($value) || is_float($value)) {
+            return '' . $value;
         } elseif (is_string($value)) {
             return $this->quote($value);
         } else {
-            throw new Exception("Can't deflate value, unknown type.");
+            throw new \UnexpectedValueException("Can't deflate value, unknown type.");
         }
     }
 
+    /**
+     * @param $value
+     *
+     * @return string
+     */
     public function cast($value)
     {
         if ($value instanceof DateTime) {
@@ -168,11 +210,17 @@ abstract class BaseDriver
     /**
      * For variable placeholder like PDO, we need 1 or 0 for boolean type,.
      *
-     * For pgsql and mysql sql statement, 
+     * For pgsql and mysql sql statement,
      * we use TRUE or FALSE for boolean type.
      *
      * FOr sqlite sql statement:
      * we use 1 or 0 for boolean type.
+     *
+     * @param                                $value
+     * @param \SQLBuilder\ArgumentArray|null $args
+     *
+     * @return mixed|string
+     * @throws \LogicException
      */
     public function deflate($value, ArgumentArray $args = null)
     {
@@ -207,10 +255,10 @@ abstract class BaseDriver
             return 'TRUE';
         } elseif ($value === false) {
             return 'FALSE';
-        } elseif (is_integer($value)) {
-            return intval($value);
+        } elseif (is_int($value)) {
+            return (int)$value;
         } elseif (is_float($value)) {
-            return floatval($value);
+            return (float)$value;
         } elseif (is_string($value)) {
             return $this->quote($value);
         } elseif (is_callable($value)) {
@@ -224,11 +272,13 @@ abstract class BaseDriver
                 if ($this->paramMarkerType === self::QMARK_PARAM_MARKER) {
                     return '?';
                 }
+
                 /*
                 elseif ($this->paramMarkerType === self::NAMED_PARAM_MARKER) {
                     return $value->getMarker();
                 }
                 */
+
                 return $value->getMarker();
             } elseif ($value instanceof ParamMarker) {
                 if ($args) {
@@ -238,11 +288,13 @@ abstract class BaseDriver
                 if ($this->paramMarkerType === self::QMARK_PARAM_MARKER) {
                     return '?';
                 }
+
                 /*
                 else if ($this->paramMarkerType === self::NAMED_PARAM_MARKER) {
                     return $value->getMarker();
                 }
                 */
+
                 return $value->getMarker();
             } elseif ($value instanceof Unknown) {
                 return 'UNKNOWN';
@@ -256,7 +308,7 @@ abstract class BaseDriver
             } elseif ($value instanceof Raw) {
                 return $value->__toString();
             } else {
-                throw new LogicException('Unsupported class: '.get_class($value));
+                throw new LogicException('Unsupported class: ' . get_class($value));
             }
         } elseif (is_array($value)) {
             // error_log("LazyRecord: deflating array type value", 0);
@@ -264,7 +316,5 @@ abstract class BaseDriver
         } else {
             throw new LogicException('BaseDriver::deflate: Unsupported variable type');
         }
-
-        return $value;
     }
 }

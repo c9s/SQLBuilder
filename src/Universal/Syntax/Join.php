@@ -2,28 +2,44 @@
 
 namespace SQLBuilder\Universal\Syntax;
 
+use BadMethodCallException;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
-use SQLBuilder\ToSqlInterface;
-use BadMethodCallException;
 use SQLBuilder\MySQL\Traits\IndexHintTrait;
+use SQLBuilder\ToSqlInterface;
 
 class Join implements ToSqlInterface
 {
     use IndexHintTrait;
 
+    /**
+     * @var \SQLBuilder\Universal\Syntax\Conditions
+     */
     public $conditions;
 
+    /**
+     * @var null|string
+     */
     public $alias;
 
+    /**
+     * @var null|string
+     */
     protected $joinType;
 
+    /**
+     * Join constructor.
+     *
+     * @param string      $table
+     * @param null|string $alias
+     * @param null|string $joinType
+     */
     public function __construct($table, $alias = null, $joinType = null)
     {
-        $this->table = $table;
-        $this->alias = $alias;
-        $this->joinType = $joinType;
+        $this->table      = $table;
+        $this->alias      = $alias;
+        $this->joinType   = $joinType;
         $this->conditions = new Conditions();
     }
 
@@ -48,7 +64,7 @@ class Join implements ToSqlInterface
         return $this;
     }
 
-    public function on($conditionExpr = null, array $args = array())
+    public function on($conditionExpr = null, array $args = [])
     {
         if (is_string($conditionExpr)) {
             $this->conditions->raw($conditionExpr, $args);
@@ -62,13 +78,13 @@ class Join implements ToSqlInterface
         $sql = '';
 
         if ($this->joinType) {
-            $sql .= ' '.$this->joinType;
+            $sql .= ' ' . $this->joinType;
         }
 
-        $sql .= ' JOIN '.$this->table;
+        $sql .= ' JOIN ' . $this->table;
 
         if ($this->alias) {
-            $sql .= ' AS '.$this->alias;
+            $sql .= ' AS ' . $this->alias;
         }
 
         if ($driver instanceof MySQLDriver) {
@@ -76,7 +92,7 @@ class Join implements ToSqlInterface
         }
 
         if ($this->conditions->hasExprs()) {
-            $sql .= ' ON ('.$this->conditions->toSql($driver, $args).')';
+            $sql .= ' ON (' . $this->conditions->toSql($driver, $args) . ')';
         }
 
         return $sql;

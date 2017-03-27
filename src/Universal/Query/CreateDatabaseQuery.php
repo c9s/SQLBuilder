@@ -2,13 +2,21 @@
 
 namespace SQLBuilder\Universal\Query;
 
-use SQLBuilder\ToSqlInterface;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
+use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Universal\Traits\IfExistsTrait;
 
+/**
+ * Class CreateDatabaseQuery
+ *
+ * @package SQLBuilder\Universal\Query
+ *
+ * @author  Yo-An Lin (c9s) <cornelius.howl@gmail.com>
+ * @author  Aleksey Ilyenko <assada.ua@gmail.com>
+ */
 class CreateDatabaseQuery implements ToSqlInterface
 {
     use IfExistsTrait;
@@ -39,11 +47,21 @@ class CreateDatabaseQuery implements ToSqlInterface
 
     protected $ifNotExists = false;
 
+    /**
+     * CreateDatabaseQuery constructor.
+     *
+     * @param null $name
+     */
     public function __construct($name = null)
     {
         $this->dbName = $name;
     }
 
+    /**
+     * @param $name
+     *
+     * @return $this
+     */
     public function create($name)
     {
         $this->dbName = $name;
@@ -51,6 +69,11 @@ class CreateDatabaseQuery implements ToSqlInterface
         return $this;
     }
 
+    /**
+     * @param $owner
+     *
+     * @return $this
+     */
     public function owner($owner)
     {
         $this->owner = $owner;
@@ -58,6 +81,11 @@ class CreateDatabaseQuery implements ToSqlInterface
         return $this;
     }
 
+    /**
+     * @param $template
+     *
+     * @return $this
+     */
     public function template($template)
     {
         $this->template = $template;
@@ -65,6 +93,11 @@ class CreateDatabaseQuery implements ToSqlInterface
         return $this;
     }
 
+    /**
+     * @param $encoding
+     *
+     * @return $this
+     */
     public function encoding($encoding)
     {
         $this->encoding = $encoding;
@@ -79,6 +112,11 @@ class CreateDatabaseQuery implements ToSqlInterface
         return $this;
     }
 
+    /**
+     * @param $collate
+     *
+     * @return $this
+     */
     public function collate($collate)
     {
         $this->collate = $collate;
@@ -86,6 +124,11 @@ class CreateDatabaseQuery implements ToSqlInterface
         return $this;
     }
 
+    /**
+     * @param $tablespace
+     *
+     * @return $this
+     */
     public function tablespace($tablespace)
     {
         $this->tablespace = $tablespace;
@@ -93,6 +136,11 @@ class CreateDatabaseQuery implements ToSqlInterface
         return $this;
     }
 
+    /**
+     * @param $connectionLimit
+     *
+     * @return $this
+     */
     public function connectionLimit($connectionLimit)
     {
         $this->connectionLimit = $connectionLimit;
@@ -102,6 +150,10 @@ class CreateDatabaseQuery implements ToSqlInterface
 
     /**
      * @see http://dev.mysql.com/doc/refman/5.0/en/charset.html
+     *
+     * @param $characterSet
+     *
+     * @return $this
      */
     public function characterSet($characterSet)
     {
@@ -110,6 +162,9 @@ class CreateDatabaseQuery implements ToSqlInterface
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function ifNotExists()
     {
         $this->ifNotExists = true;
@@ -117,6 +172,12 @@ class CreateDatabaseQuery implements ToSqlInterface
         return $this;
     }
 
+    /**
+     * @param \SQLBuilder\Driver\BaseDriver $driver
+     * @param \SQLBuilder\ArgumentArray     $args
+     *
+     * @return string
+     */
     public function toSql(BaseDriver $driver, ArgumentArray $args)
     {
         $sql = 'CREATE DATABASE';
@@ -125,14 +186,14 @@ class CreateDatabaseQuery implements ToSqlInterface
             $sql .= ' IF NOT EXISTS';
         }
 
-        $sql .= ' '.$driver->quoteIdentifier($this->dbName);
+        $sql .= ' ' . $driver->quoteIdentifier($this->dbName);
 
         if ($driver instanceof MySQLDriver) {
             if ($this->characterSet) {
-                $sql .= ' CHARACTER SET '.$driver->quote($this->characterSet);
+                $sql .= ' CHARACTER SET ' . $driver->quote($this->characterSet);
             }
             if ($this->collate) {
-                $sql .= ' COLLATE '.$driver->quote($this->collate);
+                $sql .= ' COLLATE ' . $driver->quote($this->collate);
             }
         } elseif ($driver instanceof PgSQLDriver) {
 
@@ -140,25 +201,25 @@ class CreateDatabaseQuery implements ToSqlInterface
             * PostgreSQL properties
             */
             if ($this->owner) {
-                $sql .= ' OWNER '.$driver->quote($this->owner);
+                $sql .= ' OWNER ' . $driver->quote($this->owner);
             }
             if ($this->template) {
-                $sql .= ' TEMPLATE '.$driver->quote($this->template);
+                $sql .= ' TEMPLATE ' . $driver->quote($this->template);
             }
             if ($this->encoding) {
-                $sql .= ' ENCODING '.$driver->quote($this->encoding);
+                $sql .= ' ENCODING ' . $driver->quote($this->encoding);
             }
             if ($this->collate) {
-                $sql .= ' LC_COLLATE '.$driver->quote($this->collate);
+                $sql .= ' LC_COLLATE ' . $driver->quote($this->collate);
             }
             if ($this->ctype) {
-                $sql .= ' LC_CTYPE '.$driver->quote($this->ctype);
+                $sql .= ' LC_CTYPE ' . $driver->quote($this->ctype);
             }
             if ($this->tablespace) {
-                $sql .= ' TABLESPACE '.$driver->quote($this->tablespace);
+                $sql .= ' TABLESPACE ' . $driver->quote($this->tablespace);
             }
             if ($this->connectionLimit) {
-                $sql .= ' CONNECTION LIMIT '.$this->connectionLimit;
+                $sql .= ' CONNECTION LIMIT ' . $this->connectionLimit;
             }
         }
 

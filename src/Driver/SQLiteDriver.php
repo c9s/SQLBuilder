@@ -2,21 +2,38 @@
 
 namespace SQLBuilder\Driver;
 
-use SQLBuilder\ArgumentArray;
 use DateTime;
+use SQLBuilder\ArgumentArray;
 
 /**
+ * Class SQLiteDriver
+ *
  * Currently not supporting this SQLiteDriver.
  *
- * @codeCoverageIgnore
+ * @deprecated
+ *
+ * @package SQLBuilder\Driver
+ *
+ * @author  Yo-An Lin (c9s) <cornelius.howl@gmail.com>
+ * @author  Aleksey Ilyenko <assada.ua@gmail.com>
  */
 class SQLiteDriver extends BaseDriver
 {
+    /**
+     * @param $id
+     *
+     * @return string
+     */
     public function quoteIdentifier($id)
     {
-        return '`'.addcslashes($id, '`').'`';
+        return '`' . addcslashes($id, '`') . '`';
     }
 
+    /**
+     * @param $value
+     *
+     * @return int|string
+     */
     public function cast($value)
     {
         if ($value === true) {
@@ -34,11 +51,16 @@ class SQLiteDriver extends BaseDriver
     /**
      * For variable placeholder like PDO, we need 1 or 0 for boolean type,.
      *
-     * For pgsql and mysql sql statement, 
+     * For pgsql and mysql sql statement,
      * we use TRUE or FALSE for boolean type.
      *
      * FOr sqlite sql statement:
      * we use 1 or 0 for boolean type.
+     *
+     * @param                                $value
+     * @param \SQLBuilder\ArgumentArray|null $args
+     *
+     * @return int|mixed|string
      */
     public function deflate($value, ArgumentArray $args = null)
     {
