@@ -5,6 +5,7 @@ namespace SQLBuilder\BigQuery\Traits;
 use InvalidArgumentException;
 use SQLBuilder\ArgumentArray;
 use SQLBuilder\BigQuery\Syntax\Conditions;
+use SQLBuilder\ConditionsInterface;
 use SQLBuilder\Driver\BaseDriver;
 
 /**
@@ -56,9 +57,9 @@ trait WhereTrait
     }
 
     /**
-     * @param Conditions $where
+     * @param ConditionsInterface $where
      */
-    public function setWhere(Conditions $where)
+    public function setWhere(ConditionsInterface $where)
     {
         $this->where = $where;
     }

@@ -2,24 +2,25 @@
 
 namespace SQLBuilder\Universal\Syntax;
 
+use BadMethodCallException;
+use Countable;
+use SQLBuilder\ArgumentArray;
+use SQLBuilder\ConditionsInterface;
+use SQLBuilder\Criteria;
 use SQLBuilder\Driver\BaseDriver;
+use SQLBuilder\ToSqlInterface;
 use SQLBuilder\Universal\Expr\BetweenExpr;
-use SQLBuilder\Universal\Expr\RawExpr;
-use SQLBuilder\Universal\Expr\UnaryExpr;
 use SQLBuilder\Universal\Expr\BinExpr;
 use SQLBuilder\Universal\Expr\InExpr;
-use SQLBuilder\Universal\Expr\NotInExpr;
 use SQLBuilder\Universal\Expr\LikeExpr;
-use SQLBuilder\Universal\Expr\RegExpExpr;
+use SQLBuilder\Universal\Expr\NotInExpr;
 use SQLBuilder\Universal\Expr\NotRegExpExpr;
-use SQLBuilder\Criteria;
-use SQLBuilder\ToSqlInterface;
-use SQLBuilder\ArgumentArray;
-use Countable;
-use BadMethodCallException;
+use SQLBuilder\Universal\Expr\RawExpr;
+use SQLBuilder\Universal\Expr\RegExpExpr;
+use SQLBuilder\Universal\Expr\UnaryExpr;
 
-require __DIR__.'/../Expr/UnaryExpr.php';
-require __DIR__.'/../Expr/BinExpr.php';
+require __DIR__ . '/../Expr/UnaryExpr.php';
+require __DIR__ . '/../Expr/BinExpr.php';
 
 class Op
 {
@@ -49,11 +50,11 @@ class XorOp extends Op
     }
 }
 
-class Conditions implements ToSqlInterface, Countable
+class Conditions implements ToSqlInterface, Countable, ConditionsInterface
 {
     public $exprs;
 
-    public function __construct(array $exprs = array())
+    public function __construct(array $exprs = [])
     {
         $this->exprs = $exprs;
     }
@@ -68,7 +69,7 @@ class Conditions implements ToSqlInterface, Countable
         return $this;
     }
 
-    public function raw($raw, array $args = array())
+    public function raw($raw, array $args = [])
     {
         $this->exprs[] = new RawExpr($raw, $args);
 
@@ -127,18 +128,18 @@ class Conditions implements ToSqlInterface, Countable
     public function __call($method, $args)
     {
         switch ($method) {
-        case 'and':
-            $this->exprs[] = new AndOp();
+            case 'and':
+                $this->exprs[] = new AndOp();
 
-            return $this;
-        case 'or':
-            $this->exprs[] = new OrOp();
+                return $this;
+            case 'or':
+                $this->exprs[] = new OrOp();
 
-            return $this;
-        case 'xor':
-            $this->exprs[] = new XorOp();
+                return $this;
+            case 'xor':
+                $this->exprs[] = new XorOp();
 
-            return $this;
+                return $this;
         }
         throw new BadMethodCallException("Invalid method call: $method");
     }
@@ -207,7 +208,7 @@ class Conditions implements ToSqlInterface, Countable
 
     public function group()
     {
-        $group = new GroupConditions($this);
+        $group         = new GroupConditions($this);
         $this->exprs[] = $group;
 
         return $group;
@@ -228,7 +229,7 @@ class Conditions implements ToSqlInterface, Countable
                 } elseif ($expr instanceof AndOp) {
                     $sql .= ' AND ';
                 } else {
-                    $sql .= ' '.$expr->__toString().' ';
+                    $sql .= ' ' . $expr->__toString() . ' ';
                 }
                 $expr = $this->exprs[++$i];
             } else {
@@ -266,11 +267,13 @@ class Conditions implements ToSqlInterface, Countable
 
     public function compare(Conditions $conditions)
     {
-        if (count($this->exprs) != count($conditions->exprs)) {
+        $countExpr = count($this->exprs);
+
+        if ($countExpr !== count($conditions->exprs)) {
             return false;
         }
 
-        for ($i = 0; $i < count($this->exprs); ++$i) {
+        for ($i = 0; $i < $countExpr; ++$i) {
             $a = $this->exprs[$i];
             $b = $conditions->exprs[$i];
 

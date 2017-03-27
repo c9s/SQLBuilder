@@ -4,6 +4,7 @@ namespace SQLBuilder\Universal\Traits;
 
 use InvalidArgumentException;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\ConditionsInterface;
 use SQLBuilder\Driver\BaseDriver;
 use SQLBuilder\Universal\Syntax\Conditions;
 
@@ -56,9 +57,9 @@ trait WhereTrait
     }
 
     /**
-     * @param \SQLBuilder\Universal\Syntax\Conditions $where
+     * @param ConditionsInterface $where
      */
-    public function setWhere(Conditions $where)
+    public function setWhere(ConditionsInterface $where)
     {
         $this->where = $where;
     }
