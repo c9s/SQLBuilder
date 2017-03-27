@@ -5,6 +5,7 @@ namespace SQLBuilder\Universal\Syntax;
 use BadMethodCallException;
 use Countable;
 use SQLBuilder\ArgumentArray;
+use SQLBuilder\Bind;
 use SQLBuilder\ConditionsInterface;
 use SQLBuilder\Criteria;
 use SQLBuilder\Driver\BaseDriver;
