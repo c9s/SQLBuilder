@@ -150,7 +150,7 @@ class Conditions implements ToSqlInterface, Countable
         }
 
         if ($this->parent) {
-            return call_user_func_array($this->parent, $args);
+            return call_user_func_array([$this->parent, $method], $args);
         }
 
         throw new BadMethodCallException("Invalid method call: $method");
