@@ -53,9 +53,12 @@ class Conditions implements ToSqlInterface, Countable
 {
     public $exprs;
 
-    public function __construct(array $exprs = array())
+    protected $parent;
+
+    public function __construct(array $exprs = array(), $parent = null)
     {
         $this->exprs = $exprs;
+        $this->parent = $parent;
     }
 
     /**
@@ -140,6 +143,11 @@ class Conditions implements ToSqlInterface, Countable
 
             return $this;
         }
+
+        if ($this->parent) {
+            return call_user_func_array($this->parent, $args);
+        }
+
         throw new BadMethodCallException("Invalid method call: $method");
     }
 
@@ -319,6 +327,8 @@ class Conditions implements ToSqlInterface, Countable
 
         return true;
     }
+
+
 
     public static function __set_state($array)
     {
