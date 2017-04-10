@@ -61,6 +61,11 @@ class Conditions implements ToSqlInterface, Countable
         $this->parent = $parent;
     }
 
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
+    }
+
     /**
      * http://dev.mysql.com/doc/refman/5.0/en/expressions.html.
      */

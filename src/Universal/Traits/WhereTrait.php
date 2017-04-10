@@ -21,7 +21,7 @@ trait WhereTrait
     public function where($expr = null, array $args = array())
     {
         if (!$this->where) {
-            $this->where = new Conditions();
+            $this->where = new Conditions([], $this);
         }
         if ($expr) {
             if (is_string($expr)) {
@@ -40,6 +40,7 @@ trait WhereTrait
 
     public function setWhere(Conditions $where)
     {
+        $where->setParent($this);
         $this->where = $where;
     }
 
@@ -49,7 +50,7 @@ trait WhereTrait
             return $this->where;
         }
 
-        return $this->where = new Conditions();
+        return $this->where = new Conditions([], $this);
     }
 
     public function buildWhereClause(BaseDriver $driver, ArgumentArray $args)
