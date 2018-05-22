@@ -31,7 +31,7 @@ class UUIDQuery implements ToSqlInterface
             return 'SELECT UUID_GENERATE_V4();';
         }
         if ($driver instanceof SQLiteDriver) {
-            return 'SELECT hex(randomblob(16));';
+            return 'SELECT SUBSTR(u, 1, 8)||'-'||SUBSTR(u, 9, 4)||'-4'||SUBSTR(u, 13, 3)|| '-'||v||SUBSTR(u, 17, 3)||'-'||SUBSTR(u, 21, 12) as uuid from (select LOWER(HEX(RANDOMBLOB(16))) as u, SUBSTR('89ab', ABS(RANDOM()) % 4 + 1, 1) as v);';
         }
         throw new UnsupportedDriverException($driver, $this);
     }
