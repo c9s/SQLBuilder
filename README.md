@@ -33,6 +33,7 @@ dependencies.
 Here is a short example of using Universal SelectQuery
 
 ```php
+use SQLBuilder\ArgumentArray;
 use SQLBuilder\Universal\Query\SelectQuery;
 use SQLBuilder\Driver\MySQLDriver;
 use SQLBuilder\Driver\PgSQLDriver;
