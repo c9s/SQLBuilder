@@ -82,7 +82,7 @@ class UpdateQuery implements ToSqlInterface
     {
         $setClauses = array();
         foreach ($this->sets as $col => $val) {
-            $setClauses[] = $col.' = '.$driver->deflate($val);
+            $setClauses[] = $col.' = '.$driver->deflate($val, $args);
         }
 
         return ' SET '.implode(', ', $setClauses);
